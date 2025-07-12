@@ -1,0 +1,182 @@
+name: RQA2025 Test Suite
+
+on: [push, pull_request]
+
+jobs:
+  verify-structure:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Verify test structure
+      run: python scripts/check_test_structure.py
+
+  unit-tests:
+    needs: verify-structure
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+      fail-fast: true
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
+
+    - name: Create conda environment
+      run: |
+        conda create -n rqa python=${{ matrix.python-version }} -y
+        conda activate rqa
+        conda install -c conda-forge pytest pytest-cov pytest-mock -y
+
+    - name: Install dependencies
+      run: |
+        conda activate rqa
+        python -m pip install --upgrade pip
+        pip install -e .[test]
+
+    - name: Run unit tests
+      run: |
+        conda activate rqa
+        pytest tests/unit/ \
+          --cov=src \
+          --cov-report=xml \
+          --cov-fail-under=80 \
+          -n auto \
+          -m "not slow"
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+
+  integration-tests:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: "3.9"
+
+    - name: Create conda environment
+      run: |
+        conda create -n rqa python=3.9 -y
+        conda activate rqa
+        conda install -c conda-forge pytest pytest-cov pytest-mock -y
+
+    - name: Install dependencies
+      run: |
+        conda activate rqa
+        python -m pip install --upgrade pip
+        pip install -e .[test]
+
+    - name: Run infrastructure integration tests
+      run: |
+        conda activate rqa
+        pytest tests/integration/test_infrastructure_integration.py \
+          --cov=src/infrastructure \
+          --cov-append \
+          --cov-report=xml \
+          -m integration
+
+    - name: Run model inference integration tests
+      run: |
+        conda activate rqa
+        pytest tests/integration/test_model_inference_integration.py \
+          --cov=src/models \
+          --cov-append \
+          --cov-report=xml \
+          -m integration
+
+    - name: Run backtest integration tests
+      run: |
+        conda activate rqa
+        pytest tests/integration/test_backtest_integration.py \
+          --cov=src/backtest \
+          --cov-append \
+          --cov-report=xml \
+          -m integration
+
+    - name: Run trading integration tests
+      run: |
+        conda activate rqa
+        pytest tests/integration/test_trading_integration.py \
+          --cov=src/trading \
+          --cov-append \
+          --cov-report=xml \
+          -m integration
+
+    - name: Run advanced trading integration tests
+      run: |
+        conda activate rqa
+        pytest tests/integration/test_trading_advanced_integration.py \
+          --cov=src/trading \
+          --cov-append \
+          --cov-report=xml \
+          -m integration
+
+    - name: Upload combined coverage
+      if: always()
+      uses: codecov/codecov-action@v3
+
+  performance-tests:
+    needs: integration-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: "3.9"
+
+    - name: Create conda environment
+      run: |
+        conda create -n rqa python=3.9 -y
+        conda activate rqa
+        conda install -c conda-forge pytest pytest-benchmark -y
+
+    - name: Install dependencies
+      run: |
+        conda activate rqa
+        python -m pip install --upgrade pip
+        pip install -e .[test]
+
+    - name: Run performance tests
+      run: |
+        conda activate rqa
+        pytest tests/performance/ \
+          -m performance \
+          --benchmark-json=perf.json
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-metrics
+        path: perf.json

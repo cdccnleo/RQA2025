@@ -1,0 +1,19 @@
+[run]
+source = src/infrastructure
+omit =
+    */__init__.py
+    */tests/*
+    */migrations/*
+    */admin.py
+    */models.py
+
+[report]
+show_missing = True
+skip_covered = True
+precision = 2
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass

@@ -1,0 +1,26 @@
+{
+  "auto_submit": true,
+  "submit_method": "email",
+  "report_types": ["daily", "violations", "monthly"],
+  "recipients": ["regulatory@example.com", "compliance@example.com"],
+  "email": {
+    "sender": "rqa2025@yourdomain.com",
+    "smtp_host": "smtp.yourdomain.com",
+    "smtp_port": 587,
+    "smtp_user": "rqa2025@yourdomain.com",
+    "smtp_pass": "your_password",
+    "recipients": ["regulatory@example.com", "compliance@example.com"]
+  },
+  "api": {
+    "endpoint": "https://api.regulatory.example.com/v1/reports",
+    "api_key": "your_api_key",
+    "timeout": 30
+  },
+  "rules": {
+    "t1_check": true,
+    "price_limit_check": true,
+    "abnormal_trade_check": true,
+    "circuit_breaker_check": true,
+    "star_market_rules": true
+  }
+}

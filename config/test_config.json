@@ -1,0 +1,91 @@
+{
+    "environment": {
+        "database": {
+            "type": "postgresql",
+            "image": "postgres:13",
+            "user": "rqa2025",
+            "password": "testpass",
+            "dbname": "rqa2025_test",
+            "port": 5432,
+            "data_volume": "./data/postgres"
+        },
+        "redis": {
+            "image": "redis:6",
+            "port": 6379
+        },
+        "fpga": {
+            "enable": true,
+            "image": "rqa2025/fpga-emulator:1.0",
+            "port": 5000
+        }
+    },
+    "alert": {
+        "email": {
+            "enabled": false,
+            "smtp_server": "smtp.example.com",
+            "smtp_port": 587,
+            "username": "user@example.com",
+            "password": "password",
+            "recipients": ["team@example.com"]
+        },
+        "slack": {
+            "enabled": false,
+            "webhook_url": "https://hooks.slack.com/services/XXXXXX"
+        }
+    },
+    "visualizer_port": 8050,
+    "test_cases": [
+        {
+            "name": "熔断机制测试",
+            "type": "unit",
+            "module": "trading.china.risk.test_circuit_breaker",
+            "class": "TestCircuitBreaker",
+            "method": "test_multilevel_trigger",
+            "symbol": "600519.SH"
+        },
+        {
+            "name": "T+1限制检查",
+            "type": "unit",
+            "module": "trading.china.risk.test_t1_restriction",
+            "class": "TestT1Restriction",
+            "method": "test_t1_restriction",
+            "symbol": "600519.SH"
+        },
+        {
+            "name": "FPGA一致性测试",
+            "type": "unit",
+            "module": "fpga.test_accelerator",
+            "class": "TestFPGAAccelerator",
+            "method": "test_fpga_software_consistency"
+        },
+        {
+            "name": "交易全流程测试",
+            "type": "integration",
+            "module": "integration.test_trading_flow",
+            "class": "TestTradingFlow",
+            "method": "test_order_execution_flow",
+            "symbol": "600519.SH"
+        },
+        {
+            "name": "灾备切换测试",
+            "type": "integration",
+            "module": "integration.test_disaster_recovery",
+            "class": "TestDisasterRecovery",
+            "method": "test_failover_scenario"
+        },
+        {
+            "name": "订单延迟测试",
+            "type": "performance",
+            "module": "performance.test_latency",
+            "class": "TestOrderLatency",
+            "method": "test_order_latency"
+        },
+        {
+            "name": "压力测试",
+            "type": "performance",
+            "module": "performance.test_stress",
+            "class": "TestStress",
+            "method": "test_high_frequency_orders"
+        }
+    ]
+}

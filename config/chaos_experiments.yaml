@@ -1,0 +1,47 @@
+# RQA2025 混沌实验配置文件
+# 定义系统健壮性测试场景
+
+experiments:
+  - name: "网络分区测试"
+    description: "模拟服务间网络隔离"
+    type: "network_partition"
+    target_services: ["order_service", "risk_service"]
+    duration: 60  # 秒
+    enabled: true
+    schedule: "0 3 * * *"  # 每天凌晨3点执行
+    safety_checks:
+      max_cpu_load: 0.7
+      min_memory_available: "2GB"
+
+  - name: "FPGA完全故障"
+    description: "模拟FPGA设备完全失效"
+    type: "fpga_failure"
+    mode: "complete"
+    duration: 30  # 秒
+    enabled: true
+    schedule: "0 4 * * *"  # 每天凌晨4点执行
+    safety_checks:
+      require_fpga: true
+
+  - name: "FPGA噪声干扰"
+    description: "模拟FPGA计算噪声"
+    type: "fpga_failure"
+    mode: "noise"
+    duration: 45  # 秒
+    enabled: false  # 默认禁用
+    safety_checks:
+      require_fpga: true
+
+  - name: "高CPU负载"
+    description: "模拟CPU资源耗尽"
+    type: "high_cpu"
+    duration: 120  # 秒
+    enabled: false  # 默认禁用
+    safety_checks:
+      max_cpu_load: 0.5  # 只在低负载时执行
+
+global_safety:
+  prohibited_environments: ["production"]
+  min_available_disk: "10GB"
+  required_services: ["redis", "postgres"]
+  notification_channels: ["slack#alerts", "email"]
