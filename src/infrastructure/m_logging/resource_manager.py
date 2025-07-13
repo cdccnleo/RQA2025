@@ -26,7 +26,7 @@ class ResourceManager:
 
     def __init__(self):
         """初始化资源管理器"""
-        if self._initialized:
+        if hasattr(self, '_initialized') and self._initialized:
             return
 
         self._handlers: Set[Handler] = set()
@@ -37,10 +37,10 @@ class ResourceManager:
 
         # 预警配置
         self.warning_thresholds = {
-            'memory_rss': 0.8,  # 80%物理内存
-            'memory_vms': 0.9,  # 90%虚拟内存
-            'open_files': 500,  # 500个文件描述符
-            'handlers': 50      # 50个处理器
+            'cpu': 80,
+            'memory': 85,
+            'disk': 90,
+            'network': 70
         }
         self.warning_callbacks = []
         
@@ -63,6 +63,11 @@ class ResourceManager:
         """注销日志处理器"""
         if handler in self._handlers:
             self._handlers.remove(handler)
+
+    def close(self):
+        """关闭资源管理器"""
+        self._closed = True
+        return self.close_all()
 
     def close_all(self, timeout: float = 5.0) -> bool:
         """安全关闭所有处理器
@@ -190,7 +195,20 @@ class ResourceManager:
             ]
         }
 
+    def set_cpu_threshold(self, threshold: float):
+        """设置CPU使用率阈值"""
+        self.warning_thresholds['cpu'] = threshold
+
     def __del__(self):
         """析构函数确保资源释放"""
         if not self._closed:
             self.close_all()
+
+# 全局函数
+def close_all(timeout: float = 5.0) -> bool:
+    """关闭所有资源"""
+    return ResourceManager().close_all(timeout)
+
+def get_resource_usage() -> Dict[str, Any]:
+    """获取资源使用情况"""
+    return ResourceManager().get_resource_usage()

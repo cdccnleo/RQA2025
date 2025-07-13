@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
 try:
-    from infrastructure.data_sync import *
+    from src.infrastructure.data_sync import *
 except ImportError as e:
     pytest.skip(f"无法导入 data_sync 模块: {e}", allow_module_level=True)
 

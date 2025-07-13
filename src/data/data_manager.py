@@ -22,6 +22,7 @@ from .base_loader import BaseDataLoader
 from .registry import DataRegistry
 from .validator import DataValidator
 from .cache import CacheManager, CacheStrategy
+from .quality.monitor import DataQualityMonitor
 
 logger = get_logger(__name__)
 
@@ -113,16 +114,11 @@ class DataManager:
         self.logger.info("数据验证器初始化完成")
         
         # 初始化数据质量监控器
-        self.quality_monitor = DataQualityMonitor(self.validator)
+        self.quality_monitor = DataQualityMonitor()
         self.logger.info("数据质量监控器初始化完成")
         
         # 初始化缓存管理器
-        cache_dir = Path(self.config.get("General", "cache_dir", fallback="cache"))
-        cache_strategy = CacheStrategy({
-            'max_cache_size': self.config.getint("General", "max_cache_size", fallback=1024 * 1024 * 1024),
-            'cache_ttl': self.config.getint("General", "cache_ttl", fallback=86400),
-        })
-        self.cache_manager = CacheManager(cache_dir, cache_strategy)
+        self.cache_manager = CacheManager(strategy='smart')
         
         # 初始化加载器
         self._init_loaders()

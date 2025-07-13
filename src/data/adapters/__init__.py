@@ -3,4 +3,6 @@
 包含各种数据源和市场的适配器实现
 """
 
-__all__ = []  # 具体适配器将在子模块中导出
+from .base_adapter import BaseDataAdapter
+
+__all__ = ['BaseDataAdapter']  # 具体适配器将在子模块中导出

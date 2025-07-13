@@ -6,9 +6,10 @@ import pandas as pd
 from pathlib import Path
 import akshare as ak
 from requests import RequestException
-from typing import Any, Union
+from typing import Any, Union, Dict
 from src.infrastructure.utils.exceptions import DataLoaderError
 from src.infrastructure.utils.logger import get_logger
+from src.data.base_loader import BaseDataLoader
 import time
 import os
 from datetime import datetime
@@ -92,6 +93,10 @@ class IndexDataLoader(BaseDataLoader):
             cache_days=cache_days,
             thread_pool=thread_pool
         )
+
+    def get_required_config_fields(self) -> list:
+        """获取必需的配置字段列表"""
+        return ['save_path', 'max_retries', 'cache_days']
 
     def load_data(
             self,

@@ -1,6 +1,7 @@
 import pytest
+import pandas as pd
 from unittest.mock import patch
-from tests.features.conftest import sample_features
+from .conftest import sample_features
 from src.features.feature_manager import FeatureManager
 
 class TestFeatureIntegration:

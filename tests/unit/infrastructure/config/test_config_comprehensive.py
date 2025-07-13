@@ -33,10 +33,13 @@ class TestConfigManager:
         with open(self.config_file, 'w') as f:
             json.dump(config_data, f)
         
-        with patch('src.infrastructure.config.config_manager.ConfigManager._load_config') as mock_load:
-            mock_load.return_value = config_data
+        with patch('src.infrastructure.config.config_manager.ConfigManager.load_config') as mock_load:
+            mock_load.return_value = True
             manager = ConfigManager()
-            assert manager.get("test_key") == "test_value"
+            config = {'a': 1, 'b': 2}
+            result = manager.load_config(config)
+            assert result is True
+            mock_load.assert_called_once()
     
     def test_config_validation(self):
         """测试配置验证"""

@@ -58,6 +58,46 @@ class LogSampler:
             rate=base_rate
         ))
 
+    def configure(self, config: Dict[str, Any]):
+        """配置采样器
+        
+        Args:
+            config: 配置字典，包含:
+                - default_rate: 默认采样率
+                - level_rates: 各日志级别的采样率
+                - trading_hours_rate: 交易时段的采样率(可选)
+        """
+        with self._lock:
+            # 设置基础采样率
+            if 'default_rate' in config:
+                self._base_rate = max(self._min_rate, min(self._max_rate, config['default_rate']))
+                self._current_rate = self._base_rate
+
+            # 清除现有规则
+            self._rules.clear()
+
+            # 添加默认规则
+            self.add_rule(SamplingRule(
+                strategy=SamplingStrategyType.FIXED_RATE,
+                rate=self._base_rate
+            ))
+
+            # 添加级别规则
+            if 'level_rates' in config:
+                for level, rate in config['level_rates'].items():
+                    self.add_rule(SamplingRule(
+                        strategy=SamplingStrategyType.LEVEL_BASED,
+                        level=level.upper(),
+                        rate=rate
+                    ))
+
+            # 添加交易时段规则
+            if 'trading_hours_rate' in config:
+                self.add_rule(SamplingRule(
+                    strategy=SamplingStrategyType.FIXED_RATE,
+                    rate=config['trading_hours_rate']
+                ))
+
     def add_rule(self, rule: SamplingRule):
         """添加采样规则"""
         with self._lock:
@@ -168,6 +208,18 @@ class LogSampler:
         with self._lock:
             return self._rules.copy()
 
+    def get_config(self) -> Dict[str, Any]:
+        """获取当前配置"""
+        with self._lock:
+            return {
+                'base_rate': self._base_rate,
+                'min_rate': self._min_rate,
+                'max_rate': self._max_rate,
+                'current_rate': self._current_rate,
+                'rules_count': len(self._rules),
+                'load_window': self._load_window
+            }
+
     def get_current_strategy(self) -> Dict[str, Any]:
         """获取当前采样策略配置"""
         with self._lock:
@@ -198,12 +250,13 @@ class LogSampler:
         Returns:
             bool: True表示记录日志，False表示过滤
         """
-        log_dict = {
-            'message': record.getMessage(),
+        # 将LogRecord转换为字典格式
+        record_dict = {
             'level': record.levelname,
-            'time': record.created,
-            'pathname': record.pathname,
-            'lineno': record.lineno,
-            'funcName': record.funcName
+            'message': record.getMessage(),
+            'module': record.module,
+            'funcName': record.funcName,
+            'lineno': record.lineno
         }
-        return self.should_sample(log_dict)
+        
+        return self.should_sample(record_dict)

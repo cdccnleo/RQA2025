@@ -43,18 +43,13 @@ class FeatureEngineer:
     def __init__(
         self, 
         technical_processor: FeatureProcessorProtocol,
+        sentiment_analyzer,
         cache_dir: str = "./feature_cache",
         max_retries: int = 3,
         fallback_enabled: bool = True
     ):
         """
         初始化特征工程
-
-        Args:
-            technical_processor: 技术指标处理器实例
-            cache_dir: 特征缓存目录
-            max_retries: 最大重试次数
-            fallback_enabled: 是否启用降级模式
         """
         self.max_retries = max_retries
         self.fallback_enabled = fallback_enabled
@@ -63,11 +58,9 @@ class FeatureEngineer:
 
         # 初始化处理器
         self.technical_processor = technical_processor
-        self.sentiment_analyzer = SentimentAnalyzer()
-
+        self.sentiment_analyzer = sentiment_analyzer
         # 线程池用于并行计算
         self.executor = ThreadPoolExecutor(max_workers=4)
-
         # 缓存元数据
         self.cache_metadata: Dict[str, Dict] = {}
         self._load_cache_metadata()

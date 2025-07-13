@@ -20,6 +20,7 @@ from bs4 import BeautifulSoup
 from typing import Optional, Tuple, Any, Union
 from src.features.processors.sentiment import SentimentAnalyzer
 from src.infrastructure.utils.logger import get_logger
+from src.data.base_loader import BaseDataLoader
 
 logger = get_logger(__name__)
 
@@ -671,3 +672,7 @@ class SentimentNewsLoader(FinancialNewsLoader, BaseDataLoader):
         if not super().validate(data):
             return False
         return 'sentiment' in data.columns and pd.api.types.is_numeric_dtype(data['sentiment'])
+
+    def get_required_config_fields(self) -> list:
+        """获取必需的配置字段列表"""
+        return ['save_path', 'max_retries', 'cache_days']

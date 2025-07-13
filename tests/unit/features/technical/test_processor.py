@@ -3,13 +3,14 @@
 
 import unittest
 import numpy as np
-from src.features.technical.processor import TechnicalProcessor
-from src.features.manager import FeatureManager
+import pandas as pd
+from src.features.technical.processor import TechnicalIndicator
+from src.features.feature_manager import FeatureManager
 
 class TestTechnicalProcessor(unittest.TestCase):
     def setUp(self):
         self.manager = FeatureManager()
-        self.processor = TechnicalProcessor(self.manager)
+        self.processor = TechnicalIndicator(self.manager)
 
     def test_basic_indicators(self):
         prices = [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0]

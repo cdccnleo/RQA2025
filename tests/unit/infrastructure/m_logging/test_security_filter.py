@@ -86,7 +86,7 @@ class TestSecurityFilterInitWithDefaultPatterns:
 
     @pytest.fixture
     def security_filter(self):
-        from infrastructure.m_logging.security_filter import SecurityFilter
+        from src.infrastructure.m_logging.security_filter import SecurityFilter
         return SecurityFilter()
 
     def test_filter_with_string_message_containing_sensitive_info(self, security_filter):
@@ -168,7 +168,7 @@ class TestSecurityFilterInitWithDefaultPatterns:
         Expected Outcome: Should return input unchanged (12345)
         """
         # Assuming the SecurityFilter class is imported from the module
-        from infrastructure.m_logging.security_filter import SecurityFilter
+        from src.infrastructure.m_logging.security_filter import SecurityFilter
 
         # Create an instance of SecurityFilter (custom_patterns not needed for this test)
         security_filter = SecurityFilter()
@@ -252,7 +252,7 @@ class SecurityFilterTest:
         Test that log_sensitive_operation properly redacts sensitive information in metadata.
         """
         # Import the function to test (assuming it's in the security_filter module)
-        from infrastructure.m_logging.security_filter import log_sensitive_operation
+        from src.infrastructure.m_logging.security_filter import log_sensitive_operation
 
         # Test input
         operation = "login"
@@ -281,7 +281,7 @@ class SecurityFilterTest:
 
     @pytest.fixture
     def security_filter(self):
-        from infrastructure.m_logging.security_filter import SecurityFilter
+        from src.infrastructure.m_logging.security_filter import SecurityFilter
         return SecurityFilter()
 
     def test_log_sensitive_operation_with_key_metadata(self, security_filter):

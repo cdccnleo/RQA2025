@@ -15,14 +15,10 @@ class SentimentConfig:
 class SentimentAnalyzer:
     """中文财经文本情感分析器"""
 
-    def __init__(self, feature_engine: 'FeatureEngineer', config: SentimentConfig = None):
-        self.engine = feature_engine
+    def __init__(self, register_feature_func, config: SentimentConfig = None):
+        self.register_feature_func = register_feature_func
         self.config = config or SentimentConfig()
-
-        # 初始化模型和分词器
         self.model, self.tokenizer = self._load_pretrained_model(self.config.model_name)
-
-        # 注册情感特征
         self._register_sentiment_features()
 
     def _load_pretrained_model(self, model_name: str):
@@ -35,7 +31,7 @@ class SentimentAnalyzer:
     def _register_sentiment_features(self):
         """注册情感特征到特征引擎"""
         # 基础情感特征
-        self.engine.register_feature(FeatureConfig(
+        self.register_feature_func(FeatureConfig(
             name="SENTIMENT_SCORE",
             feature_type=FeatureType.SENTIMENT,
             params={"model": self.config.model_name},
@@ -44,7 +40,7 @@ class SentimentAnalyzer:
 
         # 政策情感特征
         if self.config.policy_keywords:
-            self.engine.register_feature(FeatureConfig(
+            self.register_feature_func(FeatureConfig(
                 name="POLICY_SENTIMENT",
                 feature_type=FeatureType.SENTIMENT,
                 params={"keywords": self.config.policy_keywords},
@@ -55,7 +51,7 @@ class SentimentAnalyzer:
         # 行业情感特征
         if self.config.industry_terms:
             for industry, terms in self.config.industry_terms.items():
-                self.engine.register_feature(FeatureConfig(
+                self.register_feature_func(FeatureConfig(
                     name=f"{industry}_SENTIMENT",
                     feature_type=FeatureType.SENTIMENT,
                     params={"terms": terms},

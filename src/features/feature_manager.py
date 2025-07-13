@@ -55,17 +55,17 @@ class FeatureManager:
         self.technical_processor = TechnicalProcessor(
             register_func=self._register_feature_config
         )
-        self.sentiment_analyzer = SentimentAnalyzer(use_segmentation=True, use_gpu=False)
+        self.sentiment_analyzer = SentimentAnalyzer(self._register_feature_config)
+        self.feature_engineer = FeatureEngineer(
+            self.technical_processor,
+            self.sentiment_analyzer
+        )
         self.model_manager = model_manager
         self.feature_selector = feature_selector
         self.model_name = f"{stock_code}_model"
         self.model_version = "v1.0"
         self.selected_features = []
         self.preserve_features = preserve_features or []  # 显式存储保留特征
-        self.feature_engineer = FeatureEngineer(
-            technical_processor=self.technical_processor,
-            stock_code=stock_code
-        )
         feature_selector_dir = self.model_path / f"{stock_code}_feature_selector"
         feature_selector_dir.mkdir(parents=True, exist_ok=True)
 

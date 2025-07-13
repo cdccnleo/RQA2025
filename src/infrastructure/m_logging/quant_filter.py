@@ -28,3 +28,10 @@ class QuantFilter(logging.Filter):
                 break
                 
         return True
+
+    def filter_message(self, message: str) -> str:
+        """过滤消息中的敏感信息"""
+        for pattern in self.SENSITIVE_PATTERNS:
+            if re.search(pattern, message):
+                return "[REDACTED] " + re.sub(pattern, "****", message)
+        return message

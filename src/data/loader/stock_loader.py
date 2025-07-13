@@ -13,6 +13,7 @@ from datetime import datetime
 import time
 import concurrent.futures
 from urllib3.exceptions import MaxRetryError, NameResolutionError
+from src.data.base_loader import BaseDataLoader
 
 logger = get_logger(__name__)
 
@@ -108,6 +109,10 @@ class StockDataLoader(BaseDataLoader):
             adjust_type=loader_config.get('adjust_type', default_loader_config.get('adjust_type', 'none')),
             thread_pool=thread_pool
         )
+
+    def get_required_config_fields(self) -> list:
+        """获取必需的配置字段列表"""
+        return ['save_path', 'max_retries', 'cache_days']
 
     def get_metadata(self) -> Dict[str, Any]:
         """获取数据加载器的元数据
@@ -382,6 +387,8 @@ class IndustryLoader:
         self.frequency = frequency
         self.adjust_type = adjust_type
         self.thread_pool = thread_pool
+        # 修正：industry_map_path为Path对象
+        self.industry_map_path = Path(self.save_path) / "industry_map.csv"
 
     def _setup(self) -> None:
         """初始化工作目录和日志配置"""

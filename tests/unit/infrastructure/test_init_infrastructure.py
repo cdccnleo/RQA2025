@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
 try:
-    from infrastructure.init_infrastructure import *
+    from src.infrastructure.init_infrastructure import *
 except ImportError as e:
     pytest.skip(f"无法导入 init_infrastructure 模块: {e}", allow_module_level=True)
 

@@ -171,9 +171,13 @@ class TestRetryHandler:
         decorated = retry_handler(mock_func)
 
         if should_retry:
-            with pytest.raises(type(exception)):
+            with pytest.raises(Exception) as excinfo:
                 decorated()
-            assert mock_func.call_count == retry_handler.max_attempts + 1  # 初始尝试 + max_attempts次重试
+            # 应抛出RetryError，且__cause__为原始异常类型
+            from src.infrastructure.error.exceptions import RetryError
+            assert isinstance(excinfo.value, RetryError)
+            assert isinstance(excinfo.value.__cause__, type(exception))
+            assert mock_func.call_count == retry_handler.max_attempts  # 初始尝试+重试
         else:
             with pytest.raises(type(exception)):
                 decorated()

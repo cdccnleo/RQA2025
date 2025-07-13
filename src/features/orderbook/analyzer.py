@@ -8,7 +8,7 @@
 
 from typing import Dict, List, Tuple
 import numpy as np
-from ..manager import FeatureManager
+from ..feature_manager import FeatureManager
 
 class OrderbookAnalyzer:
     def __init__(self, feature_manager: FeatureManager):
@@ -64,7 +64,7 @@ class OrderbookAnalyzer:
             return 0.0
         return (bid_vol - ask_vol) / (bid_vol + ask_vol)
 
-    def _calculate_depth(self, orderbook: Dict) -> float:
+    def _calculate_depth(self, orderbook: Dict) -> Dict[str, float]:
         """计算订单簿深度"""
         depth_levels = [0.01, 0.02, 0.05]  # 1%, 2%, 5%深度
         mid_price = (orderbook['asks'][0][0] + orderbook['bids'][0][0]) / 2
@@ -80,13 +80,16 @@ class OrderbookAnalyzer:
 
     def register_features(self):
         """向特征管理器注册订单簿特征"""
-        self.feature_manager.register(
+        from ..feature_config import FeatureConfig, FeatureType
+        self.feature_manager._register_feature_config(FeatureConfig(
             name='orderbook_imbalance',
-            calculator=lambda sym: self.calculate_metrics(sym)['imbalance'],
-            description='订单簿买卖不平衡度[-1,1]'
-        )
-        self.feature_manager.register(
+            feature_type=FeatureType.TECHNICAL,
+            params={},
+            dependencies=[]
+        ))
+        self.feature_manager._register_feature_config(FeatureConfig(
             name='orderbook_spread',
-            calculator=lambda sym: self.calculate_metrics(sym)['spread'],
-            description='买卖价差'
-        )
+            feature_type=FeatureType.TECHNICAL,
+            params={},
+            dependencies=[]
+        ))

@@ -9,4 +9,12 @@ class DataProcessingError(Exception):
         self.context = context or {}
         super().__init__(self.message)
 
-__all__ = ['CacheError', 'DataLoaderError', 'DataProcessingError']
+# 添加DataVersionError类定义
+class DataVersionError(Exception):
+    """数据版本错误"""
+    def __init__(self, message: str, version_info: dict = None):
+        self.message = message
+        self.version_info = version_info or {}
+        super().__init__(self.message)
+
+__all__ = ['CacheError', 'DataLoaderError', 'DataProcessingError', 'DataVersionError']

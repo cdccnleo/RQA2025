@@ -316,3 +316,46 @@ class TestDeploymentManager:
         
         # 验证配置管理器被正确设置
         assert deployment_manager.config_manager == mock_config_manager 
+
+def test_generate_deployment_script_write_exception(deployment_manager, sample_deploy_config, monkeypatch):
+    """测试生成部署脚本时写文件异常"""
+    deployment_manager.current_config = sample_deploy_config
+    deployment_manager.current_env = 'prod'
+    
+    def raise_io_error(*args, **kwargs):
+        raise IOError("写入失败")
+    monkeypatch.setattr("builtins.open", raise_io_error)
+    result = deployment_manager.generate_deployment_script("/tmp/fake_path.sh")
+    assert result is False
+
+def test_fill_template_no_config(deployment_manager):
+    """测试_fill_template在current_config为None时"""
+    deployment_manager.current_config = None
+    template = "DB_HOST={db_host}"
+    filled = deployment_manager._fill_template(template)
+    assert filled == template
+
+def test_switch_environment_same_env(deployment_manager):
+    """测试切换到同一环境"""
+    deployment_manager.current_env = 'dev'
+    result = deployment_manager.switch_environment('dev')
+    assert result is True
+
+def test_get_environment_summary_no_config(deployment_manager):
+    """测试get_environment_summary在current_config为None时"""
+    deployment_manager.current_config = None
+    summary = deployment_manager.get_environment_summary()
+    assert summary == {}
+
+def test_load_environment_yaml_exception(deployment_manager, tmp_path, monkeypatch):
+    """测试load_environment时yaml解析异常"""
+    # 创建一个非法yaml文件
+    bad_yaml = tmp_path / "bad.yaml"
+    bad_yaml.write_text(": this is not valid yaml: : :")
+    deployment_manager.environments['test'] = str(bad_yaml)
+    
+    # monkeypatch yaml.safe_load 抛异常
+    import yaml
+    monkeypatch.setattr(yaml, "safe_load", lambda f: (_ for _ in ()).throw(Exception("yaml error")))
+    result = deployment_manager.load_environment('test')
+    assert result is False 

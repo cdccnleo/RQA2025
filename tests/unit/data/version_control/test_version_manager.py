@@ -1,30 +1,31 @@
 """
-数据版本控制管理器测试
+数据版本管理测试模块
 """
 import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
-import json
+import tempfile
 import shutil
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 
+from src.data.data_manager import DataModel
 from src.data.version_control.version_manager import DataVersionManager
-from src.data.models import DataModel
 from src.infrastructure.utils.exceptions import DataLoaderError
 
 
 @pytest.fixture
 def test_data():
     """测试数据fixture"""
-    # 创建测试数据
-    dates = pd.date_range(start='2023-01-01', end='2023-01-10')
-    df = pd.DataFrame({
-        'close': np.random.randn(len(dates)) + 100,
-        'volume': np.random.randint(1000, 10000, len(dates))
+    dates = pd.date_range('2023-01-01', periods=10)
+    return pd.DataFrame({
+        'close': np.random.randn(10) + 100,
+        'volume': np.random.randint(1000, 10000, 10),
+        'open': np.random.randn(10) + 100,
+        'high': np.random.randn(10) + 102,
+        'low': np.random.randn(10) + 98
     }, index=dates)
-    return df
 
 
 @pytest.fixture
@@ -46,272 +47,193 @@ def version_manager(test_version_dir):
 @pytest.fixture
 def sample_data_model(test_data):
     """样本数据模型fixture"""
-    model = DataModel(test_data)
-    model.set_metadata({
+    model = DataModel(test_data, '1d', {
         'source': 'test',
-        'frequency': '1d',
-        'symbol': '000001.SZ'
+        'symbol': '000001.SZ',
+        'version': 'v1.0'
     })
     return model
 
 
-def test_version_manager_init(test_version_dir):
-    """测试版本管理器初始化"""
-    manager = DataVersionManager(test_version_dir)
-
-    # 验证目录创建
-    assert test_version_dir.exists()
-    assert test_version_dir.is_dir()
-
-    # 验证元数据文件创建
-    metadata_file = test_version_dir / 'version_metadata.json'
-    assert metadata_file.exists()
-
-    # 验证元数据内容
-    with open(metadata_file, 'r') as f:
-        metadata = json.load(f)
-    assert 'versions' in metadata
-    assert 'latest_version' in metadata
-    assert 'branches' in metadata
-    assert 'main' in metadata['branches']
-
-
-@pytest.mark.parametrize("branch,description", [
-    ("main", "Initial version"),
-    ("dev", "Development version"),
-    ("test", "Test version")
-])
-def test_create_version(version_manager, sample_data_model, branch, description):
-    """测试创建版本"""
-    version_id = version_manager.create_version(
-        sample_data_model,
-        description=description,
-        creator="test_user",
-        branch=branch
-    )
-
-    # 验证版本ID格式
-    assert isinstance(version_id, str)
-    assert version_id.startswith("v_")
-
-    # 验证版本信息
-    version_info = version_manager.get_version_info(version_id)
-    assert version_info is not None
-    assert version_info['description'] == description
-    assert version_info['creator'] == "test_user"
-    assert version_info['branch'] == branch
-
-    # 验证数据文件
-    version_file = version_manager.version_dir / f"{version_id}.parquet"
-    assert version_file.exists()
-
-    # 验证分支更新
-    assert version_manager.metadata['branches'][branch] == version_id
-
-
-def test_get_version(version_manager, sample_data_model):
-    """测试获取版本"""
-    # 创建版本
-    version_id = version_manager.create_version(
-        sample_data_model,
-        description="Test version",
-        creator="test_user"
-    )
-
-    # 获取版本
-    loaded_model = version_manager.get_version(version_id)
-    assert loaded_model is not None
-
-    # 验证数据
-    pd.testing.assert_frame_equal(loaded_model.data, sample_data_model.data)
-
-    # 验证元数据
-    assert loaded_model.get_metadata() == sample_data_model.get_metadata()
-
-
-def test_get_nonexistent_version(version_manager):
-    """测试获取不存在的版本"""
-    result = version_manager.get_version("nonexistent_version")
-    assert result is None
-
-
-@pytest.mark.parametrize("filter_params,expected_count", [
-    ({}, 2),  # 无过滤
-    ({"creator": "test_user"}, 2),  # 按创建者过滤
-    ({"branch": "dev"}, 1),  # 按分支过滤
-    ({"creator": "other_user"}, 0)  # 无匹配结果
-])
-def test_list_versions(version_manager, sample_data_model, filter_params, expected_count):
-    """测试列出版本"""
-    # 创建测试版本
-    version_manager.create_version(
-        sample_data_model,
-        description="Main version",
-        creator="test_user",
-        branch="main"
-    )
-    version_manager.create_version(
-        sample_data_model,
-        description="Dev version",
-        creator="test_user",
-        branch="dev"
-    )
-
-    # 列出版本
-    versions = version_manager.list_versions(**filter_params)
-    assert len(versions) == expected_count
-
-
-def test_compare_versions(version_manager, sample_data_model):
-    """测试版本比较"""
-    # 创建第一个版本
-    v1_id = version_manager.create_version(
-        sample_data_model,
-        description="Version 1",
-        creator="test_user"
-    )
-
-    # 修改数据创建第二个版本
-    modified_data = sample_data_model.data.copy()
-    modified_data['close'] = modified_data['close'] * 1.1
-    modified_model = DataModel(modified_data)
-    modified_model.set_metadata(sample_data_model.get_metadata())
-
-    v2_id = version_manager.create_version(
-        modified_model,
-        description="Version 2",
-        creator="test_user"
-    )
-
-    # 比较版本
-    comparison = version_manager.compare_versions(v1_id, v2_id)
-
-    assert 'metadata_diff' in comparison
-    assert 'data_diff' in comparison
-    assert 'value_diff' in comparison['data_diff']
-    assert 'close' in comparison['data_diff']['value_diff']
-
-
-def test_version_lineage(version_manager, sample_data_model):
-    """测试版本血缘关系"""
-    # 创建版本链
-    v1_id = version_manager.create_version(
-        sample_data_model,
-        description="Version 1",
-        creator="test_user"
-    )
-
-    v2_id = version_manager.create_version(
-        sample_data_model,
-        description="Version 2",
-        creator="test_user"
-    )
-
-    # 获取血缘关系
-    lineage = version_manager.get_lineage(v2_id)
-
-    assert lineage['version_id'] == v2_id
-    assert len(lineage['ancestors']) > 0
-    assert lineage['ancestors'][0]['version_id'] == v2_id
-
-
-def test_rollback(version_manager, sample_data_model):
-    """测试版本回滚"""
-    # 创建初始版本
-    v1_id = version_manager.create_version(
-        sample_data_model,
-        description="Version 1",
-        creator="test_user"
-    )
-
-    # 修改数据创建新版本
-    modified_data = sample_data_model.data.copy()
-    modified_data['close'] = modified_data['close'] * 1.1
-    modified_model = DataModel(modified_data)
-    modified_model.set_metadata(sample_data_model.get_metadata())
-
-    v2_id = version_manager.create_version(
-        modified_model,
-        description="Version 2",
-        creator="test_user"
-    )
-
-    # 回滚到第一个版本
-    rollback_id = version_manager.rollback(v1_id)
-
-    # 验证回滚版本
-    rollback_model = version_manager.get_version(rollback_id)
-    assert rollback_model is not None
-    pd.testing.assert_frame_equal(rollback_model.data, sample_data_model.data)
-
-
-@pytest.mark.parametrize("invalid_id", [
-    "nonexistent_version",
-    "",
-    None
-])
-def test_invalid_version_operations(version_manager, invalid_id):
-    """测试无效版本操作"""
-    # 测试获取版本
-    assert version_manager.get_version(invalid_id) is None
-
-    # 测试获取版本信息
-    assert version_manager.get_version_info(invalid_id) is None
-
-    # 测试回滚到无效版本
-    with pytest.raises(DataLoaderError, match="Version not found"):
-        version_manager.rollback(invalid_id)
-
-
-@patch('pandas.DataFrame.to_parquet')
-def test_version_creation_failure(mock_to_parquet, version_manager, sample_data_model):
-    """测试版本创建失败"""
-    # 模拟保存数据失败
-    mock_to_parquet.side_effect = Exception("Failed to save data")
-
-    # 验证异常抛出
-    with pytest.raises(DataLoaderError, match="Failed to create version"):
-        version_manager.create_version(
-            sample_data_model,
-            description="Failed version",
-            creator="test_user"
-        )
-
-
-def test_version_metadata_corruption(version_manager, test_version_dir):
-    """测试元数据损坏情况"""
-    # 创建损坏的元数据文件
-    metadata_file = test_version_dir / 'version_metadata.json'
-    with open(metadata_file, 'w') as f:
-        f.write("invalid json content")
-
-    # 创建新的管理器实例
-    new_manager = DataVersionManager(test_version_dir)
-
-    # 验证使用默认元数据
-    assert new_manager.metadata == {
-        'versions': {},
-        'latest_version': None,
-        'branches': {'main': None}
-    }
-
-
-def test_concurrent_version_creation(version_manager, sample_data_model):
-    """测试并发版本创建"""
-    # 模拟并发创建版本
-    version_ids = []
-    for i in range(5):
+class TestDataVersionManager:
+    """测试数据版本管理器"""
+    
+    def test_version_manager_init(self, test_version_dir):
+        """测试版本管理器初始化"""
+        manager = DataVersionManager(test_version_dir)
+        
+        assert manager.version_dir == test_version_dir
+        assert test_version_dir.exists()
+        assert test_version_dir.is_dir()
+    
+    def test_create_version(self, version_manager, sample_data_model):
+        """测试创建版本"""
         version_id = version_manager.create_version(
             sample_data_model,
-            description=f"Concurrent version {i}",
-            creator="test_user"
+            version_name="test_v1.0",
+            description="测试版本"
         )
-        version_ids.append(version_id)
-
-    # 验证所有版本都被正确创建
-    assert len(version_ids) == 5
-    assert len(set(version_ids)) == 5  # 确保版本ID唯一
-
-    # 验证每个版本都可以被加载
-    for version_id in version_ids:
-        assert version_manager.get_version(version_id) is not None
+        
+        assert version_id is not None
+        assert len(version_id) > 0
+        
+        # 验证版本文件创建
+        version_file = version_manager.version_dir / f"{version_id}.pkl"
+        assert version_file.exists()
+    
+    def test_load_version(self, version_manager, sample_data_model):
+        """测试加载版本"""
+        # 先创建版本
+        version_id = version_manager.create_version(
+            sample_data_model,
+            version_name="test_v1.0"
+        )
+        
+        # 加载版本
+        loaded_model = version_manager.load_version(version_id)
+        
+        assert loaded_model is not None
+        assert isinstance(loaded_model, DataModel)
+        assert loaded_model.get_metadata()['symbol'] == '000001.SZ'
+    
+    def test_list_versions(self, version_manager, sample_data_model):
+        """测试列出版本"""
+        # 创建多个版本
+        version_manager.create_version(sample_data_model, "v1.0")
+        version_manager.create_version(sample_data_model, "v1.1")
+        
+        versions = version_manager.list_versions()
+        
+        assert len(versions) >= 2
+        assert any('v1.0' in v['name'] for v in versions)
+        assert any('v1.1' in v['name'] for v in versions)
+    
+    def test_get_version_info(self, version_manager, sample_data_model):
+        """测试获取版本信息"""
+        version_id = version_manager.create_version(
+            sample_data_model,
+            version_name="test_v1.0",
+            description="测试版本"
+        )
+        
+        info = version_manager.get_version_info(version_id)
+        
+        assert info is not None
+        assert info['name'] == "test_v1.0"
+        assert info['description'] == "测试版本"
+        assert 'created_at' in info
+    
+    def test_delete_version(self, version_manager, sample_data_model):
+        """测试删除版本"""
+        version_id = version_manager.create_version(sample_data_model, "test_v1.0")
+        
+        # 验证版本存在
+        assert version_manager.get_version_info(version_id) is not None
+        
+        # 删除版本
+        success = version_manager.delete_version(version_id)
+        assert success is True
+        
+        # 验证版本已删除
+        assert version_manager.get_version_info(version_id) is None
+    
+    def test_version_comparison(self, version_manager, test_data):
+        """测试版本比较"""
+        # 创建两个不同版本的数据模型
+        model_v1 = DataModel(test_data, '1d', {'version': 'v1.0'})
+        model_v2 = DataModel(test_data * 1.1, '1d', {'version': 'v2.0'})
+        
+        # 创建版本
+        v1_id = version_manager.create_version(model_v1, "v1.0")
+        v2_id = version_manager.create_version(model_v2, "v2.0")
+        
+        # 比较版本
+        comparison = version_manager.compare_versions(v1_id, v2_id)
+        
+        assert comparison is not None
+        assert 'data_difference' in comparison
+        assert 'metadata_difference' in comparison
+    
+    def test_version_rollback(self, version_manager, sample_data_model):
+        """测试版本回滚"""
+        # 创建初始版本
+        v1_id = version_manager.create_version(sample_data_model, "v1.0")
+        
+        # 创建新版本
+        updated_model = DataModel(
+            sample_data_model.data,
+            '1d',
+            {'version': 'v2.0', 'updated': True}
+        )
+        v2_id = version_manager.create_version(updated_model, "v2.0")
+        
+        # 回滚到v1
+        rollback_model = version_manager.rollback_to_version(v1_id)
+        
+        assert rollback_model is not None
+        assert rollback_model.get_metadata()['version'] == 'v1.0'
+    
+    def test_version_export_import(self, version_manager, sample_data_model, tmp_path):
+        """测试版本导出导入"""
+        version_id = version_manager.create_version(sample_data_model, "test_v1.0")
+        
+        # 导出版本
+        export_path = tmp_path / "exported_version.zip"
+        success = version_manager.export_version(version_id, export_path)
+        
+        assert success is True
+        assert export_path.exists()
+        
+        # 导入版本
+        imported_id = version_manager.import_version(export_path)
+        
+        assert imported_id is not None
+        assert imported_id != version_id  # 应该生成新的ID
+        
+        # 验证导入的数据
+        imported_model = version_manager.load_version(imported_id)
+        assert imported_model.get_metadata()['symbol'] == '000001.SZ'
+    
+    def test_version_metadata_update(self, version_manager, sample_data_model):
+        """测试版本元数据更新"""
+        version_id = version_manager.create_version(sample_data_model, "test_v1.0")
+        
+        # 更新元数据
+        new_metadata = {
+            'description': '更新的描述',
+            'tags': ['test', 'updated'],
+            'author': 'test_user'
+        }
+        
+        success = version_manager.update_version_metadata(version_id, new_metadata)
+        assert success is True
+        
+        # 验证更新
+        info = version_manager.get_version_info(version_id)
+        assert info['description'] == '更新的描述'
+        assert 'test' in info.get('tags', [])
+    
+    def test_version_validation(self, version_manager):
+        """测试版本验证"""
+        # 测试无效版本ID
+        with pytest.raises(ValueError):
+            version_manager.load_version("invalid_id")
+        
+        # 测试无效版本目录
+        with pytest.raises(ValueError):
+            DataVersionManager(None)
+    
+    def test_version_cleanup(self, version_manager, sample_data_model):
+        """测试版本清理"""
+        # 创建多个版本
+        for i in range(5):
+            version_manager.create_version(sample_data_model, f"v{i}.0")
+        
+        # 清理旧版本（保留最新的2个）
+        cleaned_count = version_manager.cleanup_old_versions(keep_count=2)
+        
+        assert cleaned_count >= 3  # 应该清理至少3个版本
+        
+        # 验证剩余版本数量
+        remaining_versions = version_manager.list_versions()
+        assert len(remaining_versions) <= 2

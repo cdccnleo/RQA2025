@@ -74,6 +74,25 @@ class TradingErrorHandler(ErrorHandler):
         if not hasattr(self, 'order_errors_count'):
             self.order_errors_count = 0
         self.order_errors_count += 1
+        # 维护error_history，支持最大长度
+        if not hasattr(self, 'error_history'):
+            self.error_history = []
+        import threading
+        import datetime
+        context = (error_data.get('context') if error_data and isinstance(error_data, dict) else {})
+        record = {
+            'type': getattr(error_type, 'name', str(error_type)),
+            'timestamp': datetime.datetime.now().isoformat(),
+            'thread': str(threading.get_ident()),
+            'context': context
+        }
+        self.error_history.append(record)
+        if len(self.error_history) > self.max_history_size:
+            self.error_history = self.error_history[-self.max_history_size:]
+        # 按需抛出异常并保留上下文
+        if self.raise_unknown and hasattr(TradingError, 'INSUFFICIENT_FUNDS') and error_type == TradingError.INSUFFICIENT_FUNDS:
+            msg = f"{error_type}: {(error_data.get('message') if error_data and isinstance(error_data, dict) else '')} | context: {context}"
+            raise TradingError(msg)
         return {"order_error_handled": True}
 
     def handle_risk_error(self, error_data):
@@ -143,28 +162,31 @@ class TradingErrorHandler(ErrorHandler):
     def get_trading_error_stats(self) -> Dict:
         """
         获取交易错误统计
-
         Returns:
             Dict: 错误统计信息
         """
         stats = {
             'total_errors': len(self.error_history),
             'by_type': {},
-            'last_hour': 0
+            'last_hour': 0,
+            'thread_stats': {}
         }
-
         # 按类型统计错误数量
         for error in self.error_history:
             error_type = error['type']
             if error_type not in stats['by_type']:
                 stats['by_type'][error_type] = 0
             stats['by_type'][error_type] += 1
-
+            # 统计线程
+            thread_id = error.get('thread')
+            if thread_id not in stats['thread_stats']:
+                stats['thread_stats'][thread_id] = 0
+            stats['thread_stats'][thread_id] += 1
         # 计算最近一小时错误数
+        from datetime import datetime
         one_hour_ago = datetime.now().timestamp() - 3600
         stats['last_hour'] = sum(
             1 for e in self.error_history
             if datetime.fromisoformat(e['timestamp']).timestamp() > one_hour_ago
         )
-
         return stats

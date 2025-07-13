@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
 try:
-    from infrastructure.service_launcher import *
+    from src.infrastructure.service_launcher import *
 except ImportError as e:
     pytest.skip(f"无法导入 service_launcher 模块: {e}", allow_module_level=True)
 

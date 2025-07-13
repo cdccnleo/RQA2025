@@ -385,10 +385,15 @@ class TestThreadSafeTTLCache:
         cache = ThreadSafeTTLCache(maxsize=10)
         items = {f"k{i}": i for i in range(5)}
         cache.bulk_set(items)
-        result = cache.bulk_get(["k0", "k1", "k2", "k3", "k4", "not_exist"])
+        
+        # 测试所有key都存在的情况
+        result = cache.bulk_get(["k0", "k1", "k2", "k3", "k4"])
         assert result["k0"] == 0
         assert result["k4"] == 4
-        assert "not_exist" not in result
+        
+        # 测试部分key不存在的情况，应该抛出KeyError
+        with pytest.raises(KeyError, match="Keys not found"):
+            cache.bulk_get(["k0", "k1", "k2", "k3", "k4", "not_exist"])
 
     def test_bulk_delete(self):
         """

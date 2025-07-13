@@ -1,12 +1,17 @@
 """
 数据验证器
 """
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Callable
 import logging
 import pandas as pd
+import numpy as np
 from datetime import datetime, timedelta
 
 from .interfaces import IDataModel
+# 避免循环导入，使用类型注解
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .data_manager import DataModel
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +21,37 @@ class ValidationError(Exception):
     pass
 
 
+class ValidationResult:
+    """验证结果"""
+    def __init__(self, is_valid: bool, errors: List[str] = None, warnings: List[str] = None):
+        self.is_valid = is_valid
+        self.errors = errors or []
+        self.warnings = warnings or []
+
+
+class QualityReport:
+    """质量报告"""
+    def __init__(self, score: float, issues: List[str] = None, metrics: Dict[str, Any] = None):
+        self.score = score
+        self.issues = issues or []
+        self.metrics = metrics or {}
+
+
+class OutlierReport:
+    """异常值报告"""
+    def __init__(self, outlier_count: int, outlier_indices: List[int] = None, threshold: float = None):
+        self.outlier_count = outlier_count
+        self.outlier_indices = outlier_indices or []
+        self.threshold = threshold
+
+
+class ConsistencyReport:
+    """一致性报告"""
+    def __init__(self, is_consistent: bool, inconsistencies: List[str] = None):
+        self.is_consistent = is_consistent
+        self.inconsistencies = inconsistencies or []
+
+
 class DataValidator:
     """
     数据验证器，负责验证数据模型的有效性
@@ -23,272 +59,278 @@ class DataValidator:
     def __init__(self):
         """初始化数据验证器"""
         self._schema_registry: Dict[str, Dict[str, Any]] = {}
+        self._custom_rules: List[Callable] = []
         logger.info("DataValidator initialized")
 
-    def register_schema(self, model_type: str, schema: Dict[str, Any]) -> None:
+    def validate_data(self, data: pd.DataFrame) -> ValidationResult:
         """
-        注册数据模式
+        验证数据的基本有效性
 
         Args:
-            model_type: 数据模型类型
-            schema: 数据模式定义
-        """
-        self._schema_registry[model_type] = schema
-        logger.info(f"Registered schema for model type: {model_type}")
-
-    def validate_schema(self, data: IDataModel) -> bool:
-        """
-        验证数据模式
-
-        Args:
-            data: 数据模型实例
+            data: 要验证的数据框
 
         Returns:
-            bool: 数据模式是否有效
-
-        Raises:
-            ValidationError: 验证失败时抛出
+            ValidationResult: 验证结果
         """
-        model_type = data.__class__.__name__
-        if model_type not in self._schema_registry:
-            raise ValidationError(f"No schema registered for model type: {model_type}")
+        errors = []
+        warnings = []
 
-        schema = self._schema_registry[model_type]
+        if data is None:
+            errors.append("数据为空")
+            return ValidationResult(False, errors, warnings)
 
-        # 获取数据模型的元数据
-        metadata = data.get_metadata()
+        if not isinstance(data, pd.DataFrame):
+            errors.append("数据不是DataFrame类型")
+            return ValidationResult(False, errors, warnings)
 
-        # 验证必需字段
-        required_fields = schema.get('required_fields', [])
-        for field in required_fields:
-            if field not in metadata:
-                raise ValidationError(f"Missing required field: {field}")
+        if data.empty:
+            warnings.append("数据框为空")
 
-        # 验证字段类型
-        field_types = schema.get('field_types', {})
-        for field, expected_type in field_types.items():
-            if field in metadata:
-                actual_value = metadata[field]
-                if not isinstance(actual_value, expected_type):
-                    raise ValidationError(
-                        f"Invalid type for field {field}: "
-                        f"expected {expected_type}, got {type(actual_value)}"
-                    )
+        # 检查是否有重复行
+        if data.duplicated().any():
+            warnings.append("数据包含重复行")
 
-        return True
+        # 检查是否有空值
+        null_counts = data.isnull().sum()
+        if null_counts.any():
+            for col, count in null_counts[null_counts > 0].items():
+                warnings.append(f"列 '{col}' 包含 {count} 个空值")
 
-    def validate_frequency(self, data: IDataModel, expected_freq: str) -> bool:
-        """
-        验证数据频率
+        return ValidationResult(len(errors) == 0, errors, warnings)
 
-        Args:
-            data: 数据模型实例
-            expected_freq: 期望的数据频率
-
-        Returns:
-            bool: 数据频率是否符合预期
-
-        Raises:
-            ValidationError: 验证失败时抛出
-        """
-        actual_freq = data.get_frequency()
-        if actual_freq != expected_freq:
-            raise ValidationError(
-                f"Frequency mismatch: expected {expected_freq}, got {actual_freq}"
-            )
-        return True
-
-    def validate_time_series(
-        self,
-        df: pd.DataFrame,
-        date_column: str,
-        freq: str,
-        allow_gaps: bool = False
-    ) -> bool:
-        """
-        验证时间序列数据的连续性
-
-        Args:
-            df: 数据框
-            date_column: 日期列名
-            freq: 期望的频率
-            allow_gaps: 是否允许时间间隔
-
-        Returns:
-            bool: 时间序列是否有效
-
-        Raises:
-            ValidationError: 验证失败时抛出
-        """
-        if df.empty:
-            raise ValidationError("Empty DataFrame")
-
-        # 确保日期列存在
-        if date_column not in df.columns:
-            raise ValidationError(f"Date column '{date_column}' not found")
-
-        # 转换日期列为datetime类型
-        try:
-            dates = pd.to_datetime(df[date_column])
-        except Exception as e:
-            raise ValidationError(f"Failed to parse dates: {e}")
-
-        # 检查日期排序
-        if not dates.is_monotonic_increasing:
-            raise ValidationError("Dates are not in ascending order")
-
-        if not allow_gaps:
-            # 创建期望的日期范围
-            date_range = pd.date_range(
-                start=dates.min(),
-                end=dates.max(),
-                freq=freq
-            )
-
-            # 检查是否有缺失的日期
-            missing_dates = date_range.difference(dates)
-            if not missing_dates.empty:
-                raise ValidationError(
-                    f"Missing dates in time series: {missing_dates.tolist()}"
-                )
-
-        return True
-
-    def validate_data_quality(
-        self,
-        df: pd.DataFrame,
-        rules: Dict[str, Any]
-    ) -> List[str]:
+    def validate_quality(self, data: pd.DataFrame) -> QualityReport:
         """
         验证数据质量
 
         Args:
-            df: 数据框
-            rules: 数据质量规则
+            data: 要验证的数据框
 
         Returns:
-            List[str]: 数据质量问题列表
+            QualityReport: 质量报告
         """
         issues = []
+        metrics = {}
 
-        # 检查空值
-        if rules.get('check_nulls', True):
-            null_counts = df.isnull().sum()
-            columns_with_nulls = null_counts[null_counts > 0]
-            if not columns_with_nulls.empty:
-                for col, count in columns_with_nulls.items():
-                    issues.append(f"Column '{col}' has {count} null values")
+        if data is None or data.empty:
+            return QualityReport(0.0, ["数据为空"], metrics)
 
-        # 检查重复行
-        if rules.get('check_duplicates', True):
-            duplicate_count = df.duplicated().sum()
-            if duplicate_count > 0:
-                issues.append(f"Found {duplicate_count} duplicate rows")
+        # 计算质量指标
+        total_rows = len(data)
+        total_cells = total_rows * len(data.columns)
 
-        # 检查数值范围
-        value_ranges = rules.get('value_ranges', {})
-        for column, range_spec in value_ranges.items():
-            if column in df.columns:
-                min_val = range_spec.get('min')
-                max_val = range_spec.get('max')
+        # 空值率
+        null_count = data.isnull().sum().sum()
+        null_rate = null_count / total_cells if total_cells > 0 else 0
+        metrics['null_rate'] = null_rate
 
-                if min_val is not None:
-                    below_min = df[df[column] < min_val].shape[0]
-                    if below_min > 0:
-                        issues.append(
-                            f"Column '{column}' has {below_min} values below {min_val}"
-                        )
+        # 重复行率
+        duplicate_count = data.duplicated().sum()
+        duplicate_rate = duplicate_count / total_rows if total_rows > 0 else 0
+        metrics['duplicate_rate'] = duplicate_rate
 
-                if max_val is not None:
-                    above_max = df[df[column] > max_val].shape[0]
-                    if above_max > 0:
-                        issues.append(
-                            f"Column '{column}' has {above_max} values above {max_val}"
-                        )
+        # 数据完整性评分
+        completeness_score = 1 - null_rate
+        uniqueness_score = 1 - duplicate_rate
+        quality_score = (completeness_score + uniqueness_score) / 2
 
-        return issues
+        # 记录问题
+        if null_rate > 0.1:
+            issues.append(f"空值率过高: {null_rate:.2%}")
+        if duplicate_rate > 0.05:
+            issues.append(f"重复行率过高: {duplicate_rate:.2%}")
 
-    def validate_completeness(
-        self,
-        data: IDataModel,
-        required_fields: List[str]
-    ) -> bool:
+        return QualityReport(quality_score, issues, metrics)
+
+    def validate_data_model(self, model: 'DataModel') -> ValidationResult:
         """
-        验证数据完整性
+        验证数据模型
 
         Args:
-            data: 数据模型实例
-            required_fields: 必需字段列表
+            model: 数据模型实例
 
         Returns:
-            bool: 数据是否完整
-
-        Raises:
-            ValidationError: 验证失败时抛出
+            ValidationResult: 验证结果
         """
-        metadata = data.get_metadata()
+        errors = []
+        warnings = []
 
-        # 检查必需字段
-        missing_fields = [
-            field for field in required_fields
-            if field not in metadata
-        ]
+        if model is None:
+            errors.append("数据模型为空")
+            return ValidationResult(False, errors, warnings)
 
-        if missing_fields:
-            raise ValidationError(
-                f"Missing required fields: {', '.join(missing_fields)}"
-            )
+        # 验证数据模型的基本属性
+        if not hasattr(model, 'data'):
+            errors.append("数据模型缺少data属性")
+        elif model.data is None or model.data.empty:
+            warnings.append("数据模型的数据为空")
+
+        if not hasattr(model, 'frequency'):
+            errors.append("数据模型缺少frequency属性")
+
+        return ValidationResult(len(errors) == 0, errors, warnings)
+
+    def validate_date_range(self, data: pd.DataFrame, date_col: str, start_date: str, end_date: str) -> bool:
+        """
+        验证日期范围
+
+        Args:
+            data: 数据框
+            date_col: 日期列名
+            start_date: 开始日期
+            end_date: 结束日期
+
+        Returns:
+            bool: 日期范围是否有效
+        """
+        if date_col not in data.columns:
+            raise ValidationError(f"日期列 '{date_col}' 不存在")
+
+        try:
+            dates = pd.to_datetime(data[date_col])
+            start_dt = pd.to_datetime(start_date)
+            end_dt = pd.to_datetime(end_date)
+
+            # 检查日期范围
+            if dates.min() < start_dt or dates.max() > end_dt:
+                return False
+
+            return True
+        except Exception as e:
+            raise ValidationError(f"日期验证失败: {e}")
+
+    def validate_numeric_columns(self, data: pd.DataFrame, columns: List[str]) -> bool:
+        """
+        验证数值列
+
+        Args:
+            data: 数据框
+            columns: 数值列名列表
+
+        Returns:
+            bool: 数值列是否有效
+        """
+        for col in columns:
+            if col not in data.columns:
+                raise ValidationError(f"列 '{col}' 不存在")
+
+            # 检查是否为数值类型
+            if not pd.api.types.is_numeric_dtype(data[col]):
+                raise ValidationError(f"列 '{col}' 不是数值类型")
+
+            # 检查是否有无穷值
+            if np.isinf(data[col]).any():
+                raise ValidationError(f"列 '{col}' 包含无穷值")
 
         return True
 
-    def validate_ohlc_logic(self, df: pd.DataFrame) -> bool:
+    def validate_no_missing_values(self, data: pd.DataFrame) -> bool:
         """
-        验证OHLC数据逻辑一致性
+        验证没有缺失值
 
         Args:
-            df: 包含OHLC数据的数据框
+            data: 数据框
 
         Returns:
-            bool: 数据是否逻辑一致
-
-        Raises:
-            ValidationError: 验证失败时抛出
+            bool: 是否没有缺失值
         """
-        if {'open', 'high', 'low', 'close'}.issubset(df.columns):
-            # 最高价必须大于等于开盘价和收盘价中的较大者
-            high_valid = df['high'] >= df[['open', 'close']].max(axis=1)
+        return not data.isnull().any().any()
 
-            # 最低价必须小于等于开盘价和收盘价中的较小者
-            low_valid = df['low'] <= df[['open', 'close']].min(axis=1)
-
-            # 检查是否存在逻辑错误
-            valid = high_valid & low_valid
-
-            if not valid.all():
-                error_count = (~valid).sum()
-                raise ValidationError(f"OHLC数据逻辑错误的行数: {error_count}")
-
-        return True
-
-    def validate_volume(self, df: pd.DataFrame) -> bool:
+    def validate_no_duplicates(self, data: pd.DataFrame) -> bool:
         """
-        验证成交量数据
+        验证没有重复值
 
         Args:
-            df: 包含成交量数据的数据框
+            data: 数据框
 
         Returns:
-            bool: 成交量数据是否有效
-
-        Raises:
-            ValidationError: 验证失败时抛出
+            bool: 是否没有重复值
         """
-        if 'volume' not in df.columns:
-            raise ValidationError("数据缺少必要的'volume'列")
+        return not data.duplicated().any()
 
-        # 检查成交量是否包含负值
-        negative_volume = df['volume'] < 0
-        if negative_volume.any():
-            raise ValidationError(f"发现负成交量的行数: {negative_volume.sum()}")
+    def validate_outliers(self, data: pd.DataFrame, column: str, method: str = 'iqr') -> OutlierReport:
+        """
+        验证异常值
 
-        return True
+        Args:
+            data: 数据框
+            column: 列名
+            method: 异常值检测方法 ('iqr' 或 'zscore')
+
+        Returns:
+            OutlierReport: 异常值报告
+        """
+        if column not in data.columns:
+            raise ValidationError(f"列 '{column}' 不存在")
+
+        if not pd.api.types.is_numeric_dtype(data[column]):
+            raise ValidationError(f"列 '{column}' 不是数值类型")
+
+        values = data[column].dropna()
+
+        if method == 'iqr':
+            Q1 = values.quantile(0.25)
+            Q3 = values.quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            outliers = values[(values < lower_bound) | (values > upper_bound)]
+        elif method == 'zscore':
+            z_scores = np.abs((values - values.mean()) / values.std())
+            outliers = values[z_scores > 3]
+        else:
+            raise ValidationError(f"不支持的异常值检测方法: {method}")
+
+        outlier_indices = data[data[column].isin(outliers)].index.tolist()
+
+        return OutlierReport(
+            outlier_count=len(outliers),
+            outlier_indices=outlier_indices,
+            threshold=upper_bound if method == 'iqr' else 3
+        )
+
+    def validate_data_consistency(self, data: pd.DataFrame) -> ConsistencyReport:
+        """
+        验证数据一致性
+
+        Args:
+            data: 数据框
+
+        Returns:
+            ConsistencyReport: 一致性报告
+        """
+        inconsistencies = []
+
+        # 检查OHLC逻辑一致性
+        if all(col in data.columns for col in ['open', 'high', 'low', 'close']):
+            # 检查 high >= low
+            invalid_high_low = data[data['high'] < data['low']]
+            if not invalid_high_low.empty:
+                inconsistencies.append(f"发现 {len(invalid_high_low)} 行 high < low")
+
+            # 检查 high >= open, close
+            invalid_high = data[(data['high'] < data['open']) | (data['high'] < data['close'])]
+            if not invalid_high.empty:
+                inconsistencies.append(f"发现 {len(invalid_high)} 行 high 不是最高价")
+
+            # 检查 low <= open, close
+            invalid_low = data[(data['low'] > data['open']) | (data['low'] > data['close'])]
+            if not invalid_low.empty:
+                inconsistencies.append(f"发现 {len(invalid_low)} 行 low 不是最低价")
+
+        # 检查数值列的非负性
+        numeric_cols = data.select_dtypes(include=[np.number]).columns
+        for col in numeric_cols:
+            if col in ['volume', 'amount'] and (data[col] < 0).any():
+                inconsistencies.append(f"列 '{col}' 包含负值")
+
+        return ConsistencyReport(len(inconsistencies) == 0, inconsistencies)
+
+    def add_custom_rule(self, rule: Callable) -> None:
+        """
+        添加自定义验证规则
+
+        Args:
+            rule: 自定义验证函数
+        """
+        self._custom_rules.append(rule)
+        logger.info("添加自定义验证规则")

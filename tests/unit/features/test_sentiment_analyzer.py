@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import pandas as pd
 from pathlib import Path
-from src.features.processors.sentiment import SentimentAnalyzer
+from src.features.sentiment.analyzer import SentimentAnalyzer
 import logging
 import torch
 
@@ -169,7 +169,7 @@ def test_load_bert_model_invalid_model_path(tmp_path):
         f.write("[Paths]\nbert_model = /invalid/model/path")
 
     # 模拟从配置文件加载
-    with patch('src.features.processors.sentiment.Path') as mock_path:
+    with patch('src.features.sentiment.analyzer.Path') as mock_path:
         mock_path.return_value = tmp_path
         processor = SentimentAnalyzer()
         assert processor.bert_model is None, "BERT模型不应加载"
@@ -342,7 +342,7 @@ def test_sentiment_feature_generation(mock_news_data, tmp_bert_model_path):
     # Mock模型和分词器的加载，确保bert_model和bert_tokenizer不为None
     with patch('transformers.AutoModelForSequenceClassification.from_pretrained') as mock_model, \
             patch('transformers.DistilBertTokenizer.from_pretrained') as mock_tokenizer, \
-            patch('src.features.processors.sentiment.SentimentAnalyzer._load_config') as mock_load_config:
+            patch('src.features.sentiment.analyzer.SentimentAnalyzer._load_config') as mock_load_config:
         # 强制设置bert_model_path，跳过配置文件读取
         # 强制设置路径并加载模型
         mock_load_config.side_effect = lambda: (

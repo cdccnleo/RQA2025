@@ -10,6 +10,7 @@ import os
 import sys
 from datetime import datetime, timedelta
 from typing import List, Dict
+from unittest.mock import Mock
 
 # 添加项目根目录到Python路径
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
@@ -17,7 +18,6 @@ sys.path.insert(0, project_root)
 
 from src.infrastructure.compliance import IReportGenerator
 from src.infrastructure.compliance.regulatory_reporter import RegulatoryReporter
-from src.infrastructure.notification import MockNotificationService
 
 class MockReportGenerator(IReportGenerator):
     """测试用mock报告生成器"""
@@ -60,7 +60,9 @@ class TestRegulatoryReporter(unittest.TestCase):
     def setUp(self):
         """测试初始化"""
         self.mock_generator = MockReportGenerator()
-        self.mock_notification = MockNotificationService()
+        # 使用Mock对象而不是函数
+        self.mock_notification = Mock()
+        self.mock_notification.send = Mock()
         self.reporter = RegulatoryReporter(
             report_generator=self.mock_generator,
             notification_service=self.mock_notification

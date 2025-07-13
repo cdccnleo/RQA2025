@@ -10,7 +10,8 @@ class SecurityFilter(logging.Filter):
         'credit_card': r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b',
         'account_id': r'\bacc(_?id)?[:=][\'\"]?(\w+)[\'\"]?\b',
         'order_amount': r'\bamount[:=][\'\"]?(\d+\.?\d*)[\'\"]?\b',
-        'api_key': r'\b(?:api|access)_?key[:=][\'\"]?(\w+)[\'\"]?\b'
+        'api_key': r'\b(?:api|access)_?key[:=][\'\"]?(\w+)[\'\"]?\b',
+        'password': r'\bpassword[:=][\'\"]?(\w+)[\'\"]?\b'
     }
 
     def __init__(self, custom_patterns: Dict[str, str] = None):
@@ -51,11 +52,31 @@ class SecurityFilter(logging.Filter):
             return text
 
         for name, pattern in self.compiled.items():
-            if name in ['account_id', 'order_amount']:
+            if name == 'account_id':
                 # 保留部分信息用于调试
-                text = pattern.sub(r'\1=[REDACTED]', text)
+                text = pattern.sub(r'Account ID: [REDACTED]', text)
+            elif name == 'order_amount':
+                text = pattern.sub(r'amount=[REDACTED]', text)
+            elif name == 'password':
+                text = pattern.sub(r'password=****', text)
+            elif name == 'credit_card':
+                text = pattern.sub(r'[REDACTED]', text)
             else:
                 text = pattern.sub('[REDACTED]', text)
+        return text
+
+    def sanitize_account_id(self, text: str) -> str:
+        """专门处理账户ID"""
+        pattern = self.compiled.get('account_id')
+        if pattern:
+            return pattern.sub(r'Account ID: [REDACTED]', text)
+        return text
+
+    def sanitize_order_amount(self, text: str) -> str:
+        """专门处理订单金额"""
+        pattern = self.compiled.get('order_amount')
+        if pattern:
+            return pattern.sub(r'amount=[REDACTED]', text)
         return text
 
 class AuditLogger:

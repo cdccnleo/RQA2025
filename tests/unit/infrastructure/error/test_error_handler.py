@@ -72,25 +72,22 @@ class TestErrorHandler:
         # 验证mock_logger.log被调用两次（主异常+处理器异常）
         assert mock_logger.log.call_count == 2
 
-        # 获取调用参数
-        args, kwargs = mock_logger.log.call_args
-
-        # 验证日志级别
-        assert args[0] == logging.ERROR
-        # 验证日志消息包含"Error handler failed"
-        assert "Error handler failed" in args[1]
+        # 遍历所有日志调用，分别断言内容
+        log_msgs = [args[1] for args, kwargs in mock_logger.log.call_args_list]
+        assert any("Error handler failed" in msg for msg in log_msgs)
+        assert any("Error occurred" in msg for msg in log_msgs)
 
         # 验证extra参数中的error_context字典
-        error_context = kwargs['extra']['error_context']
-        # 检查我们更新的上下文（加上ctx_前缀）
-        assert error_context['ctx_app'] == 'test_app'
-        assert error_context['ctx_module'] == 'test_module'
-        assert error_context['ctx_request_id'] == '12345'
-        # 检查额外的日志数据（也加上ctx_前缀）
-        assert error_context['ctx_detail'] == 'test_detail'
-
-        # 验证exc_info为True
-        assert kwargs['exc_info'] is True
+        for args, kwargs in mock_logger.log.call_args_list:
+            error_context = kwargs['extra']['error_context']
+            # 检查我们更新的上下文（加上ctx_前缀）
+            assert error_context['ctx_app'] == 'test_app'
+            assert error_context['ctx_module'] == 'test_module'
+            assert error_context['ctx_request_id'] == '12345'
+            # 检查额外的日志数据（也加上ctx_前缀）
+            assert error_context['ctx_detail'] == 'test_detail'
+            # 验证exc_info为True
+            assert kwargs['exc_info'] is True
 
     def test_retry_mechanism(self, error_handler):
         """测试自动重试机制"""

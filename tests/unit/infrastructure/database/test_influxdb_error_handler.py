@@ -28,6 +28,7 @@ class TestInfluxdbErrorHandler:
 
         # Create a mock function that fails twice then succeeds
         mock_func = MagicMock()
+        mock_func.__name__ = "test_function"  # 添加__name__属性
         mock_func.side_effect = [Exception("First failure"),
                                  Exception("Second failure"),
                                  "Success"]
@@ -67,6 +68,7 @@ class TestInfluxdbErrorHandler:
 
         # Mock a function that will fail
         failing_func = MagicMock(side_effect=Exception("Simulated failure"))
+        failing_func.__name__ = "test_function"  # 添加__name__属性
 
         # Set recovery timeout (assuming this is a configurable parameter)
         recovery_timeout = 5  # seconds
@@ -106,6 +108,7 @@ class TestInfluxdbErrorHandler:
 
         # Mock a function that always fails
         failing_func = MagicMock(side_effect=Exception("Simulated failure"))
+        failing_func.__name__ = "test_function"  # 添加__name__属性
 
         # Wrap the function with circuit breaker
         protected_func = handler.circuit_breaker(failing_func)
@@ -135,6 +138,7 @@ class TestInfluxdbErrorHandler:
 
         # Mock a function that always succeeds
         successful_func = MagicMock(return_value="success")
+        successful_func.__name__ = "test_function"  # 添加__name__属性
 
         # Wrap the function with the circuit breaker
         wrapped_func = handler.circuit_breaker(successful_func)
@@ -149,7 +153,7 @@ class TestInfluxdbErrorHandler:
 
         # Verify circuit remains closed (assuming there's a way to check this)
         # This might need adjustment based on actual implementation
-        assert handler.circuit_state == "closed"  # or similar propertyimport pytest
+        assert handler.circuit_state == "closed"  # or similar property
 
     @patch('infrastructure.database.influxdb_error_handler.logger')
     def test_fallback_decorator_with_failed_operation(self, mock_logger):
@@ -195,6 +199,7 @@ class TestInfluxdbErrorHandler:
 
         # Create a mock function that will succeed
         mock_func = MagicMock()
+        mock_func.__name__ = "test_function"  # 添加__name__属性
         mock_func.return_value = "success_result"
 
         # Apply the decorator
@@ -250,6 +255,7 @@ class TestInfluxdbErrorHandler:
 
         # Create a mock function that raises ConnectionError
         mock_func = MagicMock()
+        mock_func.__name__ = "test_function"  # 添加__name__属性
         mock_func.side_effect = ConnectionError("Test connection error")
 
         # Apply the retry decorator
@@ -278,6 +284,7 @@ class TestInfluxdbErrorHandler:
 
         # Create a mock function that fails twice then succeeds
         mock_func = MagicMock()
+        mock_func.__name__ = "test_function"  # 添加__name__属性
         mock_func.side_effect = [Exception("First failure"),
                                  Exception("Second failure"),
                                  "Success"]
@@ -321,6 +328,7 @@ class TestInfluxdbErrorHandler:
 
         # Create a mock function that succeeds on first attempt
         mock_function = MagicMock()
+        mock_function.__name__ = "test_function"  # 添加__name__属性
         mock_function.return_value = "success"
 
         # Apply the retry decorator to our mock function

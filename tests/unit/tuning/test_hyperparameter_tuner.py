@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import pandas as pd
 from unittest.mock import MagicMock, patch
-from src.tuning.hyperparameter_tuner import (
+from src.tuning.core import (
     OptunaTuner,
     MultiObjectiveTuner,
     TuningResult,
@@ -100,7 +100,7 @@ def test_early_stopping():
 
 def test_tuning_visualization():
     """测试调参可视化"""
-    from src.tuning.hyperparameter_tuner import TuningVisualizer
+    from src.tuning.core import TuningVisualizer
 
     # 测试优化历史图
     trials = pd.DataFrame({

@@ -12,6 +12,7 @@ from src.infrastructure.utils.logger import get_logger
 from pathlib import Path
 import time
 from src.infrastructure.utils.exceptions import DataLoaderError
+from src.data.base_loader import BaseDataLoader
 
 logger = get_logger(__name__)  # 自动继承全局配置
 
@@ -596,6 +597,10 @@ class FinancialDataLoader(BaseDataLoader):
         if not isinstance(data, pd.DataFrame):
             return False
         return not data.empty and all(col in data.columns for col in self.REQUIRED_COLUMNS)
+
+    def get_required_config_fields(self) -> list:
+        """获取必需的配置字段列表"""
+        return ['save_path', 'max_retries', 'cache_days']
 
     def _save_data(self, df: pd.DataFrame, file_path: Path) -> bool:
         try:

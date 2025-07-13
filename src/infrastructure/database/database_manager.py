@@ -2,7 +2,7 @@
 import json
 import threading
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 from .influxdb_adapter import InfluxDBAdapter
 from .influxdb_manager import InfluxDBManager
 from .sqlite_adapter import SQLiteAdapter
@@ -95,3 +95,30 @@ class DatabaseManager:
     def health_check(cls):
         """返回连接池健康状态"""
         return cls._get_instance()._pool.health_check()
+
+    def get_connection(self):
+        """获取数据库连接"""
+        return self._pool.get_connection()
+
+    def release_connection(self, connection):
+        """释放数据库连接"""
+        self._pool.release_connection(connection)
+
+    def execute_query(self, query: str, params: Dict = None):
+        """执行查询"""
+        if self._adapter:
+            return self._adapter.execute_query(query, params)
+        return None
+
+    def close(self):
+        """关闭数据库管理器"""
+        if hasattr(self, '_pool'):
+            self._pool.close()
+
+    def get_status(self) -> Dict[str, Any]:
+        """获取数据库状态"""
+        return {
+            'pool_size': getattr(self._pool, 'size', 0),
+            'active_connections': getattr(self._pool, 'active_connections', 0),
+            'adapter_type': type(self._adapter).__name__ if self._adapter else None
+        }

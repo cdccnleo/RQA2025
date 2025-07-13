@@ -194,31 +194,32 @@ class ApplicationMonitor:
         if len(self._metrics['functions']) > 10000:
             self._metrics['functions'] = self._metrics['functions'][-10000:]
 
-    def record_error(self, source: str, message: str, stack_trace: Optional[str] = None, context: Optional[Dict[str, Any]] = None) -> None:
+    def record_error(self, source: str, message: str, stack_trace: Optional[str] = None, context: Optional[Dict[str, Any]] = None, error: Optional[Exception] = None) -> None:
         """
         记录错误
         
         Args:
             source: 错误来源
             message: 错误消息
-            stack_trace: 堆栈跟踪
-            context: 错误上下文
+            stack_trace: 堆栈跟踪(可选)
+            context: 上下文信息(可选)
+            error: 异常对象(可选)
         """
-        error_type = type(Exception).__name__
-        error_message = message
-        
-        # 更新错误计数器（如果存在）
-        if self._error_counter:
-            self._error_counter.labels(type=error_type).inc()
-        
-        # 记录错误详情
-        error_data = {
-            'type': error_type,
-            'message': error_message,
-            'timestamp': datetime.now().isoformat(),
+        timestamp = datetime.now().isoformat()
+        error_record = {
+            'timestamp': timestamp,
+            'source': source,
+            'message': message,
+            'stack_trace': stack_trace,
             'context': context or {}
         }
-        self._metrics['errors'].append(error_data)
+        
+        # 如果有异常对象，提取额外信息
+        if error:
+            error_record['error_type'] = type(error).__name__
+            error_record['error_message'] = str(error)
+        
+        self._metrics['errors'].append(error_record)
 
         # 写入InfluxDB
         if self.influx_client and self.influx_bucket:
@@ -230,13 +231,14 @@ class ApplicationMonitor:
                     "measurement": "error_metrics",
                     "tags": {
                         "app": self.app_name,
-                        "error_type": error_type
+                        "source": source,
+                        "error_type": error_record.get('error_type', 'Unknown')
                     },
                     "fields": {
-                        "message": error_message,
-                        "count": 1
+                        "message": message,
+                        "has_stack_trace": bool(stack_trace)
                     },
-                    "time": datetime.now().isoformat()
+                    "time": timestamp
                 }
                 write_api.write(bucket=self.influx_bucket, record=point)
             except Exception as e:
@@ -245,6 +247,17 @@ class ApplicationMonitor:
         # 限制数据量
         if len(self._metrics['errors']) > 10000:
             self._metrics['errors'] = self._metrics['errors'][-10000:]
+
+        # 触发告警
+        self._trigger_alert(
+            'error',
+            {
+                'level': 'error',
+                'message': f"Error in {source}: {message}",
+                'source': source,
+                'timestamp': timestamp
+            }
+        )
 
     def record_metric(
         self,

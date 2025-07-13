@@ -1,5 +1,6 @@
 """InfluxDB异常处理策略"""
 import time
+import logging
 from typing import Callable, Optional, TypeVar, Any
 from functools import wraps
 from influxdb_client.rest import ApiException
@@ -17,6 +18,10 @@ class InfluxDBErrorHandler:
             'delay': 1,
             'backoff': 2
         }
+        self._circuit_open = False
+        self._failures = 0
+        self._last_failure = 0
+        self.logger = logging.getLogger(__name__)
 
     def configure_retry(self, max_attempts: int = 3,
                        delay: float = 1, backoff: float = 2):
@@ -37,22 +42,26 @@ class InfluxDBErrorHandler:
         # 触发连接恢复流程
         self._recover_connection()
 
-    def handle_write_error(self, operation: str, exception: Exception):
+    def handle_write_error(self, exception: Exception) -> None:
         """处理写入错误"""
-        if isinstance(exception, ApiException) and exception.status == 429:
-            # 限流错误，增加延迟后重试
-            level = ErrorLevel.WARNING
-            action = "等待后重试"
-            retry_delay = 5  # 限流时固定等待5秒
+        if hasattr(exception, 'status') and exception.status == 429:
+            # 速率限制错误
+            self.log_error(
+                "写入操作",
+                exception,
+                "WARNING",
+                "等待后重试"
+            )
         else:
-            level = ErrorLevel.ERROR
-            action = "写入失败"
-
-        self.error_handler.log(
-            f"InfluxDB写入错误 - 操作: {operation} - 处理: {action}",
-            exception,
-            level
-        )
+            # 其他写入错误
+            self.log_error(
+                "写入操作",
+                exception,
+                "ERROR",
+                "写入失败"
+            )
+            if self.error_handler:
+                self.error_handler.handle_error(exception)
 
     def handle_query_error(self, operation: str, exception: Exception):
         """处理查询错误"""
@@ -89,7 +98,7 @@ class InfluxDBErrorHandler:
                         self.handle_connection_error(operation, e)
                         raise  # 连接错误直接抛出，不重试
                     elif "write" in func.__name__.lower():
-                        self.handle_write_error(operation, e)
+                        self.handle_write_error(e)
                     elif "query" in func.__name__.lower():
                         self.handle_query_error(operation, e)
                     else:
@@ -102,22 +111,21 @@ class InfluxDBErrorHandler:
             raise last_exception if last_exception else RuntimeError("未知错误")
         return wrapper
 
-    def fallback_on_exception(self, fallback_value: Any = None):
-        """降级策略装饰器"""
-        def decorator(func: Callable[..., T]) -> Callable[..., T]:
-            @wraps(func)
-            def wrapper(*args, **kwargs) -> T:
-                try:
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    self.error_handler.log(
-                        f"InfluxDB操作降级 - 操作: {func.__name__}",
-                        e,
-                        ErrorLevel.WARNING
-                    )
-                    return fallback_value
-            return wrapper
-        return decorator
+    def fallback_on_exception(self, func: Callable[..., T]) -> Callable[..., T]:
+        """异常时回退装饰器"""
+        @wraps(func)
+        def wrapper(*args, **kwargs) -> T:
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                self.error_handler.log(
+                    f"InfluxDB操作降级 - 操作: {func.__name__}",
+                    e,
+                    ErrorLevel.WARNING
+                )
+                # 返回默认值或重新抛出异常
+                return None
+        return wrapper
 
     def _recover_connection(self):
         """连接恢复策略"""
@@ -126,45 +134,41 @@ class InfluxDBErrorHandler:
         # 3. 发送告警通知
         pass
 
-    def circuit_breaker(self, failure_threshold: int = 5,
-                       recovery_timeout: int = 60):
+    def circuit_breaker(self, func: Callable[..., T]) -> Callable[..., T]:
         """熔断器装饰器"""
-        def decorator(func: Callable[..., T]) -> Callable[..., T]:
-            state = {
-                'failures': 0,
-                'last_failure': 0,
-                'circuit_open': False
-            }
+        @wraps(func)
+        def wrapper(*args, **kwargs) -> T:
+            current_time = time.time()
 
-            @wraps(func)
-            def wrapper(*args, **kwargs) -> T:
-                current_time = time.time()
+            # 检查熔断状态
+            if self._circuit_open:
+                if current_time - self._last_failure > 60:  # 60秒恢复时间
+                    # 尝试恢复
+                    self._circuit_open = False
+                else:
+                    raise RuntimeError("Circuit is open")
 
-                # 检查熔断状态
-                if state['circuit_open']:
-                    if current_time - state['last_failure'] > recovery_timeout:
-                        # 尝试恢复
-                        state['circuit_open'] = False
-                    else:
-                        raise RuntimeError("熔断器打开 - 服务不可用")
+            try:
+                result = func(*args, **kwargs)
+                # 成功调用重置失败计数
+                self._failures = 0
+                return result
+            except Exception as e:
+                self._failures += 1
+                self._last_failure = current_time
 
-                try:
-                    result = func(*args, **kwargs)
-                    # 成功调用重置失败计数
-                    state['failures'] = 0
-                    return result
-                except Exception as e:
-                    state['failures'] += 1
-                    state['last_failure'] = current_time
+                if self._failures >= 3:  # 3次失败后熔断
+                    self._circuit_open = True
+                    self.error_handler.log(
+                        f"InfluxDB熔断器触发 - 操作: {func.__name__}",
+                        e,
+                        ErrorLevel.CRITICAL
+                    )
 
-                    if state['failures'] >= failure_threshold:
-                        state['circuit_open'] = True
-                        self.error_handler.log(
-                            f"InfluxDB熔断器触发 - 操作: {func.__name__}",
-                            e,
-                            ErrorLevel.CRITICAL
-                        )
+                raise
+        return wrapper
 
-                    raise
-            return wrapper
-        return decorator
+    @property
+    def circuit_state(self):
+        """获取熔断器状态"""
+        return "open" if self._circuit_open else "closed"

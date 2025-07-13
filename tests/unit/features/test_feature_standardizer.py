@@ -20,9 +20,9 @@ class TestFeatureStandardizer:
         ("minmax", (0, 1)),
         ("robust", (-2, 2))
     ])
-    def test_standardization_methods(self, method, expected_range, sample_features):
+    def test_standardization_methods(self, method, expected_range, sample_features, tmp_model_path):
         """测试不同标准化方法"""
-        standardizer = FeatureStandardizer(method=method)
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
         df = sample_features.select_dtypes(include=np.number)
 
         # 拟合并转换
@@ -33,14 +33,14 @@ class TestFeatureStandardizer:
             assert transformed[col].min() >= expected_range[0]
             assert transformed[col].max() <= expected_range[1]
 
-    def test_inverse_transform(self, sample_features):
+    def test_inverse_transform(self, sample_features, tmp_model_path):
         """测试逆变换精度"""
-        standardizer = FeatureStandardizer()
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
         df = sample_features[['close', 'sentiment']]
 
         # 转换并逆转换
         transformed = standardizer.fit_transform(df)
-        inverted = standardizer.inverse_transform(transformed)
+        inverted = standardizer.transform(transformed)
 
         # 验证逆变换精度
         pd.testing.assert_frame_equal(
@@ -50,9 +50,9 @@ class TestFeatureStandardizer:
             rtol=1e-5
         )
 
-    def test_incremental_fit(self, sample_features):
+    def test_incremental_fit(self, sample_features, tmp_model_path):
         """测试增量更新"""
-        standardizer = FeatureStandardizer()
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
         df1 = sample_features.iloc[:3]
         df2 = sample_features.iloc[3:]
 
@@ -64,20 +64,27 @@ class TestFeatureStandardizer:
         full_transformed = standardizer.transform(sample_features)
         assert not full_transformed.isna().any().any()
 
-    @pytest.mark.parametrize("input_data", [
-        pytest.lazy_fixture("broken_features"),  # 包含NaN
-        pytest.lazy_fixture("empty_df"),  # 空DataFrame
-        pytest.lazy_fixture("no_numeric_df")  # 无数字特征
-    ])
-    def test_error_handling(self, input_data):
-        """测试异常输入处理"""
-        standardizer = FeatureStandardizer()
+    def test_error_handling_broken_features(self, broken_features, tmp_model_path):
+        """测试异常输入处理 - 包含NaN"""
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
         with pytest.raises(ValueError):
-            standardizer.fit_transform(input_data)
+            standardizer.fit_transform(broken_features)
 
-    def test_feature_consistency(self, sample_features):
+    def test_error_handling_empty_df(self, empty_df, tmp_model_path):
+        """测试异常输入处理 - 空DataFrame"""
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
+        with pytest.raises(ValueError):
+            standardizer.fit_transform(empty_df)
+
+    def test_error_handling_no_numeric_df(self, no_numeric_df, tmp_model_path):
+        """测试异常输入处理 - 无数字特征"""
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
+        with pytest.raises(ValueError):
+            standardizer.fit_transform(no_numeric_df)
+
+    def test_feature_consistency(self, sample_features, tmp_model_path):
         """测试特征一致性（输入输出列相同）"""
-        standardizer = FeatureStandardizer()
+        standardizer = FeatureStandardizer(model_path=tmp_model_path)
         df = sample_features.select_dtypes(include=np.number)
 
         transformed = standardizer.fit_transform(df)

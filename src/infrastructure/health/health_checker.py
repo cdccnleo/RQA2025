@@ -8,6 +8,7 @@
 
 import time
 import threading
+import asyncio
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from src.infrastructure.utils.logger import get_logger
@@ -98,6 +99,76 @@ class HealthChecker:
         """
         status = self.health_status.get(service)
         return status is not None and status.status == "UP"
+
+    async def health_endpoint(self) -> Dict[str, Any]:
+        """
+        健康检查端点
+        :return: 健康状态响应
+        """
+        try:
+            # 执行健康检查
+            self._perform_checks()
+            
+            # 构建响应
+            response = {
+                "status": "healthy",
+                "timestamp": time.time(),
+                "services": {}
+            }
+            
+            all_healthy = True
+            for service, status in self.health_status.items():
+                response["services"][service] = {
+                    "status": status.status,
+                    "timestamp": status.timestamp,
+                    "details": status.details
+                }
+                if status.status != "UP":
+                    all_healthy = False
+            
+            if not all_healthy:
+                response["status"] = "unhealthy"
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"健康检查端点出错: {str(e)}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "timestamp": time.time()
+            }
+
+    async def ready_endpoint(self) -> Dict[str, Any]:
+        """
+        就绪检查端点
+        :return: 就绪状态响应
+        """
+        try:
+            # 检查关键服务是否就绪
+            critical_services = ['database', 'trading_engine']
+            ready_services = []
+            
+            for service in critical_services:
+                if self.is_healthy(service):
+                    ready_services.append(service)
+            
+            is_ready = len(ready_services) == len(critical_services)
+            
+            return {
+                "ready": is_ready,
+                "timestamp": time.time(),
+                "ready_services": ready_services,
+                "required_services": critical_services
+            }
+            
+        except Exception as e:
+            logger.error(f"就绪检查端点出错: {str(e)}")
+            return {
+                "ready": False,
+                "error": str(e),
+                "timestamp": time.time()
+            }
 
     def _check_loop(self) -> None:
         """
@@ -198,9 +269,9 @@ class HealthChecker:
         """
         # 模拟检查
         return "UP", {
-            "data_freshness": "1.5s",
-            "throughput": "2MB/s",
-            "pending_requests": 0
+            "data_freshness": "2s",
+            "cache_hit_rate": 0.85,
+            "api_latency": "120ms"
         }
 
     def get_health_report(self) -> Dict[str, Any]:
@@ -212,40 +283,43 @@ class HealthChecker:
             "timestamp": time.time(),
             "overall_status": "UP",
             "services": {},
-            "degraded_services": [],
-            "down_services": []
+            "summary": {
+                "total_services": len(self.health_status),
+                "healthy_services": 0,
+                "unhealthy_services": 0
+            }
         }
 
+        healthy_count = 0
         for service, status in self.health_status.items():
             report["services"][service] = {
                 "status": status.status,
+                "timestamp": status.timestamp,
                 "details": status.details,
                 "last_check": status.last_check
             }
+            if status.status == "UP":
+                healthy_count += 1
 
-            if status.status == "DEGRADED":
-                report["degraded_services"].append(service)
-            elif status.status == "DOWN":
-                report["down_services"].append(service)
+        report["summary"]["healthy_services"] = healthy_count
+        report["summary"]["unhealthy_services"] = len(self.health_status) - healthy_count
 
-        # 计算整体状态
-        if report["down_services"]:
-            report["overall_status"] = "DOWN"
-        elif report["degraded_services"]:
+        if healthy_count < len(self.health_status):
             report["overall_status"] = "DEGRADED"
+        if healthy_count == 0:
+            report["overall_status"] = "DOWN"
 
         return report
 
     def register_custom_check(self, service: str, checker: Any) -> None:
         """
-        注册自定义健康检查器
+        注册自定义健康检查
         :param service: 服务名称
-        :param checker: 检查函数，返回(status, details)
+        :param checker: 检查函数
         """
         self.checkers[service] = checker
         if service not in self.services_to_check:
             self.services_to_check.append(service)
-        logger.info(f"注册自定义健康检查: {service}")
 
     def trigger_manual_check(self, service: Optional[str] = None) -> None:
         """
@@ -254,20 +328,6 @@ class HealthChecker:
         """
         if service:
             if service in self.checkers:
-                try:
-                    status, details = self.checkers[service]()
-                    self.health_status[service] = HealthStatus(
-                        service=service,
-                        status=status,
-                        timestamp=time.time(),
-                        details=details,
-                        last_check=time.time()
-                    )
-                    logger.info(f"手动检查完成: {service} - {status}")
-                except Exception as e:
-                    logger.error(f"手动检查 {service} 失败: {str(e)}")
-            else:
-                logger.warning(f"未知服务: {service}")
+                self._perform_checks()
         else:
             self._perform_checks()
-            logger.info("手动全量健康检查完成")

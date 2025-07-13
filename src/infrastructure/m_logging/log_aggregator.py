@@ -33,45 +33,21 @@ class StorageFailover:
             raise
 
 class LogAggregator:
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, primary_storage=None, secondary_storage=None):
         """
         初始化日志聚合器
-        :param config: 系统配置
+        :param primary_storage: 主存储后端
+        :param secondary_storage: 备用存储后端
         """
-        self.config = config
-        self.config_manager = ConfigManager(config)
+        self.primary_storage = primary_storage
+        self.secondary_storage = secondary_storage
         self.log_queue = queue.Queue(maxsize=10000)
-        
-        # 初始化带故障转移的存储处理器
-        storage_config = config.get('logging', {}).get('storage', {})
-        primary = self._create_storage(storage_config.get('primary', 'file'))
-        secondaries = [
-            self._create_storage(s) 
-            for s in storage_config.get('secondaries', [])
-        ]
-        
-        self.log_processors = {
-            'elasticsearch': StorageFailover(
-                self._process_to_elasticsearch,
-                [self._process_to_file, self._process_to_kafka]
-            ),
-            'file': StorageFailover(
-                self._process_to_file,
-                [self._process_to_kafka]
-            ),
-            'kafka': StorageFailover(
-                self._process_to_kafka,
-                [self._process_to_file]
-            )
-        }
         self.running = False
         self.processor_threads = []
 
-        # 加载日志配置
-        self.log_config = self.config_manager.get('logging', {})
-        self.log_levels = self.log_config.get('levels', ['INFO', 'WARNING', 'ERROR', 'CRITICAL'])
-        self.log_sources = self.log_config.get('sources', ['trading', 'risk', 'data', 'feature'])
-        self.storage_backends = self.log_config.get('storage', ['file'])
+        # 默认配置
+        self.log_levels = ['INFO', 'WARNING', 'ERROR', 'CRITICAL']
+        self.log_sources = ['trading', 'risk', 'data', 'feature']
 
     def start(self) -> None:
         """
@@ -80,18 +56,13 @@ class LogAggregator:
         self.running = True
 
         # 启动处理线程
-        for backend in self.storage_backends:
-            if backend in self.log_processors:
-                thread = threading.Thread(
-                    target=self._process_logs,
-                    args=(backend,),
-                    daemon=True
-                )
-                thread.start()
-                self.processor_threads.append(thread)
-                logger.info(f"启动日志处理器: {backend}")
-            else:
-                logger.warning(f"未知的日志存储后端: {backend}")
+        thread = threading.Thread(
+            target=self._process_logs,
+            daemon=True
+        )
+        thread.start()
+        self.processor_threads.append(thread)
+        logger.info("启动日志聚合器")
 
     def stop(self) -> None:
         """
@@ -148,12 +119,10 @@ class LogAggregator:
 
         return True
 
-    def _process_logs(self, backend: str) -> None:
+    def _process_logs(self) -> None:
         """
         日志处理线程
-        :param backend: 存储后端名称
         """
-        processor = self.log_processors[backend]
         batch = []
         last_flush = time.time()
 
@@ -164,14 +133,14 @@ class LogAggregator:
                 batch.append(log)
 
                 # 批量处理条件: 达到批量大小或超时
-                if (len(batch) >= self.log_config.get('batch_size', 100) or
-                    time.time() - last_flush > self.log_config.get('flush_interval', 5)):
+                if (len(batch) >= 100 or
+                    time.time() - last_flush > 5):
                     try:
-                        processor(batch)
+                        self._write_logs(batch)
                         batch.clear()
                         last_flush = time.time()
                     except Exception as e:
-                        logger.error(f"{backend} 日志处理失败: {str(e)}")
+                        logger.error(f"日志处理失败: {str(e)}")
                         # 重试失败的批次
                         time.sleep(1)
 
@@ -179,11 +148,11 @@ class LogAggregator:
                 # 处理剩余日志
                 if batch:
                     try:
-                        processor(batch)
+                        self._write_logs(batch)
                         batch.clear()
                         last_flush = time.time()
                     except Exception as e:
-                        logger.error(f"{backend} 日志处理失败: {str(e)}")
+                        logger.error(f"日志处理失败: {str(e)}")
                         time.sleep(1)
                 continue
 
@@ -191,101 +160,111 @@ class LogAggregator:
                 logger.error(f"日志处理线程异常: {str(e)}")
                 time.sleep(1)
 
-    def _process_to_elasticsearch(self, logs: List[Dict[str, Any]]) -> None:
+    def _write_logs(self, logs: List[Dict[str, Any]]) -> None:
         """
-        处理日志到Elasticsearch
+        写入日志到存储后端
         :param logs: 日志列表
         """
-        # 实际项目中应使用Elasticsearch客户端
-        es_config = self.log_config.get('elasticsearch', {})
-        logger.info(f"模拟将 {len(logs)} 条日志写入ES: {es_config.get('host')}")
-
-    def _process_to_file(self, logs: List[Dict[str, Any]]) -> None:
-        """
-        处理日志到文件
-        :param logs: 日志列表
-        """
-        log_file = self.log_config.get('file', {}).get('path', 'logs/rqa2025.log')
         try:
-            with open(log_file, 'a', encoding='utf-8') as f:
-                for log in logs:
-                    f.write(f"{log['@timestamp']} [{log['level']}] {log['source']}: {log['message']}\n")
-                    if 'exception' in log:
-                        f.write(f"Exception: {log['exception']}\n")
-            logger.debug(f"写入 {len(logs)} 条日志到文件: {log_file}")
+            # 尝试写入主存储
+            if self.primary_storage:
+                self.primary_storage.write(logs)
+            else:
+                # 默认文件存储
+                self._write_to_file(logs)
         except Exception as e:
-            logger.error(f"写入日志文件失败: {str(e)}")
+            logger.error(f"主存储写入失败: {str(e)}")
+            # 尝试备用存储
+            if self.secondary_storage:
+                try:
+                    self.secondary_storage.write(logs)
+                except Exception as e2:
+                    logger.error(f"备用存储写入也失败: {str(e2)}")
+            else:
+                # 最后的备用方案：写入文件
+                self._write_to_file(logs)
 
-    def _process_to_kafka(self, logs: List[Dict[str, Any]]) -> None:
+    def _write_to_file(self, logs: List[Dict[str, Any]]) -> None:
         """
-        处理日志到Kafka
+        写入日志到文件
         :param logs: 日志列表
         """
-        kafka_config = self.log_config.get('kafka', {})
-        # 实际项目中应使用Kafka生产者
-        logger.info(f"模拟将 {len(logs)} 条日志发送到Kafka: {kafka_config.get('topic')}")
+        import os
+        log_dir = "logs"
+        os.makedirs(log_dir, exist_ok=True)
+        
+        timestamp = datetime.now().strftime("%Y%m%d")
+        filename = os.path.join(log_dir, f"aggregated_{timestamp}.log")
+        
+        with open(filename, 'a', encoding='utf-8') as f:
+            for log in logs:
+                f.write(f"{log.get('@timestamp', '')} [{log.get('level', 'INFO')}] {log.get('message', '')}\n")
 
     def search_logs(self, query: Dict[str, Any], limit: int = 100) -> List[Dict[str, Any]]:
         """
         搜索日志
-        :param query: 查询条件
-        :param limit: 返回条数限制
-        :return: 匹配的日志列表
+        :param query: 搜索条件
+        :param limit: 返回结果数量限制
+        :return: 日志列表
         """
-        # 实际项目中应从存储后端查询
-        return [{
-            'timestamp': datetime.utcnow().isoformat(),
-            'level': 'INFO',
-            'source': 'log_aggregator',
-            'message': 'Sample log entry for search result'
-        }]
+        # 简化实现，实际项目中应使用搜索引擎
+        results = []
+        try:
+            # 这里应该实现真实的搜索逻辑
+            # 暂时返回空列表
+            pass
+        except Exception as e:
+            logger.error(f"日志搜索失败: {str(e)}")
+        return results
 
     def get_log_statistics(self, time_range: str = '1h') -> Dict[str, Any]:
         """
         获取日志统计信息
         :param time_range: 时间范围
-        :return: 统计信息字典
+        :return: 统计信息
         """
-        # 实际项目中应从存储后端获取
-        return {
-            'total': 1000,
-            'levels': {
-                'INFO': 700,
-                'WARNING': 200,
-                'ERROR': 80,
-                'CRITICAL': 20
-            },
-            'sources': {
-                'trading': 400,
-                'risk': 300,
-                'data': 200,
-                'feature': 100
-            }
+        stats = {
+            'total_logs': 0,
+            'error_count': 0,
+            'warning_count': 0,
+            'info_count': 0,
+            'sources': {}
         }
+        
+        try:
+            # 这里应该实现真实的统计逻辑
+            pass
+        except Exception as e:
+            logger.error(f"获取日志统计失败: {str(e)}")
+        
+        return stats
 
     def create_log_alert(self, condition: str, action: str) -> bool:
         """
-        创建日志告警规则
+        创建日志告警
         :param condition: 告警条件
-        :param action: 触发动作
+        :param action: 告警动作
         :return: 是否创建成功
         """
-        # 实际项目中应保存到配置
-        logger.info(f"创建日志告警规则: {condition} => {action}")
-        return True
+        try:
+            # 这里应该实现真实的告警创建逻辑
+            logger.info(f"创建日志告警: {condition} -> {action}")
+            return True
+        except Exception as e:
+            logger.error(f"创建日志告警失败: {str(e)}")
+            return False
 
     def tail_logs(self, source: str = None, level: str = None, lines: int = 50) -> List[str]:
         """
-        实时跟踪日志
+        获取最新的日志
         :param source: 日志来源
         :param level: 日志级别
-        :param lines: 返回行数
+        :param lines: 行数
         :return: 日志行列表
         """
-        # 实际项目中应从存储后端获取
-        sample_logs = []
-        for i in range(lines):
-            sample_logs.append(
-                f"{datetime.utcnow().isoformat()} [INFO] {source or 'system'}: Sample log line {i}"
-            )
-        return sample_logs
+        try:
+            # 这里应该实现真实的日志尾部获取逻辑
+            return []
+        except Exception as e:
+            logger.error(f"获取日志尾部失败: {str(e)}")
+            return []

@@ -93,6 +93,10 @@ class LogMetrics:
             if latency is not None:
                 self.log_latency.labels(level=level).observe(latency)
 
+    def record_log(self, level: str, logger: str, message: str = None, sampled: bool = False):
+        """记录日志（兼容测试期望的接口）"""
+        self.record(level, logger, sampled)
+
     def get_metrics(self) -> Dict[str, Any]:
         """获取当前指标快照"""
         with self._lock:

@@ -135,6 +135,83 @@ class DataExporter:
             logger.error(f"Failed to export data: {e}")
             raise DataLoaderError(f"Failed to export data: {e}")
 
+    def get_supported_formats(self) -> List[str]:
+        """获取支持的导出格式列表"""
+        return list(self.supported_formats.keys())
+
+    def export_to_buffer(
+        self,
+        data_model: IDataModel,
+        format: str,
+        include_metadata: bool = True,
+        **kwargs
+    ) -> bytes:
+        """
+        导出数据到内存缓冲区
+
+        Args:
+            data_model: 数据模型
+            format: 导出格式
+            include_metadata: 是否包含元数据
+            **kwargs: 其他导出选项
+
+        Returns:
+            bytes: 导出的数据字节
+
+        Raises:
+            DataLoaderError: 如果导出失败
+        """
+        import io
+        
+        # 检查格式是否支持
+        if format.lower() not in self.supported_formats:
+            supported = ', '.join(self.supported_formats.keys())
+            raise DataLoaderError(f"Unsupported export format: {format}. Supported formats: {supported}")
+
+        try:
+            # 创建内存缓冲区
+            buffer = io.BytesIO()
+            
+            # 获取数据
+            data = data_model.get_data()
+            
+            if format.lower() == 'csv':
+                data.to_csv(buffer, index=True)
+            elif format.lower() == 'json':
+                if include_metadata:
+                    export_data = {
+                        'data': data.to_dict('records'),
+                        'metadata': data_model.get_metadata()
+                    }
+                    buffer.write(json.dumps(export_data, indent=2).encode('utf-8'))
+                else:
+                    data.to_json(buffer, orient='records')
+            elif format.lower() == 'excel':
+                with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                    data.to_excel(writer, sheet_name='data', index=True)
+                    if include_metadata:
+                        metadata_df = pd.DataFrame([data_model.get_metadata()])
+                        metadata_df.to_excel(writer, sheet_name='metadata', index=False)
+            elif format.lower() == 'pickle':
+                import pickle
+                if include_metadata:
+                    export_data = {
+                        'data': data,
+                        'metadata': data_model.get_metadata()
+                    }
+                    pickle.dump(export_data, buffer)
+                else:
+                    pickle.dump(data, buffer)
+            else:
+                raise DataLoaderError(f"Buffer export not supported for format: {format}")
+            
+            buffer.seek(0)
+            return buffer.getvalue()
+            
+        except Exception as e:
+            logger.error(f"Failed to export to buffer: {e}")
+            raise DataLoaderError(f"Failed to export to buffer: {e}")
+
     def export_multiple(
         self,
         data_models: List[IDataModel],

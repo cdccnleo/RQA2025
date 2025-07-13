@@ -1,5 +1,5 @@
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass, field
 from prometheus_client import Counter, Gauge, Histogram
 
@@ -14,6 +14,12 @@ class BacktestMetrics:
     sharpe_ratio: float = 0.0
     win_rate: float = 0.0
     avg_trade_duration: float = 0.0
+
+    def update(self, data: Dict[str, Any]) -> None:
+        """更新指标数据"""
+        for key, value in data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
 class BacktestMonitor:
     """回测监控器"""
@@ -41,18 +47,6 @@ class BacktestMonitor:
             'backtest_sharpe_ratio',
             'Sharpe ratio'
         )
-        
-        # 初始化基础指标
-        self.metrics.update({
-            'total_trades': 0,
-            'successful_trades': 0,
-            'failed_trades': 0,
-            'total_pnl': 0.0,
-            'max_drawdown': 0.0,
-            'sharpe_ratio': 0.0,
-            'win_rate': 0.0,
-            'avg_trade_duration': 0.0
-        })
 
     def record_trade(self, trade_data: Dict[str, Any]) -> None:
         """
@@ -101,6 +95,28 @@ class BacktestMonitor:
         # 更新平均交易时长
         avg_duration = portfolio_data.get('avg_trade_duration', 0.0)
         self.metrics.avg_trade_duration = avg_duration
+
+    def record_performance(self, performance_data: Dict[str, Any]) -> None:
+        """
+        记录性能数据
+        
+        Args:
+            performance_data: 性能数据字典
+        """
+        self.metrics.update(performance_data)
+
+    def filter_trades(self, criteria: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        过滤交易记录
+        
+        Args:
+            criteria: 过滤条件
+            
+        Returns:
+            过滤后的交易列表
+        """
+        # 这里应该实现真实的过滤逻辑
+        return []
 
     def get_metrics(self) -> Dict[str, Any]:
         """

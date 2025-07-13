@@ -250,13 +250,16 @@ class ThreadSafeTTLCache:
                 self[key] = value
 
     def bulk_get(self, keys: List[str]) -> Dict[str, Any]:
-        """批量获取缓存项"""
+        """批量获取缓存项，部分key不存在时抛KeyError"""
         result = {}
+        missing = []
         for key in keys:
             try:
                 result[key] = self[key]
             except KeyError:
-                continue
+                missing.append(key)
+        if missing:
+            raise KeyError(f"Keys not found: {missing}")
         return result
 
     def bulk_delete(self, keys: List[str]) -> int:
@@ -365,7 +368,9 @@ class ThreadSafeTTLCache:
         self._monitor.update_memory_usage(usage)
 
     def set_with_ttl(self, key, value, ttl):
-        """设置带有自定义过期时间的缓存项"""
+        """设置带有自定义过期时间的缓存项，ttl非法抛异常"""
+        if not isinstance(ttl, (int, float)) or ttl <= 0:
+            raise ValueError("ttl必须为正数")
         with self._lock:
             expire_at = self._timer() + ttl
             self._cache[key] = (value, expire_at)
@@ -381,20 +386,20 @@ class ThreadSafeTTLCache:
             return 1024  # 默认大小
 
     def _compress(self, data: Any) -> bytes:
-        """压缩数据"""
+        """压缩数据，异常时直接raise"""
         try:
             serialized = pickle.dumps(data)
             return zlib.compress(serialized)
-        except:
-            return pickle.dumps(data)
+        except Exception as e:
+            raise e
 
     def _decompress(self, data: bytes) -> Any:
-        """解压数据"""
+        """解压数据，异常时直接raise"""
         try:
             decompressed = zlib.decompress(data)
             return pickle.loads(decompressed)
-        except:
-            return pickle.loads(data)
+        except Exception as e:
+            raise e
 
     def _ensure_memory(self, required_size: int) -> None:
         """确保有足够内存"""
@@ -415,13 +420,20 @@ class ThreadSafeTTLCache:
         self._monitor.update_memory_usage(self._memory_usage)
 
     def update_config(self, **kwargs) -> None:
-        """更新缓存配置"""
+        """更新缓存配置，非法参数或只读参数抛异常"""
+        readonly = {'maxsize', 'ttl'}
         with self._lock:
             for key, value in kwargs.items():
+                if key in readonly:
+                    raise ValueError(f"参数{key}为只读，禁止修改")
+                if key == 'compression_threshold' and not isinstance(value, int):
+                    raise TypeError("compression_threshold必须为int类型")
                 if hasattr(self, f'_{key}'):
                     setattr(self, f'_{key}', value)
                 elif hasattr(self._cache, key):
                     setattr(self._cache, key, value)
+                else:
+                    raise ValueError(f"未知参数: {key}")
 
     def health_check(self) -> Dict[str, Any]:
         """健康检查"""

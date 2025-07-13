@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import numpy as np
 from src.features.sentiment.analyzer import SentimentAnalyzer
-from src.features.manager import FeatureManager
+from src.features.feature_manager import FeatureManager
 
 class TestSentimentAnalyzer(unittest.TestCase):
     def setUp(self):

@@ -6,6 +6,7 @@ class FeatureType(Enum):
     TECHNICAL = "technical"
     FUNDAMENTAL = "fundamental"
     QUANTITATIVE = "quantitative"
+    SENTIMENT = "sentiment"
 
 class FeatureConfig:
     """特征处理配置类

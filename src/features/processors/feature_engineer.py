@@ -4,6 +4,8 @@ import numpy as np
 from typing import List, Dict, Optional, Union
 from pathlib import Path
 import time
+from concurrent.futures import ThreadPoolExecutor
+import json
 
 from src.features.technical.technical_processor import TechnicalProcessor
 from src.features.sentiment.sentiment_analyzer import SentimentAnalyzer
@@ -16,23 +18,47 @@ logger = get_logger(__name__)
 class FeatureEngineer:
     """特征工程处理器，用于生成和管理特征"""
 
-    def __init__(
-            self,
-            stock_code: str,
-            metadata: Optional[FeatureMetadata] = None
-    ):
-        """
-        初始化特征工程处理器
+    def __init__(self, technical_processor, sentiment_analyzer, cache_dir: str = "./feature_cache", max_retries: int = 3, fallback_enabled: bool = True):
+        self.technical_processor = technical_processor
+        self.sentiment_analyzer = sentiment_analyzer
+        self.max_retries = max_retries
+        self.fallback_enabled = fallback_enabled
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.cache_metadata: Dict[str, Dict] = {}
+        self._load_cache_metadata()
 
-        Args:
-            stock_code: 股票代码
-            metadata: 特征元数据对象（可选）
-        """
-        self.stock_code = stock_code
-        self.technical_processor = TechnicalProcessor()
-        self.sentiment_analyzer = SentimentAnalyzer()
-        self.feature_metadata = metadata or FeatureMetadata()
-        self.logger = logger
+    def _load_cache_metadata(self):
+        """加载缓存元数据"""
+        metadata_file = self.cache_dir / "metadata.json"
+        if metadata_file.exists():
+            try:
+                with open(metadata_file, 'r', encoding='utf-8') as f:
+                    self.cache_metadata = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                self.cache_metadata = {}
+        else:
+            self.cache_metadata = {}
+
+    def register_feature(self, config):
+        """注册特征配置"""
+        # 简单的特征注册实现，将配置存储到缓存元数据中
+        if hasattr(config, 'name') and hasattr(config, 'feature_type'):
+            self.cache_metadata[config.name] = {
+                'feature_type': config.feature_type.value,
+                'params': getattr(config, 'params', {}),
+                'dependencies': getattr(config, 'dependencies', []),
+                'enabled': getattr(config, 'enabled', True),
+                'version': getattr(config, 'version', '1.0')
+            }
+            # 保存到文件
+            metadata_file = self.cache_dir / "metadata.json"
+            try:
+                with open(metadata_file, 'w', encoding='utf-8') as f:
+                    json.dump(self.cache_metadata, f, indent=2, ensure_ascii=False)
+            except IOError:
+                pass  # 忽略文件写入错误
 
     def _validate_stock_data(self, data: pd.DataFrame) -> None:
         """

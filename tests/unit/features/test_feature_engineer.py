@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from datetime import datetime, timedelta
 import pandas as pd
-from features.feature_engineer import FeatureEngineer
+from src.features.feature_engineer import FeatureEngineer
 
 @pytest.fixture
 def temp_cache_dir(tmp_path):

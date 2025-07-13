@@ -3,12 +3,12 @@
 
 """
 情感分析模块
-负责新闻和社交媒体文本的情感分析
+负责新闻和社交媒体情感分析
 """
 
-from typing import List, Dict
+from typing import Dict, List, Tuple
 import numpy as np
-from ..manager import FeatureManager
+from ..feature_manager import FeatureManager
 from .models import load_pretrained_model
 
 class SentimentAnalyzer:

@@ -1,10 +1,10 @@
 import pytest
 import time
-from infrastructure.config.services import (
+from src.infrastructure.config.services import (
     ConfigLoaderService,
     CacheService
 )
-from infrastructure.config.strategies import JSONLoader
+from src.infrastructure.config.strategies import JSONLoader
 
 class TestConfigPerformance:
     """配置管理模块性能测试"""
