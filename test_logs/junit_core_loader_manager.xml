@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="3" skipped="0" tests="87" time="91.049" timestamp="2025-11-16T14:21:52.330906+08:00" hostname="AIPC"><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerServiceRegistration" name="test_register_data_service_success" time="0.954"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_data_model_preserves_user_metadata_created_at" time="0.951"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_get_set_data_config_fallback" time="0.952"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_initialization" time="0.949"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_smoke" name="test_data_manager_basic_health_and_config_validation" time="0.979"><failure message="ValueError: Invalid section name: 'DEFAULT'">tests\unit\data\core\test_data_manager_smoke.py:7: in test_data_manager_basic_health_and_config_validation
+    dm = DataManager(config_dict={"DEFAULT": {"x": "1"}})
+src\data\core\data_manager.py:211: in __init__
+    self.config = self._init_config(config_path, config_dict)
+src\data\core\data_manager.py:762: in _init_config
+    config.add_section(section)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\configparser.py:1211: in add_section
+    super().add_section(section)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\configparser.py:656: in add_section
+    raise ValueError('Invalid section name: %r' % section)
+E   ValueError: Invalid section name: 'DEFAULT'</failure><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_and_factory_minimal" name="test_file_data_loader_validate_and_unsupported_format" time="1.022"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:63 数据为空
+ERROR    FileDataLoader:data_loader.py:101 文件不存在: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw4\test_file_data_loader_validate0\missing.csv
+ERROR    FileDataLoader:data_loader.py:117 不支持的文件格式: zzz
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:数据为空
+ERROR:FileDataLoader:文件不存在: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw4\test_file_data_loader_validate0\missing.csv
+ERROR:FileDataLoader:不支持的文件格式: zzz
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_register_data_service_and_health" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_basic" name="test_file_loader_load_and_validate_csv_success" time="1.063"><failure message="assert (None is not None)">tests\unit\data\core\test_data_loader_file_basic.py:15: in test_file_loader_load_and_validate_csv_success
+    assert out is not None and len(out) == 2
+E   assert (None is not None)</failure><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:127 加载数据失败: C:\Users\AILeo\AppData\Local\Temp\tmpl8zxeq4b.csv, 错误: read_csv() got an unexpected keyword argument 'format'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:加载数据失败: C:\Users\AILeo\AppData\Local\Temp\tmpl8zxeq4b.csv, 错误: read_csv() got an unexpected keyword argument 'format'
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataRegistry" name="test_registry_register_and_get" time="1.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_load_data" time="0.049"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerServiceRegistration" name="test_register_data_service_failure" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    test:test_data_manager_fallback_scenarios.py:321 注册数据服务失败: test_service - Registration error
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:test:注册数据服务失败: test_service - Registration error
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_validate_all_configs_success" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_generate_cache_key_and_lineage" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_data_model_roundtrip_via_dict" time="0.051"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataValidator" name="test_validator_valid_data" time="1.015"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockCacheManager" name="test_cache_get_put" time="1.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerInfrastructureFallback" name="test_init_with_infrastructure_unavailable" time="1.020"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerServiceRegistration" name="test_get_data_service_existing" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerServiceRegistration" name="test_get_data_service_not_found" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_cache" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerInfrastructureFallback" name="test_init_infrastructure_services_failure" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    data_manager:data_manager.py:487 基础设施服务初始化失败，使用降级方案: name 'get_data_adapter' is not defined
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:data_manager:基础设施服务初始化失败，使用降级方案: name 'get_data_adapter' is not defined
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_register_service_and_health_checks" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataValidator" name="test_validator_invalid_data" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataValidator" name="test_validator_mixed_data" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataRegistry" name="test_registry_list_models" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockCacheManager" name="test_cache_delete" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_store_data_cache_and_retrieve" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test_data_manager:data_manager.py:1301 开始存储数据，类型: cache
+INFO     test_data_manager:data_manager.py:1360 数据存储完成，结果: {'cache_key': 'stored_data_-4348200226123758119', 'status': 'cached'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test_data_manager:开始存储数据，类型: cache
+INFO:test_data_manager:数据存储完成，结果: {'cache_key': 'stored_data_-4348200226123758119', 'status': 'cached'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_store_data_key_shortcut_and_delete" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test_data_manager:data_manager.py:1301 开始存储数据，类型: database
+INFO     test_data_manager:data_manager.py:1360 数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test_data_manager:开始存储数据，类型: database
+INFO:test_data_manager:数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerEventPublishing" name="test_publish_data_event_with_event_bus" time="1.059"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_base_loader_module" name="test_data_loader_returns_default_structure" time="1.048"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_base_loader_module" name="test_mock_data_loader_uses_mock_payload" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_crypto_data" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_factories" name="test_create_data_loader_variants" time="1.044"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_factories" name="test_api_and_database_loader_simple_paths" time="0.035"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     APIDataLoader:data_loader.py:264 从API加载数据: http://x/endpoint
+WARNING  APIDataLoader:data_loader.py:286 API数据加载器不支持保存操作
+ERROR    DatabaseDataLoader:data_loader.py:197 数据库连接字符串未配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:APIDataLoader:从API加载数据: http://x/endpoint
+WARNING:APIDataLoader:API数据加载器不支持保存操作
+ERROR:DatabaseDataLoader:数据库连接字符串未配置
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataRegistry" name="test_registry_get_nonexistent" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_register_model" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerInfrastructureFallback" name="test_cache_manager_init_failure_fallback" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  test:test_data_manager_fallback_scenarios.py:127 降级缓存初始化失败: Cache init failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:test:降级缓存初始化失败: Cache init failed
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerInfrastructureFallback" name="test_get_infrastructure_health_unavailable" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerEventPublishing" name="test_publish_data_event_bus_failure" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  test:data_manager.py:319 发布事件失败: Event bus error
+INFO     test:data_manager.py:320 数据事件: data_loaded - {'symbol': 'AAPL'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:test:发布事件失败: Event bus error
+INFO:test:数据事件: data_loaded - {'symbol': 'AAPL'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_and_factory_minimal" name="test_file_data_loader_save_and_load_csv" time="0.075"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     FileDataLoader:data_loader.py:164 成功保存数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw4\test_file_data_loader_save_and0\out.csv, 行数: 2
+INFO     FileDataLoader:data_loader.py:121 成功加载数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw4\test_file_data_loader_save_and0\out.csv, 行数: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:FileDataLoader:成功保存数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw4\test_file_data_loader_save_and0\out.csv, 行数: 2
+INFO:FileDataLoader:成功加载数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw4\test_file_data_loader_save_and0\out.csv, 行数: 2
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_basic_health_check" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerConfigManagement" name="test_get_data_config_with_config_manager" time="1.078"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestDataManagerIntegration" name="test_complete_data_workflow" time="1.095"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerConfigManagement" name="test_get_data_config_manager_error" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  test:data_manager.py:340 获取配置失败: Config error
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:test:获取配置失败: Config error
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_and_factory_minimal" name="test_file_data_loader_save_invalid_and_unsupported" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:70 缺少必需列: ['b']
+ERROR    FileDataLoader:data_loader.py:161 不支持的文件格式: zzz
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:缺少必需列: ['b']
+ERROR:FileDataLoader:不支持的文件格式: zzz
+
+</system-err></testcase><testcase classname="unit.data.core.test_base_loader_module" name="test_data_loader_registry_crud_operations" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_basic_health_check_unhealthy_when_missing_cache" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_generate_cache_key_orders_kwargs" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerEventPublishing" name="test_publish_data_event_without_event_bus" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test:data_manager.py:322 数据事件: data_loaded - {'symbol': 'AAPL'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test:数据事件: data_loaded - {'symbol': 'AAPL'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerServiceRegistration" name="test_get_service_health_healthy" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_unified_data_loader_interface_impl_minimal" name="test_enums_and_dataclasses_basic" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerServiceRegistration" name="test_get_service_health_unhealthy" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_get_stats_and_cache_operations" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test_data_manager:data_manager.py:1301 开始存储数据，类型: database
+INFO     test_data_manager:data_manager.py:1360 数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test_data_manager:开始存储数据，类型: database
+INFO:test_data_manager:数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestDataManagerIntegration" name="test_multiple_loaders_workflow" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerConfigManagement" name="test_get_data_config_fallback_to_local" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_config" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestDataManagerIntegration" name="test_error_handling_workflow" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestDataManagerIntegration" name="test_configuration_management" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerConfigManagement" name="test_get_data_config_no_default_section" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_and_factory_minimal" name="test_database_and_api_loader_minimal" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     DatabaseDataLoader:data_loader.py:202 从数据库加载数据: select 1
+INFO     DatabaseDataLoader:data_loader.py:229 保存数据到数据库: t
+INFO     APIDataLoader:data_loader.py:264 从API加载数据: http://example.com/endpoint
+WARNING  APIDataLoader:data_loader.py:286 API数据加载器不支持保存操作
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:DatabaseDataLoader:从数据库加载数据: select 1
+INFO:DatabaseDataLoader:保存数据到数据库: t
+INFO:APIDataLoader:从API加载数据: http://example.com/endpoint
+WARNING:APIDataLoader:API数据加载器不支持保存操作
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_and_factory_minimal" name="test_factory_and_get_loader" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockCacheManager" name="test_cache_clear" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_store_data_records_lineage" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test_data_manager_core:data_manager.py:1301 开始存储数据，类型: cache
+INFO     test_data_manager_core:data_manager.py:1360 数据存储完成，结果: {'cache_key': 'stored_data_-1620886179916658066', 'status': 'cached'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test_data_manager_core:开始存储数据，类型: cache
+INFO:test_data_manager_core:数据存储完成，结果: {'cache_key': 'stored_data_-1620886179916658066', 'status': 'cached'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_validate_data_rules_and_compliance" time="0.043"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test_data_manager:data_manager.py:1301 开始存储数据，类型: database
+INFO     test_data_manager:data_manager.py:1360 数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+INFO     test_data_manager:data_manager.py:1301 开始存储数据，类型: database
+INFO     test_data_manager:data_manager.py:1360 数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test_data_manager:开始存储数据，类型: database
+INFO:test_data_manager:数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+INFO:test_data_manager:开始存储数据，类型: database
+INFO:test_data_manager:数据存储完成，结果: {'database_id': 'placeholder_id', 'status': 'saved'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockCacheManager" name="test_cache_miss" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockCacheManager" name="test_cache_stats" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_record_data_lineage_handles_missing_model" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+DEBUG    test_data_manager_core:data_manager.py:1136 Data lineage recorded: {'data_type': 'stock', 'start_date': '2024-01-01', 'end_date': '2024-01-02', 'frequency': '1d', 'metadata': {'frequency': '1d', 'source': 'unit'}, 'parameters': {'frequency': '1d', 'source': 'unit'}, 'timestamp': '2025-11-16T14:23:18.353889'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+DEBUG:test_data_manager_core:Data lineage recorded: {'data_type': 'stock', 'start_date': '2024-01-01', 'end_date': '2024-01-02', 'frequency': '1d', 'metadata': {'frequency': '1d', 'source': 'unit'}, 'parameters': {'frequency': '1d', 'source': 'unit'}, 'timestamp': '2025-11-16T14:23:18.353889'}
+
+</system-err></testcase><testcase classname="unit.data.core.test_unified_data_loader_interface_impl_minimal" name="test_async_paths" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_health" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_health_history" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_health_registration_and_history" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestDataManagerIntegration" name="test_service_discovery_and_health" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_basic_health_check_structure" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_fallback_scenarios.TestDataManagerInfrastructureFallback" name="test_get_infrastructure_health_adapter_error" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_mock.TestMockDataManager" name="test_data_manager_stats" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_clean_expired_cache_and_get_stats" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_config_initialization_missing_file" time="0.028"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_get_data_config_prefers_config_manager" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_internal" name="test_shutdown_invokes_thread_pool" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     test_data_manager:data_manager.py:1258 DataManager shutdown completed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:test_data_manager:DataManager shutdown completed
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_basic" name="test_file_loader_unsupported_format_and_missing_file" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:101 文件不存在: not_exists.csv
+ERROR    FileDataLoader:data_loader.py:117 不支持的文件格式: zzz
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:文件不存在: not_exists.csv
+ERROR:FileDataLoader:不支持的文件格式: zzz
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_get_data_config_fallback_to_local" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_set_data_config_with_config_manager" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_basic" name="test_file_loader_save_respects_validate_and_formats" time="0.043"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:70 缺少必需列: ['b']
+INFO     FileDataLoader:data_loader.py:164 成功保存数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw10\test_file_loader_save_respects0\ok.csv, 行数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:缺少必需列: ['b']
+INFO:FileDataLoader:成功保存数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3675\popen-gw10\test_file_loader_save_respects0\ok.csv, 行数: 1
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_set_data_config_fallback" time="0.034"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_validate_all_configs_success" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_core_behaviors" name="test_validate_all_configs_failure_when_cache_missing_get" time="0.028"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_smoke" name="test_data_manager_store_and_metadata_cycle" time="0.010"><failure message="ValueError: Invalid section name: 'DEFAULT'">tests\unit\data\core\test_data_manager_smoke.py:18: in test_data_manager_store_and_metadata_cycle
+    dm = DataManager(config_dict={"DEFAULT": {"a": "b"}})
+src\data\core\data_manager.py:211: in __init__
+    self.config = self._init_config(config_path, config_dict)
+src\data\core\data_manager.py:762: in _init_config
+    config.add_section(section)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\configparser.py:1211: in add_section
+    super().add_section(section)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\configparser.py:656: in add_section
+    raise ValueError('Invalid section name: %r' % section)
+E   ValueError: Invalid section name: 'DEFAULT'</failure><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

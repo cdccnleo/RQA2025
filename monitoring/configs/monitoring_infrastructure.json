@@ -1,0 +1,76 @@
+{
+  "prometheus": {
+    "version": "2.40.0",
+    "config_file": "monitoring/configs/prometheus.yml",
+    "retention_days": 30,
+    "scrape_interval": "15s",
+    "evaluation_interval": "15s"
+  },
+  "grafana": {
+    "version": "9.3.0",
+    "admin_user": "admin",
+    "datasources": [
+      "prometheus"
+    ],
+    "dashboard_provisioning": true
+  },
+  "alertmanager": {
+    "version": "0.25.0",
+    "config_file": "monitoring/configs/alertmanager.yml",
+    "notification_channels": {
+      "email": {
+        "smtp_host": "${SMTP_HOST}",
+        "smtp_port": "${SMTP_PORT}",
+        "from": "${ALERT_EMAIL_FROM}",
+        "to": "${ALERT_EMAIL_TO}"
+      },
+      "slack": {
+        "webhook_url": "${SLACK_WEBHOOK_URL}",
+        "channel": "${SLACK_CHANNEL}"
+      },
+      "pagerduty": {
+        "service_key": "${PAGERDUTY_SERVICE_KEY}"
+      }
+    }
+  },
+  "log_aggregation": {
+    "tool": "fluentd",
+    "config_file": "monitoring/configs/fluentd.conf",
+    "outputs": [
+      "elasticsearch",
+      "s3"
+    ],
+    "retention_policies": {
+      "application_logs": "90d",
+      "system_logs": "30d",
+      "access_logs": "60d"
+    }
+  },
+  "metrics_collection": {
+    "node_exporter": {
+      "version": "1.5.0",
+      "collectors": [
+        "cpu",
+        "memory",
+        "disk",
+        "network",
+        "system"
+      ]
+    },
+    "process_exporter": {
+      "version": "0.7.10",
+      "process_names": [
+        "rqa2025"
+      ]
+    },
+    "postgres_exporter": {
+      "version": "0.11.1",
+      "databases": [
+        "rqa2025"
+      ]
+    },
+    "redis_exporter": {
+      "version": "1.45.0"
+    }
+  }
+}

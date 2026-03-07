@@ -1,0 +1,132 @@
+{
+  "report_title": "RQA2025业务流程测试报告",
+  "generation_time": "2025-12-27 11:15:28.713429",
+  "test_configuration": {
+    "max_workers": 3,
+    "timeout_seconds": 300,
+    "retry_attempts": 2,
+    "performance_monitoring": true,
+    "detailed_logging": true,
+    "report_generation": true,
+    "concurrent_execution": false,
+    "cleanup_on_failure": true
+  },
+  "overall_summary": {
+    "total_flows_tested": 3,
+    "passed_flows": 0,
+    "failed_flows": 0,
+    "error_flows": 3,
+    "overall_success_rate": 0.0,
+    "total_execution_time": 0.0070220000000000005,
+    "average_execution_time": 0.0023406666666666667,
+    "test_status": "FAILED"
+  },
+  "flow_details": {
+    "strategy_development": {
+      "flow_name": "量化策略开发流程",
+      "status": "error",
+      "execution_time": 0.002001,
+      "success_rate": 0.0,
+      "steps_completed": 0,
+      "total_steps": 8,
+      "step_results": {
+        "策略构思阶段": {
+          "status": "failed",
+          "execution_time": 0.0020012855529785156,
+          "error_message": "'TestStrategyDevelopmentFlow' object has no attribute 'test_data'"
+        }
+      },
+      "performance_summary": {},
+      "error_summary": {
+        "策略构思阶段": "'TestStrategyDevelopmentFlow' object has no attribute 'test_data'"
+      }
+    },
+    "trading_execution": {
+      "flow_name": "交易执行流程",
+      "status": "error",
+      "execution_time": 0.00402,
+      "success_rate": 0.0,
+      "steps_completed": 0,
+      "total_steps": 8,
+      "step_results": {
+        "市场监控阶段": {
+          "status": "failed",
+          "execution_time": 0.004019260406494141,
+          "error_message": "'TestTradingExecutionFlow' object has no attribute 'test_data'"
+        }
+      },
+      "performance_summary": {},
+      "error_summary": {
+        "市场监控阶段": "'TestTradingExecutionFlow' object has no attribute 'test_data'"
+      }
+    },
+    "risk_control": {
+      "flow_name": "风险控制流程",
+      "status": "error",
+      "execution_time": 0.001001,
+      "success_rate": 0.0,
+      "steps_completed": 0,
+      "total_steps": 6,
+      "step_results": {
+        "实时监测阶段": {
+          "status": "failed",
+          "execution_time": 0.0010008811950683594,
+          "error_message": "'TestRiskControlFlow' object has no attribute 'test_data'"
+        }
+      },
+      "performance_summary": {},
+      "error_summary": {
+        "实时监测阶段": "'TestRiskControlFlow' object has no attribute 'test_data'"
+      }
+    }
+  },
+  "performance_analysis": {
+    "execution_time_analysis": {
+      "min_time": 0.001001,
+      "max_time": 0.00402,
+      "avg_time": 0.0023406666666666667,
+      "flow_times": {
+        "strategy_development": 0.002001,
+        "trading_execution": 0.00402,
+        "risk_control": 0.001001
+      }
+    },
+    "success_rate_analysis": {
+      "min_rate": 0.0,
+      "max_rate": 0.0,
+      "avg_rate": 0.0,
+      "flow_rates": {
+        "strategy_development": 0.0,
+        "trading_execution": 0.0,
+        "risk_control": 0.0
+      }
+    },
+    "bottleneck_identification": [
+      {
+        "flow": "strategy_development",
+        "success_rate": 0.0,
+        "issue": "成功率不足"
+      },
+      {
+        "flow": "trading_execution",
+        "success_rate": 0.0,
+        "issue": "成功率不足"
+      },
+      {
+        "flow": "risk_control",
+        "success_rate": 0.0,
+        "issue": "成功率不足"
+      }
+    ],
+    "performance_trends": {}
+  },
+  "recommendations": [
+    "优化量化策略开发流程的稳定性，当前成功率: 0.0%",
+    "重点修复量化策略开发流程的失败步骤: 策略构思阶段",
+    "优化交易执行流程的稳定性，当前成功率: 0.0%",
+    "重点修复交易执行流程的失败步骤: 市场监控阶段",
+    "优化风险控制流程的稳定性，当前成功率: 0.0%",
+    "重点修复风险控制流程的失败步骤: 实时监测阶段",
+    "建议建立定期回归测试机制，确保业务流程持续稳定"
+  ]
+}

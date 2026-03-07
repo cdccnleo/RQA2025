@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="39" time="112.089" timestamp="2025-11-16T19:25:12.446467+08:00" hostname="AIPC"><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockAPIDataSource" name="test_api_source_initialization" time="0.914"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_manager_initialization" time="0.935"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockAPIDataSource" name="test_api_source_availability_valid_config" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockAPIDataSource" name="test_api_source_availability_invalid_config" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_add_remove_source" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestDataSourceIntegration" name="test_multi_source_data_consistency" time="1.147"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockAPIDataSource" name="test_api_source_fetch_data" time="0.120"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_intelligent_source_manager_edges" name="test_load_data_best_source_then_fallback_and_all_fail" time="6.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     intelligent_source_manager:intelligent_source_manager.py:186 数据源健康监控已启动
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: s1 (stock)
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: s2 (stock)
+INFO     intelligent_source_manager:intelligent_source_manager.py:312 尝试从数据源加载: s1
+WARNING  intelligent_source_manager:intelligent_source_manager.py:331 从数据源 s1 加载失败: boom
+INFO     intelligent_source_manager:intelligent_source_manager.py:312 尝试从数据源加载: s2
+INFO     intelligent_source_manager:intelligent_source_manager.py:323 成功从数据源加载: s2
+INFO     intelligent_source_manager:intelligent_source_manager.py:379 更新数据源配置: s2
+INFO     intelligent_source_manager:intelligent_source_manager.py:312 尝试从数据源加载: s1
+WARNING  intelligent_source_manager:intelligent_source_manager.py:331 从数据源 s1 加载失败: boom
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:397 智能数据源管理器已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_get_available_sources" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDatabaseDataSource" name="test_db_source_initialization" time="0.999"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_intelligent_source_manager" name="test_load_data_returns_from_best_source" time="11.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     intelligent_source_manager:intelligent_source_manager.py:186 数据源健康监控已启动
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: alpha (stock)
+INFO     intelligent_source_manager:intelligent_source_manager.py:312 尝试从数据源加载: alpha
+INFO     intelligent_source_manager:intelligent_source_manager.py:323 成功从数据源加载: alpha
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:397 智能数据源管理器已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSource" name="test_source_initialization" time="1.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_extra" name="test_get_available_sources_returns_empty_when_head_non_200" time="1.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSource" name="test_source_availability_check" time="0.033"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_set_active_source" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_fetch_data_with_failover" time="0.117"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_extra" name="test_fetch_data_with_fallback_logs_empty_and_returns_empty" time="0.080"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sources.data_source_manager:data_source_manager.py:158 尝试从 yahoo 获取数据: SYM
+WARNING  src.data.sources.data_source_manager:data_source_manager.py:114 Yahoo Finance API返回数据格式错误: SYM
+WARNING  src.data.sources.data_source_manager:data_source_manager.py:167 从 yahoo 获取数据为空
+ERROR    src.data.sources.data_source_manager:data_source_manager.py:171 所有数据源都无法获取数据: SYM
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager" name="test_yahoo_source_fetch_data_returns_dataframe" time="1.133"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sources.data_source_manager:data_source_manager.py:111 Yahoo Finance获取数据成功: TEST, 2 条记录
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDatabaseDataSource" name="test_db_source_availability_valid_config" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDatabaseDataSource" name="test_db_source_availability_invalid_config" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDatabaseDataSource" name="test_db_source_fetch_data" time="0.114"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSource" name="test_unavailable_source" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSource" name="test_fetch_data" time="0.115"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockAPIDataSource" name="test_api_source_rate_limiting" time="0.122"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager" name="test_data_source_manager_fetch_data_with_fallback_returns_first_available" time="0.032"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sources.data_source_manager:data_source_manager.py:158 尝试从 fake 获取数据: SYM
+INFO     src.data.sources.data_source_manager:data_source_manager.py:164 成功从 fake 获取数据: 1 条记录
+INFO     src.data.sources.data_source_manager:data_source_manager.py:158 尝试从 fake 获取数据: SYM
+WARNING  src.data.sources.data_source_manager:data_source_manager.py:169 数据源 fake 不可用
+INFO     src.data.sources.data_source_manager:data_source_manager.py:158 尝试从 yahoo 获取数据: SYM
+INFO     src.data.sources.data_source_manager:data_source_manager.py:111 Yahoo Finance获取数据成功: SYM, 2 条记录
+INFO     src.data.sources.data_source_manager:data_source_manager.py:164 成功从 yahoo 获取数据: 2 条记录
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_fetch_data_failover" time="0.037"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestDataSourceIntegration" name="test_different_intervals" time="0.048"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_fetch_data_all_sources_fail" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestDataSourceIntegration" name="test_source_performance_monitoring" time="0.041"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSource" name="test_fetch_data_unavailable_source" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_get_health_status" time="0.034"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSource" name="test_get_info" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestDataSourceIntegration" name="test_manager_load_balancing_simulation" time="0.263"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestMockDataSourceManager" name="test_refresh_source_availability" time="0.032"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_data_source_manager_mock.TestDataSourceIntegration" name="test_error_recovery_and_resilience" time="0.066"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_intelligent_source_manager_edges" name="test_health_monitor_update_and_best_source" time="5.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     intelligent_source_manager:intelligent_source_manager.py:186 数据源健康监控已启动
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: s1 (news)
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:397 智能数据源管理器已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_intelligent_source_manager" name="test_load_data_fails_when_all_sources_fail" time="10.029"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     intelligent_source_manager:intelligent_source_manager.py:186 数据源健康监控已启动
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: fail_src (stock)
+INFO     intelligent_source_manager:intelligent_source_manager.py:312 尝试从数据源加载: fail_src
+WARNING  intelligent_source_manager:intelligent_source_manager.py:331 从数据源 fail_src 加载失败: loader failure
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:397 智能数据源管理器已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_intelligent_source_manager" name="test_health_monitor_records_and_updates_status" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sources.test_intelligent_source_manager" name="test_update_source_config_changes_ranking" time="10.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     intelligent_source_manager:intelligent_source_manager.py:186 数据源健康监控已启动
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: fast (stock)
+INFO     intelligent_source_manager:intelligent_source_manager.py:232 注册数据源: slow (stock)
+INFO     intelligent_source_manager:intelligent_source_manager.py:379 更新数据源配置: fast
+INFO     intelligent_source_manager:intelligent_source_manager.py:193 数据源健康监控已停止
+INFO     intelligent_source_manager:intelligent_source_manager.py:397 智能数据源管理器已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-app
+  namespace: rqa2025-staging
+  labels:
+    app: rqa2025
+    component: app
+    environment: staging
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: app
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: app
+        environment: staging
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "staging"
+        - name: REDIS_URL
+          value: "redis://redis-service.rqa2025-staging:6379"
+        - name: DB_URL
+          value: "postgresql://user:password@postgres-service.rqa2025-staging:5432/rqa2025_staging"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5

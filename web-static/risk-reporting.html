@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 风险报告生成</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .report-status {
+            position: relative;
+        }
+        .report-status.generating::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">风险报告生成</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-file-alt text-red-600 mr-3"></i>
+                风险报告生成
+            </h1>
+            <p class="text-gray-600">风险报告模板管理、报告生成任务监控和报告历史查看</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-file-alt text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">报告模板</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="template-count">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-tasks text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">生成中任务</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="generating-tasks">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-history text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">历史报告</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="history-count">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-clock text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均生成时间</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-generation-time">--</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Templates -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">报告模板</h3>
+                    <button onclick="createTemplate()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-plus mr-2"></i>新建模板
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">模板名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">报告类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">频率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">最后生成</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="templatesBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Generation Tasks -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">生成任务</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">任务ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">模板</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">进度</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">开始时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="generationTasksBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Report History -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">报告历史</h3>
+                    <div class="flex space-x-2">
+                        <select id="reportTypeFilter" onchange="filterReports()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="all">全部类型</option>
+                            <option value="daily">日报</option>
+                            <option value="weekly">周报</option>
+                            <option value="monthly">月报</option>
+                        </select>
+                        <input type="date" id="dateFilter" onchange="filterReports()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">报告名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">生成时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">大小</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportHistoryBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadRiskReportingData() {
+            try {
+                const [templatesRes, tasksRes, historyRes, statsRes] = await Promise.all([
+                    fetch(getApiBaseUrl('/risk/reporting/templates')),
+                    fetch(getApiBaseUrl('/risk/reporting/tasks')),
+                    fetch(getApiBaseUrl('/risk/reporting/history')),
+                    fetch(getApiBaseUrl('/risk/reporting/stats'))
+                ]);
+
+                if (templatesRes.ok) {
+                    const templatesData = await templatesRes.json();
+                    renderTemplates(templatesData.templates || []);
+                }
+
+                if (tasksRes.ok) {
+                    const tasksData = await tasksRes.json();
+                    renderGenerationTasks(tasksData.tasks || []);
+                }
+
+                if (historyRes.ok) {
+                    const historyData = await historyRes.json();
+                    renderReportHistory(historyData.reports || []);
+                }
+
+                if (statsRes.ok) {
+                    const statsData = await statsRes.json();
+                    updateStatistics(statsData.stats || {});
+                }
+            } catch (error) {
+                console.error('加载风险报告数据失败:', error);
+            }
+        }
+
+        function updateStatistics(stats) {
+            document.getElementById('template-count').textContent = stats.template_count || 0;
+            document.getElementById('generating-tasks').textContent = stats.generating_tasks || 0;
+            document.getElementById('history-count').textContent = stats.history_count || 0;
+            document.getElementById('avg-generation-time').textContent = 
+                stats.avg_generation_time ? stats.avg_generation_time + ' 分钟' : '--';
+        }
+
+        function renderTemplates(templates) {
+            const tbody = document.getElementById('templatesBody');
+            
+            if (templates.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无报告模板</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = templates.map(template => {
+                const statusColor = {
+                    'active': 'bg-green-100 text-green-800',
+                    'inactive': 'bg-gray-100 text-gray-800',
+                    'paused': 'bg-yellow-100 text-yellow-800'
+                }[template.status] || 'bg-gray-100 text-gray-800';
+
+                const statusText = {
+                    'active': '启用',
+                    'inactive': '禁用',
+                    'paused': '暂停'
+                }[template.status] || template.status;
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${template.name || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${template.report_type || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${template.frequency || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${template.last_generated ? new Date(template.last_generated * 1000).toLocaleString('zh-CN') : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="generateReport('${template.id || template.name}')" class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button onclick="editTemplate('${template.id || template.name}')" class="text-yellow-600 hover:text-yellow-900 mr-3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteTemplate('${template.id || template.name}')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderGenerationTasks(tasks) {
+            const tbody = document.getElementById('generationTasksBody');
+            
+            if (tasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无生成任务</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = tasks.map(task => {
+                const statusColor = {
+                    'generating': 'bg-blue-100 text-blue-800',
+                    'completed': 'bg-green-100 text-green-800',
+                    'failed': 'bg-red-100 text-red-800',
+                    'pending': 'bg-yellow-100 text-yellow-800'
+                }[task.status] || 'bg-gray-100 text-gray-800';
+
+                const statusText = {
+                    'generating': '生成中',
+                    'completed': '已完成',
+                    'failed': '失败',
+                    'pending': '等待中'
+                }[task.status] || task.status;
+
+                return `
+                    <tr class="hover:bg-gray-50 report-status ${task.status}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${task.task_id || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${task.template_name || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                                </div>
+                                <span class="text-sm font-medium">${task.progress || 0}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${task.start_time ? new Date(task.start_time * 1000).toLocaleString('zh-CN') : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            ${task.status === 'generating' ? `
+                                <button onclick="cancelTask('${task.task_id}')" class="text-red-600 hover:text-red-900 mr-3">
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                            ` : ''}
+                            <button onclick="viewTaskDetails('${task.task_id}')" class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderReportHistory(reports) {
+            const tbody = document.getElementById('reportHistoryBody');
+            const typeFilter = document.getElementById('reportTypeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            let filtered = reports;
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(r => r.report_type === typeFilter);
+            }
+            if (dateFilter) {
+                const filterDate = new Date(dateFilter);
+                filtered = filtered.filter(r => {
+                    const reportDate = new Date(r.generated_at * 1000);
+                    return reportDate.toDateString() === filterDate.toDateString();
+                });
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无报告</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(report => {
+                const sizeKB = report.size ? (report.size / 1024).toFixed(2) : '--';
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${report.name || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${report.report_type || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${report.generated_at ? new Date(report.generated_at * 1000).toLocaleString('zh-CN') : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${sizeKB} KB
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="viewReport('${report.id || report.name}')" class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="downloadReport('${report.id || report.name}')" class="text-green-600 hover:text-green-900 mr-3">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button onclick="deleteReport('${report.id || report.name}')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterReports() {
+            loadRiskReportingData();
+        }
+
+        function createTemplate() {
+            alert('创建报告模板功能开发中');
+        }
+
+        function generateReport(templateId) {
+            if (!confirm('确定要生成报告吗？')) return;
+            // TODO: 调用API生成报告
+        }
+
+        function editTemplate(templateId) {
+            alert('编辑模板功能开发中');
+        }
+
+        function deleteTemplate(templateId) {
+            if (!confirm('确定要删除此模板吗？')) return;
+            // TODO: 调用API删除模板
+        }
+
+        function cancelTask(taskId) {
+            if (!confirm('确定要取消此任务吗？')) return;
+            // TODO: 调用API取消任务
+        }
+
+        function viewTaskDetails(taskId) {
+            alert('查看任务详情功能开发中');
+        }
+
+        function viewReport(reportId) {
+            alert('查看报告功能开发中');
+        }
+
+        function downloadReport(reportId) {
+            // TODO: 调用API下载报告
+            alert('下载报告功能开发中');
+        }
+
+        function deleteReport(reportId) {
+            if (!confirm('确定要删除此报告吗？')) return;
+            // TODO: 调用API删除报告
+        }
+
+        function refreshData() {
+            loadRiskReportingData();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRiskReportingData();
+            setInterval(loadRiskReportingData, 10000); // 每10秒刷新
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="1" time="55.498" timestamp="2025-11-16T23:05:40.478792+08:00" hostname="AIPC"><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_metrics_error_paths_and_shutdown_resilient" time="1.010"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:28 统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: s1
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:681 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: s1
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:700 关闭线程池失败: tp
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:708 关闭进程池失败: pp
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:716 关闭缓存管理器失败: cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:743 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 23:06:32,982 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+2025-11-16 23:06:33,006 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: s1
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: s1
+WARNING:enhanced_integration_manager:关闭线程池失败: tp
+WARNING:enhanced_integration_manager:关闭进程池失败: pp
+WARNING:enhanced_integration_manager:关闭缓存管理器失败: cache
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase></testsuite></testsuites>

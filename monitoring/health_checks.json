@@ -1,0 +1,34 @@
+{
+  "endpoints": [
+    {
+      "name": "database_health",
+      "url": "http://localhost:8000/health/db",
+      "interval": "30s",
+      "timeout": "10s"
+    },
+    {
+      "name": "cache_health",
+      "url": "http://localhost:8000/health/cache",
+      "interval": "30s",
+      "timeout": "10s"
+    },
+    {
+      "name": "trading_engine_health",
+      "url": "http://localhost:8000/health/trading",
+      "interval": "30s",
+      "timeout": "10s"
+    }
+  ],
+  "alerts": {
+    "database_down": {
+      "condition": "response_code != 200",
+      "severity": "critical",
+      "description": "数据库健康检查失败"
+    },
+    "cache_down": {
+      "condition": "response_time > 5.0",
+      "severity": "warning",
+      "description": "缓存响应时间过长"
+    }
+  }
+}

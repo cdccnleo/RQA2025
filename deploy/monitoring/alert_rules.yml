@@ -1,0 +1,232 @@
+groups:
+  - name: RQA2025_Alerts
+    rules:
+      # 服务健康检查告警
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "服务 {{ $labels.instance }} 已停止"
+          description: "服务 {{ $labels.instance }} 已停止运行超过1分钟"
+
+      # 高CPU使用率告警
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU使用率过高 {{ $labels.instance }}"
+          description: "CPU使用率超过80%持续5分钟"
+
+      # 高内存使用率告警
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "内存使用率过高 {{ $labels.instance }}"
+          description: "内存使用率超过85%持续5分钟"
+
+      # 磁盘空间不足告警
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "磁盘空间不足 {{ $labels.instance }}"
+          description: "磁盘使用率超过90%"
+
+      # 数据库连接数过高告警
+      - alert: HighDatabaseConnections
+        expr: pg_stat_activity_count > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "数据库连接数过高"
+          description: "PostgreSQL连接数超过100"
+
+      # Redis内存使用率告警
+      - alert: HighRedisMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis内存使用率过高"
+          description: "Redis内存使用率超过80%"
+
+      # API响应时间过长告警
+      - alert: HighAPIResponseTime
+        expr: http_request_duration_seconds{quantile="0.95"} > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API响应时间过长"
+          description: "95%的API请求响应时间超过2秒"
+
+      # 错误率过高告警
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "错误率过高"
+          description: "HTTP 5xx错误率超过5%"
+
+      # 模型推理延迟告警
+      - alert: HighModelInferenceLatency
+        expr: model_inference_duration_seconds > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "模型推理延迟过高"
+          description: "模型推理时间超过5秒"
+
+      # 交易执行失败告警
+      - alert: TradingExecutionFailure
+        expr: trading_order_failure_total > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "交易执行失败"
+          description: "检测到交易订单执行失败"
+
+      # 数据同步延迟告警
+      - alert: DataSyncDelay
+        expr: data_sync_delay_seconds > 300
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "数据同步延迟"
+          description: "数据同步延迟超过5分钟"
+
+      # 缓存命中率过低告警
+      - alert: LowCacheHitRate
+        expr: cache_hit_ratio < 0.8
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "缓存命中率过低"
+          description: "缓存命中率低于80%"
+
+      # 队列积压告警
+      - alert: QueueBacklog
+        expr: queue_length > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "队列积压"
+          description: "队列长度超过1000"
+
+      # 内存泄漏告警
+      - alert: MemoryLeak
+        expr: increase(process_resident_memory_bytes[1h]) > 1000000000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "可能的内存泄漏"
+          description: "进程内存使用量在过去1小时内增加超过1GB"
+
+      # 网络连接数过高告警
+      - alert: HighNetworkConnections
+        expr: node_netstat_Tcp_CurrEstab > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "网络连接数过高"
+          description: "TCP连接数超过10000"
+
+      # 日志错误率过高告警
+      - alert: HighLogErrorRate
+        expr: rate(log_entries_total{level="error"}[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "日志错误率过高"
+          description: "错误日志产生速率超过10条/分钟"
+
+      # 服务重启告警
+      - alert: ServiceRestart
+        expr: changes(process_start_time_seconds[5m]) > 0
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "服务重启 {{ $labels.instance }}"
+          description: "检测到服务重启"
+
+      # 配置变更告警
+      - alert: ConfigurationChange
+        expr: changes(config_version[1h]) > 0
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "配置发生变更"
+          description: "检测到配置文件变更"
+
+      # 备份失败告警
+      - alert: BackupFailure
+        expr: backup_status == 0
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "备份失败"
+          description: "数据备份失败"
+
+      # 许可证过期告警
+      - alert: LicenseExpiring
+        expr: license_days_remaining < 30
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "许可证即将过期"
+          description: "许可证将在30天内过期"
+
+      # 安全扫描失败告警
+      - alert: SecurityScanFailure
+        expr: security_scan_status == 0
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "安全扫描失败"
+          description: "安全扫描检测到问题"
+
+      # 性能基准测试失败告警
+      - alert: PerformanceTestFailure
+        expr: performance_test_status == 0
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "性能基准测试失败"
+          description: "性能基准测试未通过"
+
+      # 测试覆盖率下降告警
+      - alert: CoverageDrop
+        expr: test_coverage_percentage < 25
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "测试覆盖率下降"
+          description: "测试覆盖率低于25%" 

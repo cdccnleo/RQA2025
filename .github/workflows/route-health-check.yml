@@ -1,0 +1,46 @@
+name: Route Health Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/gateway/web/**'
+      - 'web-static/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/gateway/web/**'
+      - 'web-static/**'
+  workflow_dispatch:
+
+jobs:
+  route-health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install fastapi uvicorn
+    
+    - name: Run route health check
+      run: |
+        python scripts/check_routes_health.py
+    
+    - name: Run API endpoint tests
+      run: |
+        pip install pytest requests
+        pytest tests/dashboard_verification/test_api_endpoints.py -v
+    
+    - name: Run WebSocket tests
+      run: |
+        pip install websockets
+        pytest tests/dashboard_verification/test_websocket_connections.py -v
+

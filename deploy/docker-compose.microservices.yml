@@ -1,0 +1,211 @@
+version: '3.8'
+
+services:
+  # API网关服务
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.api-gateway
+    container_name: rqa2025-api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      - GATEWAY_PORT=8000
+    volumes:
+      - ../cache:/app/cache
+      - ../logs:/app/logs
+      - ../config:/app/config
+    depends_on:
+      - engine-service
+      - infrastructure-service
+      - business-service
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+  # 引擎服务
+  engine-service:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.engine-service
+    container_name: rqa2025-engine-service
+    ports:
+      - "8001:8001"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      - SERVICE_PORT=8001
+      - LOG_LEVEL=INFO
+    volumes:
+      - ../cache:/app/cache
+      - ../logs:/app/logs
+      - ../config:/app/config
+      - ../models:/app/models
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 基础设施服务
+  infrastructure-service:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.infrastructure-service
+    container_name: rqa2025-infrastructure-service
+    ports:
+      - "8002:8002"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      - SERVICE_PORT=8002
+      - LOG_LEVEL=INFO
+    volumes:
+      - ../cache:/app/cache
+      - ../logs:/app/logs
+      - ../config:/app/config
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 业务服务
+  business-service:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.business-service
+    container_name: rqa2025-business-service
+    ports:
+      - "8003:8003"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      - SERVICE_PORT=8003
+      - LOG_LEVEL=INFO
+    volumes:
+      - ../cache:/app/cache
+      - ../logs:/app/logs
+      - ../config:/app/config
+      - ../data:/app/data
+      - ../models:/app/models
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 监控服务
+  monitoring:
+    image: prom/prometheus:latest
+    container_name: rqa2025-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+  # Grafana仪表板
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rqa2025-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+  # Jaeger分布式追踪
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: rqa2025-jaeger
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: rqa2025-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+  # Kibana
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    container_name: rqa2025-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+  # Fluentd日志收集
+  fluentd:
+    image: fluent/fluentd-kubernetes-daemonset:v1.14-debian-elasticsearch7-1
+    container_name: rqa2025-fluentd
+    volumes:
+      - ./monitoring/fluentd/conf:/fluentd/etc
+      - ../logs:/var/log/app
+    environment:
+      - FLUENT_ELASTICSEARCH_HOST=elasticsearch
+      - FLUENT_ELASTICSEARCH_PORT=9200
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - rqa2025-network
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:
+
+networks:
+  rqa2025-network:
+    driver: bridge 

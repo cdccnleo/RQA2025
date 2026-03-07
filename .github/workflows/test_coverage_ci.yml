@@ -1,0 +1,111 @@
+name: Test Coverage CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist psutil
+
+    - name: Create conda environment
+      run: |
+        conda create -n rqa python=3.9 -y
+        conda activate rqa
+        pip install -e .
+
+    - name: Run unit tests with coverage
+      run: |
+        conda activate rqa
+        pytest tests/unit/ -v --cov=src --cov-report=xml --cov-report=term-missing --maxfail=5
+
+    - name: Run integration tests
+      run: |
+        conda activate rqa
+        pytest tests/e2e/ -v --maxfail=3
+
+    - name: Generate coverage report
+      run: |
+        conda activate rqa
+        coverage xml
+        coverage html -d coverage-html
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
+    - name: Check coverage thresholds
+      run: |
+        conda activate rqa
+        python -c "
+        import xml.etree.ElementTree as ET
+        import sys
+
+        tree = ET.parse('coverage.xml')
+        root = tree.getroot()
+
+        # 查找总体覆盖率
+        total_coverage = 0.0
+        for package in root.findall('.//package'):
+            coverage = float(package.get('line-rate', 0))
+            total_coverage = max(total_coverage, coverage)
+
+        # 也可以从summary中获取
+        for cls in root.findall('.//class'):
+            if cls.get('name') == '':
+                total_coverage = float(cls.get('line-rate', 0))
+                break
+
+        coverage_percent = total_coverage * 100
+        print(f'总体测试覆盖率: {coverage_percent:.1f}%')
+
+        # 检查各个模块的覆盖率
+        infrastructure_coverage = {}
+        for package in root.findall('.//package'):
+            name = package.get('name', '')
+            if 'infrastructure' in name:
+                coverage = float(package.get('line-rate', 0)) * 100
+                infrastructure_coverage[name] = coverage
+
+        print('基础设施模块覆盖率:')
+        for module, cov in infrastructure_coverage.items():
+            print(f'  {module}: {cov:.1f}%')
+
+        # 质量门禁检查
+        min_coverage = 70.0  # 最低覆盖率要求
+
+        if coverage_percent < min_coverage:
+            print(f'❌ 覆盖率 {coverage_percent:.1f}% 低于最低要求 {min_coverage}%')
+            sys.exit(1)
+        else:
+            print(f'✅ 覆盖率 {coverage_percent:.1f}% 达到要求')
+        "
+
+    - name: Archive coverage reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: |
+          coverage-html/
+          coverage.xml
+          test_logs/

@@ -1,0 +1,79 @@
+# RQA2025 开发环境配置
+# 此配置仅用于开发环境，覆盖主配置中的默认值
+
+environment: development
+debug: true
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1  # 开发环境使用单 worker
+  reload: true  # 代码变更自动重载
+
+# 数据库配置
+database:
+  timescale:
+    host: "localhost"
+    port: 5432
+    database: "rqa2025_dev"
+    user: "postgres"
+    password: "postgres"  # 开发环境使用简单密码
+    
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 1  # 使用 db1 避免与生产环境冲突
+
+# 日志配置
+logging:
+  level: "DEBUG"
+  format: "text"  # 开发环境使用文本格式更易读
+  output: "stdout"
+
+# 市场数据配置
+market_data:
+  use_mock: true  # 开发环境使用模拟数据
+  fallback_to_mock: true
+  
+  sources:
+    - name: "tushare"
+      enabled: false  # 开发环境禁用真实数据源
+    - name: "akshare"
+      enabled: false
+
+# 交易执行配置
+trading:
+  enabled: true
+  mode: "paper"  # 开发环境使用模拟交易
+
+# 风控配置
+risk:
+  enabled: true
+  check_interval_seconds: 10
+  
+  default_rules:
+    position_limit:
+      max_position_value: 100000  # 开发环境使用较小限额
+    loss_limit:
+      daily_loss_limit: 10000
+
+# API配置
+api:
+  rate_limit:
+    enabled: false  # 开发环境禁用限流
+    
+  cors:
+    enabled: true
+    allow_origins: ["*"]  # 开发环境允许所有来源
+
+# WebSocket配置
+websocket:
+  max_connections: 100  # 开发环境减少连接数
+
+# 性能优化
+performance:
+  cache:
+    enabled: true
+    type: "memory"  # 开发环境使用内存缓存
+    ttl: 60  # 1分钟

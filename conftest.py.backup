@@ -1,0 +1,152 @@
+import sys
+import os
+import asyncio
+import pytest
+from unittest.mock import AsyncMock, MagicMock
+
+# 将项目根目录添加到Python路径
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
+def setup_windows_encoding():
+    """设置Windows编码"""
+    import os
+    import sys
+    import platform
+
+    if platform.system() == 'Windows':
+        os.environ['PYTHONIOENCODING'] = 'utf-8'
+        os.environ['PYTHONLEGACYWINDOWSSTDIO'] = 'utf-8'
+
+        if hasattr(sys.stdout, 'reconfigure'):
+            try:
+                sys.stdout.reconfigure(encoding='utf-8')
+                sys.stderr.reconfigure(encoding='utf-8')
+            except Exception:
+                pass
+
+# 自动设置Windows编码
+setup_windows_encoding()
+
+
+# Async test fixtures and utilities
+@pytest.fixture
+def event_loop():
+    """创建事件循环fixture"""
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture
+def async_mock():
+    """异步mock fixture"""
+    return AsyncMock()
+
+
+@pytest.fixture(scope="session")
+def mock_data_request():
+    """模拟数据请求"""
+    from src.interfaces.standard_interfaces import DataRequest, DataSourceType
+    from datetime import datetime
+
+    return DataRequest(
+        source_type=DataSourceType.STOCK,
+        symbol="000001",
+        start_date=datetime(2024, 1, 1),
+        end_date=datetime(2024, 1, 31),
+        metadata={"test": True}
+    )
+
+
+@pytest.fixture(scope="session")
+def mock_data_response():
+    """模拟数据响应"""
+    from src.interfaces.standard_interfaces import DataResponse, DataSourceType
+    from datetime import datetime
+
+    return DataResponse(
+        request=None,  # Will be set by test
+        data={"price": 100.0, "volume": 1000},
+        metadata={"source": "test"},
+        timestamp=datetime.now(),
+        success=True
+    )
+
+
+@pytest.fixture
+def mock_adapter():
+    """模拟数据适配器"""
+    mock = MagicMock()
+    mock.get_data = MagicMock()
+    return mock
+
+
+@pytest.fixture
+def async_config():
+    """异步处理器配置"""
+    try:
+        from src.async.core.async_data_processor import AsyncConfig
+    except ImportError:
+        # 如果导入失败，使用默认配置
+        from dataclasses import dataclass
+        @dataclass
+        class AsyncConfig:
+            max_concurrent_requests: int = 3
+            request_timeout: float = 10.0
+            max_workers: int = 2
+            batch_size: int = 50
+    return AsyncConfig(
+        max_concurrent_requests=3,
+        request_timeout=10.0,
+        max_workers=2,
+        batch_size=50
+    )
+
+
+@pytest.fixture
+async def async_processor(async_config, mock_adapter):
+    """异步数据处理器fixture"""
+    from src.async.core.async_data_processor import AsyncDataProcessor
+
+    processor = AsyncDataProcessor(async_config)
+
+    # Mock the integration manager to avoid real dependencies
+    mock_integration_manager = MagicMock()
+    mock_integration_manager._initialized = True
+    mock_integration_manager.get_health_check_bridge.return_value = None
+    processor.integration_manager = mock_integration_manager
+
+    yield processor
+
+    # Cleanup
+    if hasattr(processor, 'thread_pool'):
+        processor.thread_pool.shutdown(wait=False)
+    if hasattr(processor, 'process_pool') and processor.process_pool:
+        processor.process_pool.shutdown(wait=False)
+
+
+@pytest.fixture
+def task_scheduler():
+    """任务调度器fixture"""
+    from src.async.core.task_scheduler import TaskScheduler
+    scheduler = TaskScheduler(max_workers=2, queue_size=100)
+    yield scheduler
+    # Cleanup
+    if scheduler.is_running:
+        scheduler.stop()
+
+
+# 异步测试辅助函数
+def async_test(coro):
+    """异步测试装饰器"""
+    def wrapper(*args, **kwargs):
+        loop = asyncio.new_event_loop()
+        try:
+            return loop.run_until_complete(coro(*args, **kwargs))
+        finally:
+            loop.close()
+    return wrapper
+
+
+# pytest-asyncio 兼容性
+pytest_plugins = ["pytest_asyncio"]

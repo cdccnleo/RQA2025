@@ -1,0 +1,84 @@
+{
+  "pipeline_id": "ci_cd_20251206_114116",
+  "timestamp": "2025-12-06T11:41:16.199922",
+  "stages": {
+    "environment": {
+      "status": "completed",
+      "python_version": "3.9.23",
+      "installed_packages": {
+        "pytest": true,
+        "pytest-cov": true,
+        "pytest-xdist": true,
+        "black": true,
+        "flake8": true
+      },
+      "directory_structure": {
+        "src": true,
+        "tests": true,
+        "scripts": true,
+        "docs": true
+      },
+      "all_requirements_met": true
+    },
+    "quality": {
+      "status": "failed",
+      "error": "'NoneType' object has no attribute 'split'"
+    },
+    "unit_tests": {
+      "status": "completed",
+      "execution_time": 4.655430555343628,
+      "passed": false,
+      "error": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --json-report --json-report-file=ci_cd_artifacts/unit_test_results.json\n  inifile: C:\\PythonProject\\RQA2025\\tests\\pytest.ini\n  rootdir: C:\\PythonProject\\RQA2025\\tests\n\n"
+    },
+    "integration_tests": {
+      "status": "completed",
+      "passed": false,
+      "execution_time": 3.6170973777770996,
+      "error": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --json-report --json-report-file=ci_cd_artifacts/integration_test_results.json\n  inifile: C:\\PythonProject\\RQA2025\\tests\\pytest.ini\n  rootdir: C:\\PythonProject\\RQA2025\\tests\n\n"
+    },
+    "security": {
+      "status": "completed",
+      "passed": false,
+      "vulnerabilities_found": 0,
+      "execution_time": 1.9205257892608643,
+      "error": "w,medium,high}]\n                   [-f {csv,custom,html,json,screen,txt,xml,yaml}]\n                   [--msg-template MSG_TEMPLATE] [-o [OUTPUT_FILE]] [-v] [-d]\n                   [-q] [--ignore-nosec] [-x EXCLUDED_PATHS] [-b BASELINE]\n                   [--ini INI_PATH] [--exit-zero] [--version]\n                   [targets ...]\n__main__.py: error: argument -o/--output: can't open 'ci_cd_artifacts/security_report.json': [Errno 2] No such file or directory: 'ci_cd_artifacts/security_report.json'\n"
+    }
+  },
+  "quality_gates": {
+    "code_quality": "unknown",
+    "unit_tests": "failed",
+    "integration_tests": "failed",
+    "e2e_tests": "passed",
+    "performance": "passed",
+    "security": "passed",
+    "coverage": "passed",
+    "overall": "failed"
+  },
+  "metrics": {
+    "total_stages": 5,
+    "passed_stages": 0,
+    "failed_stages": 3,
+    "total_execution_time": 10.193053722381592,
+    "quality_score": 0,
+    "test_coverage": 0.0,
+    "vulnerabilities": 0,
+    "stage_success_rate": 0.0
+  },
+  "artifacts": [
+    {
+      "name": "pipeline_results",
+      "path": "C:\\PythonProject\\RQA2025\\.ci_cd\\reports\\pipeline_results_20251206_114350.json",
+      "type": "pipeline_report"
+    }
+  ],
+  "notifications": [
+    {
+      "type": "alert",
+      "priority": "high",
+      "title": "🚨 CI/CD流水线失败",
+      "message": "CI/CD流水线执行失败，存在阻塞性问题需要立即处理",
+      "details": "失败阶段数: 3, 成功率: 0.0%"
+    }
+  ],
+  "overall_status": "failed"
+}

@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check-mock-data
+        name: 检查模拟数据使用
+        entry: bash -c 'if grep -r "_get_mock_" src/gateway/web/*_routes.py; then echo "❌ 发现API路由中使用模拟数据函数，量化交易系统要求不使用模拟数据"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+      
+      - id: check-hardcoded-metrics
+        name: 检查硬编码性能指标
+        entry: bash -c 'if grep -r "base_latency\s*=\s*[0-9]" src/gateway/web/*.py; then echo "❌ 发现硬编码的性能估算值，量化交易系统要求使用真实监控数据"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+      
+      - id: check-mock-imports
+        name: 检查模拟数据导入
+        entry: bash -c 'if grep -r "from.*_get_mock_\|import.*_get_mock_" src/gateway/web/*_routes.py; then echo "❌ 发现导入模拟数据函数，请移除"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true

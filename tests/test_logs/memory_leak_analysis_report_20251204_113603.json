@@ -1,0 +1,115 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-12-04T11:36:03.581759",
+    "test_duration_total_minutes": 13,
+    "tests_executed": 3,
+    "framework_version": "1.0.0"
+  },
+  "test_results": {
+    "memory_pressure_test": {
+      "test_duration_seconds": 300,
+      "total_snapshots": 30,
+      "memory_growth_rate_mb_per_hour": 38.73910871502688,
+      "is_memory_leak_detected": true,
+      "leak_confidence_score": 0.7747821743005376,
+      "suspected_leak_sources": [],
+      "recommendations": [
+        "⚠️ 检测到内存泄漏趋势，建议监控并优化",
+        "实施定期内存监控和告警机制",
+        "优化对象生命周期管理，避免长期持有引用",
+        "使用弱引用处理缓存对象",
+        "定期执行垃圾回收以释放内存",
+        "考虑内存池化技术减少分配开销"
+      ],
+      "memory_trend_analysis": {
+        "initial_memory_mb": 80.37109375,
+        "final_memory_mb": 88.2109375,
+        "memory_increase_mb": 7.83984375,
+        "growth_rate_mb_per_hour": 38.73910871502688,
+        "memory_volatility": 1.380765291516294,
+        "gc_pressure_indicators": {
+          "initial_gc_objects": 64879,
+          "final_gc_objects": 65308,
+          "gc_objects_growth": 429,
+          "avg_gc_objects": 65153.4
+        }
+      }
+    },
+    "trading_memory_test": {
+      "test_duration_seconds": 300,
+      "total_snapshots": 90,
+      "memory_growth_rate_mb_per_hour": 5.4192172063000195,
+      "is_memory_leak_detected": false,
+      "leak_confidence_score": 0.10838434412600038,
+      "suspected_leak_sources": [],
+      "recommendations": [
+        "实施定期内存监控和告警机制",
+        "优化对象生命周期管理，避免长期持有引用",
+        "使用弱引用处理缓存对象",
+        "定期执行垃圾回收以释放内存",
+        "考虑内存池化技术减少分配开销"
+      ],
+      "memory_trend_analysis": {
+        "initial_memory_mb": 80.37109375,
+        "final_memory_mb": 87.046875,
+        "memory_increase_mb": 6.67578125,
+        "growth_rate_mb_per_hour": 5.4192172063000195,
+        "memory_volatility": 0.958968596059937,
+        "gc_pressure_indicators": {
+          "initial_gc_objects": 64879,
+          "final_gc_objects": 66992,
+          "gc_objects_growth": 2113,
+          "avg_gc_objects": 65913.95555555556
+        }
+      }
+    },
+    "stability_test": {
+      "test_duration_seconds": 180,
+      "total_snapshots": 100,
+      "memory_growth_rate_mb_per_hour": 5.306993489938511,
+      "is_memory_leak_detected": false,
+      "leak_confidence_score": 0.10613986979877023,
+      "suspected_leak_sources": [],
+      "recommendations": [
+        "实施定期内存监控和告警机制",
+        "优化对象生命周期管理，避免长期持有引用",
+        "使用弱引用处理缓存对象",
+        "定期执行垃圾回收以释放内存",
+        "考虑内存池化技术减少分配开销"
+      ],
+      "memory_trend_analysis": {
+        "initial_memory_mb": 87.55078125,
+        "final_memory_mb": 86.9453125,
+        "memory_increase_mb": -0.60546875,
+        "growth_rate_mb_per_hour": 5.306993489938511,
+        "memory_volatility": 0.5928845923892592,
+        "gc_pressure_indicators": {
+          "initial_gc_objects": 65239,
+          "final_gc_objects": 67190,
+          "gc_objects_growth": 1951,
+          "avg_gc_objects": 66563.02
+        }
+      }
+    }
+  },
+  "overall_assessment": {
+    "memory_health_status": "需要关注",
+    "leak_detected": true,
+    "avg_growth_rate": 16.48843980375514,
+    "avg_confidence_score": 0.32976879607510273,
+    "risk_level": "high"
+  },
+  "consolidated_recommendations": [
+    "使用弱引用处理缓存对象",
+    "考虑内存池化技术减少分配开销",
+    "⚠️ 检测到内存泄漏趋势，建议监控并优化",
+    "定期执行垃圾回收以释放内存",
+    "实施定期内存监控和告警机制",
+    "优化对象生命周期管理，避免长期持有引用"
+  ],
+  "performance_insights": {
+    "most_stable_test": "stability_test",
+    "most_problematic_test": "memory_pressure_test",
+    "stability_score": 17.557800981224304
+  }
+}

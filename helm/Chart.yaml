@@ -1,0 +1,39 @@
+apiVersion: v2
+name: risk-control
+description: RQA2025 Risk Control Layer - Enterprise-grade quantitative trading risk management system
+type: application
+version: 2.0.0
+appVersion: "2.0.0"
+keywords:
+  - risk-management
+  - quantitative-trading
+  - financial-services
+  - microservices
+  - ai-ml
+home: https://github.com/rqa2025/risk-control
+sources:
+  - https://github.com/rqa2025/risk-control
+maintainers:
+  - name: RQA2025 Team
+    email: team@rqa2025.com
+dependencies:
+  - name: redis
+    version: "17.11.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+  - name: postgresql
+    version: "12.8.1"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: rabbitmq
+    version: "11.16.2"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: rabbitmq.enabled
+  - name: prometheus
+    version: "19.7.2"
+    repository: "https://prometheus-community.github.io/helm-charts"
+    condition: monitoring.enabled
+  - name: grafana
+    version: "6.58.7"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: monitoring.enabled

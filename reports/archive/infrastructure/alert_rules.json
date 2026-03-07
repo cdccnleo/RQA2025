@@ -1,0 +1,68 @@
+{
+  "critical_alerts": {
+    "high_cpu_usage": {
+      "condition": "cpu_usage > 90",
+      "duration": "5m",
+      "severity": "critical",
+      "action": "立即通知运维团队"
+    },
+    "high_memory_usage": {
+      "condition": "memory_usage > 95",
+      "duration": "3m",
+      "severity": "critical",
+      "action": "立即重启服务"
+    },
+    "service_down": {
+      "condition": "service_health_score = 0",
+      "duration": "1m",
+      "severity": "critical",
+      "action": "立即启动故障恢复流程"
+    },
+    "security_breach": {
+      "condition": "suspicious_activities > 10",
+      "duration": "1m",
+      "severity": "critical",
+      "action": "立即隔离系统并通知安全团队"
+    }
+  },
+  "warning_alerts": {
+    "moderate_cpu_usage": {
+      "condition": "cpu_usage > 70",
+      "duration": "10m",
+      "severity": "warning",
+      "action": "监控并准备扩容"
+    },
+    "moderate_memory_usage": {
+      "condition": "memory_usage > 80",
+      "duration": "5m",
+      "severity": "warning",
+      "action": "检查内存泄漏"
+    },
+    "high_error_rate": {
+      "condition": "error_rate > 5",
+      "duration": "5m",
+      "severity": "warning",
+      "action": "检查应用日志"
+    },
+    "low_availability": {
+      "condition": "availability < 99.5",
+      "duration": "15m",
+      "severity": "warning",
+      "action": "检查服务状态"
+    }
+  },
+  "info_alerts": {
+    "deployment_completed": {
+      "condition": "deployment_status = success",
+      "duration": "1m",
+      "severity": "info",
+      "action": "记录部署日志"
+    },
+    "backup_completed": {
+      "condition": "backup_status = success",
+      "duration": "1m",
+      "severity": "info",
+      "action": "记录备份日志"
+    }
+  }
+}

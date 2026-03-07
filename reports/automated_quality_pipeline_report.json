@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-08-31T15:34:56.729746",
+  "pipeline_status": "completed",
+  "stages": {
+    "consistency_check": {
+      "success": false,
+      "return_code": 2,
+      "stdout": "",
+      "stderr": "usage: consistency_checker.py [-h] [--project-root PROJECT_ROOT] [--quick]\n                              [--focus FOCUS [FOCUS ...]]\nconsistency_checker.py: error: unrecognized arguments: --output-format json --output-file C:\\PythonProject\\RQA2025\\reports\\consistency_report.json --threshold 95\n",
+      "report_file": "C:\\PythonProject\\RQA2025\\reports\\consistency_report.json"
+    },
+    "documentation_sync": {
+      "success": false,
+      "return_code": 2,
+      "stdout": "",
+      "stderr": "usage: doc_sync.py [-h] [--project-root PROJECT_ROOT] [--layer LAYER]\n                   [--generate-template]\ndoc_sync.py: error: unrecognized arguments: --generate-report --output C:\\PythonProject\\RQA2025\\reports\\doc_sync_report.json\n",
+      "report_file": "C:\\PythonProject\\RQA2025\\reports\\doc_sync_report.json"
+    },
+    "version_check": {
+      "success": false,
+      "return_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\PythonProject\\RQA2025\\scripts\\version_management\\version_manager.py\", line 22, in <module>\n    import semver\nModuleNotFoundError: No module named 'semver'\n",
+      "report_file": "C:\\PythonProject\\RQA2025\\reports\\version_report.json"
+    },
+    "quality_gate": {
+      "success": false,
+      "return_code": 1,
+      "stdout": "",
+      "stderr": "  File \"C:\\PythonProject\\RQA2025\\scripts\\quality_assurance\\generate_quality_report.py\", line 238\n    print(\"\n           ^\nSyntaxError: EOL while scanning string literal\n",
+      "report_file": "C:\\PythonProject\\RQA2025\\reports\\quality_gate_report.json"
+    }
+  },
+  "summary": {
+    "total_stages": 4,
+    "successful_stages": 0,
+    "failed_stages": 4,
+    "overall_success": false
+  },
+  "recommendations": [
+    "❌ 发现失败阶段: consistency_check, documentation_sync, version_check, quality_gate",
+    "🔧 修复一致性检查：检查consistency_checker.py脚本和配置",
+    "🔧 修复文档同步：检查doc_sync.py脚本和模板配置",
+    "🔧 修复版本检查：检查version_manager.py脚本和版本配置",
+    "🔧 修复质量门禁：检查generate_quality_report.py脚本"
+  ]
+}

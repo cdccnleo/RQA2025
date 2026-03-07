@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-12-01T21:19:12.923419",
+  "summary": {
+    "total_layers": 6,
+    "successful_imports": 0,
+    "failed_imports": 6,
+    "success_rate": "0/6 (0.0%)",
+    "overall_status": "PARTIAL_SUCCESS"
+  },
+  "detailed_results": [
+    {
+      "status": "FAILED",
+      "layer": "核心服务层",
+      "module": "src.core.core_services",
+      "class": "ServiceRegistry",
+      "error": "No module named 'src.core'"
+    },
+    {
+      "status": "FAILED",
+      "layer": "数据管理层",
+      "module": "src.data.adapters",
+      "class": "AdapterComponent",
+      "error": "No module named 'src.data'"
+    },
+    {
+      "status": "FAILED",
+      "layer": "特征分析层",
+      "module": "src.features.core",
+      "class": "FeatureEngineer",
+      "error": "No module named 'src.features.core'"
+    },
+    {
+      "status": "FAILED",
+      "layer": "机器学习层",
+      "module": "src.ml.core",
+      "class": "MLCore",
+      "error": "No module named 'src.ml'"
+    },
+    {
+      "status": "FAILED",
+      "layer": "监控层",
+      "module": "src.monitoring.monitoring_system",
+      "class": "MonitoringSystem",
+      "error": "No module named 'src.monitoring'"
+    },
+    {
+      "status": "FAILED",
+      "layer": "策略服务层",
+      "module": "src.strategy.strategies",
+      "class": "BaseStrategy",
+      "error": "No module named 'src.strategy'"
+    }
+  ]
+}

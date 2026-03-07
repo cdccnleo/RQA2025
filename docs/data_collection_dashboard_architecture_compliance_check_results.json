@@ -1,0 +1,295 @@
+{
+  "timestamp": "2026-01-09T22:53:41.024194",
+  "frontend_checks": {
+    "data_sources_config": {
+      "file_exists": true,
+      "api_calls": {
+        "status": "warning",
+        "message": "data_sources_config API调用: 部分模式找到 (2/3)",
+        "found_patterns": [
+          "POST|GET|PUT|DELETE",
+          "WebSocket|ws://|new WebSocket"
+        ],
+        "missing_patterns": [
+          "fetch\\s*\\([^)]*getApiBaseUrl|fetch\\s*\\([^)]*['\\\"]/api/v1"
+        ]
+      }
+    },
+    "data_quality_monitor": {
+      "file_exists": true,
+      "api_calls": {
+        "status": "passed",
+        "message": "data_quality_monitor API调用: 所有模式都找到",
+        "found_patterns": [
+          "fetch\\s*\\([^)]*getApiBaseUrl|fetch\\s*\\([^)]*['\\\"]/api/v1",
+          "POST|GET|PUT|DELETE",
+          "WebSocket|ws://|new WebSocket"
+        ]
+      }
+    },
+    "data_performance_monitor": {
+      "file_exists": true,
+      "api_calls": {
+        "status": "passed",
+        "message": "data_performance_monitor API调用: 所有模式都找到",
+        "found_patterns": [
+          "fetch\\s*\\([^)]*getApiBaseUrl|fetch\\s*\\([^)]*['\\\"]/api/v1",
+          "POST|GET|PUT|DELETE",
+          "WebSocket|ws://|new WebSocket"
+        ]
+      }
+    }
+  },
+  "backend_checks": {
+    "datasource_routes": {
+      "file_exists": true,
+      "api_routes": {
+        "status": "passed",
+        "message": "datasource_routes API路由: 所有模式都找到",
+        "found_patterns": [
+          "@router\\.(get|post|put|delete)\\s*\\(",
+          "async def\\s+\\w+\\s*\\("
+        ]
+      }
+    },
+    "data_source_config_manager": {
+      "file_exists": true,
+      "api_routes": {
+        "status": "failed",
+        "message": "data_source_config_manager API路由: 未找到任何模式",
+        "missing_patterns": [
+          "@router\\.(get|post|put|delete)\\s*\\(",
+          "async def\\s+\\w+\\s*\\("
+        ]
+      }
+    },
+    "data_collectors": {
+      "file_exists": true,
+      "api_routes": {
+        "status": "warning",
+        "message": "data_collectors API路由: 部分模式找到 (1/2)",
+        "found_patterns": [
+          "async def\\s+\\w+\\s*\\("
+        ],
+        "missing_patterns": [
+          "@router\\.(get|post|put|delete)\\s*\\("
+        ]
+      }
+    },
+    "data_management_routes": {
+      "file_exists": true,
+      "api_routes": {
+        "status": "passed",
+        "message": "data_management_routes API路由: 所有模式都找到",
+        "found_patterns": [
+          "@router\\.(get|post|put|delete)\\s*\\(",
+          "async def\\s+\\w+\\s*\\("
+        ]
+      }
+    }
+  },
+  "infrastructure_compliance": {
+    "data_source_config_manager": {
+      "unified_config_manager": {
+        "status": "passed",
+        "message": "UnifiedConfigManager使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.infrastructure\\.config\\.core\\.unified_manager_enhanced import UnifiedConfigManager",
+          "UnifiedConfigManager\\s*\\(",
+          "self\\.config_manager\\s*="
+        ]
+      },
+      "unified_logger": {
+        "status": "passed",
+        "message": "统一日志系统使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.infrastructure\\.logging\\.core\\.unified_logger import get_unified_logger",
+          "get_unified_logger\\s*\\("
+        ]
+      }
+    }
+  },
+  "core_services_compliance": {
+    "datasource_routes": {
+      "eventbus": {
+        "status": "passed",
+        "message": "datasource_routes EventBus使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.core\\.event_bus\\.core import EventBus",
+          "EventBus\\s*\\(|event_bus\\s*=",
+          "event_bus\\.(publish|subscribe)"
+        ]
+      },
+      "service_container": {
+        "status": "passed",
+        "message": "datasource_routes ServiceContainer使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.core\\.(service_container|container)\\.container import (ServiceContainer|DependencyContainer)",
+          "(ServiceContainer|DependencyContainer)\\s*\\(|container\\s*=",
+          "container\\.(register|get_service)"
+        ]
+      },
+      "orchestrator": {
+        "status": "warning",
+        "message": "datasource_routes BusinessProcessOrchestrator使用: 部分模式找到 (2/3)",
+        "found_patterns": [
+          "from src\\.core\\.orchestration\\.orchestrator_refactored import BusinessProcessOrchestrator",
+          "BusinessProcessOrchestrator\\s*\\(|orchestrator\\s*="
+        ],
+        "missing_patterns": [
+          "orchestrator\\.(start_process|update_process)"
+        ]
+      }
+    },
+    "data_collectors": {
+      "eventbus": {
+        "status": "passed",
+        "message": "data_collectors EventBus使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.core\\.event_bus\\.core import EventBus",
+          "EventBus\\s*\\(|event_bus\\s*=",
+          "event_bus\\.(publish|subscribe)"
+        ]
+      },
+      "service_container": {
+        "status": "passed",
+        "message": "data_collectors ServiceContainer使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.core\\.(service_container|container)\\.container import (ServiceContainer|DependencyContainer)",
+          "(ServiceContainer|DependencyContainer)\\s*\\(|container\\s*=",
+          "container\\.(register|get_service)"
+        ]
+      },
+      "orchestrator": {
+        "status": "passed",
+        "message": "data_collectors BusinessProcessOrchestrator使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.core\\.orchestration\\.orchestrator_refactored import BusinessProcessOrchestrator",
+          "BusinessProcessOrchestrator\\s*\\(|orchestrator\\s*=",
+          "orchestrator\\.(start_process|update_process)"
+        ]
+      }
+    }
+  },
+  "data_layer_compliance": {
+    "data_collectors": {
+      "adapter_factory": {
+        "status": "passed",
+        "message": "统一适配器工厂使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.core\\.integration\\.unified_business_adapters import (get_unified_adapter_factory|BusinessLayerType)",
+          "get_unified_adapter_factory\\s*\\(",
+          "BusinessLayerType\\.DATA"
+        ]
+      },
+      "adapter_usage": {
+        "status": "passed",
+        "message": "数据适配器使用: 所有模式都找到",
+        "found_patterns": [
+          "adapter\\s*=|Adapter\\s*\\(",
+          "collect_from_\\w+_adapter"
+        ]
+      }
+    },
+    "data_management_service": {
+      "quality_monitor": {
+        "status": "warning",
+        "message": "UnifiedQualityMonitor使用: 部分模式找到 (1/2)",
+        "found_patterns": [
+          "UnifiedQualityMonitor\\s*\\(|quality_monitor\\s*="
+        ],
+        "missing_patterns": [
+          "from src\\.data\\.quality\\.unified_quality_monitor import.*UnifiedQualityMonitor"
+        ]
+      },
+      "performance_monitor": {
+        "status": "passed",
+        "message": "PerformanceMonitor使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.data\\.monitoring\\.performance_monitor import PerformanceMonitor",
+          "PerformanceMonitor\\s*\\(|performance_monitor\\s*="
+        ]
+      },
+      "data_lake_manager": {
+        "status": "passed",
+        "message": "DataLakeManager使用: 所有模式都找到",
+        "found_patterns": [
+          "from src\\.data\\.lake\\.data_lake_manager import DataLakeManager",
+          "DataLakeManager\\s*\\(|data_lake_manager\\s*="
+        ]
+      }
+    }
+  },
+  "websocket_integration": {
+    "datasource_routes": {
+      "status": "passed",
+      "message": "WebSocket广播: 所有模式都找到",
+      "found_patterns": [
+        "broadcast_data_source_change",
+        "websocket_manager\\.broadcast",
+        "WebSocket|websocket"
+      ]
+    },
+    "frontend": {
+      "status": "warning",
+      "message": "前端WebSocket连接: 部分模式找到 (2/3)",
+      "found_patterns": [
+        "new WebSocket\\s*\\(",
+        "websocket\\.(onmessage|onopen|onclose)"
+      ],
+      "missing_patterns": [
+        "ws://|wss://"
+      ]
+    }
+  },
+  "persistence_implementation": {
+    "data_source_config": {
+      "status": "passed",
+      "message": "配置持久化: 文件系统 + PostgreSQL双重存储已实现",
+      "filesystem": {
+        "status": "passed",
+        "message": "配置持久化（文件系统）: 所有模式都找到",
+        "found_patterns": [
+          "save_config\\s*\\(|load_config\\s*\\(",
+          "json\\.(dump|load)",
+          "\\.json"
+        ]
+      },
+      "postgresql": {
+        "status": "passed",
+        "message": "配置持久化（PostgreSQL）: 所有模式都找到",
+        "found_patterns": [
+          "_save_to_postgresql\\s*\\(",
+          "_load_from_postgresql\\s*\\(",
+          "postgresql_persistence|get_db_connection"
+        ]
+      }
+    },
+    "quality_metrics": {
+      "status": "passed",
+      "message": "数据质量指标持久化（数据湖）: 所有模式都找到",
+      "found_patterns": [
+        "_persist_quality_metrics_to_data_lake\\s*\\(",
+        "_load_quality_history_from_data_lake\\s*\\(",
+        "DataLakeManager|data_lake_manager"
+      ]
+    },
+    "business_process_orchestrator": {
+      "status": "passed",
+      "message": "业务流程编排器集成: 所有模式都找到",
+      "found_patterns": [
+        "DataCollectionWorkflow",
+        "start_collection_process",
+        "workflow\\s*="
+      ]
+    }
+  },
+  "adapter_pattern": {},
+  "summary": {
+    "total_checks": 25,
+    "passed": 19,
+    "failed": 1,
+    "warnings": 5,
+    "pass_rate": "76.0%"
+  }
+}

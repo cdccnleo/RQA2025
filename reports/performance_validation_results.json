@@ -1,0 +1,66 @@
+{
+  "validation_summary": {
+    "validation_time": 1756185006.4771228,
+    "overall_status": "success",
+    "performance_improved": true,
+    "targets_met": {
+      "cpu_usage_target": true,
+      "memory_usage_target": true,
+      "response_time_target": true,
+      "concurrent_capacity_target": true
+    }
+  },
+  "detailed_results": {
+    "cpu_test": {
+      "test_type": "cpu_performance",
+      "computation_result": 333333283333335000000,
+      "execution_time": 0.551844596862793,
+      "cpu_usage": 12.8,
+      "cpu_count": 32
+    },
+    "memory_test": {
+      "test_type": "memory_performance",
+      "start_memory": 21476605952,
+      "peak_memory": 21519519744,
+      "end_memory": 21494697984,
+      "memory_increase": 42913792,
+      "memory_freed": 24821760
+    },
+    "io_test": {
+      "test_type": "io_performance",
+      "data_lines": 10000,
+      "execution_time": 0.018542051315307617,
+      "lines_per_second": 539314.6545627548,
+      "data_integrity": true
+    },
+    "concurrent_test": {
+      "test_type": "concurrent_performance",
+      "num_workers": 8,
+      "total_tasks": 8,
+      "total_time": 0.027014732360839844,
+      "tasks_per_second": 296.1347124651393,
+      "avg_task_time": 0.002751171588897705
+    },
+    "response_time_test": {
+      "test_type": "response_time_performance",
+      "total_requests": 100,
+      "avg_response_time": 15.679359436035156,
+      "min_response_time": 14.703989028930664,
+      "max_response_time": 18.999338150024414,
+      "p95_response_time": 16.0064697265625,
+      "p99_response_time": 18.999338150024414
+    }
+  },
+  "baseline_comparison": {
+    "comparison_time": 1756185006.4771228,
+    "baseline_available": false,
+    "improvements": {},
+    "degradations": {}
+  },
+  "recommendations": [
+    "继续监控CPU使用率，确保稳定在70%以下",
+    "定期进行内存泄漏检查",
+    "优化响应时间在高并发场景下的表现",
+    "建立持续的性能监控机制"
+  ]
+}

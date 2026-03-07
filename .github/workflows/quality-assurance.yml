@@ -1,0 +1,241 @@
+name: Quality Assurance
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 每天早上8点运行完整质量检查
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  consistency-check:
+    runs-on: ubuntu-latest
+    name: 代码文档一致性检查
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run consistency checker
+      run: |
+        python scripts/quality_assurance/consistency_checker.py \
+          --project-root . \
+          --output-format json \
+          --output-file reports/consistency_report.json \
+          --threshold 95
+
+    - name: Upload consistency report
+      uses: actions/upload-artifact@v3
+      with:
+        name: consistency-report
+        path: reports/consistency_report.json
+
+    - name: Check consistency threshold
+      run: |
+        python -c "
+        import json
+        with open('reports/consistency_report.json', 'r') as f:
+            report = json.load(f)
+        score = report.get('summary', {}).get('consistency_score', 0)
+        if score < 95:
+            print(f'一致性评分过低: {score}%')
+            exit(1)
+        else:
+            print(f'一致性检查通过: {score}%')
+        "
+
+  documentation-sync:
+    runs-on: ubuntu-latest
+    name: 文档自动同步
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run documentation sync
+      run: |
+        python scripts/documentation_automation/doc_sync.py \
+          --project-root . \
+          --generate-report \
+          --output reports/doc_sync_report.json
+
+    - name: Upload documentation sync report
+      uses: actions/upload-artifact@v3
+      with:
+        name: doc-sync-report
+        path: reports/doc_sync_report.json
+
+    - name: Check for documentation drift
+      run: |
+        python -c "
+        import json
+        try:
+            with open('reports/doc_sync_report.json', 'r') as f:
+                report = json.load(f)
+            sync_results = report.get('sync_results', {})
+            failed_syncs = [k for k, v in sync_results.items() if not v.get('success', False)]
+            if failed_syncs:
+                print(f'文档同步失败: {failed_syncs}')
+                exit(1)
+            else:
+                print('文档同步检查通过')
+        except FileNotFoundError:
+            print('文档同步报告未生成')
+            exit(1)
+        "
+
+  version-management:
+    runs-on: ubuntu-latest
+    name: 版本管理检查
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install semver
+
+    - name: Run version management check
+      run: |
+        python scripts/version_management/version_manager.py \
+          --project-root . \
+          --check-consistency \
+          --output reports/version_report.json
+
+    - name: Upload version report
+      uses: actions/upload-artifact@v3
+      with:
+        name: version-report
+        path: reports/version_report.json
+
+  quality-gate:
+    runs-on: ubuntu-latest
+    name: 质量门禁
+    needs: [consistency-check, documentation-sync, version-management]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all reports
+      uses: actions/download-artifact@v3
+      with:
+        path: reports/
+
+    - name: Generate quality gate report
+      run: |
+        python scripts/quality_assurance/generate_quality_report.py \
+          --consistency-report reports/consistency-report/consistency_report.json \
+          --doc-sync-report reports/doc-sync-report/doc_sync_report.json \
+          --version-report reports/version-report/version_report.json \
+          --output reports/quality_gate_report.json
+
+    - name: Check quality gates
+      run: |
+        python -c "
+        import json
+        with open('reports/quality_gate_report.json', 'r') as f:
+            report = json.load(f)
+
+        gates = report.get('quality_gates', {})
+        failed_gates = []
+
+        for gate_name, gate_result in gates.items():
+            if not gate_result.get('passed', False):
+                failed_gates.append(gate_name)
+                print(f'❌ {gate_name}: {gate_result.get(\"message\", \"Failed\")}')
+
+        if failed_gates:
+            print(f'\\n❌ 质量门禁失败: {len(failed_gates)} 个门禁未通过')
+            exit(1)
+        else:
+            print('\\n✅ 所有质量门禁通过')
+        "
+
+    - name: Upload final quality report
+      uses: actions/upload-artifact@v3
+      with:
+        name: quality-gate-report
+        path: reports/quality_gate_report.json
+
+  notification:
+    runs-on: ubuntu-latest
+    name: 质量报告通知
+    needs: [quality-gate]
+    if: always()
+
+    steps:
+    - name: Download quality report
+      uses: actions/download-artifact@v3
+      with:
+        name: quality-gate-report
+        path: reports/
+
+    - name: Generate notification summary
+      run: |
+        python -c "
+        import json
+        import os
+
+        report_file = 'reports/quality_gate_report.json'
+        if os.path.exists(report_file):
+            with open(report_file, 'r') as f:
+                report = json.load(f)
+
+            summary = report.get('summary', {})
+            consistency_score = summary.get('consistency_score', 0)
+            sync_success_rate = summary.get('sync_success_rate', 0)
+            version_consistency = summary.get('version_consistency', False)
+
+            print('=== RQA2025 质量检查报告 ===')
+            print(f'一致性评分: {consistency_score}%')
+            print(f'同步成功率: {sync_success_rate}%')
+            print(f'版本一致性: {\"✅\" if version_consistency else \"❌\"}')
+
+            gates_passed = sum(1 for g in report.get('quality_gates', {}).values() if g.get('passed', False))
+            total_gates = len(report.get('quality_gates', {}))
+            print(f'质量门禁: {gates_passed}/{total_gates} 通过')
+
+            if consistency_score >= 95 and sync_success_rate >= 95 and version_consistency:
+                print('\\n🎉 质量检查全部通过!')
+            else:
+                print('\\n⚠️  发现质量问题，请检查详情')
+        else:
+            print('质量报告未生成')
+        " > quality_summary.txt
+
+    - name: Upload notification summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: quality-summary
+        path: quality_summary.txt

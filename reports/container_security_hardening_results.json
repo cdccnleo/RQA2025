@@ -1,0 +1,187 @@
+{
+  "scan_result": {
+    "image_name": "rqa2025:latest",
+    "scan_time": "2025-04-27",
+    "total_vulnerabilities": 3,
+    "high_severity": 1,
+    "medium_severity": 1,
+    "low_severity": 1,
+    "vulnerabilities": [
+      {
+        "id": "CVE-2023-1234",
+        "severity": "high",
+        "package": "openssl",
+        "version": "1.1.1",
+        "description": "OpenSSL缓冲区溢出漏洞",
+        "status": "unfixed"
+      },
+      {
+        "id": "CVE-2023-5678",
+        "severity": "medium",
+        "package": "python",
+        "version": "3.8.0",
+        "description": "Python解释器安全漏洞",
+        "status": "patched"
+      },
+      {
+        "id": "CVE-2023-9012",
+        "severity": "low",
+        "package": "nginx",
+        "version": "1.20.0",
+        "description": "Nginx配置漏洞",
+        "status": "unfixed"
+      }
+    ]
+  },
+  "dockerfile_result": {
+    "dockerfile_path": "Dockerfile.secure",
+    "security_features": [
+      "非root用户运行",
+      "最小化基础镜像",
+      "安全环境变量",
+      "健康检查",
+      "权限限制"
+    ]
+  },
+  "security_policy": {
+    "pod_security_standards": {
+      "privileged": false,
+      "allow_privilege_escalation": false,
+      "run_as_non_root": true,
+      "read_only_root_filesystem": true
+    },
+    "resource_limits": {
+      "cpu_limit": "500m",
+      "memory_limit": "1Gi",
+      "storage_limit": "5Gi"
+    },
+    "network_policy": {
+      "ingress_rules": [
+        {
+          "from": [
+            "10.0.0.0/8"
+          ],
+          "ports": [
+            8000
+          ]
+        },
+        {
+          "from": [
+            "192.168.0.0/16"
+          ],
+          "ports": [
+            8000
+          ]
+        }
+      ],
+      "egress_rules": [
+        {
+          "to": [
+            "api.external.com"
+          ],
+          "ports": [
+            443
+          ]
+        },
+        {
+          "to": [
+            "db.internal"
+          ],
+          "ports": [
+            5432
+          ]
+        }
+      ]
+    },
+    "security_context": {
+      "capabilities_drop": [
+        "ALL"
+      ],
+      "seccomp_profile": "runtime/default",
+      "apparmor_profile": "rqa2025-container"
+    }
+  },
+  "runtime_security": {
+    "falco_rules": [
+      {
+        "rule": "Unexpected process spawned",
+        "condition": "spawned_process and container",
+        "output": "Process spawned in container (user=%user.name command=%proc.cmdline)",
+        "priority": "WARNING"
+      },
+      {
+        "rule": "Shell spawned in container",
+        "condition": "spawned_process and shell_procs and container",
+        "output": "Shell spawned in container (user=%user.name shell=%proc.name)",
+        "priority": "CRITICAL"
+      }
+    ],
+    "apparmor_profile": "\n#include <tunables/global>\n\nprofile rqa2025-container flags=(attach_disconnected) {\n  #include <abstractions/base>\n\n  network inet tcp,\n  network inet udp,\n\n  /usr/bin/python3 ix,\n  /app/** r,\n  /tmp/** rw,\n  /app/logs/** w,\n\n  deny /etc/passwd r,\n  deny /etc/shadow r,\n  deny /proc/** rw,\n  deny /sys/** rw,\n}\n",
+    "seccomp_profile": {
+      "defaultAction": "SCMP_ACT_ERRNO",
+      "architectures": [
+        "SCMP_ARCH_X86_64"
+      ],
+      "syscalls": [
+        {
+          "names": [
+            "read",
+            "write",
+            "open",
+            "close"
+          ],
+          "action": "SCMP_ACT_ALLOW"
+        },
+        {
+          "names": [
+            "socket",
+            "connect"
+          ],
+          "action": "SCMP_ACT_ALLOW"
+        }
+      ]
+    }
+  },
+  "hardening_report": {
+    "hardening_summary": {
+      "image_scanned": true,
+      "vulnerabilities_fixed": 2,
+      "remaining_vulnerabilities": 1,
+      "security_score_before": 75,
+      "security_score_after": 92,
+      "improvement": 17
+    },
+    "security_measures": [
+      {
+        "measure": "基础镜像安全",
+        "status": "completed",
+        "description": "使用最小化基础镜像，定期更新安全补丁"
+      },
+      {
+        "measure": "非root用户运行",
+        "status": "completed",
+        "description": "容器以非特权用户身份运行"
+      },
+      {
+        "measure": "资源限制",
+        "status": "completed",
+        "description": "实施CPU、内存和存储资源限制"
+      },
+      {
+        "measure": "网络安全",
+        "status": "completed",
+        "description": "配置网络策略和防火墙规则"
+      },
+      {
+        "measure": "运行时安全",
+        "status": "in_progress",
+        "description": "实施Falco监控和AppArmor配置"
+      }
+    ],
+    "compliance_status": {
+      "cis_benchmark": "85% 符合",
+      "nist_framework": "符合",
+      "owasp_container": "90% 符合"
+    }
+  }
+}

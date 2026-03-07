@@ -1,0 +1,105 @@
+{
+  "deployment_info": {
+    "timestamp": "2025-08-09T18:43:00",
+    "environment": "production",
+    "phase": "1.2 Basic Services Deployment",
+    "deployment_method": "manual_docker_commands"
+  },
+  "services_status": {
+    "redis": {
+      "master": {
+        "status": "running",
+        "container_id": "630609484f4e",
+        "ip": "172.18.1.10",
+        "port": "6379",
+        "health": "healthy"
+      },
+      "slave": {
+        "status": "running",
+        "container_id": "94f722bab301",
+        "ip": "172.18.1.11",
+        "port": "6380",
+        "health": "healthy"
+      }
+    },
+    "postgresql": {
+      "master": {
+        "status": "running",
+        "container_id": "0227ce7f1a21",
+        "ip": "172.18.2.10",
+        "port": "5432",
+        "health": "healthy"
+      },
+      "slave": {
+        "status": "running",
+        "container_id": "6960c77ad0dc",
+        "ip": "172.18.2.11",
+        "port": "5433",
+        "health": "healthy"
+      }
+    },
+    "haproxy": {
+      "status": "running",
+      "container_id": "383f22b1a400",
+      "ip": "172.18.3.10",
+      "port": "80,8080,5434",
+      "health": "healthy",
+      "load_balancing": {
+        "redis": "localhost:6379 (roundrobin)",
+        "postgresql": "localhost:5434 (roundrobin)"
+      }
+    },
+    "monitoring": {
+      "prometheus": {
+        "status": "running",
+        "container_id": "2974b4a49ed7",
+        "ip": "172.18.4.10",
+        "port": "9090",
+        "health": "healthy"
+      },
+      "grafana": {
+        "status": "running",
+        "container_id": "9f83f7b2c7bb",
+        "ip": "172.18.4.11",
+        "port": "3000",
+        "health": "healthy"
+      }
+    }
+  },
+  "network_configuration": {
+    "network_name": "rqa2025-network",
+    "subnet": "172.18.0.0/16",
+    "gateway": "172.18.0.1",
+    "driver": "bridge"
+  },
+  "deployment_summary": {
+    "total_services": 6,
+    "successful_deployments": 6,
+    "failed_deployments": 0,
+    "success_rate": "100%",
+    "overall_status": "successful"
+  },
+  "next_steps": [
+    "Configure monitoring dashboards in Grafana",
+    "Configure Prometheus targets for Redis and PostgreSQL",
+    "Test Redis master-slave replication",
+    "Test PostgreSQL master-slave synchronization",
+    "Deploy RQA2025 core application services"
+  ],
+  "access_information": {
+    "redis_master": "localhost:6379",
+    "redis_slave": "localhost:6380",
+    "redis_lb": "localhost:6379 (via HAProxy)",
+    "postgresql_master": "localhost:5432",
+    "postgresql_slave": "localhost:5433",
+    "postgresql_lb": "localhost:5434 (via HAProxy)",
+    "prometheus": "localhost:9090",
+    "grafana": "localhost:3000 (admin/admin)",
+    "haproxy_stats": "localhost:8080/stats"
+  },
+  "deployment_notes": {
+    "haproxy_fix": "Successfully resolved HAProxy configuration issue by changing PostgreSQL frontend port from 5432 to 5434 to avoid port conflict with direct PostgreSQL master connection",
+    "load_balancing": "HAProxy now provides load balancing for both Redis and PostgreSQL services with health checks",
+    "monitoring": "All monitoring services (Prometheus, Grafana) are operational and accessible"
+  }
+}

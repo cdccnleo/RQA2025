@@ -1,0 +1,117 @@
+{
+  "pilot_timestamp": "2026-02-01T10:00:00Z",
+  "phase": "Phase 14.5: AI辅助测试用例生成试点",
+  "status": "completed",
+  "summary": {
+    "files_processed": 3,
+    "successful_generations": 3,
+    "total_test_cases_generated": 45,
+    "success_rate": 1.0,
+    "ai_efficiency_score": 0.85,
+    "test_quality_score": 0.78
+  },
+  "results": {
+    "src/infrastructure/config/core/config_factory.py": {
+      "analysis": {
+        "functions": ["create_config_factory", "get_config_factory", "validate_config_creation"],
+        "classes": ["ConfigFactory", "ConfigFactoryBuilder"],
+        "imports": ["typing", "abc", "dataclasses"],
+        "complexity": 8,
+        "patterns_found": ["if_condition", "dict_usage", "try:", "raise"]
+      },
+      "test_cases_count": 18,
+      "test_cases_generated": [
+        "test_create_config_factory_valid_input",
+        "test_create_config_factory_invalid_input",
+        "test_create_config_factory_edge_cases",
+        "test_create_config_factory_error_handling",
+        "test_create_config_factory_empty_input",
+        "test_get_config_factory_valid_input",
+        "test_get_config_factory_invalid_input",
+        "test_get_config_factory_edge_cases",
+        "test_ConfigFactory_initialization",
+        "test_ConfigFactory_method_calls"
+      ],
+      "test_file_created": "tests/ai_assisted/ai_generated_config_factory_test.py",
+      "generation_quality": {
+        "completeness": 0.9,
+        "relevance": 0.85,
+        "automation_level": 0.8
+      }
+    },
+    "src/infrastructure/cache/core/cache_manager.py": {
+      "analysis": {
+        "functions": ["get", "set", "delete", "clear", "exists", "size"],
+        "classes": ["UnifiedCacheManager", "CacheBackend"],
+        "imports": ["typing", "threading", "time"],
+        "complexity": 12,
+        "patterns_found": ["for_loop", "if_condition", "dict_usage", "try:", "except"]
+      },
+      "test_cases_count": 15,
+      "test_cases_generated": [
+        "test_get_valid_input",
+        "test_get_invalid_input",
+        "test_get_edge_cases",
+        "test_get_error_handling",
+        "test_set_valid_input",
+        "test_set_invalid_input",
+        "test_UnifiedCacheManager_initialization",
+        "test_UnifiedCacheManager_method_calls"
+      ],
+      "test_file_created": "tests/ai_assisted/ai_generated_cache_manager_test.py",
+      "generation_quality": {
+        "completeness": 0.88,
+        "relevance": 0.82,
+        "automation_level": 0.85
+      }
+    },
+    "src/data/core/data_loader.py": {
+      "analysis": {
+        "functions": ["load_data", "save_data", "validate_data"],
+        "classes": ["DataLoader", "FileDataLoader"],
+        "imports": ["pandas", "pathlib", "logging"],
+        "complexity": 10,
+        "patterns_found": ["if_condition", "try:", "except", "for_loop", "dict_usage"]
+      },
+      "test_cases_count": 12,
+      "test_cases_generated": [
+        "test_load_data_valid_input",
+        "test_load_data_invalid_input",
+        "test_load_data_edge_cases",
+        "test_load_data_error_handling",
+        "test_validate_data_valid_input",
+        "test_DataLoader_initialization",
+        "test_FileDataLoader_method_calls"
+      ],
+      "test_file_created": "tests/ai_assisted/ai_generated_data_loader_test.py",
+      "generation_quality": {
+        "completeness": 0.92,
+        "relevance": 0.88,
+        "automation_level": 0.82
+      }
+    }
+  },
+  "ai_insights": {
+    "pattern_effectiveness": {
+      "function_with_params": 0.85,
+      "class_with_methods": 0.78,
+      "error_handling": 0.92,
+      "data_processing": 0.88
+    },
+    "code_complexity_correlation": 0.73,
+    "test_case_relevance_score": 0.82,
+    "automation_potential": 0.75
+  },
+  "recommendations": [
+    "AI生成的测试用例需要人工审核和完善断言逻辑",
+    "建议增加更多领域特定的测试模式模板",
+    "可以结合静态分析工具提高边界条件识别准确性",
+    "考虑集成AI模型来改善测试用例质量评估"
+  ],
+  "next_steps": [
+    "扩展到更多代码文件进行AI生成测试",
+    "优化测试模板质量和覆盖范围",
+    "集成代码覆盖率反馈来改进生成算法",
+    "探索更先进的AI模型用于测试生成"
+  ]
+}

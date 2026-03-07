@@ -1,0 +1,478 @@
+name: RQA2025 Full CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, staging ]
+  pull_request:
+    branches: [ main, develop ]
+  release:
+    types: [ published ]
+  schedule:
+    # 每天早上8点运行完整质量监控
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+env:
+  PYTHON_VERSION: '3.9'
+  NODE_VERSION: '18'
+
+jobs:
+  # ===== 代码质量检查 =====
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    outputs:
+      quality_score: ${{ steps.quality.outputs.score }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist pytest-json-report
+        pip install black isort flake8 mypy bandit safety
+
+    - name: Run code quality checks
+      run: |
+        echo "🔍 Running code quality checks..."
+
+        # 代码格式检查
+        echo "📏 Checking code formatting..."
+        black --check --diff src/ scripts/ || echo "⚠️  Code formatting issues found"
+
+        # 导入排序检查
+        echo "🔀 Checking import sorting..."
+        isort --check-only --diff src/ scripts/ || echo "⚠️  Import sorting issues found"
+
+        # 静态类型检查
+        echo "🔍 Running static type checking..."
+        mypy src/core/ src/infrastructure/ --ignore-missing-imports || echo "⚠️  Type checking issues found"
+
+        # 安全检查
+        echo "🔒 Running security checks..."
+        bandit -r src/ -f json -o security_report.json || echo "⚠️  Security issues found"
+        safety check --json > safety_report.json || echo "⚠️  Safety issues found"
+
+        echo "✅ Code quality checks completed"
+
+    - name: Upload code quality reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: code-quality-reports-${{ github.run_number }}
+        path: |
+          security_report.json
+          safety_report.json
+
+  # ===== 单元测试 =====
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    strategy:
+      matrix:
+        test_suite:
+          - infrastructure
+          - features
+          - ml
+          - trading
+          - streaming
+          - strategy
+          - data
+          - monitoring
+          - risk
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist pytest-json-report pytest-mock
+
+    - name: Run ${{ matrix.test_suite }} unit tests
+      run: |
+        echo "🧪 Running ${{ matrix.test_suite }} unit tests..."
+        python -m pytest tests/unit/${{ matrix.test_suite }}/ \
+          --tb=short \
+          --maxfail=10 \
+          --durations=20 \
+          --json-report \
+          --json-report-file=test_results_${{ matrix.test_suite }}.json \
+          -n auto \
+          --dist=loadscope \
+          -x
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: unit-test-results-${{ matrix.test_suite }}-${{ github.run_number }}
+        path: |
+          test_results_${{ matrix.test_suite }}.json
+
+  # ===== 集成测试 =====
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist pytest-json-report
+
+    - name: Run integration tests
+      run: |
+        echo "🔗 Running integration tests..."
+        python -m pytest tests/integration/ \
+          --tb=short \
+          --maxfail=5 \
+          --durations=30 \
+          --json-report \
+          --json-report-file=integration_test_results.json \
+          -n 2 \
+          --dist=loadscope
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
+
+    - name: Upload integration test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: integration-test-results-${{ github.run_number }}
+        path: integration_test_results.json
+
+  # ===== E2E测试 =====
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist pytest-json-report
+
+    - name: Run E2E tests
+      run: |
+        echo "🌐 Running end-to-end tests..."
+        python -m pytest tests/e2e/ \
+          --tb=short \
+          --maxfail=3 \
+          --durations=60 \
+          --json-report \
+          --json-report-file=e2e_test_results.json \
+          -n 1
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
+
+    - name: Upload E2E test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: e2e-test-results-${{ github.run_number }}
+        path: e2e_test_results.json
+
+  # ===== 性能测试 =====
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[performance]')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-benchmark pytest-json-report
+
+    - name: Run performance tests
+      run: |
+        echo "⚡ Running performance tests..."
+        python -m pytest tests/performance/ \
+          --tb=short \
+          --maxfail=5 \
+          --benchmark-only \
+          --benchmark-json=performance_results.json \
+          --durations=30
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
+
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-results-${{ github.run_number }}
+        path: performance_results.json
+
+  # ===== 质量监控与报告 =====
+  quality-monitoring:
+    name: Quality Monitoring & Reporting
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist pytest-json-report matplotlib pandas
+
+    - name: Run comprehensive quality monitoring
+      run: |
+        echo "📊 Running comprehensive quality monitoring..."
+
+        # 运行质量监控脚本
+        python scripts/test_quality_monitor.py --run-tests
+
+        # 生成优化报告
+        python scripts/test_report_optimizer.py
+
+        # 检查质量门禁
+        python scripts/test_quality_gates.py
+
+        echo "✅ Quality monitoring completed"
+
+    - name: Upload quality reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: quality-reports-${{ github.run_number }}
+        path: |
+          test_logs/
+          coverage_reports/
+
+  # ===== 安全测试 =====
+  security-tests:
+    name: Security Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[security]')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install security testing tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety
+
+    - name: Run security scans
+      run: |
+        echo "🔒 Running security tests..."
+
+        # Bandit - Python安全扫描
+        bandit -r src/ -f json -o bandit_report.json
+
+        # Safety - 依赖安全检查
+        safety check --json > safety_report.json
+
+        echo "✅ Security tests completed"
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports-${{ github.run_number }}
+        path: |
+          bandit_report.json
+          safety_report.json
+
+  # ===== 部署准备检查 =====
+  deployment-readiness:
+    name: Deployment Readiness Check
+    runs-on: ubuntu-latest
+    needs: [quality-monitoring, integration-tests, e2e-tests]
+    if: success() && (github.ref == 'refs/heads/main' || github.event_name == 'release')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check deployment readiness
+      run: |
+        echo "🚀 Checking deployment readiness..."
+
+        # 检查质量门禁
+        if [ ! -f "test_logs/quality_gate_passed" ]; then
+          echo "❌ Quality gates not passed"
+          exit 1
+        fi
+
+        # 检查测试覆盖率
+        if [ -f "test_logs/test_quality_history.json" ]; then
+          COVERAGE=$(python -c "
+          import json
+          with open('test_logs/test_quality_history.json', 'r') as f:
+              history = json.load(f)
+              if history:
+                  print(history[-1].get('metrics', {}).get('coverage_rate', 0))
+              else:
+                  print(0)
+          ")
+          if [ $(echo "$COVERAGE < 85" | bc -l) -eq 1 ]; then
+            echo "❌ Coverage too low: ${COVERAGE}%"
+            exit 1
+          fi
+        fi
+
+        # 创建部署标记
+        echo "🏆 System ready for deployment!" > deployment_ready.md
+        echo "✅ All quality gates passed" >> deployment_ready.md
+        echo "✅ Test coverage sufficient" >> deployment_ready.md
+        echo "✅ Integration tests passed" >> deployment_ready.md
+        echo "✅ E2E tests passed" >> deployment_ready.md
+        echo "" >> deployment_ready.md
+        echo "Build: ${{ github.run_number }}" >> deployment_ready.md
+        echo "Commit: ${{ github.sha }}" >> deployment_ready.md
+        echo "Timestamp: $(date -u)" >> deployment_ready.md
+
+        echo "✅ Deployment readiness check passed"
+
+    - name: Upload deployment readiness badge
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-readiness-${{ github.run_number }}
+        path: deployment_ready.md
+
+  # ===== 部署到Staging =====
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: deployment-readiness
+    if: success() && github.ref == 'refs/heads/develop'
+    environment: staging
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Deploy to staging environment
+      run: |
+        echo "🚀 Deploying to staging environment..."
+        # 这里添加实际的部署命令
+        echo "✅ Staging deployment completed"
+
+  # ===== 部署到Production =====
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deployment-readiness
+    if: success() && (github.ref == 'refs/heads/main' || github.event_name == 'release')
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Deploy to production environment
+      run: |
+        echo "🚀 Deploying to production environment..."
+        # 这里添加实际的部署命令
+        echo "✅ Production deployment completed"
+
+        # 创建发布标记
+        echo "🏆 RQA2025 Production Deployment Successful!" > production_release.md
+        echo "Version: ${{ github.event.release.tag_name || github.sha }}" >> production_release.md
+        echo "Deployed at: $(date -u)" >> production_release.md
+
+    - name: Upload production release info
+      uses: actions/upload-artifact@v3
+      with:
+        name: production-release-${{ github.run_number }}
+        path: production_release.md

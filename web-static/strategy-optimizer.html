@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 策略优化器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .optimization-method {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .optimization-method:hover {
+            background-color: #f3f4f6;
+        }
+        .optimization-method.selected {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">策略优化器</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Breadcrumb Navigation -->
+        <nav class="flex mb-4" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="inline-flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <a href="/strategy-management" class="text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-chess-knight mr-1"></i>
+                        策略管理
+                    </a>
+                </li>
+                <li class="inline-flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <span class="text-sm font-medium text-gray-500">
+                        <i class="fas fa-sliders-h mr-1"></i>
+                        策略优化
+                    </span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-sliders-h text-purple-600 mr-3"></i>
+                策略优化器
+            </h1>
+            <p class="text-gray-600">策略参数优化、性能调优和结果分析</p>
+        </div>
+
+        <!-- Strategy Selection -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">选择策略</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">策略</label>
+                        <select id="strategySelect" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="">请选择策略...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">优化目标</label>
+                        <select id="optimizationTarget" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="sharpe_ratio">夏普比率</option>
+                            <option value="total_return">总收益</option>
+                            <option value="max_drawdown">最大回撤</option>
+                            <option value="calmar_ratio">卡玛比率</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Methods -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">优化方法</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="optimization-method border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectMethod('grid_search')">
+                        <i class="fas fa-th text-2xl text-blue-500 mb-2"></i>
+                        <div class="font-semibold">网格搜索</div>
+                        <div class="text-xs text-gray-500 mt-1">Grid Search</div>
+                    </div>
+                    <div class="optimization-method border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectMethod('bayesian')">
+                        <i class="fas fa-brain text-2xl text-purple-500 mb-2"></i>
+                        <div class="font-semibold">贝叶斯优化</div>
+                        <div class="text-xs text-gray-500 mt-1">Bayesian</div>
+                    </div>
+                    <div class="optimization-method border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectMethod('genetic')">
+                        <i class="fas fa-dna text-2xl text-green-500 mb-2"></i>
+                        <div class="font-semibold">遗传算法</div>
+                        <div class="text-xs text-gray-500 mt-1">Genetic</div>
+                    </div>
+                    <div class="optimization-method border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectMethod('random')">
+                        <i class="fas fa-dice text-2xl text-yellow-500 mb-2"></i>
+                        <div class="font-semibold">随机搜索</div>
+                        <div class="text-xs text-gray-500 mt-1">Random</div>
+                    </div>
+                    <div class="optimization-method border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectMethod('ai')">
+                        <i class="fas fa-robot text-2xl text-pink-500 mb-2"></i>
+                        <div class="font-semibold">AI优化</div>
+                        <div class="text-xs text-gray-500 mt-1">AI Optimization</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Optimization Configuration (显示当选择AI优化时) -->
+        <div class="bg-white rounded-lg shadow mb-8" id="aiOptimizationConfig" style="display: none;">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">AI优化配置</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">AI引擎</label>
+                        <select id="aiEngine" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="claude">Claude</option>
+                            <option value="local-llm">本地LLM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">优化目标</label>
+                        <select id="aiOptimizationTarget" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="sharpe_ratio">夏普比率</option>
+                            <option value="total_return">总收益</option>
+                            <option value="max_drawdown">最大回撤</option>
+                            <option value="calmar_ratio">卡玛比率</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="startAIOptimization()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-robot mr-2"></i>启动AI优化
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parameter Configuration -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">参数配置</h3>
+            </div>
+            <div class="p-6">
+                <div id="parameterConfig" class="space-y-4">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-info-circle text-2xl mb-2"></i>
+                        <div>请先选择策略</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Progress -->
+        <div class="bg-white rounded-lg shadow mb-8" id="optimizationProgress" style="display: none;">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">优化进度</h3>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>优化进度</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <div class="text-sm text-gray-600">当前迭代</div>
+                        <div class="text-xl font-semibold" id="currentIteration">0</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600">最佳得分</div>
+                        <div class="text-xl font-semibold text-green-600" id="bestScore">--</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600">预计剩余时间</div>
+                        <div class="text-xl font-semibold" id="estimatedTime">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Results -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">收敛曲线</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="convergenceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">参数空间分布</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="parameterSpaceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Results Table -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">优化结果</h3>
+                <div class="flex items-center space-x-3">
+                    <span id="selectedCount" class="text-sm text-gray-600 hidden">已选择 0 条</span>
+                    <button id="batchDeleteBtn" onclick="confirmBatchDelete()" class="hidden bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition duration-300">
+                        <i class="fas fa-trash-alt mr-2"></i>批量删除
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left">
+                                <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll()" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">排名</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">策略名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">策略ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">优化方法</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">优化目标</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">得分</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">夏普比率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">总收益</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">最大回撤</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-info-circle text-2xl mb-2"></i>
+                                <div>暂无优化结果</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-8 flex justify-end space-x-4">
+            <button onclick="startOptimization()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                <i class="fas fa-play mr-2"></i>开始优化
+            </button>
+            <button onclick="stopOptimization()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition duration-300" style="display: none;" id="stopBtn">
+                <i class="fas fa-stop mr-2"></i>停止优化
+            </button>
+            <button onclick="exportResults()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                <i class="fas fa-download mr-2"></i>导出结果
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let convergenceChart, parameterSpaceChart;
+        let selectedMethod = null;
+        let isOptimizing = false;
+        let optimizationInterval = null;
+
+        // Toast通知函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toast-container') || createToastContainer();
+            const toastId = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            const icons = {
+                success: { icon: 'fa-check-circle', color: 'bg-green-500', textColor: 'text-green-800', bgColor: 'bg-green-50', borderColor: 'border-green-200' },
+                error: { icon: 'fa-exclamation-circle', color: 'bg-red-500', textColor: 'text-red-800', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
+                warning: { icon: 'fa-exclamation-triangle', color: 'bg-yellow-500', textColor: 'text-yellow-800', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-200' },
+                info: { icon: 'fa-info-circle', color: 'bg-blue-500', textColor: 'text-blue-800', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' }
+            };
+            
+            const style = icons[type] || icons.info;
+            
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `flex items-center p-4 mb-4 rounded-lg border shadow-lg transform transition-all duration-300 translate-x-full ${style.bgColor} ${style.borderColor}`;
+            toast.innerHTML = `
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 ${style.color} rounded-lg">
+                    <i class="fas ${style.icon} text-white"></i>
+                </div>
+                <div class="ml-3 text-sm font-normal ${style.textColor}">${message}</div>
+                <button type="button" class="ml-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 ${style.textColor}" onclick="closeToast('${toastId}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // 动画显示
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // 自动关闭
+            if (duration > 0) {
+                setTimeout(() => {
+                    closeToast(toastId);
+                }, duration);
+            }
+        }
+        
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'fixed top-5 right-5 z-50 flex flex-col';
+            document.body.appendChild(container);
+            return container;
+        }
+        
+        function closeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadStrategies() {
+            try {
+                console.log('开始加载策略列表...');
+                // 添加时间戳参数防止缓存
+                const timestamp = new Date().getTime();
+                const response = await fetch(getApiBaseUrl('/strategy/conceptions') + '?_t=' + timestamp);
+                console.log('策略列表API响应状态:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`加载失败: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('策略列表API返回数据:', data);
+                
+                // 处理不同的返回格式：数组或对象
+                const strategies = Array.isArray(data) ? data : (data.conceptions || []);
+                console.log('解析后的策略数量:', strategies.length);
+                
+                const select = document.getElementById('strategySelect');
+                if (!select) {
+                    console.error('找不到strategySelect元素');
+                    return;
+                }
+                
+                if (strategies.length === 0) {
+                    select.innerHTML = '<option value="">暂无可用策略</option>';
+                    console.warn('没有可用的策略');
+                } else {
+                    const optionsHtml = strategies.map(s => {
+                        console.log('处理策略:', s.id, s.name);
+                        return `<option value="${s.id}">${s.name || s.id}</option>`;
+                    }).join('');
+                    select.innerHTML = '<option value="">请选择策略...</option>' + optionsHtml;
+                    console.log('策略选项HTML已生成');
+                }
+                
+                select.onchange = loadStrategyParameters;
+                console.log('策略列表加载完成');
+            } catch (error) {
+                console.error('加载策略列表失败:', error);
+                const select = document.getElementById('strategySelect');
+                if (select) {
+                    select.innerHTML = '<option value="">加载失败</option>';
+                }
+            }
+        }
+
+        async function loadStrategyParameters() {
+            const strategyId = document.getElementById('strategySelect').value;
+            if (!strategyId) {
+                document.getElementById('parameterConfig').innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-info-circle text-2xl mb-2"></i>
+                        <div>请先选择策略</div>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const strategy = await response.json();
+                renderParameterConfig(strategy.parameters || {});
+            } catch (error) {
+                console.error('加载策略参数失败:', error);
+            }
+        }
+
+        function renderParameterConfig(parameters) {
+            const configHtml = Object.entries(parameters).map(([key, value]) => {
+                const defaultValue = typeof value === 'object' ? value.default || value : value;
+                const min = value.min || (typeof value === 'number' ? value * 0.5 : 0);
+                const max = value.max || (typeof value === 'number' ? value * 2 : 100);
+                
+                return `
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                        <div class="font-medium text-gray-700">${key}</div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">最小值</label>
+                            <input type="number" id="param_${key}_min" value="${min}" class="w-full border border-gray-300 rounded px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">最大值</label>
+                            <input type="number" id="param_${key}_max" value="${max}" class="w-full border border-gray-300 rounded px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">步长</label>
+                            <input type="number" id="param_${key}_step" value="${(max - min) / 10}" step="0.01" class="w-full border border-gray-300 rounded px-3 py-2">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('parameterConfig').innerHTML = configHtml || `
+                <div class="text-center text-gray-500 py-8">
+                    <i class="fas fa-info-circle text-2xl mb-2"></i>
+                    <div>该策略暂无可优化参数</div>
+                </div>
+            `;
+        }
+
+        function selectMethod(method) {
+            selectedMethod = method;
+            document.querySelectorAll('.optimization-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // 如果选择AI优化，显示AI优化配置
+            if (method === 'ai') {
+                document.getElementById('aiOptimizationConfig').style.display = 'block';
+                document.getElementById('parameterConfig').parentElement.style.display = 'none';
+            } else {
+                document.getElementById('aiOptimizationConfig').style.display = 'none';
+                document.getElementById('parameterConfig').parentElement.style.display = 'block';
+            }
+        }
+
+        async function startOptimization() {
+            const strategyId = document.getElementById('strategySelect').value;
+            if (!strategyId) {
+                alert('请先选择策略');
+                return;
+            }
+
+            if (!selectedMethod) {
+                alert('请选择优化方法');
+                return;
+            }
+
+            // 如果选择AI优化，使用AI优化函数
+            if (selectedMethod === 'ai') {
+                await startAIOptimization();
+                return;
+            }
+
+            const target = document.getElementById('optimizationTarget').value;
+            const parameters = collectParameters();
+
+            try {
+                isOptimizing = true;
+                document.getElementById('optimizationProgress').style.display = 'block';
+                document.getElementById('stopBtn').style.display = 'inline-block';
+
+                const response = await fetch(getApiBaseUrl('/strategy/optimization/start'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        strategy_id: strategyId,
+                        method: selectedMethod,
+                        target: target,
+                        parameters: parameters
+                    })
+                });
+
+                if (response.ok) {
+                    // 优先使用WebSocket
+                    connectOptimizationWebSocket();
+                    // 如果WebSocket失败，回退到轮询
+                    if (!wsOptimization || wsOptimization.readyState !== WebSocket.OPEN) {
+                        optimizationInterval = setInterval(checkOptimizationProgress, 2000);
+                    }
+                } else {
+                    alert('启动优化失败');
+                    isOptimizing = false;
+                }
+            } catch (error) {
+                console.error('启动优化失败:', error);
+                alert('启动优化失败: ' + error.message);
+                isOptimizing = false;
+            }
+        }
+
+        async function startAIOptimization() {
+            const strategyId = document.getElementById('strategySelect').value;
+            if (!strategyId) {
+                alert('请先选择策略');
+                return;
+            }
+
+            const engine = document.getElementById('aiEngine').value;
+            const target = document.getElementById('aiOptimizationTarget').value;
+
+            try {
+                isOptimizing = true;
+                document.getElementById('optimizationProgress').style.display = 'block';
+                document.getElementById('stopBtn').style.display = 'inline-block';
+
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/start'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        strategy_id: strategyId,
+                        engine: engine,
+                        target: target
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('AI优化任务已启动:', result.task_id);
+                    
+                    // 优先使用WebSocket
+                    connectOptimizationWebSocket();
+                    // 如果WebSocket失败，回退到轮询
+                    if (!wsOptimization || wsOptimization.readyState !== WebSocket.OPEN) {
+                        optimizationInterval = setInterval(checkAIOptimizationProgress, 2000);
+                    }
+                } else {
+                    const errorData = await response.json().catch(() => ({ detail: '启动AI优化失败' }));
+                    alert(`启动AI优化失败: ${errorData.detail || '未知错误'}`);
+                    isOptimizing = false;
+                }
+            } catch (error) {
+                console.error('启动AI优化失败:', error);
+                alert('启动AI优化失败: ' + error.message);
+                isOptimizing = false;
+            }
+        }
+
+        async function checkAIOptimizationProgress() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/progress'));
+                if (!response.ok) return;
+                
+                const progress = await response.json();
+                // 更新进度显示（AI优化可能使用不同的进度格式）
+                if (progress.status) {
+                    updateProgress({
+                        status: progress.status,
+                        progress: progress.progress || 0,
+                        current_score: progress.current_score || 0,
+                        best_score: progress.best_score || 0
+                    });
+
+                    if (progress.status === 'completed' || progress.status === 'stopped') {
+                        clearInterval(optimizationInterval);
+                        optimizationInterval = null;
+                        isOptimizing = false;
+                        document.getElementById('stopBtn').style.display = 'none';
+                        // 加载AI优化结果
+                        await loadAIOptimizationResults();
+                    }
+                }
+            } catch (error) {
+                console.error('检查AI优化进度失败:', error);
+            }
+        }
+
+        async function loadAIOptimizationResults() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/results'));
+                if (response.ok) {
+                    const results = await response.json();
+                    // 显示AI优化结果
+                    console.log('AI优化结果:', results);
+                    // 可以在这里更新UI显示AI优化结果
+                    alert(`AI优化完成！\n夏普比率: ${(results.sharpe_ratio || 0).toFixed(2)}\n总收益: ${((results.total_return || 0) * 100).toFixed(2)}%\n最大回撤: ${((results.max_drawdown || 0) * 100).toFixed(2)}%`);
+                }
+            } catch (error) {
+                console.error('加载AI优化结果失败:', error);
+            }
+        }
+
+        function collectParameters() {
+            const parameters = {};
+            document.querySelectorAll('[id^="param_"]').forEach(input => {
+                const parts = input.id.split('_');
+                const paramName = parts.slice(1, -1).join('_');
+                const type = parts[parts.length - 1];
+                
+                if (!parameters[paramName]) {
+                    parameters[paramName] = {};
+                }
+                parameters[paramName][type] = parseFloat(input.value) || 0;
+            });
+            return parameters;
+        }
+
+        let wsOptimization = null;
+
+        function connectOptimizationWebSocket() {
+            if (wsOptimization && wsOptimization.readyState === WebSocket.OPEN) {
+                return;
+            }
+
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.host;
+            wsOptimization = new WebSocket(`${protocol}//${host}/ws/optimization-progress`);
+            
+            wsOptimization.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'optimization_progress') {
+                        // 处理参数优化进度
+                        const paramProgress = data.data.parameter_optimization;
+                        if (paramProgress && paramProgress.status !== 'idle') {
+                            updateProgress(paramProgress);
+                            
+                            if (paramProgress.status === 'completed' || paramProgress.status === 'stopped') {
+                                isOptimizing = false;
+                                document.getElementById('stopBtn').style.display = 'none';
+                                loadOptimizationResults();
+                            }
+                        }
+                        
+                        // 处理AI优化进度
+                        const aiProgress = data.data.ai_optimization;
+                        if (aiProgress && aiProgress.status !== 'idle') {
+                            updateProgress({
+                                status: aiProgress.status,
+                                progress: aiProgress.progress || 0,
+                                current_score: aiProgress.current_score || 0,
+                                best_score: aiProgress.best_score || 0
+                            });
+                            
+                            if (aiProgress.status === 'completed' || aiProgress.status === 'stopped') {
+                                isOptimizing = false;
+                                document.getElementById('stopBtn').style.display = 'none';
+                                loadAIOptimizationResults();
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('解析WebSocket消息失败:', error);
+                }
+            };
+            
+            wsOptimization.onerror = function(error) {
+                console.error('WebSocket错误:', error);
+                // 回退到轮询
+                if (!optimizationInterval) {
+                    optimizationInterval = setInterval(checkOptimizationProgress, 2000);
+                }
+            };
+            
+            wsOptimization.onclose = function() {
+                wsOptimization = null;
+                if (isOptimizing && !optimizationInterval) {
+                    optimizationInterval = setInterval(checkOptimizationProgress, 2000);
+                }
+            };
+        }
+
+        async function checkOptimizationProgress() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/optimization/progress'));
+                if (!response.ok) return;
+                
+                const progress = await response.json();
+                updateProgress(progress);
+
+                if (progress.status === 'completed' || progress.status === 'stopped') {
+                    clearInterval(optimizationInterval);
+                    optimizationInterval = null;
+                    isOptimizing = false;
+                    document.getElementById('stopBtn').style.display = 'none';
+                    await loadOptimizationResults();
+                }
+            } catch (error) {
+                console.error('检查优化进度失败:', error);
+            }
+        }
+
+        function updateProgress(progress) {
+            const percent = progress.progress || 0;
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressPercent').textContent = percent.toFixed(1) + '%';
+            document.getElementById('currentIteration').textContent = progress.current_iteration || 0;
+            document.getElementById('bestScore').textContent = progress.best_score ? progress.best_score.toFixed(4) : '--';
+            document.getElementById('estimatedTime').textContent = progress.estimated_time || '--';
+
+            if (progress.convergence_history) {
+                updateConvergenceChart(progress.convergence_history);
+            }
+        }
+
+        function updateConvergenceChart(history) {
+            if (!convergenceChart) return;
+            
+            convergenceChart.data.labels = history.map((_, i) => i + 1);
+            convergenceChart.data.datasets[0].data = history;
+            convergenceChart.update();
+        }
+
+        async function loadOptimizationResults() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/optimization/results'));
+                if (!response.ok) return;
+                
+                const results = await response.json();
+                renderResultsTable(results.results || []);
+            } catch (error) {
+                console.error('加载优化结果失败:', error);
+            }
+        }
+
+        // 存储当前优化结果，用于删除操作
+        let currentOptimizationResults = [];
+
+        function renderResultsTable(results) {
+            const tbody = document.getElementById('resultsTableBody');
+            
+            // 保存当前结果
+            currentOptimizationResults = results;
+            
+            // 获取当前选中的策略信息
+            const strategySelect = document.getElementById('strategySelect');
+            const selectedStrategy = strategySelect ? strategySelect.options[strategySelect.selectedIndex] : null;
+            const strategyName = selectedStrategy ? selectedStrategy.text : '未知策略';
+            
+            // 优化方法映射表
+            const methodMap = {
+                'grid_search': '网格搜索',
+                'bayesian': '贝叶斯优化',
+                'genetic': '遗传算法',
+                'random': '随机搜索',
+                'ai': 'AI优化'
+            };
+            
+            // 优化目标映射表
+            const targetMap = {
+                'sharpe': '夏普比率',
+                'return': '收益率',
+                'drawdown': '最大回撤',
+                'win_rate': '胜率',
+                'profit_factor': '盈亏比'
+            };
+            
+            // 获取当前优化方法 - 使用全局 selectedMethod 变量
+            let currentOptimizationMethod = '网格搜索';
+            if (selectedMethod) {
+                currentOptimizationMethod = methodMap[selectedMethod] || '网格搜索';
+            }
+            
+            // 获取当前优化目标 - 使用全局 selectedTarget 变量
+            let currentOptimizationTarget = '夏普比率';
+            if (typeof selectedTarget !== 'undefined' && selectedTarget) {
+                currentOptimizationTarget = targetMap[selectedTarget] || '夏普比率';
+            }
+            
+            if (results.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-info-circle text-2xl mb-2"></i>
+                            <div>暂无优化结果</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = results.map((result, index) => `
+                <tr class="hover:bg-gray-50" data-result-id="${result.id}">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="checkbox" class="result-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                               value="${result.id}" onchange="updateSelectedCount()">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        ${result.strategy_name || strategyName}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono" title="${result.strategy_id || ''}">
+                        ${result.strategy_id ? result.strategy_id.substring(0, 20) + (result.strategy_id.length > 20 ? '...' : '') : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            ${methodMap[result.optimization_method] || result.optimization_method || currentOptimizationMethod}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ${targetMap[result.target] || result.target || currentOptimizationTarget}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                        ${result.score ? result.score.toFixed(4) : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${result.sharpe_ratio ? result.sharpe_ratio.toFixed(4) : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${result.total_return ? (result.total_return * 100).toFixed(2) + '%' : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${result.max_drawdown ? (result.max_drawdown * 100).toFixed(2) + '%' : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="applyParameters(${index})" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <i class="fas fa-check mr-1"></i>应用
+                        </button>
+                        <button onclick="deleteOptimizationResult('${result.id}', ${index})" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash mr-1"></i>删除
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteOptimizationResult(taskId, index) {
+            if (!taskId) {
+                alert('无法删除：缺少结果ID');
+                return;
+            }
+            
+            if (!confirm('确定要删除这条优化结果吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(getApiBaseUrl(`/strategy/optimization/results/${taskId}`), {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // 从当前结果中移除
+                    currentOptimizationResults.splice(index, 1);
+                    // 重新渲染表格
+                    renderResultsTable(currentOptimizationResults);
+                    alert('优化结果已删除');
+                } else {
+                    const error = await response.json();
+                    alert(`删除失败: ${error.detail || '未知错误'}`);
+                }
+            } catch (error) {
+                console.error('删除优化结果失败:', error);
+                alert('删除失败，请检查网络连接');
+            }
+        }
+
+        // 批量删除功能
+        let selectedResultIds = [];
+
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const resultCheckboxes = document.querySelectorAll('.result-checkbox');
+            
+            resultCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const resultCheckboxes = document.querySelectorAll('.result-checkbox:checked');
+            selectedResultIds = Array.from(resultCheckboxes).map(cb => cb.value);
+            
+            const selectedCount = selectedResultIds.length;
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+            
+            if (selectedCount > 0) {
+                selectedCountSpan.textContent = `已选择 ${selectedCount} 条`;
+                selectedCountSpan.classList.remove('hidden');
+                batchDeleteBtn.classList.remove('hidden');
+                batchDeleteBtn.innerHTML = `<i class="fas fa-trash-alt mr-2"></i>批量删除 (${selectedCount})`;
+            } else {
+                selectedCountSpan.classList.add('hidden');
+                batchDeleteBtn.classList.add('hidden');
+            }
+            
+            // 更新全选框状态
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const allCheckboxes = document.querySelectorAll('.result-checkbox');
+            if (allCheckboxes.length > 0) {
+                selectAllCheckbox.checked = selectedCount === allCheckboxes.length;
+            }
+        }
+
+        async function confirmBatchDelete() {
+            const selectedCount = selectedResultIds.length;
+            if (selectedCount === 0) {
+                alert('请先选择要删除的优化结果');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${selectedCount} 条优化结果吗？\n\n此操作不可恢复！`)) {
+                return;
+            }
+            
+            await executeBatchDelete();
+        }
+
+        async function executeBatchDelete() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/optimization/results/batch-delete'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task_ids: selectedResultIds })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // 显示操作结果
+                    if (result.failed_count === 0) {
+                        showToast(`成功删除 ${result.deleted_count} 条优化结果`, 'success');
+                    } else {
+                        showToast(`删除完成：成功 ${result.deleted_count} 条，失败 ${result.failed_count} 条`, 'warning');
+                        if (result.errors && result.errors.length > 0) {
+                            console.error('删除错误详情:', result.errors);
+                        }
+                    }
+                    
+                    // 清除选择状态
+                    selectedResultIds = [];
+                    document.getElementById('selectAllCheckbox').checked = false;
+                    updateSelectedCount();
+                    
+                    // 刷新列表
+                    await loadOptimizationResults();
+                } else {
+                    const error = await response.json();
+                    showToast(`批量删除失败: ${error.detail || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                console.error('批量删除优化结果失败:', error);
+                showToast('批量删除失败，请检查网络连接', 'error');
+            }
+        }
+
+        async function stopOptimization() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/optimization/stop'), {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    clearInterval(optimizationInterval);
+                    isOptimizing = false;
+                    document.getElementById('stopBtn').style.display = 'none';
+                    await loadOptimizationResults();
+                }
+            } catch (error) {
+                console.error('停止优化失败:', error);
+            }
+        }
+
+        async function applyParameters(index) {
+            const result = currentOptimizationResults[index];
+            if (!result || !result.id) {
+                alert('无法应用：缺少优化结果ID');
+                return;
+            }
+
+            // 优先使用结果中保存的策略ID，如果没有则使用当前选中的策略
+            let strategyId = result.strategy_id;
+            if (!strategyId) {
+                const strategySelect = document.getElementById('strategySelect');
+                strategyId = strategySelect ? strategySelect.value : null;
+            }
+
+            if (!strategyId) {
+                alert('请先选择一个策略');
+                return;
+            }
+
+            if (!confirm(`确定要将这些参数应用到策略吗？\n\n参数: ${JSON.stringify(result.parameters).substring(0, 100)}...`)) {
+                return;
+            }
+
+            try {
+                console.log('应用参数 - result.id:', result.id, 'strategyId:', strategyId);
+                
+                if (!result.id) {
+                    alert('错误：优化结果ID为空');
+                    return;
+                }
+                
+                const apiUrl = getApiBaseUrl(`/strategy/optimization/${result.id}/apply`);
+                console.log('API URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        strategy_id: strategyId
+                    })
+                });
+
+                console.log('Response status:', response.status, 'ok:', response.ok);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    alert(`参数应用成功！\n\n策略版本: v${data.new_version}\n应用参数: ${JSON.stringify(data.applied_parameters, null, 2)}`);
+                    showToast('参数已成功应用到策略', 'success');
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    let errorMsg = '未知错误';
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMsg = errorJson.detail || errorText;
+                    } catch (e) {
+                        errorMsg = errorText;
+                    }
+                    alert(`应用失败: ${errorMsg}`);
+                }
+            } catch (error) {
+                console.error('应用参数失败:', error);
+                alert('应用失败: ' + (error.message || '请检查网络连接'));
+            }
+        }
+
+        function exportResults() {
+            alert('导出结果功能开发中');
+        }
+
+        function refreshData() {
+            loadStrategies();
+            if (isOptimizing) {
+                checkOptimizationProgress();
+            } else {
+                loadOptimizationResults();
+            }
+        }
+
+        function initCharts() {
+            const convergenceCtx = document.getElementById('convergenceChart').getContext('2d');
+            convergenceChart = new Chart(convergenceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '优化得分',
+                        data: [],
+                        borderColor: 'rgb(139, 92, 246)',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const paramSpaceCtx = document.getElementById('parameterSpaceChart').getContext('2d');
+            parameterSpaceChart = new Chart(paramSpaceCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '参数组合',
+                        data: [],
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面DOM加载完成，开始初始化...');
+            try {
+                initCharts();
+                console.log('图表初始化完成');
+            } catch (e) {
+                console.error('图表初始化失败:', e);
+            }
+            
+            loadStrategies().then(() => {
+                console.log('策略列表加载完成');
+                // 检查URL参数中是否有strategy_id
+                const urlParams = new URLSearchParams(window.location.search);
+                const strategyId = urlParams.get('strategy_id');
+                const fromBacktest = urlParams.get('from_backtest');
+
+                if (strategyId) {
+                    console.log('从URL获取到策略ID:', strategyId);
+                    // 自动选择该策略
+                    const select = document.getElementById('strategySelect');
+                    if (select) {
+                        select.value = strategyId;
+                        // 触发策略参数加载
+                        loadStrategyParameters().then(() => {
+                            // 如果是从回测页面跳转过来的，加载回测结果
+                            if (fromBacktest) {
+                                loadBacktestResultForOptimize();
+                            }
+                        });
+                        showToast(`已自动选择策略`, 'success');
+                    }
+                }
+            });
+            loadOptimizationResults();
+        });
+
+        // 加载回测结果用于优化
+        function loadBacktestResultForOptimize() {
+            const backtestData = sessionStorage.getItem('backtestResultForOptimize');
+            if (backtestData) {
+                try {
+                    const data = JSON.parse(backtestData);
+                    console.log('从回测页面获取的数据:', data);
+
+                    // 显示提示
+                    showToast(`已加载回测结果，可以基于此进行参数优化`, 'info');
+
+                    // 可以在这里预填充优化参数范围
+                    if (data.parameters) {
+                        console.log('回测参数:', data.parameters);
+                        // 根据回测参数预填充优化范围
+                        prefillOptimizationRange(data.parameters);
+                    }
+
+                    // 清除sessionStorage中的数据
+                    sessionStorage.removeItem('backtestResultForOptimize');
+                } catch (e) {
+                    console.error('解析回测数据失败:', e);
+                }
+            }
+        }
+
+        // 根据回测参数预填充优化范围
+        function prefillOptimizationRange(parameters) {
+            // 这里可以根据回测参数智能推荐优化范围
+            // 例如：在参数值的基础上 ±20% 作为优化范围
+            console.log('预填充优化参数范围:', parameters);
+
+            // 可以在这里添加更多的智能推荐逻辑
+            // 比如根据夏普比率、最大回撤等指标推荐优化方向
+        }
+    </script>
+</body>
+</html>
+

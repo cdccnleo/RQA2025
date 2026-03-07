@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 实时性能监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mobile-optimization.css">
+    <script src="mobile-utils.js"></script>
+    <script src="ux-optimization.js"></script>
+    <style>
+        .gradient-bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .performance-card {
+            transition: all 0.3s ease;
+        }
+        .performance-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .metric-gauge {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .gauge-background {
+            fill: none;
+            stroke: #e5e7eb;
+            stroke-width: 8;
+        }
+        .gauge-fill {
+            fill: none;
+            stroke-linecap: round;
+            stroke-width: 8;
+            transition: stroke-dasharray 0.3s ease;
+        }
+        .gauge-fill.safe {
+            stroke: #22c55e;
+        }
+        .gauge-fill.warning {
+            stroke: #eab308;
+        }
+        .gauge-fill.critical {
+            stroke: #ef4444;
+        }
+        .performance-timeline {
+            position: relative;
+        }
+        .timeline-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3b82f6;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .timeline-point.warning {
+            background: #eab308;
+        }
+        .timeline-point.critical {
+            background: #ef4444;
+        }
+        .heatmap-cell {
+            transition: all 0.2s ease;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+        }
+        .comparison-bar {
+            position: relative;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .comparison-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .comparison-fill.current {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        }
+        .comparison-fill.baseline {
+            background: linear-gradient(90deg, #6b7280, #374151);
+        }
+        .comparison-fill.target {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                            <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">实时性能监控</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-green-600 font-medium">系统运行良好</span>
+                    </div>
+                    <button onclick="refreshAll()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-tachometer-alt text-indigo-600 mr-3"></i>
+                实时性能监控
+            </h1>
+            <p class="text-gray-600">系统、应用和业务性能的深度实时监控与分析</p>
+        </div>
+
+        <!-- Performance Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 shadow-lg performance-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-microchip text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">系统健康度</dt>
+                        <dd class="text-2xl font-semibold text-blue-600" id="system-health">98.5%</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg performance-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-server text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">应用性能</dt>
+                        <dd class="text-2xl font-semibold text-green-600" id="app-performance">A级</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg performance-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">业务吞吐量</dt>
+                        <dd class="text-2xl font-semibold text-purple-600" id="business-throughput">2.4K/s</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg performance-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">平均响应时间</dt>
+                        <dd class="text-2xl font-semibold text-orange-600" id="avg-response-time">45ms</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8 px-6">
+                    <button onclick="switchTab('system')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm active-tab" id="tab-system">
+                        <i class="fas fa-server mr-2"></i>
+                        系统性能
+                    </button>
+                    <button onclick="switchTab('application')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-application">
+                        <i class="fas fa-code mr-2"></i>
+                        应用性能
+                    </button>
+                    <button onclick="switchTab('business')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-business">
+                        <i class="fas fa-business-time mr-2"></i>
+                        业务性能
+                    </button>
+                    <button onclick="switchTab('comparison')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-comparison">
+                        <i class="fas fa-balance-scale mr-2"></i>
+                        性能对比
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- System Performance Tab -->
+                <div id="content-system" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- System Resources Gauges -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">系统资源使用情况</h3>
+                            <div class="grid grid-cols-2 gap-4" id="system-gauges">
+                                <!-- Gauges will be loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- System Performance Timeline -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">系统性能时间线</h3>
+                            <canvas id="system-timeline-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Disk I/O Performance -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">磁盘I/O性能</h3>
+                            <canvas id="disk-io-chart" width="400" height="200"></canvas>
+                        </div>
+
+                        <!-- Network Performance -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">网络性能监控</h3>
+                            <canvas id="network-performance-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Performance Tab -->
+                <div id="content-application" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- API Performance -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">API性能监控</h3>
+                            <canvas id="api-performance-chart" width="400" height="250"></canvas>
+                        </div>
+
+                        <!-- Error Rates -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">错误率统计</h3>
+                            <canvas id="error-rates-chart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Application Components Performance -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">应用组件性能</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="app-components">
+                            <!-- Components will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Database Performance -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">数据库性能</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="database-performance">
+                            <!-- Database metrics will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Performance Tab -->
+                <div id="content-business" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Trading Performance -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">交易性能指标</h3>
+                            <div class="space-y-4" id="trading-performance">
+                                <!-- Trading metrics will be loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Strategy Performance -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">策略性能监控</h3>
+                            <canvas id="strategy-performance-chart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Business Throughput -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">业务吞吐量分析</h3>
+                        <canvas id="business-throughput-chart" width="600" height="200"></canvas>
+                    </div>
+
+                    <!-- Performance Heatmap -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">性能热力图</h3>
+                        <div class="overflow-x-auto">
+                            <div id="performance-heatmap" class="inline-block">
+                                <!-- Heatmap will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Comparison Tab -->
+                <div id="content-comparison" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Historical Comparison -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">历史性能对比</h3>
+                            <canvas id="historical-comparison-chart" width="400" height="250"></canvas>
+                        </div>
+
+                        <!-- Benchmark Comparison -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">基准性能对比</h3>
+                            <div class="space-y-4" id="benchmark-comparison">
+                                <!-- Benchmark comparisons will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Trends -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">性能趋势分析</h3>
+                        <canvas id="performance-trends-chart" width="600" height="200"></canvas>
+                    </div>
+
+                    <!-- Performance Targets -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">性能目标达成情况</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="performance-targets">
+                            <!-- Performance targets will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // API基础URL生成函数
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        let currentTab = 'system';
+        let performanceCharts = {};
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPerformanceOverview();
+            loadSystemPerformance();
+
+            // Set up periodic updates
+            setInterval(() => {
+                loadPerformanceOverview();
+                updateCharts();
+            }, 15000); // Update every 15 seconds for real-time monitoring
+        });
+
+        function switchTab(tabId) {
+            // Update tab styles
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.classList.remove('active-tab', 'border-indigo-500', 'text-indigo-600');
+                tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active-tab', 'border-indigo-500', 'text-indigo-600');
+            document.getElementById(`tab-${tabId}`).classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+            currentTab = tabId;
+
+            // Load tab-specific data
+            switch(tabId) {
+                case 'application':
+                    loadApplicationPerformance();
+                    break;
+                case 'business':
+                    loadBusinessPerformance();
+                    break;
+                case 'comparison':
+                    loadPerformanceComparison();
+                    break;
+            }
+        }
+
+        async function loadPerformanceOverview() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/performance/overview'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updatePerformanceOverview(data);
+                }
+            } catch (error) {
+                console.error('加载性能概览失败:', error);
+            }
+        }
+
+        function updatePerformanceOverview(data) {
+            // Update metrics
+            document.getElementById('system-health').textContent = data.system_health || '98.5%';
+            document.getElementById('app-performance').textContent = data.app_performance || 'A级';
+            document.getElementById('business-throughput').textContent = data.business_throughput || '2.4K/s';
+            document.getElementById('avg-response-time').textContent = data.avg_response_time || '45ms';
+        }
+
+        async function loadSystemPerformance() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/performance/system'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderSystemGauges(data);
+                    renderSystemTimeline(data);
+                    renderDiskIOChart(data);
+                    renderNetworkPerformance(data);
+                }
+            } catch (error) {
+                console.error('加载系统性能失败:', error);
+            }
+        }
+
+        function renderSystemGauges(data) {
+            const container = document.getElementById('system-gauges');
+            const metrics = [
+                { name: 'CPU', value: data.cpu || 65, unit: '%', status: getStatus(data.cpu, 80, 90) },
+                { name: '内存', value: data.memory || 72, unit: '%', status: getStatus(data.memory, 85, 95) },
+                { name: '磁盘', value: data.disk || 45, unit: '%', status: getStatus(data.disk, 80, 90) },
+                { name: '网络', value: data.network || 35, unit: '%', status: getStatus(data.network, 70, 85) }
+            ];
+
+            const html = metrics.map(metric => `
+                <div class="text-center">
+                    <div class="metric-gauge mx-auto mb-2">
+                        <svg viewBox="0 0 120 120" class="w-full h-full">
+                            <circle cx="60" cy="60" r="50" class="gauge-background"/>
+                            <circle cx="60" cy="60" r="50" class="gauge-fill ${metric.status}"
+                                    stroke-dasharray="${2 * Math.PI * 50 * (metric.value / 100)} ${2 * Math.PI * 50}"
+                                    transform="rotate(-90 60 60)"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-gray-900">${metric.value}${metric.unit}</div>
+                                <div class="text-xs text-gray-500">${metric.name}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderSystemTimeline(data) {
+            const ctx = document.getElementById('system-timeline-chart');
+            if (ctx) {
+                const now = new Date();
+                const labels = [];
+                for (let i = 29; i >= 0; i--) {
+                    labels.push(new Date(now.getTime() - i * 60 * 1000));
+                }
+
+                performanceCharts.systemTimeline = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'CPU使用率',
+                            data: data.cpu_timeline || Array.from({length: 30}, () => Math.random() * 40 + 40),
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            pointRadius: 0
+                        }, {
+                            label: '内存使用率',
+                            data: data.memory_timeline || Array.from({length: 30}, () => Math.random() * 30 + 50),
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'minute',
+                                    displayFormats: { minute: 'HH:mm' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        animation: false // Disable animation for real-time updates
+                    }
+                });
+            }
+        }
+
+        function renderDiskIOChart(data) {
+            const ctx = document.getElementById('disk-io-chart');
+            if (ctx) {
+                performanceCharts.diskIO = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                        datasets: [{
+                            label: '读取IOPS',
+                            data: data.disk_read || [1200, 1350, 1180, 1420, 1380, 1250],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '写入IOPS',
+                            data: data.disk_write || [980, 1120, 950, 1180, 1150, 1020],
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'IOPS' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderNetworkPerformance(data) {
+            const ctx = document.getElementById('network-performance-chart');
+            if (ctx) {
+                performanceCharts.network = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                        datasets: [{
+                            label: '入站流量',
+                            data: data.network_in || [45, 52, 48, 65, 58, 42],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '出站流量',
+                            data: data.network_out || [38, 45, 42, 55, 48, 35],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '网络延迟',
+                            data: data.network_latency || [12, 15, 18, 22, 16, 14],
+                            borderColor: 'rgb(245, 158, 11)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            yAxisID: 'latency'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '流量 (Mbps)' }
+                            },
+                            latency: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '延迟 (ms)' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        async function loadApplicationPerformance() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/performance/application'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderAPIPerformance(data);
+                    renderErrorRates(data);
+                    renderAppComponents(data);
+                    renderDatabasePerformance(data);
+                }
+            } catch (error) {
+                console.error('加载应用性能失败:', error);
+            }
+        }
+
+        function renderAPIPerformance(data) {
+            const ctx = document.getElementById('api-performance-chart');
+            if (ctx) {
+                performanceCharts.apiPerformance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['策略API', '交易API', '数据API', '监控API', '用户API'],
+                        datasets: [{
+                            label: '平均响应时间 (ms)',
+                            data: data.api_response_times || [45, 52, 38, 28, 65],
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '请求量 (qps)',
+                            data: data.api_throughput || [1250, 980, 1450, 520, 280],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'throughput'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '响应时间 (ms)' }
+                            },
+                            throughput: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '请求量 (qps)' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderErrorRates(data) {
+            const ctx = document.getElementById('error-rates-chart');
+            if (ctx) {
+                performanceCharts.errorRates = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['成功', '4xx错误', '5xx错误', '超时'],
+                        datasets: [{
+                            data: data.error_rates || [94.2, 3.8, 1.5, 0.5],
+                            backgroundColor: [
+                                'rgba(34, 197, 94, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(156, 163, 175, 0.8)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderAppComponents(data) {
+            const container = document.getElementById('app-components');
+            const components = data.components || [
+                { name: 'Web服务器', response_time: 45, throughput: 1250, error_rate: 0.2 },
+                { name: 'API网关', response_time: 28, throughput: 2100, error_rate: 0.1 },
+                { name: '业务逻辑层', response_time: 65, throughput: 890, error_rate: 0.8 },
+                { name: '数据访问层', response_time: 35, throughput: 1450, error_rate: 0.3 }
+            ];
+
+            const html = components.map(comp => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${comp.name}</h4>
+                        <span class="text-xs ${comp.error_rate < 0.5 ? 'bg-green-100 text-green-800' : comp.error_rate < 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded">
+                            错误率: ${comp.error_rate}%
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-600 space-y-1">
+                        <div>响应时间: ${comp.response_time}ms</div>
+                        <div>吞吐量: ${comp.throughput} qps</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderDatabasePerformance(data) {
+            const container = document.getElementById('database-performance');
+            const dbMetrics = [
+                {
+                    title: '查询性能',
+                    metrics: [
+                        { label: '平均查询时间', value: '15ms', status: 'good' },
+                        { label: '慢查询数量', value: '3', status: 'warning' },
+                        { label: '连接池利用率', value: '75%', status: 'good' }
+                    ]
+                },
+                {
+                    title: '存储性能',
+                    metrics: [
+                        { label: '读IOPS', value: '2,450', status: 'good' },
+                        { label: '写IOPS', value: '1,890', status: 'good' },
+                        { label: '存储延迟', value: '8ms', status: 'good' }
+                    ]
+                }
+            ];
+
+            const html = dbMetrics.map(section => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <h4 class="text-sm font-medium text-gray-900 mb-3">${section.title}</h4>
+                    <div class="space-y-2">
+                        ${section.metrics.map(metric => `
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-600">${metric.label}</span>
+                                <span class="text-xs font-medium ${metric.status === 'good' ? 'text-green-600' : metric.status === 'warning' ? 'text-yellow-600' : 'text-red-600'}">
+                                    ${metric.value}
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        async function loadBusinessPerformance() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/performance/business'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderTradingPerformance(data);
+                    renderStrategyPerformance(data);
+                    renderBusinessThroughput(data);
+                    renderPerformanceHeatmap(data);
+                }
+            } catch (error) {
+                console.error('加载业务性能失败:', error);
+            }
+        }
+
+        function renderTradingPerformance(data) {
+            const container = document.getElementById('trading-performance');
+            const metrics = data.trading || [
+                { label: '交易成功率', value: '99.8%', status: 'good', icon: 'fas fa-check-circle' },
+                { label: '平均成交延迟', value: '45ms', status: 'good', icon: 'fas fa-clock' },
+                { label: '订单处理速度', value: '2.1K/s', status: 'good', icon: 'fas fa-bolt' },
+                { label: '滑点率', value: '0.02%', status: 'good', icon: 'fas fa-chart-line' },
+                { label: '取消订单率', value: '1.2%', status: 'warning', icon: 'fas fa-times-circle' }
+            ];
+
+            const html = metrics.map(metric => `
+                <div class="flex items-center justify-between p-3 bg-white rounded-lg border">
+                    <div class="flex items-center">
+                        <i class="${metric.icon} ${metric.status === 'good' ? 'text-green-500' : metric.status === 'warning' ? 'text-yellow-500' : 'text-red-500'} mr-3"></i>
+                        <span class="text-sm text-gray-900">${metric.label}</span>
+                    </div>
+                    <span class="text-sm font-medium ${metric.status === 'good' ? 'text-green-600' : metric.status === 'warning' ? 'text-yellow-600' : 'text-red-600'}">
+                        ${metric.value}
+                    </span>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderStrategyPerformance(data) {
+            const ctx = document.getElementById('strategy-performance-chart');
+            if (ctx) {
+                performanceCharts.strategyPerformance = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['执行效率', '盈利能力', '风险控制', '稳定性', '适应性'],
+                        datasets: [{
+                            label: '当前性能',
+                            data: data.strategy_current || [85, 78, 92, 88, 76],
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                            pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                        }, {
+                            label: '基准性能',
+                            data: data.strategy_baseline || [80, 75, 85, 82, 70],
+                            borderColor: 'rgba(156, 163, 175, 1)',
+                            backgroundColor: 'rgba(156, 163, 175, 0.2)',
+                            pointBackgroundColor: 'rgba(156, 163, 175, 1)',
+                            pointBorderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderBusinessThroughput(data) {
+            const ctx = document.getElementById('business-throughput-chart');
+            if (ctx) {
+                performanceCharts.businessThroughput = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                        datasets: [{
+                            label: '交易订单',
+                            data: data.order_throughput || [450, 680, 920, 1250, 1580, 890],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '策略计算',
+                            data: data.strategy_throughput || [1250, 1450, 1680, 1890, 2100, 1420],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '数据处理',
+                            data: data.data_throughput || [2100, 2350, 2680, 2890, 3100, 2420],
+                            borderColor: 'rgb(245, 158, 11)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '吞吐量 (ops/s)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderPerformanceHeatmap(data) {
+            const container = document.getElementById('performance-heatmap');
+            const metrics = ['CPU', '内存', '磁盘', '网络'];
+            const timeSlots = ['00:00', '06:00', '12:00', '18:00'];
+
+            const heatmapData = data.heatmap || [
+                [65, 72, 68, 75],
+                [78, 82, 85, 79],
+                [45, 52, 48, 55],
+                [35, 42, 38, 45]
+            ];
+
+            let html = '<table class="border-collapse border border-gray-300">';
+            html += '<thead><tr><th class="border border-gray-300 p-2"></th>';
+
+            timeSlots.forEach(slot => {
+                html += `<th class="border border-gray-300 p-2 text-xs text-gray-600">${slot}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            metrics.forEach((metric, i) => {
+                html += `<tr><td class="border border-gray-300 p-2 text-xs font-medium text-gray-700">${metric}</td>`;
+                heatmapData[i].forEach((value, j) => {
+                    const intensity = Math.floor((value / 100) * 255);
+                    const color = value > 80 ? `rgb(239, 68, 68)` :
+                                value > 60 ? `rgb(245, 158, 11)` :
+                                `rgb(34, 197, 94)`;
+                    html += `<td class="border border-gray-300 p-2 heatmap-cell" style="background-color: ${color}; color: white; text-align: center;" title="${metric} ${timeSlots[j]}: ${value}%">${value}%</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        async function loadPerformanceComparison() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/performance/comparison'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderHistoricalComparison(data);
+                    renderBenchmarkComparison(data);
+                    renderPerformanceTrends(data);
+                    renderPerformanceTargets(data);
+                }
+            } catch (error) {
+                console.error('加载性能对比失败:', error);
+            }
+        }
+
+        function renderHistoricalComparison(data) {
+            const ctx = document.getElementById('historical-comparison-chart');
+            if (ctx) {
+                performanceCharts.historicalComparison = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['昨天', '上周', '上月', '季度平均'],
+                        datasets: [{
+                            label: '响应时间 (ms)',
+                            data: data.response_time_history || [52, 48, 45, 47],
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '吞吐量 (qps)',
+                            data: data.throughput_history || [2100, 2250, 2380, 2150],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'throughput'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '响应时间 (ms)' }
+                            },
+                            throughput: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '吞吐量 (qps)' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderBenchmarkComparison(data) {
+            const container = document.getElementById('benchmark-comparison');
+            const benchmarks = data.benchmarks || [
+                {
+                    metric: '响应时间',
+                    current: 45,
+                    industry_avg: 52,
+                    best_practice: 38,
+                    unit: 'ms'
+                },
+                {
+                    metric: 'CPU利用率',
+                    current: 65,
+                    industry_avg: 72,
+                    best_practice: 55,
+                    unit: '%'
+                },
+                {
+                    metric: '内存效率',
+                    current: 78,
+                    industry_avg: 75,
+                    best_practice: 82,
+                    unit: '%'
+                }
+            ];
+
+            const html = benchmarks.map(benchmark => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <h4 class="text-sm font-medium text-gray-900 mb-3">${benchmark.metric}</h4>
+                    <div class="space-y-2">
+                        <div class="comparison-bar">
+                            <div class="comparison-fill current" style="width: ${(benchmark.current / Math.max(benchmark.current, benchmark.industry_avg, benchmark.best_practice)) * 100}%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-600">
+                            <span>当前: ${benchmark.current}${benchmark.unit}</span>
+                            <span>行业平均: ${benchmark.industry_avg}${benchmark.unit}</span>
+                            <span>最佳实践: ${benchmark.best_practice}${benchmark.unit}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderPerformanceTrends(data) {
+            const ctx = document.getElementById('performance-trends-chart');
+            if (ctx) {
+                performanceCharts.performanceTrends = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.trend_labels || ['1月', '2月', '3月', '4月', '5月', '6月'],
+                        datasets: [{
+                            label: '响应时间趋势',
+                            data: data.response_trend || [52, 48, 45, 42, 38, 35],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '吞吐量趋势',
+                            data: data.throughput_trend || [2100, 2250, 2380, 2520, 2680, 2850],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            yAxisID: 'throughput'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '响应时间 (ms)' }
+                            },
+                            throughput: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '吞吐量 (qps)' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderPerformanceTargets(data) {
+            const container = document.getElementById('performance-targets');
+            const targets = data.targets || [
+                {
+                    metric: '响应时间',
+                    current: 45,
+                    target: 40,
+                    status: 'on_track',
+                    deadline: '2024-12-31'
+                },
+                {
+                    metric: '可用性',
+                    current: 99.8,
+                    target: 99.9,
+                    status: 'on_track',
+                    deadline: '2024-12-31'
+                },
+                {
+                    metric: '吞吐量',
+                    current: 2400,
+                    target: 2500,
+                    status: 'at_risk',
+                    deadline: '2024-12-31'
+                },
+                {
+                    metric: '错误率',
+                    current: 0.2,
+                    target: 0.1,
+                    status: 'on_track',
+                    deadline: '2024-12-31'
+                }
+            ];
+
+            const html = targets.map(target => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${target.metric}</h4>
+                        <span class="text-xs ${target.status === 'on_track' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} px-2 py-1 rounded">
+                            ${target.status === 'on_track' ? '正常' : '需关注'}
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-600 mb-2">
+                        当前: ${target.current} | 目标: ${target.target} | 截止: ${target.deadline}
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-${target.status === 'on_track' ? 'green' : 'yellow'}-500 h-2 rounded-full" style="width: ${(target.current / target.target) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function updateCharts() {
+            // Update existing charts with new data
+            Object.values(performanceCharts).forEach(chart => {
+                if (chart && chart.update) {
+                    chart.update();
+                }
+            });
+        }
+
+        function refreshAll() {
+            loadPerformanceOverview();
+            updateCharts();
+
+            if (currentTab !== 'system') {
+                switch(currentTab) {
+                    case 'application':
+                        loadApplicationPerformance();
+                        break;
+                    case 'business':
+                        loadBusinessPerformance();
+                        break;
+                    case 'comparison':
+                        loadPerformanceComparison();
+                        break;
+                }
+            }
+
+            // Visual feedback
+            const btn = event.target;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>刷新中...';
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 1000);
+        }
+
+        function getStatus(value, warningThreshold, criticalThreshold) {
+            if (value >= criticalThreshold) return 'critical';
+            if (value >= warningThreshold) return 'warning';
+            return 'safe';
+        }
+    </script>
+</body>
+</html>

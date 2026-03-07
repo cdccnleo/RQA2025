@@ -1,0 +1,203 @@
+<!-- 用户操作引导组件 -->
+<div id="userGuideModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                操作指南
+            </h3>
+            <button onclick="closeUserGuide()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="userGuideContent" class="space-y-4 max-h-96 overflow-y-auto">
+            <!-- 动态内容 -->
+        </div>
+        <div class="mt-6 flex justify-between">
+            <label class="flex items-center text-sm text-gray-600">
+                <input type="checkbox" id="dontShowAgain" class="mr-2">
+                不再显示
+            </label>
+            <button onclick="closeUserGuide()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                知道了
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 快速提示 Toast -->
+<div id="quickTipToast" class="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <div class="flex items-center">
+        <i class="fas fa-info-circle mr-2"></i>
+        <span id="quickTipText">提示信息</span>
+    </div>
+</div>
+
+<script>
+    // 页面引导配置
+    const pageGuides = {
+        'strategy-management': {
+            title: '策略管理页面指南',
+            steps: [
+                {
+                    icon: 'fa-plus',
+                    title: '创建策略',
+                    description: '点击"新建策略"按钮，使用策略构思工具创建新策略'
+                },
+                {
+                    icon: 'fa-chart-line',
+                    title: '回测策略',
+                    description: '点击策略行的"回测"按钮，对策略进行历史数据回测'
+                },
+                {
+                    icon: 'fa-sliders-h',
+                    title: '优化策略',
+                    description: '点击"优化"按钮，使用参数优化器寻找最优参数'
+                },
+                {
+                    icon: 'fa-magic',
+                    title: '一键执行',
+                    description: '点击"一键执行"按钮，自动完成回测→优化→应用的完整流程'
+                },
+                {
+                    icon: 'fa-trash',
+                    title: '删除策略',
+                    description: '点击"删除"按钮，删除不需要的策略'
+                }
+            ]
+        },
+        'strategy-backtest': {
+            title: '策略回测页面指南',
+            steps: [
+                {
+                    icon: 'fa-check-square',
+                    title: '选择策略',
+                    description: '在左侧选择要回测的策略，可以单选或多选'
+                },
+                {
+                    icon: 'fa-calendar',
+                    title: '设置时间范围',
+                    description: '选择回测的起止日期，建议至少选择3个月以上的数据'
+                },
+                {
+                    icon: 'fa-cog',
+                    title: '配置参数',
+                    description: '设置初始资金、交易费用等回测参数'
+                },
+                {
+                    icon: 'fa-play',
+                    title: '执行回测',
+                    description: '点击"开始回测"按钮，等待回测完成'
+                },
+                {
+                    icon: 'fa-sliders-h',
+                    title: '去优化',
+                    description: '在历史记录中点击"去优化"，基于回测结果进行参数优化'
+                }
+            ]
+        },
+        'strategy-optimizer': {
+            title: '策略优化器页面指南',
+            steps: [
+                {
+                    icon: 'fa-list',
+                    title: '选择策略',
+                    description: '从下拉列表中选择要优化的策略'
+                },
+                {
+                    icon: 'fa-cogs',
+                    title: '设置参数范围',
+                    description: '为每个参数设置最小值、最大值和步长'
+                },
+                {
+                    icon: 'fa-bullseye',
+                    title: '选择优化目标',
+                    description: '选择要优化的目标：夏普比率、收益率或最大回撤'
+                },
+                {
+                    icon: 'fa-play',
+                    title: '开始优化',
+                    description: '点击"开始优化"按钮，系统将自动搜索最优参数组合'
+                },
+                {
+                    icon: 'fa-check',
+                    title: '应用参数',
+                    description: '优化完成后，点击"应用"按钮将最优参数应用到策略'
+                }
+            ]
+        }
+    };
+
+    // 显示用户引导
+    function showUserGuide() {
+        const pageName = window.location.pathname.split('/').pop() || 'index';
+        const guide = pageGuides[pageName];
+
+        if (!guide) return;
+
+        // 检查是否设置了不再显示
+        const dontShow = localStorage.getItem('dont_show_guide_' + pageName);
+        if (dontShow === 'true') return;
+
+        const modal = document.getElementById('userGuideModal');
+        const content = document.getElementById('userGuideContent');
+
+        // 生成内容
+        content.innerHTML = `
+            <p class="text-gray-600 mb-4">${guide.title}</p>
+            ${guide.steps.map((step, index) => `
+                <div class="flex items-start p-3 bg-gray-50 rounded-lg">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas ${step.icon} text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900">${index + 1}. ${step.title}</h4>
+                        <p class="text-sm text-gray-600">${step.description}</p>
+                    </div>
+                </div>
+            `).join('')}
+        `;
+
+        modal.classList.remove('hidden');
+    }
+
+    // 关闭用户引导
+    function closeUserGuide() {
+        const modal = document.getElementById('userGuideModal');
+        const dontShowAgain = document.getElementById('dontShowAgain');
+
+        if (dontShowAgain && dontShowAgain.checked) {
+            const pageName = window.location.pathname.split('/').pop() || 'index';
+            localStorage.setItem('dont_show_guide_' + pageName, 'true');
+        }
+
+        modal.classList.add('hidden');
+    }
+
+    // 显示快速提示
+    function showQuickTip(message, duration = 5000) {
+        const toast = document.getElementById('quickTipToast');
+        const text = document.getElementById('quickTipText');
+
+        text.textContent = message;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+
+        setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, duration);
+    }
+
+    // 页面加载完成后显示引导
+    document.addEventListener('DOMContentLoaded', () => {
+        // 延迟显示引导，让用户先看到页面
+        setTimeout(showUserGuide, 1000);
+    });
+
+    // 点击模态框外部关闭
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('userGuideModal');
+        if (e.target === modal) {
+            closeUserGuide();
+        }
+    });
+</script>

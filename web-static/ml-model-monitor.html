@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>ML模型性能监控 | RQA2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .metric-card { transition: all 0.3s ease; }
+        .metric-card:hover { background-color: #f9fafb; }
+        .drift-indicator { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-healthy { background-color: #10b981; }
+        .status-warning { background-color: #f59e0b; }
+        .status-critical { background-color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">ML模型性能监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-brain text-purple-600 mr-3"></i>
+                ML模型性能监控
+            </h1>
+            <p class="text-gray-600">实时监控模型性能指标、数据漂移和自动回滚状态</p>
+        </div>
+
+        <!-- Model Selector -->
+        <div class="bg-white rounded-lg shadow p-4 mb-8">
+            <div class="flex items-center space-x-4">
+                <label class="text-sm font-medium text-gray-700">选择模型:</label>
+                <select id="model-selector" onchange="onModelChange()" class="border border-gray-300 rounded-lg px-4 py-2 w-64">
+                    <option value="">加载中...</option>
+                </select>
+                <span id="model-status" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                    <span class="status-dot status-healthy mr-2"></span>加载中
+                </span>
+            </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">准确率 (Accuracy)</dt>
+                        <dd class="text-2xl font-semibold text-gray-900 mt-1" id="metric-accuracy">--</dd>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bullseye text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-sm" id="trend-accuracy">
+                    <!-- 趋势箭头 -->
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">F1分数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900 mt-1" id="metric-f1">--</dd>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-pie text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-sm" id="trend-f1"></div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">ROC-AUC</dt>
+                        <dd class="text-2xl font-semibold text-gray-900 mt-1" id="metric-auc">--</dd>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-area text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-sm" id="trend-auc"></div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Sharpe比率</dt>
+                        <dd class="text-2xl font-semibold text-gray-900 mt-1" id="metric-sharpe">--</dd>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-yellow-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-2 text-sm" id="trend-sharpe"></div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Performance Trends Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-chart-line text-blue-500 mr-2"></i>性能趋势
+                    </h3>
+                    <select id="metric-period" onchange="updateCharts()" class="text-sm border border-gray-300 rounded px-2 py-1">
+                        <option value="1h">最近1小时</option>
+                        <option value="24h" selected>最近24小时</option>
+                        <option value="7d">最近7天</option>
+                        <option value="30d">最近30天</option>
+                    </select>
+                </div>
+                <div class="h-80">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Drift Detection Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-exclamation-triangle text-orange-500 mr-2"></i>数据漂移检测
+                    </h3>
+                    <span id="drift-status" class="text-sm font-medium text-gray-600">检测中...</span>
+                </div>
+                <div class="h-80">
+                    <canvas id="driftChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Metrics & Resource Usage -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Business Metrics -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-dollar-sign text-green-500 mr-2"></i>业务指标
+                </h3>
+                <div class="space-y-4">
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">最大回撤 (Max Drawdown)</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-drawdown">--</span>
+                        </div>
+                    </div>
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">胜率 (Win Rate)</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-winrate">--</span>
+                        </div>
+                    </div>
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">收益波动率 (Volatility)</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-volatility">--</span>
+                        </div>
+                    </div>
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">累计收益 (Total Return)</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-return">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Usage -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-server text-purple-500 mr-2"></i>资源使用
+                </h3>
+                <div class="space-y-4">
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">推理延迟 (P99)</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-latency">--</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" id="bar-latency" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">错误率</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-error-rate">--</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-red-600 h-2 rounded-full" id="bar-error-rate" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">吞吐量 (QPS)</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-throughput">--</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full" id="bar-throughput" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card p-4 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">内存使用</span>
+                            <span class="text-lg font-semibold text-gray-900" id="metric-memory">--</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-600 h-2 rounded-full" id="bar-memory" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-Rollback Status -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-undo-alt text-red-500 mr-2"></i>自动回滚状态
+                </h3>
+                <label class="flex items-center cursor-pointer">
+                    <span class="mr-2 text-sm text-gray-600">启用自动回滚</span>
+                    <input type="checkbox" id="auto-rollback-toggle" onchange="toggleAutoRollback()" class="sr-only">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full relative transition duration-300" id="toggle-bg">
+                        <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition duration-300" id="toggle-dot"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <span class="text-sm text-gray-500">当前版本</span>
+                    <p class="text-lg font-semibold text-gray-900" id="current-version">--</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <span class="text-sm text-gray-500">回滚阈值</span>
+                    <p class="text-lg font-semibold text-gray-900" id="rollback-threshold">Accuracy &lt; 0.7</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <span class="text-sm text-gray-500">上次回滚</span>
+                    <p class="text-lg font-semibold text-gray-900" id="last-rollback">无</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drift Detection Details -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-search text-orange-500 mr-2"></i>漂移检测详情
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">特征</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">检测方法</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">统计值</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">P值/阈值</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="drift-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/common/api_client.js"></script>
+    <script>
+        let currentModel = null;
+        let performanceChart = null;
+        let driftChart = null;
+        let metricsHistory = [];
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadModelList();
+            initCharts();
+            setInterval(refreshData, 30000); // 每30秒刷新
+        });
+
+        /**
+         * 加载模型列表
+         */
+        async function loadModelList() {
+            try {
+                const models = await apiGet('/monitoring/models');
+                const selector = document.getElementById('model-selector');
+                selector.innerHTML = models.map(m => 
+                    `<option value="${m.model_id}">${m.name} (${m.version})</option>`
+                ).join('');
+                
+                if (models.length > 0) {
+                    currentModel = models[0].model_id;
+                    onModelChange();
+                }
+            } catch (error) {
+                console.error('加载模型列表失败:', error);
+            }
+        }
+
+        /**
+         * 模型切换处理
+         */
+        async function onModelChange() {
+            currentModel = document.getElementById('model-selector').value;
+            if (!currentModel) return;
+            
+            await loadModelMetrics();
+            await loadDriftData();
+            updateCharts();
+        }
+
+        /**
+         * 加载模型指标
+         */
+        async function loadModelMetrics() {
+            if (!currentModel) return;
+            
+            try {
+                const metrics = await apiGet(`/monitoring/models/${currentModel}/metrics`);
+                updateMetricCards(metrics);
+                updateBusinessMetrics(metrics);
+                updateResourceMetrics(metrics);
+                
+                // 更新历史数据
+                if (metrics.history) {
+                    metricsHistory = metrics.history;
+                }
+            } catch (error) {
+                console.error('加载模型指标失败:', error);
+            }
+        }
+
+        /**
+         * 加载漂移数据
+         */
+        async function loadDriftData() {
+            if (!currentModel) return;
+            
+            try {
+                const driftData = await apiGet(`/monitoring/models/${currentModel}/drift`);
+                updateDriftTable(driftData);
+                updateDriftStatus(driftData);
+            } catch (error) {
+                console.error('加载漂移数据失败:', error);
+            }
+        }
+
+        /**
+         * 更新指标卡片
+         */
+        function updateMetricCards(metrics) {
+            const technical = metrics.technical || {};
+            
+            document.getElementById('metric-accuracy').textContent = 
+                technical.accuracy ? technical.accuracy.toFixed(4) : '--';
+            document.getElementById('metric-f1').textContent = 
+                technical.f1_score ? technical.f1_score.toFixed(4) : '--';
+            document.getElementById('metric-auc').textContent = 
+                technical.roc_auc ? technical.roc_auc.toFixed(4) : '--';
+            
+            const business = metrics.business || {};
+            document.getElementById('metric-sharpe').textContent = 
+                business.sharpe_ratio ? business.sharpe_ratio.toFixed(2) : '--';
+            
+            // 更新趋势
+            updateTrendIndicator('trend-accuracy', technical.accuracy_trend);
+            updateTrendIndicator('trend-f1', technical.f1_trend);
+            updateTrendIndicator('trend-auc', technical.auc_trend);
+            updateTrendIndicator('trend-sharpe', business.sharpe_trend);
+        }
+
+        /**
+         * 更新趋势指示器
+         */
+        function updateTrendIndicator(elementId, trend) {
+            const element = document.getElementById(elementId);
+            if (!trend) {
+                element.innerHTML = '<span class="text-gray-400">--</span>';
+                return;
+            }
+            
+            const isPositive = trend > 0;
+            const color = isPositive ? 'text-green-600' : 'text-red-600';
+            const icon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
+            const percent = (Math.abs(trend) * 100).toFixed(2);
+            
+            element.innerHTML = `<span class="${color}"><i class="fas ${icon} mr-1"></i>${percent}%</span>`;
+        }
+
+        /**
+         * 更新业务指标
+         */
+        function updateBusinessMetrics(metrics) {
+            const business = metrics.business || {};
+            
+            document.getElementById('metric-drawdown').textContent = 
+                business.max_drawdown ? `${(business.max_drawdown * 100).toFixed(2)}%` : '--';
+            document.getElementById('metric-winrate').textContent = 
+                business.win_rate ? `${(business.win_rate * 100).toFixed(2)}%` : '--';
+            document.getElementById('metric-volatility').textContent = 
+                business.volatility ? `${(business.volatility * 100).toFixed(2)}%` : '--';
+            document.getElementById('metric-return').textContent = 
+                business.total_return ? `${(business.total_return * 100).toFixed(2)}%` : '--';
+        }
+
+        /**
+         * 更新资源指标
+         */
+        function updateResourceMetrics(metrics) {
+            const resource = metrics.resource || {};
+            
+            document.getElementById('metric-latency').textContent = 
+                resource.inference_latency_p99 ? `${resource.inference_latency_p99.toFixed(2)}ms` : '--';
+            document.getElementById('metric-error-rate').textContent = 
+                resource.error_rate ? `${(resource.error_rate * 100).toFixed(3)}%` : '--';
+            document.getElementById('metric-throughput').textContent = 
+                resource.throughput_qps ? resource.throughput_qps.toFixed(0) : '--';
+            document.getElementById('metric-memory').textContent = 
+                resource.memory_usage_mb ? `${resource.memory_usage_mb.toFixed(0)}MB` : '--';
+            
+            // 更新进度条
+            updateProgressBar('bar-latency', resource.inference_latency_p99, 100);
+            updateProgressBar('bar-error-rate', resource.error_rate * 100, 5);
+            updateProgressBar('bar-throughput', resource.throughput_qps, 1000);
+            updateProgressBar('bar-memory', resource.memory_usage_mb, 4096);
+        }
+
+        /**
+         * 更新进度条
+         */
+        function updateProgressBar(barId, value, max) {
+            const percentage = Math.min((value / max) * 100, 100);
+            document.getElementById(barId).style.width = `${percentage}%`;
+        }
+
+        /**
+         * 更新漂移表格
+         */
+        function updateDriftTable(driftData) {
+            const tbody = document.getElementById('drift-table');
+            const features = driftData.features || [];
+            
+            tbody.innerHTML = features.map(f => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${f.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${f.method}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${f.statistic?.toFixed(4) || '--'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${f.p_value?.toFixed(4) || f.threshold || '--'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${f.drift_detected ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
+                            ${f.drift_detected ? '漂移 detected' : '正常'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        /**
+         * 更新漂移状态
+         */
+        function updateDriftStatus(driftData) {
+            const statusEl = document.getElementById('drift-status');
+            const hasDrift = driftData.features?.some(f => f.drift_detected);
+            
+            if (hasDrift) {
+                statusEl.innerHTML = '<span class="text-red-600 font-medium"><i class="fas fa-exclamation-circle mr-1"></i>检测到数据漂移</span>';
+            } else {
+                statusEl.innerHTML = '<span class="text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i>数据分布正常</span>';
+            }
+        }
+
+        /**
+         * 初始化图表
+         */
+        function initCharts() {
+            // 性能趋势图
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Accuracy',
+                            data: [],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'F1 Score',
+                            data: [],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'ROC-AUC',
+                            data: [],
+                            borderColor: 'rgb(139, 92, 246)',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+
+            // 漂移检测图
+            const driftCtx = document.getElementById('driftChart').getContext('2d');
+            driftChart = new Chart(driftCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'PSI Score',
+                        data: [],
+                        backgroundColor: 'rgba(249, 115, 22, 0.6)',
+                        borderColor: 'rgb(249, 115, 22)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 0.3
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                threshold: {
+                                    type: 'line',
+                                    yMin: 0.2,
+                                    yMax: 0.2,
+                                    borderColor: 'rgb(239, 68, 68)',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: '阈值 (0.2)',
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 更新图表
+         */
+        function updateCharts() {
+            if (!metricsHistory || metricsHistory.length === 0) return;
+            
+            const labels = metricsHistory.map(h => new Date(h.timestamp).toLocaleTimeString());
+            
+            // 更新性能图
+            performanceChart.data.labels = labels;
+            performanceChart.data.datasets[0].data = metricsHistory.map(h => h.accuracy);
+            performanceChart.data.datasets[1].data = metricsHistory.map(h => h.f1_score);
+            performanceChart.data.datasets[2].data = metricsHistory.map(h => h.roc_auc);
+            performanceChart.update();
+        }
+
+        /**
+         * 切换自动回滚
+         */
+        async function toggleAutoRollback() {
+            const enabled = document.getElementById('auto-rollback-toggle').checked;
+            const bg = document.getElementById('toggle-bg');
+            const dot = document.getElementById('toggle-dot');
+            
+            if (enabled) {
+                bg.classList.remove('bg-gray-200');
+                bg.classList.add('bg-green-500');
+                dot.classList.add('translate-x-5');
+            } else {
+                bg.classList.add('bg-gray-200');
+                bg.classList.remove('bg-green-500');
+                dot.classList.remove('translate-x-5');
+            }
+            
+            try {
+                await apiPost(`/monitoring/models/${currentModel}/auto-rollback`, { enabled });
+                showNotification(`自动回滚已${enabled ? '启用' : '禁用'}`, 'success');
+            } catch (error) {
+                console.error('切换自动回滚失败:', error);
+                showNotification('操作失败', 'error');
+            }
+        }
+
+        /**
+         * 刷新数据
+         */
+        async function refreshData() {
+            await loadModelMetrics();
+            await loadDriftData();
+            updateCharts();
+            showNotification('数据已刷新', 'success');
+        }
+
+        /**
+         * 显示通知
+         */
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

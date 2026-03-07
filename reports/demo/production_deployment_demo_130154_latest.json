@@ -1,0 +1,202 @@
+{
+  "demo_info": {
+    "title": "RQA2025 生产环境部署演示报告",
+    "start_time": "2025-08-04T13:00:24.092313",
+    "end_time": "2025-08-04T13:01:54.126236",
+    "duration_seconds": 90.033923,
+    "status": "completed"
+  },
+  "monitoring_summary": {
+    "total_metrics_collected": 18,
+    "alerts_triggered": 2,
+    "scaling_events": 2,
+    "performance_predictions": 3
+  },
+  "feature_demo": {
+    "advanced_monitoring": {
+      "status": "✅ 完成",
+      "description": "实时指标收集和监控"
+    },
+    "smart_alerts": {
+      "status": "✅ 完成",
+      "description": "智能告警规则和通知"
+    },
+    "auto_scaling": {
+      "status": "✅ 完成",
+      "description": "基于性能指标的自动扩缩容"
+    },
+    "performance_prediction": {
+      "status": "✅ 完成",
+      "description": "性能趋势预测和预警"
+    }
+  },
+  "demo_results": {
+    "start_time": "2025-08-04T13:00:24.092313",
+    "end_time": "2025-08-04T13:01:54.126236",
+    "monitoring_metrics": [
+      {
+        "timestamp": "2025-08-04T13:00:24.092313",
+        "active_alerts": 0,
+        "scaling_events": 0,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:29.103332",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:34.104979",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:39.108102",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:44.121695",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:49.128782",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:54.128967",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:00:59.130649",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:04.143332",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:09.149133",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:14.158325",
+        "active_alerts": 1,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:19.159817",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:24.174630",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:29.186662",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:34.191087",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:39.206389",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:44.208627",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      },
+      {
+        "timestamp": "2025-08-04T13:01:49.215479",
+        "active_alerts": 0,
+        "scaling_events": 1,
+        "current_replicas": 3
+      }
+    ],
+    "alerts_triggered": [
+      {
+        "timestamp": "2025-08-04T13:01:54.121732",
+        "rule_name": "high_cpu_usage",
+        "severity": "warning",
+        "description": "CPU使用率超过80%"
+      },
+      {
+        "timestamp": "2025-08-04T13:01:54.121732",
+        "rule_name": "high_memory_usage",
+        "severity": "warning",
+        "description": "内存使用率超过85%"
+      }
+    ],
+    "scaling_events": [
+      {
+        "timestamp": "2025-08-04T13:01:54.123731",
+        "direction": "up",
+        "rule_name": "cpu_based_scaling",
+        "old_replicas": 3,
+        "new_replicas": 5,
+        "reason": "CPU使用率超过70%"
+      },
+      {
+        "timestamp": "2025-08-04T13:01:54.123731",
+        "direction": "down",
+        "rule_name": "cpu_based_scaling",
+        "old_replicas": 5,
+        "new_replicas": 3,
+        "reason": "CPU使用率低于30%"
+      }
+    ],
+    "performance_predictions": [
+      {
+        "metric": "cpu_usage",
+        "current_value": 75.0,
+        "predicted_value": 85.0,
+        "prediction_time": "2025-08-04T13:01:54.124731",
+        "trend": "increasing"
+      },
+      {
+        "metric": "memory_usage",
+        "current_value": 65.0,
+        "predicted_value": 70.0,
+        "prediction_time": "2025-08-04T13:01:54.124731",
+        "trend": "stable"
+      },
+      {
+        "metric": "response_time",
+        "current_value": 450.0,
+        "predicted_value": 520.0,
+        "prediction_time": "2025-08-04T13:01:54.124731",
+        "trend": "increasing"
+      }
+    ]
+  }
+}

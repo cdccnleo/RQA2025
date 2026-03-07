@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-07-20T06:45:17.384743",
+  "import_consistency": {
+    "status": "completed",
+    "issues_count": 3,
+    "files_with_issues": 3,
+    "content": "# 导入一致性检查报告\n==================================================\n\nsrc\\infrastructure\\utils\\__init__.py:\n  deprecated_imports:\n    - Line 19: from src.infrastructure.utils.logger import get_logger\n\nsrc\\utils\\date_utils.py:\n  deprecated_imports:\n    - Line 10: from src.infrastructure.utils.date_utils import convert_timezone as _convert_timezone\n\nsrc\\utils\\logger.py:\n  deprecated_imports:\n    - Line 11: from src.infrastructure.utils.logger import get_logger\n\n==================================================\n检查文件数: 3\n有问题的文件数: 3\n总问题数: 3\n\n⚠️  发现 3 个文件需要修复"
+  },
+  "code_duplication": {
+    "status": "failed",
+    "error": "'NoneType' object has no attribute 'count'"
+  },
+  "architecture_compliance": {
+    "status": "completed",
+    "issues": [
+      "src/utils/logger.py: 包含基础设施层导入",
+      "src/utils/date_utils.py: 包含基础设施层导入",
+      "src/infrastructure/utils/logger.py: 包含标准功能实现"
+    ],
+    "issues_count": 3
+  },
+  "documentation_completeness": {
+    "status": "completed",
+    "missing_docs": [],
+    "missing_count": 0,
+    "total_required": 6
+  },
+  "verification_tests": {
+    "status": "failed",
+    "error": "'NoneType' object has no attribute 'count'"
+  }
+}

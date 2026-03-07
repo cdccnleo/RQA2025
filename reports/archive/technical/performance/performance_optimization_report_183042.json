@@ -1,0 +1,97 @@
+{
+  "optimization_info": {
+    "timestamp": "2025-07-31T06:17:24.402709",
+    "total_optimizations": 4,
+    "overall_improvement": -22.5
+  },
+  "optimization_results": [
+    {
+      "type": "缓存配置优化",
+      "improvement_percentage": -20.0,
+      "recommendations": [
+        "增加内存缓存大小到2GB",
+        "优化Redis连接池配置",
+        "启用缓存压缩",
+        "设置合理的TTL值"
+      ],
+      "before_metrics": {
+        "cpu_usage": 2.6,
+        "memory_usage": 26.6,
+        "response_time": 0.15,
+        "throughput": 1000
+      },
+      "after_metrics": {
+        "cpu_usage": 2.3400000000000003,
+        "memory_usage": 25.27,
+        "response_time": 0.12,
+        "throughput": 1200.0
+      }
+    },
+    {
+      "type": "数据加载优化",
+      "improvement_percentage": -40.0,
+      "recommendations": [
+        "启用并行数据加载",
+        "优化批处理大小",
+        "实现数据预加载",
+        "使用连接池管理"
+      ],
+      "before_metrics": {
+        "cpu_usage": 2.6,
+        "memory_usage": 26.6,
+        "response_time": 0.15,
+        "throughput": 1000
+      },
+      "after_metrics": {
+        "cpu_usage": 2.21,
+        "memory_usage": 23.94,
+        "response_time": 0.09,
+        "throughput": 1500.0
+      }
+    },
+    {
+      "type": "内存使用优化",
+      "improvement_percentage": 20.0,
+      "recommendations": [
+        "启用内存池管理",
+        "优化数据结构",
+        "实现垃圾回收优化",
+        "使用内存映射文件"
+      ],
+      "before_metrics": {
+        "cpu_usage": 2.6,
+        "memory_usage": 26.6,
+        "response_time": 0.15,
+        "throughput": 1000
+      },
+      "after_metrics": {
+        "cpu_usage": 2.4699999999999998,
+        "memory_usage": 21.28,
+        "response_time": 0.135,
+        "throughput": 1100.0
+      }
+    },
+    {
+      "type": "并发处理优化",
+      "improvement_percentage": -50.0,
+      "recommendations": [
+        "增加工作线程数量",
+        "优化线程池配置",
+        "实现异步处理",
+        "使用协程优化I/O"
+      ],
+      "before_metrics": {
+        "cpu_usage": 2.6,
+        "memory_usage": 26.6,
+        "response_time": 0.15,
+        "throughput": 1000
+      },
+      "after_metrics": {
+        "cpu_usage": 2.8600000000000003,
+        "memory_usage": 27.930000000000003,
+        "response_time": 0.075,
+        "throughput": 2000.0
+      }
+    }
+  ]
+}

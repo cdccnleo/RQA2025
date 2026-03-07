@@ -1,0 +1,152 @@
+# CI/CD 环境配置文件
+# 定义测试和生产环境的配置参数
+
+# 测试环境配置
+staging:
+  name: "测试环境"
+  description: "用于功能测试和集成测试的环境"
+  kubernetes:
+    cluster: "rqa2025-staging-cluster"
+    namespace: "rqa2025-staging"
+    context: "staging"
+  registry:
+    url: "ghcr.io"
+    image_prefix: "rqa2025-staging"
+  monitoring:
+    prometheus_url: "http://prometheus-staging:9090"
+    grafana_url: "http://grafana-staging:3000"
+    alertmanager_url: "http://alertmanager-staging:9093"
+  database:
+    postgres:
+      host: "postgres-staging"
+      port: 5432
+      database: "rqa2025_staging"
+    redis:
+      host: "redis-staging"
+      port: 6379
+  security:
+    tls_enabled: false
+    authentication: "basic"
+    authorization: "role-based"
+  scaling:
+    min_replicas: 1
+    max_replicas: 5
+    target_cpu_utilization: 70
+    target_memory_utilization: 80
+  deployment:
+    strategy: "RollingUpdate"
+    max_surge: 1
+    max_unavailable: 0
+    rollback_enabled: true
+    health_check:
+      initial_delay: 30
+      period: 10
+      timeout: 5
+      failure_threshold: 3
+      success_threshold: 1
+
+# 生产环境配置
+production:
+  name: "生产环境"
+  description: "生产环境，需要严格的审批流程"
+  kubernetes:
+    cluster: "rqa2025-production-cluster"
+    namespace: "rqa2025-production"
+    context: "production"
+  registry:
+    url: "ghcr.io"
+    image_prefix: "rqa2025-production"
+  monitoring:
+    prometheus_url: "https://prometheus.rqa2025.com"
+    grafana_url: "https://grafana.rqa2025.com"
+    alertmanager_url: "https://alertmanager.rqa2025.com"
+  database:
+    postgres:
+      host: "postgres-production"
+      port: 5432
+      database: "rqa2025_production"
+    redis:
+      host: "redis-production"
+      port: 6379
+  security:
+    tls_enabled: true
+    authentication: "oauth2"
+    authorization: "rbac"
+    network_policies: true
+    pod_security_policies: true
+  scaling:
+    min_replicas: 3
+    max_replicas: 15
+    target_cpu_utilization: 70
+    target_memory_utilization: 80
+    target_requests_per_second: 1000
+  deployment:
+    strategy: "RollingUpdate"
+    max_surge: 1
+    max_unavailable: 0
+    rollback_enabled: true
+    canary_deployment: true
+    blue_green_deployment: true
+    health_check:
+      initial_delay: 60
+      period: 30
+      timeout: 10
+      failure_threshold: 3
+      success_threshold: 1
+    startup_probe:
+      enabled: true
+      initial_delay: 30
+      period: 10
+      timeout: 5
+      failure_threshold: 30
+      success_threshold: 1
+
+# 通用配置
+common:
+  image_pull_policy: "Always"
+  restart_policy: "Always"
+  termination_grace_period: 30
+  dns_policy: "ClusterFirst"
+  host_network: false
+  host_pid: false
+  host_ipc: false
+  security_context:
+    run_as_non_root: true
+    run_as_user: 1000
+    fs_group: 2000
+    read_only_root_filesystem: true
+    allow_privilege_escalation: false
+    capabilities:
+      drop: ["ALL"]
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+      ephemeral_storage: "100Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+      ephemeral_storage: "200Mi"
+  liveness_probe:
+    http_get:
+      path: "/health"
+      port: 8001
+      scheme: "HTTP"
+  readiness_probe:
+    http_get:
+      path: "/ready"
+      port: 8001
+      scheme: "HTTP"
+  volume_mounts:
+    config:
+      mount_path: "/app/config"
+      read_only: true
+    logs:
+      mount_path: "/app/logs"
+    cache:
+      mount_path: "/app/cache"
+    tmp:
+      mount_path: "/tmp"
+    secrets:
+      mount_path: "/app/secrets"
+      read_only: true

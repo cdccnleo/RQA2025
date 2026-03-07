@@ -1,0 +1,39 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+16 workers [1 item]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues 馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+[gw0] [100%] FAILED tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues 馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+
+================================== FAILURES ===================================
+___________ test_unknown_type_and_failed_validation_triggers_issues ___________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py:22: in test_unknown_type_and_failed_validation_triggers_issues
+    total = getattr(getattr(rep, "metrics"), "total")  # type: ignore[attr-defined]
+E   AttributeError: 'dict' object has no attribute 'metrics'
+
+During handling of the above exception, another exception occurred:
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py:25: in test_unknown_type_and_failed_validation_triggers_issues
+    total = getattr(rep, "total")  # type: ignore[attr-defined]
+E   AttributeError: 'dict' object has no attribute 'total'
+
+During handling of the above exception, another exception occurred:
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py:27: in test_unknown_type_and_failed_validation_triggers_issues
+    total = rep.get("metrics", {}).get("total", 0) if isinstance(rep, dict) else 0
+E   AttributeError: 'QualityMetrics' object has no attribute 'get'
+---------------------------- Captured stderr call -----------------------------
+WARNING:src.data.quality.unified_quality_monitor:璐ㄩ噺鍒嗘暟浣庝簬闃堝€?0.80): 0.74
+WARNING:src.data.quality.unified_quality_monitor:璐ㄩ噺闃堝€艰繚瑙? 鏁版嵁绫诲瀷=stock, 璐ㄩ噺鍒嗘暟=0.74, 闃堝€?0.80, 寮傚父鏁伴噺=0
+------------------------------ Captured log call ------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 璐ㄩ噺鍒嗘暟浣庝簬闃堝€?0.80): 0.74
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 璐ㄩ噺闃堝€艰繚瑙? 鏁版嵁绫诲瀷=stock, 璐ㄩ噺鍒嗘暟=0.74, 闃堝€?0.80, 寮傚父鏁伴噺=0
+=========================== short test summary info ===========================
+FAILED tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues
+======================== 1 failed in 117.27s (0:01:57) ========================

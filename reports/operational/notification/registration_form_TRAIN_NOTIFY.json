@@ -1,0 +1,99 @@
+{
+  "form_id": "REG_TRAIN_NOTIFY_20250727",
+  "title": "动态宇宙管理系统技术培训报名表",
+  "fields": [
+    {
+      "name": "employee_id",
+      "label": "员工编号",
+      "type": "text",
+      "required": true,
+      "validation": "alphanumeric"
+    },
+    {
+      "name": "name",
+      "label": "姓名",
+      "type": "text",
+      "required": true,
+      "validation": "chinese_name"
+    },
+    {
+      "name": "department",
+      "label": "部门",
+      "type": "select",
+      "required": true,
+      "options": [
+        "技术部",
+        "运维部",
+        "产品部",
+        "项目管理部",
+        "其他"
+      ]
+    },
+    {
+      "name": "position",
+      "label": "职位",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "email",
+      "label": "邮箱",
+      "type": "email",
+      "required": true,
+      "validation": "email_format"
+    },
+    {
+      "name": "phone",
+      "label": "联系电话",
+      "type": "tel",
+      "required": true,
+      "validation": "phone_format"
+    },
+    {
+      "name": "experience_level",
+      "label": "技术经验水平",
+      "type": "select",
+      "required": true,
+      "options": [
+        "初级（1-3年）",
+        "中级（3-5年）",
+        "高级（5年以上）"
+      ]
+    },
+    {
+      "name": "python_skill",
+      "label": "Python编程能力",
+      "type": "select",
+      "required": true,
+      "options": [
+        "基础",
+        "熟练",
+        "精通"
+      ]
+    },
+    {
+      "name": "motivation",
+      "label": "参加培训的动机",
+      "type": "textarea",
+      "required": true,
+      "max_length": 500
+    },
+    {
+      "name": "availability",
+      "label": "培训时间安排",
+      "type": "checkbox",
+      "required": true,
+      "options": [
+        "可以参加全部培训",
+        "需要调整部分时间",
+        "只能参加部分培训"
+      ]
+    }
+  ],
+  "submission_info": {
+    "deadline": "2025-08-01",
+    "submission_method": "email",
+    "contact_email": "training@company.com",
+    "auto_reply": true
+  }
+}

@@ -1,0 +1,375 @@
+# 边缘计算测试平台配置
+
+# 平台基础配置
+platform:
+  name: "边缘计算测试平台"
+  version: "1.0.0"
+  description: "支持边缘节点的分布式测试平台"
+  
+  # 健康检查配置
+  health_check:
+    interval_seconds: 30
+    timeout_seconds: 5
+    max_retries: 3
+    
+  # 线程池配置
+  thread_pool:
+    max_workers: 10
+    queue_size: 100
+    
+  # 日志配置
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file: "logs/edge_computing.log"
+
+# 边缘节点类型配置
+node_types:
+  iot_device:
+    description: "IoT设备"
+    default_capabilities: ["low_power", "small_memory", "limited_computation"]
+    default_resources:
+      cpu_cores: 1
+      memory_mb: 512
+      storage_mb: 1024
+      
+  edge_server:
+    description: "边缘服务器"
+    default_capabilities: ["high_computation", "large_memory", "fast_storage"]
+    default_resources:
+      cpu_cores: 8
+      memory_gb: 16
+      storage_gb: 500
+      
+  mobile_device:
+    description: "移动设备"
+    default_capabilities: ["portable", "battery_powered", "wireless_network"]
+    default_resources:
+      cpu_cores: 4
+      memory_gb: 4
+      storage_gb: 64
+      
+  gateway:
+    description: "网关设备"
+    default_capabilities: ["network_routing", "protocol_translation", "security"]
+    default_resources:
+      cpu_cores: 2
+      memory_gb: 2
+      storage_gb: 32
+      
+  fog_node:
+    description: "雾计算节点"
+    default_capabilities: ["distributed_computation", "data_aggregation", "edge_ai"]
+    default_resources:
+      cpu_cores: 16
+      memory_gb: 32
+      storage_gb: 1000
+
+# 测试类型配置
+test_types:
+  latency_test:
+    description: "延迟测试"
+    required_capabilities: ["low_latency", "network_stable"]
+    parameters:
+      packet_count: 10
+      timeout_seconds: 5
+      min_latency_ms: 1
+      max_latency_ms: 100
+      
+  bandwidth_test:
+    description: "带宽测试"
+    required_capabilities: ["high_bandwidth", "network_stable"]
+    parameters:
+      data_size_mb: 10
+      timeout_seconds: 30
+      min_bandwidth_mbps: 1
+      max_bandwidth_mbps: 1000
+      
+  computation_test:
+    description: "计算能力测试"
+    required_capabilities: ["high_computation", "memory_available"]
+    parameters:
+      iterations: 1000000
+      timeout_seconds: 60
+      min_ops_per_second: 1000
+      
+  memory_test:
+    description: "内存测试"
+    required_capabilities: ["memory_available", "stable_system"]
+    parameters:
+      test_data_size_mb: 100
+      timeout_seconds: 30
+      memory_threshold_percent: 80
+      
+  storage_test:
+    description: "存储测试"
+    required_capabilities: ["fast_storage", "sufficient_space"]
+    parameters:
+      file_size_mb: 50
+      timeout_seconds: 60
+      min_io_speed_mbps: 10
+      
+  network_test:
+    description: "网络测试"
+    required_capabilities: ["network_connectivity", "stable_connection"]
+    parameters:
+      connection_timeout: 5
+      max_retries: 3
+      success_threshold: 0.8
+
+# 执行策略配置
+execution_strategies:
+  parallel:
+    description: "并行执行"
+    max_concurrent_tests: 10
+    resource_allocation: "distributed"
+    
+  sequential:
+    description: "顺序执行"
+    max_concurrent_tests: 1
+    resource_allocation: "dedicated"
+    
+  adaptive:
+    description: "自适应执行"
+    min_concurrent_tests: 1
+    max_concurrent_tests: 10
+    resource_allocation: "dynamic"
+    adaptation_criteria:
+      - "node_availability"
+      - "network_condition"
+      - "resource_usage"
+
+# 优化配置
+optimization:
+  # 节点选择优化
+  node_selection:
+    scoring_weights:
+      cpu_power: 0.3
+      memory_score: 0.2
+      network_score: 0.3
+      storage_score: 0.2
+      
+    capability_priorities:
+      low_latency: 1.0
+      high_bandwidth: 0.9
+      high_computation: 0.8
+      memory_available: 0.7
+      network_stable: 0.9
+      
+  # 测试分布优化
+  test_distribution:
+    load_balancing: true
+    resource_aware: true
+    network_aware: true
+    
+  # 性能阈值
+  performance_thresholds:
+    min_cpu_usage: 0.1
+    max_cpu_usage: 0.9
+    min_memory_usage: 0.1
+    max_memory_usage: 0.9
+    min_network_usage: 0.1
+    max_network_usage: 0.9
+
+# 监控配置
+monitoring:
+  # 性能指标收集
+  metrics_collection:
+    interval_seconds: 10
+    retention_hours: 24
+    
+  # 告警配置
+  alerts:
+    enabled: true
+    thresholds:
+      cpu_usage_percent: 90
+      memory_usage_percent: 90
+      disk_usage_percent: 90
+      network_latency_ms: 100
+      
+  # 日志聚合
+  log_aggregation:
+    enabled: true
+    max_log_size_mb: 100
+    rotation_count: 5
+
+# 安全配置
+security:
+  # 认证配置
+  authentication:
+    enabled: true
+    method: "username_password"
+    session_timeout_minutes: 30
+    
+  # 授权配置
+  authorization:
+    enabled: true
+    role_based_access: true
+    default_role: "user"
+    
+  # 加密配置
+  encryption:
+    enabled: true
+    algorithm: "AES-256"
+    key_rotation_days: 30
+
+# 网络配置
+networking:
+  # 连接配置
+  connection:
+    timeout_seconds: 10
+    max_retries: 3
+    keep_alive: true
+    
+  # 防火墙配置
+  firewall:
+    allowed_ports: [22, 80, 443, 8080, 8443]
+    allowed_protocols: ["TCP", "UDP"]
+    
+  # 代理配置
+  proxy:
+    enabled: false
+    host: ""
+    port: 0
+    username: ""
+    password: ""
+
+# 存储配置
+storage:
+  # 本地存储
+  local:
+    enabled: true
+    base_path: "./data/edge_computing"
+    max_size_gb: 100
+    
+  # 远程存储
+  remote:
+    enabled: false
+    type: "s3"  # s3, nfs, cifs
+    endpoint: ""
+    credentials:
+      access_key: ""
+      secret_key: ""
+      
+  # 数据保留策略
+  retention:
+    test_results_days: 30
+    logs_days: 7
+    metrics_days: 90
+
+# 备份配置
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  retention_days: 7
+  compression: true
+  encryption: true
+  
+  # 备份目标
+  targets:
+    - type: "local"
+      path: "./backups/edge_computing"
+    - type: "remote"
+      endpoint: ""
+      credentials:
+        username: ""
+        password: ""
+
+# 性能优化配置
+performance:
+  # 缓存配置
+  caching:
+    enabled: true
+    max_size_mb: 100
+    ttl_seconds: 3600
+    
+  # 连接池配置
+  connection_pool:
+    enabled: true
+    max_connections: 20
+    min_connections: 5
+    max_idle_time_seconds: 300
+    
+  # 异步处理
+  async_processing:
+    enabled: true
+    max_workers: 20
+    queue_size: 1000
+
+# 故障容忍配置
+fault_tolerance:
+  # 重试机制
+  retry:
+    enabled: true
+    max_attempts: 3
+    backoff_factor: 2
+    max_delay_seconds: 60
+    
+  # 熔断器配置
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5
+    recovery_timeout_seconds: 60
+    half_open_max_calls: 3
+    
+  # 降级策略
+  fallback:
+    enabled: true
+    strategies:
+      - "use_cached_data"
+      - "reduce_test_scope"
+      - "switch_to_sequential_execution"
+
+# 扩展配置
+scaling:
+  # 自动扩展
+  auto_scaling:
+    enabled: true
+    min_nodes: 2
+    max_nodes: 20
+    scale_up_threshold: 0.8
+    scale_down_threshold: 0.3
+    
+  # 负载均衡
+  load_balancing:
+    enabled: true
+    algorithm: "round_robin"  # round_robin, least_connections, weighted
+    health_check_interval: 30
+    
+  # 资源分配
+  resource_allocation:
+    cpu_reservation_percent: 20
+    memory_reservation_percent: 20
+    storage_reservation_percent: 20
+
+# 日志配置
+logging:
+  # 日志级别
+  level: "INFO"
+  
+  # 日志格式
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # 日志输出
+  handlers:
+    console:
+      enabled: true
+      level: "INFO"
+    file:
+      enabled: true
+      level: "DEBUG"
+      filename: "logs/edge_computing.log"
+      max_bytes: 10485760  # 10MB
+      backup_count: 5
+    syslog:
+      enabled: false
+      host: "localhost"
+      port: 514
+      
+  # 日志轮转
+  rotation:
+    enabled: true
+    max_size_mb: 100
+    backup_count: 5
+    when: "midnight"
+    interval: 1

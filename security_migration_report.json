@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-08-31 20:47:44.857726",
+  "analysis": {
+    "src_security": [
+      "access_control.py",
+      "audit_system.py",
+      "encryption_service.py"
+    ],
+    "data_security": [
+      "access_control_manager.py",
+      "audit_logging_manager.py",
+      "data_encryption_manager.py"
+    ],
+    "infrastructure_security": [
+      "audit_components.py",
+      "authentication_service.py",
+      "auth_components.py",
+      "base.py",
+      "base_security.py",
+      "config_encryption_service.py",
+      "data_protection_service.py",
+      "encrypt_components.py",
+      "filters.py",
+      "interfaces.py",
+      "policy_components.py",
+      "security.py",
+      "security_auditor.py",
+      "security_components.py",
+      "security_error_plugin.py",
+      "security_factory.py",
+      "security_utils.py",
+      "unified_security.py",
+      "web_management_service.py"
+    ],
+    "duplicates": [],
+    "recommendations": [
+      "数据层安全模块建议迁移到统一的src/security/目录",
+      "基础设施层安全模块建议迁移到统一的src/security/目录"
+    ]
+  },
+  "migration_plan": {
+    "backup_created": false,
+    "files_to_migrate": {
+      "data_security": [
+        "access_control_manager.py",
+        "audit_logging_manager.py",
+        "data_encryption_manager.py"
+      ],
+      "infrastructure_security": [
+        "audit_components.py",
+        "authentication_service.py",
+        "auth_components.py",
+        "base.py",
+        "base_security.py",
+        "config_encryption_service.py",
+        "data_protection_service.py",
+        "encrypt_components.py",
+        "filters.py",
+        "interfaces.py",
+        "policy_components.py",
+        "security.py",
+        "security_auditor.py",
+        "security_components.py",
+        "security_error_plugin.py",
+        "security_factory.py",
+        "security_utils.py",
+        "unified_security.py",
+        "web_management_service.py"
+      ]
+    },
+    "consolidation_strategy": "keep_latest_implementation",
+    "integration_approach": "unified_adapter_pattern"
+  },
+  "risks": [
+    "功能重复可能导致冲突",
+    "接口不一致性",
+    "测试覆盖不足",
+    "配置迁移复杂"
+  ],
+  "benefits": [
+    "统一管理减少维护成本",
+    "消除重复代码",
+    "提高系统一致性",
+    "便于功能扩展"
+  ]
+}

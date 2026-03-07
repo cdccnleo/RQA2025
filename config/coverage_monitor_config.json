@@ -1,0 +1,65 @@
+{
+  "monitoring": {
+    "interval_seconds": 3600,
+    "timeout_seconds": 300,
+    "max_retries": 3
+  },
+  "alerts": {
+    "overall_coverage_threshold": 70.0,
+    "layer_coverage_threshold": 60.0,
+    "file_coverage_threshold": 50.0,
+    "enable_email_notifications": false,
+    "enable_slack_notifications": false
+  },
+  "layers": {
+    "infrastructure": {
+      "path": "src/infrastructure",
+      "critical_components": [
+        "config",
+        "cache",
+        "logging",
+        "monitoring"
+      ]
+    },
+    "data": {
+      "path": "src/data",
+      "critical_components": [
+        "data_manager",
+        "cache",
+        "interfaces"
+      ]
+    },
+    "strategy": {
+      "path": "src/strategy",
+      "critical_components": [
+        "backtest_engine",
+        "strategies"
+      ]
+    },
+    "trading": {
+      "path": "src/trading",
+      "critical_components": [
+        "order_manager",
+        "trading_executor"
+      ]
+    },
+    "risk": {
+      "path": "src/risk",
+      "critical_components": [
+        "risk_manager",
+        "risk_monitor"
+      ]
+    }
+  },
+  "reporting": {
+    "formats": ["html", "json", "xml"],
+    "generate_trends": true,
+    "generate_recommendations": true,
+    "report_retention_days": 30
+  },
+  "database": {
+    "path": "data/coverage_monitor.db",
+    "backup_enabled": true,
+    "backup_interval_days": 7
+  }
+}

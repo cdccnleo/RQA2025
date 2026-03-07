@@ -1,0 +1,787 @@
+#!/usr/bin/env python3
+"""
+分布式服务发现与注册组件
+实现基于Consul的自动化服务注册、发现和健康检查机制
+"""
+
+import logging
+import time
+import threading
+from typing import Dict, List, Optional, Callable, Any
+from dataclasses import dataclass
+from enum import Enum
+import uuid
+from pathlib import Path
+import sys
+
+# 添加项目根路径
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root / 'src'))
+
+logger = logging.getLogger(__name__)
+
+
+class ServiceStatus(Enum):
+    """服务状态枚举"""
+    STARTING = "starting"
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+    CRITICAL = "critical"
+    MAINTENANCE = "maintenance"
+    STOPPING = "stopping"
+
+
+class LoadBalanceStrategy(Enum):
+    """负载均衡策略"""
+    ROUND_ROBIN = "round_robin"
+    LEAST_CONNECTIONS = "least_connections"
+    WEIGHTED_ROUND_ROBIN = "weighted_round_robin"
+    RANDOM = "random"
+    CONSISTENT_HASH = "consistent_hash"
+    HEALTH_BASED = "health_based"
+
+
+@dataclass
+class ServiceInstance:
+    """服务实例信息"""
+    service_id: str
+    service_name: str
+    host: str
+    port: int
+    status: ServiceStatus = ServiceStatus.STARTING
+    metadata: Optional[Dict[str, Any]] = None
+    tags: Optional[List[str]] = None
+    health_check_url: Optional[str] = None
+    health_check_interval: int = 30
+    weight: int = 100
+    created_at: Optional[float] = None
+    last_heartbeat: Optional[float] = None
+
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
+        if self.tags is None:
+            self.tags = []
+        if self.created_at is None:
+            self.created_at = time.time()
+        if self.last_heartbeat is None:
+            self.last_heartbeat = time.time()
+
+
+@dataclass
+class HealthCheckResult:
+    """健康检查结果"""
+    service_id: str
+    is_healthy: bool
+    response_time: float
+    error_message: Optional[str] = None
+    check_time: Optional[float] = None
+
+    def __post_init__(self):
+        if self.check_time is None:
+            self.check_time = time.time()
+
+
+class ServiceRegistry:
+    """服务注册中心"""
+
+    def __init__(self, config: Optional[Dict] = None):
+        self.config = config or {}
+        self._services: Dict[str, ServiceInstance] = {}
+        self._service_groups: Dict[str, List[str]] = {}
+        self._health_checks: Dict[str, HealthCheckResult] = {}
+        self._lock = threading.RLock()
+
+        # 健康检查配置
+        self.health_check_interval = self.config.get('health_check_interval', 30)
+        self.health_check_timeout = self.config.get('health_check_timeout', 10)
+        self.max_failed_checks = self.config.get('max_failed_checks', 3)
+
+        # 后台任务
+        self._health_check_thread = None
+        self._cleanup_thread = None
+        self._running = False
+
+        # 事件回调
+        self._event_callbacks: Dict[str, List[Callable]] = {
+            'service_registered': [],
+            'service_deregistered': [],
+            'service_health_changed': [],
+            'service_discovered': []
+        }
+
+        logger.info("服务注册中心初始化完成")
+
+    def start(self):
+        """启动服务注册中心"""
+        if self._running:
+            return
+
+        self._running = True
+
+        # 启动健康检查线程
+        self._health_check_thread = threading.Thread(
+            target=self._health_check_worker,
+            daemon=True
+        )
+        self._health_check_thread.start()
+
+        # 启动清理线程
+        self._cleanup_thread = threading.Thread(
+            target=self._cleanup_worker,
+            daemon=True
+        )
+        self._cleanup_thread.start()
+
+        logger.info("服务注册中心已启动")
+
+    def stop(self):
+        """停止服务注册中心"""
+        self._running = False
+
+        if self._health_check_thread:
+            self._health_check_thread.join(timeout=5)
+
+        if self._cleanup_thread:
+            self._cleanup_thread.join(timeout=5)
+
+        logger.info("服务注册中心已停止")
+
+    def register_service(self, service: ServiceInstance) -> bool:
+        """注册服务"""
+        try:
+            with self._lock:
+                # 验证服务信息
+                if not self._validate_service(service):
+                    return False
+
+                # 如果服务ID已存在，更新服务信息
+                if service.service_id in self._services:
+                    logger.info(f"更新服务: {service.service_id}")
+                else:
+                    logger.info(f"注册新服务: {service.service_id}")
+
+                # 存储服务
+                self._services[service.service_id] = service
+
+                # 添加到服务组
+                if service.service_name not in self._service_groups:
+                    self._service_groups[service.service_name] = []
+
+                if service.service_id not in self._service_groups[service.service_name]:
+                    self._service_groups[service.service_name].append(service.service_id)
+
+                # 初始化健康检查
+                self._init_health_check(service)
+
+                # 触发事件
+                self._trigger_event('service_registered', service)
+
+                return True
+
+        except Exception as e:
+            logger.error(f"注册服务失败: {e}")
+            return False
+
+    def deregister_service(self, service_id: str) -> bool:
+        """注销服务"""
+        try:
+            with self._lock:
+                if service_id not in self._services:
+                    logger.warning(f"服务不存在: {service_id}")
+                    return False
+
+                service = self._services[service_id]
+
+                # 从服务组中移除
+                if service.service_name in self._service_groups:
+                    if service_id in self._service_groups[service.service_name]:
+                        self._service_groups[service.service_name].remove(service_id)
+
+                    # 如果组为空，删除组
+                    if not self._service_groups[service.service_name]:
+                        del self._service_groups[service.service_name]
+
+                # 移除服务和健康检查
+                del self._services[service_id]
+                if service_id in self._health_checks:
+                    del self._health_checks[service_id]
+
+                # 触发事件
+                self._trigger_event('service_deregistered', service)
+
+                logger.info(f"注销服务: {service_id}")
+                return True
+
+        except Exception as e:
+            logger.error(f"注销服务失败: {e}")
+            return False
+
+    def discover_services(self, service_name: str,
+                          healthy_only: bool = True) -> List[ServiceInstance]:
+        """发现服务"""
+        try:
+            with self._lock:
+                if service_name not in self._service_groups:
+                    return []
+
+                service_ids = self._service_groups[service_name]
+                services = []
+
+                for service_id in service_ids:
+                    if service_id not in self._services:
+                        continue
+
+                    service = self._services[service_id]
+
+                    # 如果只要健康的服务，检查健康状态
+                    if healthy_only:
+                        if service.status != ServiceStatus.HEALTHY:
+                            continue
+
+                        # 检查健康检查结果
+                        if service_id in self._health_checks:
+                            health_result = self._health_checks[service_id]
+                            if not health_result.is_healthy:
+                                continue
+
+                    services.append(service)
+
+                # 触发事件
+                if services:
+                    self._trigger_event('service_discovered', {
+                        'service_name': service_name,
+                        'instances': services
+                    })
+
+                return services
+
+        except Exception as e:
+            logger.error(f"发现服务失败: {e}")
+            return []
+
+    def get_service(self, service_id: str) -> Optional[ServiceInstance]:
+        """获取特定服务实例"""
+        with self._lock:
+            return self._services.get(service_id)
+
+    def list_services(self) -> Dict[str, List[ServiceInstance]]:
+        """列出所有服务"""
+        with self._lock:
+            result = {}
+            for service_name, service_ids in self._service_groups.items():
+                result[service_name] = [
+                    self._services[service_id]
+                    for service_id in service_ids
+                    if service_id in self._services
+                ]
+            return result
+
+    def update_service_status(self, service_id: str, status: ServiceStatus) -> bool:
+        """更新服务状态"""
+        try:
+            with self._lock:
+                if service_id not in self._services:
+                    return False
+
+                old_status = self._services[service_id].status
+                self._services[service_id].status = status
+
+                if old_status != status:
+                    logger.info(f"服务 {service_id} 状态变更: {old_status} -> {status}")
+
+                    # 触发健康状态变更事件
+                    self._trigger_event('service_health_changed', {
+                        'service_id': service_id,
+                        'old_status': old_status,
+                        'new_status': status
+                    })
+
+                return True
+
+        except Exception as e:
+            logger.error(f"更新服务状态失败: {e}")
+            return False
+
+    def update_heartbeat(self, service_id: str) -> bool:
+        """更新服务心跳"""
+        try:
+            with self._lock:
+                if service_id not in self._services:
+                    return False
+
+                self._services[service_id].last_heartbeat = time.time()
+                return True
+
+        except Exception as e:
+            logger.error(f"更新心跳失败: {e}")
+            return False
+
+    def add_event_listener(self, event_type: str, callback: Callable):
+        """添加事件监听器"""
+        if event_type in self._event_callbacks:
+            self._event_callbacks[event_type].append(callback)
+
+    def remove_event_listener(self, event_type: str, callback: Callable):
+        """移除事件监听器"""
+        if event_type in self._event_callbacks:
+            if callback in self._event_callbacks[event_type]:
+                self._event_callbacks[event_type].remove(callback)
+
+    def get_service_statistics(self) -> Dict[str, Any]:
+        """获取服务统计信息"""
+        with self._lock:
+            total_services = len(self._services)
+            healthy_services = sum(
+                1 for service in self._services.values()
+                if service.status == ServiceStatus.HEALTHY
+            )
+
+            service_groups = len(self._service_groups)
+
+            return {
+                'total_services': total_services,
+                'healthy_services': healthy_services,
+                'unhealthy_services': total_services - healthy_services,
+                'service_groups': service_groups,
+                'health_check_results': len(self._health_checks)
+            }
+
+    def _validate_service(self, service: ServiceInstance) -> bool:
+        """验证服务信息"""
+        if not service.service_id or not service.service_name:
+            logger.error("服务ID和服务名不能为空")
+            return False
+
+        if not service.host or service.port <= 0:
+            logger.error("服务主机和端口信息无效")
+            return False
+
+        return True
+
+    def _init_health_check(self, service: ServiceInstance):
+        """初始化健康检查"""
+        # 创建初始健康检查结果
+        self._health_checks[service.service_id] = HealthCheckResult(
+            service_id=service.service_id,
+            is_healthy=True,
+            response_time=0.0
+        )
+
+    def _health_check_worker(self):
+        """健康检查工作线程"""
+        while self._running:
+            try:
+                self._perform_health_checks()
+                time.sleep(self.health_check_interval)
+            except Exception as e:
+                logger.error(f"健康检查异常: {e}")
+                time.sleep(5)
+
+    def _perform_health_checks(self):
+        """执行健康检查"""
+        with self._lock:
+            services_to_check = list(self._services.values())
+
+        for service in services_to_check:
+            try:
+                self._check_service_health(service)
+            except Exception as e:
+                logger.error(f"检查服务 {service.service_id} 健康状态失败: {e}")
+
+    def _check_service_health(self, service: ServiceInstance):
+        """检查单个服务健康状态"""
+        start_time = time.time()
+
+        try:
+            # 检查心跳超时
+            heartbeat_timeout = self.health_check_interval * 2
+            last_heartbeat = service.last_heartbeat or 0.0
+            if time.time() - last_heartbeat > heartbeat_timeout:
+                # 心跳超时，标记为不健康
+                health_result = HealthCheckResult(
+                    service_id=service.service_id,
+                    is_healthy=False,
+                    response_time=0.0,
+                    error_message="心跳超时"
+                )
+                self._update_health_result(service, health_result)
+                return
+
+            # 如果有健康检查URL，执行HTTP检查
+            if service.health_check_url:
+                self._perform_http_health_check(service)
+            else:
+                # 简单的TCP连接检查
+                self._perform_tcp_health_check(service)
+
+        except Exception as e:
+            # 健康检查失败
+            response_time = time.time() - start_time
+            health_result = HealthCheckResult(
+                service_id=service.service_id,
+                is_healthy=False,
+                response_time=response_time,
+                error_message=str(e)
+            )
+            self._update_health_result(service, health_result)
+
+    def _perform_http_health_check(self, service: ServiceInstance):
+        """执行HTTP健康检查"""
+        import requests
+        start_time = time.time()
+
+        try:
+            response = requests.get(
+                service.health_check_url,
+                timeout=self.health_check_timeout
+            )
+
+            response_time = time.time() - start_time
+            is_healthy = response.status_code == 200
+
+            health_result = HealthCheckResult(
+                service_id=service.service_id,
+                is_healthy=is_healthy,
+                response_time=response_time,
+                error_message=None if is_healthy else f"HTTP {response.status_code}"
+            )
+
+            self._update_health_result(service, health_result)
+
+        except requests.RequestException as e:
+            response_time = time.time() - start_time
+            health_result = HealthCheckResult(
+                service_id=service.service_id,
+                is_healthy=False,
+                response_time=response_time,
+                error_message=str(e)
+            )
+            self._update_health_result(service, health_result)
+
+    def _perform_tcp_health_check(self, service: ServiceInstance):
+        """执行TCP健康检查"""
+        import socket
+        start_time = time.time()
+
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(self.health_check_timeout)
+
+            result = sock.connect_ex((service.host, service.port))
+            sock.close()
+
+            response_time = time.time() - start_time
+            is_healthy = result == 0
+
+            health_result = HealthCheckResult(
+                service_id=service.service_id,
+                is_healthy=is_healthy,
+                response_time=response_time,
+                error_message=None if is_healthy else f"连接失败: {result}"
+            )
+
+            self._update_health_result(service, health_result)
+
+        except Exception as e:
+            response_time = time.time() - start_time
+            health_result = HealthCheckResult(
+                service_id=service.service_id,
+                is_healthy=False,
+                response_time=response_time,
+                error_message=str(e)
+            )
+            self._update_health_result(service, health_result)
+
+    def _update_health_result(self, service: ServiceInstance, health_result: HealthCheckResult):
+        """更新健康检查结果"""
+        with self._lock:
+            # 更新健康检查结果
+            self._health_checks[service.service_id] = health_result
+
+            # 根据健康检查结果更新服务状态
+            old_status = service.status
+
+            if health_result.is_healthy:
+                if service.status != ServiceStatus.HEALTHY:
+                    service.status = ServiceStatus.HEALTHY
+            else:
+                if service.status == ServiceStatus.HEALTHY:
+                    service.status = ServiceStatus.UNHEALTHY
+
+            # 如果状态发生变化，触发事件
+            if old_status != service.status:
+                self._trigger_event('service_health_changed', {
+                    'service_id': service.service_id,
+                    'old_status': old_status,
+                    'new_status': service.status,
+                    'health_result': health_result
+                })
+
+    def _cleanup_worker(self):
+        """清理工作线程"""
+        while self._running:
+            try:
+                self._cleanup_expired_services()
+                time.sleep(300)  # 每5分钟清理一次
+            except Exception as e:
+                logger.error(f"清理异常: {e}")
+                time.sleep(60)
+
+    def _cleanup_expired_services(self):
+        """清理过期服务"""
+        current_time = time.time()
+        cleanup_threshold = 300  # 5分钟无心跳则清理
+
+        with self._lock:
+            expired_services = []
+
+            for service_id, service in self._services.items():
+                last_heartbeat = service.last_heartbeat or 0.0
+                if current_time - last_heartbeat > cleanup_threshold:
+                    expired_services.append(service_id)
+
+            for service_id in expired_services:
+                logger.warning(f"清理过期服务: {service_id}")
+                self.deregister_service(service_id)
+
+    def _trigger_event(self, event_type: str, data: Any):
+        """触发事件"""
+        if event_type in self._event_callbacks:
+            for callback in self._event_callbacks[event_type]:
+                try:
+                    callback(data)
+                except Exception as e:
+                    logger.error(f"事件回调异常: {e}")
+
+
+class ServiceDiscoveryClient:
+    """服务发现客户端"""
+
+    def __init__(self, registry: ServiceRegistry,
+                 client_id: Optional[str] = None):
+        self.registry = registry
+        self.client_id = client_id or str(uuid.uuid4())
+        self._service_cache: Dict[str, List[ServiceInstance]] = {}
+        self._cache_lock = threading.RLock()
+        self._cache_ttl = 60  # 缓存TTL为60秒
+        self._cache_timestamps: Dict[str, float] = {}
+
+        # 负载均衡器
+        self._load_balancers: Dict[str, 'LoadBalancer'] = {}
+
+        logger.info(f"服务发现客户端初始化: {self.client_id}")
+
+    def discover(self, service_name: str,
+                 strategy: LoadBalanceStrategy = LoadBalanceStrategy.ROUND_ROBIN,
+                 use_cache: bool = True) -> Optional[ServiceInstance]:
+        """发现并返回一个服务实例"""
+        services = self.discover_all(service_name, use_cache)
+
+        if not services:
+            return None
+
+        # 获取负载均衡器
+        if service_name not in self._load_balancers:
+            self._load_balancers[service_name] = LoadBalancer(strategy)
+
+        lb = self._load_balancers[service_name]
+        return lb.select_instance(services)
+
+    def discover_all(self, service_name: str,
+                     use_cache: bool = True) -> List[ServiceInstance]:
+        """发现所有服务实例"""
+        if use_cache and self._is_cache_valid(service_name):
+            with self._cache_lock:
+                return self._service_cache.get(service_name, []).copy()
+
+        # 从注册中心获取服务
+        services = self.registry.discover_services(service_name, healthy_only=True)
+
+        # 更新缓存
+        if use_cache:
+            with self._cache_lock:
+                self._service_cache[service_name] = services.copy()
+                self._cache_timestamps[service_name] = time.time()
+
+        return services
+
+    def invalidate_cache(self, service_name: Optional[str] = None):
+        """使缓存失效"""
+        with self._cache_lock:
+            if service_name:
+                if service_name in self._service_cache:
+                    del self._service_cache[service_name]
+                if service_name in self._cache_timestamps:
+                    del self._cache_timestamps[service_name]
+            else:
+                self._service_cache.clear()
+                self._cache_timestamps.clear()
+
+    def _is_cache_valid(self, service_name: str) -> bool:
+        """检查缓存是否有效"""
+        if service_name not in self._cache_timestamps:
+            return False
+
+        cache_time = self._cache_timestamps[service_name]
+        return time.time() - cache_time < self._cache_ttl
+
+
+class LoadBalancer:
+    """负载均衡器"""
+
+    def __init__(self, strategy: LoadBalanceStrategy = LoadBalanceStrategy.ROUND_ROBIN):
+        self.strategy = strategy
+        self._round_robin_index = 0
+        self._connection_counts: Dict[str, int] = {}
+        self._lock = threading.Lock()
+
+    def select_instance(self, instances: List[ServiceInstance]) -> Optional[ServiceInstance]:
+        """选择服务实例"""
+        if not instances:
+            return None
+
+        if len(instances) == 1:
+            return instances[0]
+
+        with self._lock:
+            if self.strategy == LoadBalanceStrategy.ROUND_ROBIN:
+                return self._round_robin_select(instances)
+            elif self.strategy == LoadBalanceStrategy.RANDOM:
+                return self._random_select(instances)
+            elif self.strategy == LoadBalanceStrategy.LEAST_CONNECTIONS:
+                return self._least_connections_select(instances)
+            elif self.strategy == LoadBalanceStrategy.WEIGHTED_ROUND_ROBIN:
+                return self._weighted_round_robin_select(instances)
+            elif self.strategy == LoadBalanceStrategy.HEALTH_BASED:
+                return self._health_based_select(instances)
+            else:
+                return self._round_robin_select(instances)
+
+    def _round_robin_select(self, instances: List[ServiceInstance]) -> ServiceInstance:
+        """轮询选择"""
+        instance = instances[self._round_robin_index % len(instances)]
+        self._round_robin_index += 1
+        return instance
+
+    def _random_select(self, instances: List[ServiceInstance]) -> ServiceInstance:
+        """随机选择"""
+        import secrets
+        return secrets.choice(instances)
+
+    def _least_connections_select(self, instances: List[ServiceInstance]) -> ServiceInstance:
+        """最少连接数选择"""
+        min_connections = float('inf')
+        selected_instance = instances[0]
+
+        for instance in instances:
+            connections = self._connection_counts.get(instance.service_id, 0)
+            if connections < min_connections:
+                min_connections = connections
+                selected_instance = instance
+
+        return selected_instance
+
+    def _weighted_round_robin_select(self, instances: List[ServiceInstance]) -> ServiceInstance:
+        """加权轮询选择"""
+        # 简化实现：根据权重创建加权列表
+        weighted_instances = []
+        for instance in instances:
+            weight = instance.weight or 100
+            weighted_instances.extend([instance] * (weight // 10))
+
+        if weighted_instances:
+            return self._round_robin_select(weighted_instances)
+        else:
+            return instances[0]
+
+    def _health_based_select(self, instances: List[ServiceInstance]) -> ServiceInstance:
+        """基于健康状态选择"""
+        # 优先选择健康的服务
+        healthy_instances = [
+            instance for instance in instances
+            if instance.status == ServiceStatus.HEALTHY
+        ]
+
+        if healthy_instances:
+            return self._round_robin_select(healthy_instances)
+        else:
+            return instances[0]
+
+    def increment_connections(self, service_id: str):
+        """增加连接数"""
+        with self._lock:
+            self._connection_counts[service_id] = self._connection_counts.get(service_id, 0) + 1
+
+    def decrement_connections(self, service_id: str):
+        """减少连接数"""
+        with self._lock:
+            if service_id in self._connection_counts:
+                self._connection_counts[service_id] = max(
+                    0, self._connection_counts[service_id] - 1)
+
+
+# 单例服务注册中心
+_global_registry: Optional[ServiceRegistry] = None
+
+
+def get_service_registry(config: Optional[Dict] = None) -> ServiceRegistry:
+    """获取全局服务注册中心"""
+    global _global_registry
+    if _global_registry is None:
+        _global_registry = ServiceRegistry(config)
+        _global_registry.start()
+    return _global_registry
+
+
+def create_service_instance(service_name: str, host: str, port: int,
+                            metadata: Optional[Dict] = None,
+                            tags: Optional[List[str]] = None,
+                            health_check_url: Optional[str] = None) -> ServiceInstance:
+    """创建服务实例的便捷方法"""
+    service_id = f"{service_name}-{host}-{port}-{uuid.uuid4().hex[:8]}"
+
+    return ServiceInstance(
+        service_id=service_id,
+        service_name=service_name,
+        host=host,
+        port=port,
+        metadata=metadata or {},
+        tags=tags or [],
+        health_check_url=health_check_url
+    )
+
+
+if __name__ == "__main__":
+    # 示例用法
+    logging.basicConfig(level=logging.INFO)
+
+    # 创建服务注册中心
+    registry = get_service_registry()
+
+    # 创建服务发现客户端
+    client = ServiceDiscoveryClient(registry)
+
+    # 注册测试服务
+    service1 = create_service_instance("trading-service", "localhost", 8001)
+    service2 = create_service_instance("trading-service", "localhost", 8002)
+
+    registry.register_service(service1)
+    registry.register_service(service2)
+
+    # 发现服务
+    discovered_service = client.discover("trading-service")
+    if discovered_service:
+        print(f"发现服务: {discovered_service.host}:{discovered_service.port}")
+
+    # 列出所有服务
+    all_services = client.discover_all("trading-service")
+    print(f"所有服务实例: {len(all_services)}")
+
+    # 获取统计信息
+    stats = registry.get_service_statistics()
+    print(f"服务统计: {stats}")
+
+    # 停止注册中心
+    time.sleep(2)
+    registry.stop()

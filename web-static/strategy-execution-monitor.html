@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 策略执行监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .status-running { background-color: #d1fae5; color: #065f46; }
+        .status-paused { background-color: #fef3c7; color: #92400e; }
+        .status-stopped { background-color: #fee2e2; color: #991b1b; }
+        .status-error { background-color: #fee2e2; color: #dc2626; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">策略执行监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-tachometer-alt text-green-600 mr-3"></i>
+                策略执行监控
+            </h1>
+            <p class="text-gray-600">实时监控运行中策略的执行状态、性能指标和交易信号</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-play-circle text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">运行中策略</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="running-strategies">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bolt text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均延迟</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-latency">-- ms</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-signal text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">今日信号数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="today-signals">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-chart-line text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">总交易数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="total-trades">0</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">延迟趋势</h3>
+                <canvas id="latencyChart"></canvas>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">吞吐量趋势</h3>
+                <canvas id="throughputChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Strategy Execution Table -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">策略执行列表</h3>
+                    <div class="flex space-x-2">
+                        <select id="statusFilter" onchange="filterStrategies()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="all" selected>运行中/暂停</option>
+                            <option value="active">活跃策略</option>
+                            <option value="running">运行中</option>
+                            <option value="paused">已暂停</option>
+                            <option value="stopped">已停止</option>
+                            <option value="include_stopped">全部状态（含已停止）</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- 批量操作工具栏 -->
+                <div id="batchToolbar" class="mt-3 flex items-center space-x-3 hidden">
+                    <span class="text-sm text-gray-600">
+                        已选择 <span id="selectedCount" class="font-semibold text-indigo-600">0</span> 个策略
+                    </span>
+                    <button onclick="batchDeleteStrategies()" 
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition duration-300 flex items-center">
+                        <i class="fas fa-trash-alt mr-2"></i>批量删除
+                    </button>
+                    <button onclick="clearSelection()" 
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition duration-300">
+                        取消选择
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAll" onclick="toggleSelectAll()" 
+                                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">延迟</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">吞吐量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">信号数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">持仓</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategyTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Signals -->
+        <div class="mt-8 bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">最近信号</h3>
+            </div>
+            <div class="p-6">
+                <div id="recentSignals" class="space-y-3">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <div>加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let latencyChart, throughputChart;
+        let allStrategies = [];
+        let selectedStrategies = new Set();  // 存储选中的策略ID
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadExecutionData() {
+            try {
+                // 加载策略执行状态、性能指标和最近信号
+                const [statusRes, metricsRes, signalsRes] = await Promise.all([
+                    fetch(getApiBaseUrl('/strategy/execution/status')),
+                    fetch(getApiBaseUrl('/strategy/execution/metrics')),
+                    fetch(getApiBaseUrl('/strategy/realtime/signals'))
+                ]);
+
+                if (statusRes.ok) {
+                    const statusData = await statusRes.json();
+                    console.log('Status data received:', statusData);
+                    allStrategies = statusData.strategies || [];
+                    console.log('All strategies:', allStrategies);
+                    renderStrategyTable();
+                    updateStatistics(statusData);
+                } else {
+                    console.error('Status response not ok:', statusRes.status);
+                }
+
+                if (metricsRes.ok) {
+                    const metricsData = await metricsRes.json();
+                    updateCharts(metricsData);
+                }
+
+                if (signalsRes.ok) {
+                    const signalsData = await signalsRes.json();
+                    renderRecentSignals(signalsData.signals || []);
+                }
+            } catch (error) {
+                console.error('加载执行数据失败:', error);
+            }
+        }
+
+        function updateStatistics(data) {
+            console.log('updateStatistics called with data:', data);
+            const runningCount = data.running_count || allStrategies.filter(s => s.status === 'running').length;
+            console.log('Running count:', runningCount);
+            
+            // 强制更新DOM
+            const runningElement = document.getElementById('running-strategies');
+            if (runningElement) {
+                runningElement.textContent = runningCount;
+                console.log('Updated running-strategies to:', runningCount);
+            } else {
+                console.error('running-strategies element not found!');
+            }
+            
+            const latencyElement = document.getElementById('avg-latency');
+            if (latencyElement) {
+                latencyElement.textContent = data.avg_latency ? `${data.avg_latency.toFixed(2)} ms` : '-- ms';
+            }
+            
+            const signalsElement = document.getElementById('today-signals');
+            if (signalsElement) {
+                signalsElement.textContent = data.today_signals || 0;
+            }
+            
+            const tradesElement = document.getElementById('total-trades');
+            if (tradesElement) {
+                tradesElement.textContent = data.total_trades || 0;
+            }
+        }
+
+        function renderStrategyTable() {
+            const tbody = document.getElementById('strategyTableBody');
+            const filter = document.getElementById('statusFilter').value;
+
+            let filtered = allStrategies;
+            
+            // 默认过滤掉 stopped 状态的策略（除非用户选择"全部状态"）
+            if (filter === 'all') {
+                // 默认显示运行中、暂停的策略，不显示已停止的
+                filtered = allStrategies.filter(s => s.status !== 'stopped');
+            } else if (filter === 'active') {
+                // 显示运行中和暂停的策略
+                filtered = allStrategies.filter(s => s.status === 'running' || s.status === 'paused');
+            } else if (filter === 'include_stopped') {
+                // 显示全部状态，包括已停止的
+                filtered = allStrategies;
+            } else {
+                // 按具体状态过滤
+                filtered = allStrategies.filter(s => s.status === filter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无策略</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(strategy => {
+                const statusClass = `status-${strategy.status}`;
+                const isSelected = selectedStrategies.has(strategy.id);
+                return `
+                    <tr class="hover:bg-gray-50 ${isSelected ? 'bg-indigo-50' : ''}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <input type="checkbox" value="${strategy.id}" 
+                                ${isSelected ? 'checked' : ''}
+                                onchange="toggleStrategySelection('${strategy.id}')"
+                                class="strategy-checkbox rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${strategy.name || strategy.id}</div>
+                            <div class="text-sm text-gray-500">${strategy.type || ''}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${getStatusText(strategy.status)}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${strategy.latency ? `${strategy.latency.toFixed(2)} ms` : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${strategy.throughput ? `${strategy.throughput}/s` : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${strategy.signals_count || 0}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${strategy.positions_count || 0}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="toggleStrategy('${strategy.id}')" 
+                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                title="${strategy.status === 'running' ? '暂停' : '启动'}">
+                                ${strategy.status === 'running' ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>'}
+                            </button>
+                            <button onclick="viewStrategyDetails('${strategy.id}')" 
+                                class="text-blue-600 hover:text-blue-900 mr-3"
+                                title="查看详情">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${strategy.status !== 'archived' ? `
+                            <button onclick="retireStrategyFromExecution('${strategy.id}')" 
+                                class="text-red-600 hover:text-red-900"
+                                title="退市策略">
+                                <i class="fas fa-archive"></i>
+                            </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'running': '运行中',
+                'paused': '已暂停',
+                'stopped': '已停止',
+                'error': '错误'
+            };
+            return statusMap[status] || status;
+        }
+
+        function updateCharts(metricsData) {
+            const latencyData = metricsData.latency_history || [];
+            const throughputData = metricsData.throughput_history || [];
+
+            if (latencyChart) {
+                latencyChart.data.labels = latencyData.map(d => new Date(d.timestamp * 1000).toLocaleTimeString());
+                latencyChart.data.datasets[0].data = latencyData.map(d => d.value);
+                latencyChart.update();
+            }
+
+            if (throughputChart) {
+                throughputChart.data.labels = throughputData.map(d => new Date(d.timestamp * 1000).toLocaleTimeString());
+                throughputChart.data.datasets[0].data = throughputData.map(d => d.value);
+                throughputChart.update();
+            }
+        }
+
+        function renderRecentSignals(signals) {
+            const container = document.getElementById('recentSignals');
+            if (!container) return;
+
+            if (!signals || signals.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <div>暂无交易信号</div>
+                        <div class="text-xs mt-1 text-gray-400">信号将在策略运行时生成</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const signalsHtml = signals.slice(0, 10).map(signal => {
+                const signalType = signal.signal_type || signal.type || 'unknown';
+                const typeColor = {
+                    'buy': 'text-green-600 bg-green-50',
+                    'sell': 'text-red-600 bg-red-50',
+                    'hold': 'text-gray-600 bg-gray-50'
+                }[signalType.toLowerCase()] || 'text-gray-600 bg-gray-50';
+                
+                const typeIcon = {
+                    'buy': 'fa-arrow-up',
+                    'sell': 'fa-arrow-down',
+                    'hold': 'fa-minus'
+                }[signalType.toLowerCase()] || 'fa-signal';
+
+                const time = new Date((signal.timestamp || 0) * 1000).toLocaleTimeString('zh-CN');
+                const date = new Date((signal.timestamp || 0) * 1000).toLocaleDateString('zh-CN');
+                const strategyName = signal.strategy_name || signal.strategy_id || '未知策略';
+                const symbol = signal.symbol || 'UNKNOWN';
+                const price = signal.price ? signal.price.toFixed(2) : '--';
+                const strength = signal.strength || 0;
+                const source = signal.source || 'unknown';
+                
+                // 信号强度显示
+                let strengthHtml = '';
+                if (strength > 0) {
+                    const strengthColor = strength >= 0.7 ? 'text-green-500' : (strength >= 0.4 ? 'text-yellow-500' : 'text-gray-500');
+                    strengthHtml = `<span class="text-xs ${strengthColor}">强度: ${(strength * 100).toFixed(0)}%</span>`;
+                }
+                
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center flex-1 min-w-0">
+                            <div class="w-10 h-10 rounded-full ${typeColor} flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas ${typeIcon}"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-medium text-gray-900 truncate">${strategyName}</span>
+                                    <span class="px-2 py-0.5 text-xs bg-gray-200 rounded text-gray-600">${symbol}</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
+                                    <span class="font-semibold ${typeColor.split(' ')[0]}">${signalType.toUpperCase()}</span>
+                                    <span>价格: ¥${price}</span>
+                                    ${strengthHtml}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right flex-shrink-0 ml-4">
+                            <div class="text-sm text-gray-900 font-medium">${time}</div>
+                            <div class="text-xs text-gray-400">${date}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = signalsHtml;
+        }
+
+        function initCharts() {
+            const latencyCtx = document.getElementById('latencyChart').getContext('2d');
+            latencyChart = new Chart(latencyCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '延迟 (ms)',
+                        data: [],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+            throughputChart = new Chart(throughputCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '吞吐量 (信号/秒)',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function filterStrategies() {
+            renderStrategyTable();
+        }
+
+        async function toggleStrategy(strategyId) {
+            try {
+                const strategy = allStrategies.find(s => s.id === strategyId);
+                if (!strategy) {
+                    showErrorAlert('策略不存在');
+                    return;
+                }
+                
+                const action = strategy.status === 'running' ? 'pause' : 'start';
+                const actionText = action === 'pause' ? '暂停' : '启动';
+                
+                console.log(`正在${actionText}策略: ${strategyId}`);
+                
+                const response = await fetch(getApiBaseUrl(`/strategy/execution/${strategyId}/${action}`), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(`${actionText}策略成功:`, result);
+                    showSuccess(`策略 ${strategy.name || strategyId} 已${actionText}`);
+                    await loadExecutionData();
+                } else {
+                    const errorData = await response.json().catch(() => ({ detail: '操作失败' }));
+                    console.error(`${actionText}策略失败:`, errorData);
+                    showErrorAlert(`${actionText}策略失败: ${errorData.detail || '未知错误'}`);
+                }
+            } catch (error) {
+                console.error('切换策略状态失败:', error);
+                showErrorAlert('操作失败: ' + error.message);
+            }
+        }
+
+        // 显示成功提示
+        function showSuccess(message) {
+            // 创建成功提示元素
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+            toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // 显示错误提示
+        function showErrorAlert(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+            toast.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        function viewStrategyDetails(strategyId) {
+            window.location.href = `/strategy-management?view=${strategyId}`;
+        }
+
+        // ==================== 批量选择功能 ====================
+
+        // 切换单个策略选择状态
+        function toggleStrategySelection(strategyId) {
+            if (selectedStrategies.has(strategyId)) {
+                selectedStrategies.delete(strategyId);
+            } else {
+                selectedStrategies.add(strategyId);
+            }
+            updateBatchToolbar();
+            updateSelectAllCheckbox();
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const filtered = getFilteredStrategies();
+
+            if (selectAllCheckbox.checked) {
+                // 全选当前过滤后的策略
+                filtered.forEach(strategy => {
+                    selectedStrategies.add(strategy.id);
+                });
+            } else {
+                // 取消全选
+                filtered.forEach(strategy => {
+                    selectedStrategies.delete(strategy.id);
+                });
+            }
+
+            renderStrategyTable();
+            updateBatchToolbar();
+        }
+
+        // 获取当前过滤后的策略列表
+        function getFilteredStrategies() {
+            const filter = document.getElementById('statusFilter').value;
+            if (filter === 'all') {
+                return allStrategies;
+            }
+            return allStrategies.filter(s => s.status === filter);
+        }
+
+        // 更新批量操作工具栏显示
+        function updateBatchToolbar() {
+            const toolbar = document.getElementById('batchToolbar');
+            const countElement = document.getElementById('selectedCount');
+
+            if (selectedStrategies.size > 0) {
+                toolbar.classList.remove('hidden');
+                countElement.textContent = selectedStrategies.size;
+            } else {
+                toolbar.classList.add('hidden');
+            }
+        }
+
+        // 更新全选复选框状态
+        function updateSelectAllCheckbox() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const filtered = getFilteredStrategies();
+            const allSelected = filtered.length > 0 && filtered.every(s => selectedStrategies.has(s.id));
+            selectAllCheckbox.checked = allSelected;
+        }
+
+        // 清除选择
+        function clearSelection() {
+            selectedStrategies.clear();
+            renderStrategyTable();
+            updateBatchToolbar();
+            document.getElementById('selectAll').checked = false;
+        }
+
+        // 批量删除策略
+        async function batchDeleteStrategies() {
+            if (selectedStrategies.size === 0) {
+                showErrorAlert('请先选择要删除的策略');
+                return;
+            }
+
+            const strategyIds = Array.from(selectedStrategies);
+            const strategyNames = strategyIds.map(id => {
+                const strategy = allStrategies.find(s => s.id === id);
+                return strategy ? (strategy.name || id) : id;
+            });
+
+            if (!confirm(`确定要删除以下 ${strategyIds.length} 个策略吗？此操作不可逆。\n\n${strategyNames.join('\n')}`)) {
+                return;
+            }
+
+            try {
+                showSuccess(`正在删除 ${strategyIds.length} 个策略...`);
+
+                let successCount = 0;
+                let failCount = 0;
+                const failedStrategies = [];
+
+                // 逐个删除策略
+                for (const strategyId of strategyIds) {
+                    try {
+                        const success = await deleteStrategy(strategyId);
+                        if (success) {
+                            successCount++;
+                            selectedStrategies.delete(strategyId);
+                        } else {
+                            failCount++;
+                            failedStrategies.push(strategyId);
+                        }
+                    } catch (error) {
+                        console.error(`删除策略 ${strategyId} 失败:`, error);
+                        failCount++;
+                        failedStrategies.push(strategyId);
+                    }
+                }
+
+                // 刷新数据
+                await loadExecutionData();
+                updateBatchToolbar();
+                updateSelectAllCheckbox();
+
+                // 显示结果
+                if (successCount > 0) {
+                    showSuccess(`成功删除 ${successCount} 个策略`);
+                }
+                if (failCount > 0) {
+                    showErrorAlert(`${failCount} 个策略删除失败: ${failedStrategies.join(', ')}`);
+                }
+            } catch (error) {
+                console.error('批量删除策略失败:', error);
+                showErrorAlert('批量删除失败: ' + error.message);
+            }
+        }
+
+        // 删除单个策略
+        async function deleteStrategy(strategyId) {
+            try {
+                const strategy = allStrategies.find(s => s.id === strategyId);
+
+                // 1. 如果策略在运行中，先停止
+                if (strategy && strategy.status === 'running') {
+                    try {
+                        await fetch(getApiBaseUrl(`/strategy/execution/${strategyId}/pause`), {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                    } catch (e) {
+                        console.warn(`停止策略 ${strategyId} 失败:`, e);
+                    }
+                }
+
+                // 2. 退市策略（转换生命周期状态为 archived）
+                try {
+                    const response = await fetch(getApiBaseUrl(`/strategy/${strategyId}/lifecycle/transition`), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            new_status: 'archived',
+                            reason: '批量删除'
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ detail: '退市失败' }));
+                        console.error(`策略 ${strategyId} 退市失败:`, errorData);
+                        return false;
+                    }
+                } catch (e) {
+                    console.error(`策略 ${strategyId} 退市请求失败:`, e);
+                    return false;
+                }
+
+                // 3. 从执行状态持久化存储中删除
+                try {
+                    await fetch(getApiBaseUrl(`/strategy/execution/${strategyId}`), {
+                        method: 'DELETE'
+                    });
+                } catch (e) {
+                    console.warn(`从执行状态删除策略 ${strategyId} 失败:`, e);
+                }
+
+                console.log(`策略 ${strategyId} 删除成功`);
+                return true;
+            } catch (error) {
+                console.error(`删除策略 ${strategyId} 失败:`, error);
+                return false;
+            }
+        }
+
+        // 从执行列表退市策略
+        async function retireStrategyFromExecution(strategyId) {
+            if (!confirm('确定要退市此策略吗？此操作不可逆。')) {
+                return;
+            }
+
+            try {
+                const strategy = allStrategies.find(s => s.id === strategyId);
+                const strategyName = strategy ? (strategy.name || strategyId) : strategyId;
+                
+                console.log(`正在退市策略: ${strategyId}`);
+                
+                // 1. 先停止策略执行（如果策略在运行中）
+                if (strategy && strategy.status === 'running') {
+                    try {
+                        const stopResponse = await fetch(getApiBaseUrl(`/strategy/execution/${strategyId}/pause`), {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        if (stopResponse.ok) {
+                            console.log(`策略 ${strategyId} 已停止执行`);
+                        } else {
+                            console.warn(`策略 ${strategyId} 停止执行失败，继续退市流程`);
+                        }
+                    } catch (stopError) {
+                        console.warn(`停止策略执行失败: ${stopError.message}，继续退市流程`);
+                    }
+                }
+
+                // 2. 执行生命周期状态转换（退市）
+                const response = await fetch(getApiBaseUrl(`/strategy/${strategyId}/lifecycle/transition`), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        new_status: 'archived',
+                        reason: '从执行监控页面退市'
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('退市策略成功:', result);
+                    showSuccess(`策略 ${strategyName} 已退市`);
+                    
+                    // 3. 刷新数据
+                    await loadExecutionData();
+                } else {
+                    const errorData = await response.json().catch(() => ({ detail: '退市失败' }));
+                    console.error('退市策略失败:', errorData);
+                    showErrorAlert(`退市失败: ${errorData.detail || '未知错误'}`);
+                }
+            } catch (error) {
+                console.error('退市策略失败:', error);
+                showErrorAlert('退市失败: ' + error.message);
+            }
+        }
+
+        function refreshData() {
+            loadExecutionData();
+        }
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.host;
+            const ws = new WebSocket(`${protocol}//${host}/ws/execution-status`);
+            
+            ws.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'execution_status') {
+                        allStrategies = data.data.strategies || [];
+                        renderStrategyTable();
+                        updateStatistics(data.data);
+                    }
+                } catch (error) {
+                    console.error('解析WebSocket消息失败:', error);
+                }
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket错误:', error);
+                // 回退到轮询
+                setInterval(loadExecutionData, 5000);
+            };
+            
+            return ws;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            initCharts();
+            console.log('Charts initialized, loading execution data...');
+            loadExecutionData();
+            console.log('Execution data loading initiated');
+            // 优先使用WebSocket，失败则使用轮询
+            try {
+                connectWebSocket();
+            } catch (error) {
+                console.warn('WebSocket连接失败，使用轮询模式:', error);
+                setInterval(loadExecutionData, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
+

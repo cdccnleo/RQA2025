@@ -1,0 +1,12 @@
+groups:
+- name: rqa_alerts
+  rules:
+  - alert: ServiceDown
+    annotations:
+      description: '服务不可用 (阈值: 0.0)'
+      summary: 服务不可用
+    expr: up == 0
+    for: 1m
+    labels:
+      service: rqa
+      severity: critical

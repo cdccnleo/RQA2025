@@ -1,0 +1,46 @@
+# 性能测试配置文件
+# 用于优化测试执行，减少超时问题
+
+performance_test:
+  # 测试超时设置
+  timeout:
+    default: 30  # 默认超时时间（秒）
+    performance: 60  # 性能测试超时时间（秒）
+    stress: 120  # 压力测试超时时间（秒）
+  
+  # 后台线程管理
+  background_threads:
+    cleanup_interval: 5  # 清理间隔（秒）
+    max_workers: 4  # 最大工作线程数
+    shutdown_timeout: 10  # 关闭超时时间（秒）
+  
+  # 性能测试参数
+  benchmark:
+    iterations: 100  # 基准测试迭代次数
+    warmup_iterations: 10  # 预热迭代次数
+    max_execution_time: 30  # 最大执行时间（秒）
+  
+  # 缓存测试优化
+  cache_test:
+    max_operations: 1000  # 最大操作数
+    batch_size: 100  # 批处理大小
+    timeout: 15  # 缓存测试超时时间（秒）
+  
+  # 系统监控优化
+  system_monitor:
+    collection_interval: 5  # 收集间隔（秒）
+    max_collection_time: 10  # 最大收集时间（秒）
+    disable_background_collection: true  # 测试时禁用后台收集
+  
+  # 性能优化器设置
+  performance_optimizer:
+    monitoring_interval: 10  # 监控间隔（秒）
+    optimization_threshold: 0.8  # 优化阈值
+    max_optimization_time: 20  # 最大优化时间（秒）
+  
+  # 测试环境设置
+  test_environment:
+    mock_external_services: true  # 模拟外部服务
+    disable_real_io: true  # 禁用真实I/O操作
+    use_mock_timers: true  # 使用模拟计时器
+    max_memory_usage: "512MB"  # 最大内存使用量

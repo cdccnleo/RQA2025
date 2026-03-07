@@ -1,0 +1,72 @@
+通配符导入报告
+==============================
+
+找到 21 个通配符导入:
+
+ 1. config\core\__init__.py:7
+    from .factory import *
+
+ 2. config\core\__init__.py:8
+    from .config_strategy import *
+
+ 3. config\core\__init__.py:9
+    from .validators import *
+
+ 4. config\core\__init__.py:10
+    from .config_service import *
+
+ 5. config\core\__init__.py:11
+    from .config_storage import *
+
+ 6. config\core\__init__.py:12
+    from .unified_interface import *
+
+ 7. config\core\__init__.py:13
+    from .unified_manager import *
+
+ 8. config\core\__init__.py:14
+    from .typed_config import *
+
+ 9. config\loaders\__init__.py:7
+    from .json_loader import *
+
+10. config\loaders\__init__.py:8
+    from .env_loader import *
+
+11. config\loaders\__init__.py:9
+    from .database_loader import *
+
+12. config\loaders\__init__.py:10
+    from .cloud_loader import *
+
+13. config\loaders\__init__.py:11
+    from .yaml_loader import *
+
+14. config\loaders\__init__.py:12
+    from .toml_loader import *
+
+15. core\unified_infrastructure.py:22
+    from .core.factories.cache_factory import *
+
+16. core\unified_infrastructure.py:23
+    from .di.unified_dependency_container import *
+
+17. core\unified_infrastructure.py:25
+    from .core.factories.monitor_factory import *
+
+18. core\unified_infrastructure.py:27
+    from .core.factories.config_factory import *
+
+19. error\__init__.py:29
+    from .exceptions import *
+
+20. error\__init__.py:34
+    from .unified_exceptions import *
+
+21. utils\common\data\data_api.py:1
+    from src.data.interfaces.loader import *
+
+优化策略:
+1. 将通配符导入替换为显式导入
+2. 只导入实际使用的类和函数
+3. 保持代码的可读性和维护性

@@ -1,0 +1,596 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rqa2025-cloud-native
+  labels:
+    name: rqa2025-cloud-native
+    environment: production
+    cloud-native: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloud-native-config
+  namespace: rqa2025-cloud-native
+data:
+  cloud-native-config.yaml: |
+    # 云原生功能配置
+    auto_scaling:
+      enabled: true
+      min_replicas: 2
+      max_replicas: 10
+      target_cpu_utilization: 70.0
+      target_memory_utilization: 80.0
+      scale_up_cooldown: 300
+      scale_down_cooldown: 600
+      scale_up_threshold: 0.8
+      scale_down_threshold: 0.3
+    
+    service_mesh:
+      enabled: true
+      circuit_breaker_enabled: true
+      retry_policy_enabled: true
+      timeout_policy_enabled: true
+      load_balancing: "round_robin"
+      circuit_breaker_threshold: 5
+      circuit_breaker_timeout: 30
+      retry_attempts: 3
+      retry_timeout: 10
+    
+    blue_green_deployment:
+      enabled: true
+      auto_switch: true
+      health_check_interval: 30
+      switch_threshold: 0.95
+      rollback_threshold: 0.8
+      switch_timeout: 300
+    
+    intelligent_monitoring:
+      enabled: true
+      anomaly_detection_enabled: true
+      predictive_maintenance_enabled: true
+      ml_model_enabled: true
+      auto_tuning_enabled: true
+      alert_thresholds:
+        cpu_anomaly: 2.0
+        memory_anomaly: 2.0
+        response_time_anomaly: 2.0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: intelligent-features-config
+  namespace: rqa2025-cloud-native
+data:
+  intelligent-config.yaml: |
+    # 智能化功能配置
+    ml_models:
+      performance_prediction:
+        enabled: true
+        model_type: "linear_regression"
+        training_data_size: 1000
+        prediction_interval: 300
+        accuracy_threshold: 0.8
+      
+      anomaly_detection:
+        enabled: true
+        model_type: "isolation_forest"
+        sensitivity: 0.1
+        training_window: 1000
+    
+    auto_tuning:
+      enabled: true
+      optimization_interval: 600
+      parameter_ranges:
+        cpu_limit: [500, 2000]
+        memory_limit: [512, 4096]
+        max_workers: [2, 16]
+      performance_metrics:
+        - response_time
+        - throughput
+        - error_rate
+        - resource_utilization
+    
+    predictive_maintenance:
+      enabled: true
+      health_check_interval: 60
+      maintenance_threshold: 0.7
+      alert_threshold: 0.5
+      prediction_window: 3600
+      maintenance_duration: 1800
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rqa2025-backtest-hpa
+  namespace: rqa2025-cloud-native
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rqa2025-backtest-service
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rqa2025-data-hpa
+  namespace: rqa2025-cloud-native
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rqa2025-data-service
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-backtest-service
+  namespace: rqa2025-cloud-native
+  labels:
+    app: rqa2025-backtest
+    version: v1.0.0
+    environment: production
+    cloud-native: "true"
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rqa2025-backtest
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: rqa2025-backtest
+        environment: production
+        version: v1.0.0
+        cloud-native: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: backtest-service
+        image: rqa2025-backtest:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: CLOUD_NATIVE_ENABLED
+          value: "true"
+        - name: INTELLIGENT_FEATURES_ENABLED
+          value: "true"
+        - name: CONFIG_PATH
+          value: "/app/config/cloud-native-config.yaml"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: models-volume
+          mountPath: /app/models
+        - name: logs-volume
+          mountPath: /app/logs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: cloud-native-config
+      - name: models-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-models-pvc
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-data-service
+  namespace: rqa2025-cloud-native
+  labels:
+    app: rqa2025-data
+    version: v1.0.0
+    environment: production
+    cloud-native: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rqa2025-data
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: rqa2025-data
+        environment: production
+        version: v1.0.0
+        cloud-native: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: data-service
+        image: rqa2025-data:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8002
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: CLOUD_NATIVE_ENABLED
+          value: "true"
+        - name: CONFIG_PATH
+          value: "/app/config/cloud-native-config.yaml"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8002
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: data-volume
+          mountPath: /app/data
+      volumes:
+      - name: config-volume
+        configMap:
+          name: cloud-native-config
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-data-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-intelligent-orchestrator
+  namespace: rqa2025-cloud-native
+  labels:
+    app: rqa2025-intelligent
+    version: v1.0.0
+    environment: production
+    cloud-native: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rqa2025-intelligent
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: rqa2025-intelligent
+        environment: production
+        version: v1.0.0
+        cloud-native: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8005"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: intelligent-orchestrator
+        image: rqa2025-intelligent:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8005
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: CLOUD_NATIVE_ENABLED
+          value: "true"
+        - name: INTELLIGENT_FEATURES_ENABLED
+          value: "true"
+        - name: CONFIG_PATH
+          value: "/app/config/intelligent-config.yaml"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8005
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: models-volume
+          mountPath: /app/models
+        - name: logs-volume
+          mountPath: /app/logs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: intelligent-features-config
+      - name: models-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-models-pvc
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-backtest-service
+  namespace: rqa2025-cloud-native
+  labels:
+    app: rqa2025-backtest
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8001
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-backtest
+    environment: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-data-service
+  namespace: rqa2025-cloud-native
+  labels:
+    app: rqa2025-data
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8002
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-data
+    environment: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-intelligent-service
+  namespace: rqa2025-cloud-native
+  labels:
+    app: rqa2025-intelligent
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8005
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-intelligent
+    environment: production
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa2025-cloud-native-ingress
+  namespace: rqa2025-cloud-native
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+spec:
+  tls:
+  - hosts:
+    - cloud-native.rqa2025.example.com
+    secretName: rqa2025-cloud-native-tls
+  rules:
+  - host: cloud-native.rqa2025.example.com
+    http:
+      paths:
+      - path: /backtest
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-backtest-service
+            port:
+              number: 80
+      - path: /data
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-data-service
+            port:
+              number: 80
+      - path: /intelligent
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-intelligent-service
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-models-pvc
+  namespace: rqa2025-cloud-native
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-data-pvc
+  namespace: rqa2025-cloud-native
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-logs-pvc
+  namespace: rqa2025-cloud-native
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: fast-ssd 

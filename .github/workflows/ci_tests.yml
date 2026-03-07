@@ -1,0 +1,247 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 每天凌晨2点运行完整测试套件
+    - cron: '0 2 * * *'
+
+env:
+  PYTHON_VERSION: '3.9'
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  # 快速单元测试 - 每次提交运行
+  unit-tests:
+    name: 单元测试 (快速)
+    runs-on: windows-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+      
+      - name: 设置Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-xdist pytest-timeout
+      
+      - name: 运行单元测试
+        run: |
+          pytest tests/unit/ -v -m "unit and not slow" `
+            --cov=src --cov-report=xml --cov-report=term `
+            -n auto --maxfail=10 --tb=short
+      
+      - name: 上传覆盖率报告
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unit
+          name: unit-tests-coverage
+  
+  # 集成测试 - PR合并前运行
+  integration-tests:
+    name: 集成测试
+    runs-on: windows-latest
+    timeout-minutes: 30
+    needs: unit-tests
+    if: github.event_name == 'pull_request'
+    
+    services:
+      # 注意：Windows runner不支持Docker服务
+      # 需要使用本地安装或mock
+      pass
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+      
+      - name: 设置Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: 运行集成测试 (示例)
+        run: |
+          pytest tests/integration/ -v -m "integration and not slow" `
+            --maxfail=5 --tb=short
+        continue-on-error: true
+      
+      - name: 上传测试报告
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: integration-test-results
+          path: test_logs/
+  
+  # 代码质量检查
+  code-quality:
+    name: 代码质量检查
+    runs-on: windows-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+      
+      - name: 设置Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 安装检查工具
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pylint black isort mypy
+      
+      - name: 运行Flake8
+        run: |
+          flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 src/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
+      
+      - name: 检查代码格式
+        run: |
+          black --check src/ --line-length 120
+        continue-on-error: true
+      
+      - name: 检查导入顺序
+        run: |
+          isort --check-only src/ --line-length 120
+        continue-on-error: true
+  
+  # 测试覆盖率报告
+  coverage-report:
+    name: 测试覆盖率报告
+    runs-on: windows-latest
+    timeout-minutes: 20
+    needs: unit-tests
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+      
+      - name: 设置Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov coverage pytest-xdist
+      
+      - name: 运行完整测试套件
+        run: |
+          pytest tests/unit/infrastructure/utils/ -v `
+            --cov=src/infrastructure/utils --cov-report=html --cov-report=term `
+            -n auto --tb=short
+        continue-on-error: true
+      
+      - name: 生成覆盖率徽章
+        run: |
+          coverage report --format=markdown > coverage_report.md
+        continue-on-error: true
+      
+      - name: 上传覆盖率报告
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: |
+            htmlcov/
+            coverage_report.md
+  
+  # 性能基准测试 - 定时运行
+  performance-tests:
+    name: 性能基准测试
+    runs-on: windows-latest
+    timeout-minutes: 30
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+      
+      - name: 设置Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-benchmark
+      
+      - name: 运行性能测试
+        run: |
+          pytest tests/unit/ -v -m performance --benchmark-only
+        continue-on-error: true
+      
+      - name: 上传性能报告
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-report
+          path: .benchmarks/
+  
+  # 测试总结
+  test-summary:
+    name: 测试总结
+    runs-on: windows-latest
+    needs: [unit-tests, code-quality]
+    if: always()
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+      
+      - name: 生成测试报告
+        run: |
+          echo "# 测试总结" > test_summary.md
+          echo "" >> test_summary.md
+          echo "## 工作流运行状态" >> test_summary.md
+          echo "- 单元测试: ${{ needs.unit-tests.result }}" >> test_summary.md
+          echo "- 代码质量: ${{ needs.code-quality.result }}" >> test_summary.md
+          echo "" >> test_summary.md
+          echo "## 详细信息" >> test_summary.md
+          echo "- 提交: ${{ github.sha }}" >> test_summary.md
+          echo "- 分支: ${{ github.ref }}" >> test_summary.md
+          echo "- 作者: ${{ github.actor }}" >> test_summary.md
+      
+      - name: 评论PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('test_summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+        continue-on-error: true
+

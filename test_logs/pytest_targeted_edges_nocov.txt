@@ -1,0 +1,45 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+16 workers [4 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_on_empty_dir 
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues 
+tests\unit\data\core\test_data_manager_edge_cov.py::test_load_data_adapter_exception_raises_dataloadererror 
+[gw1] [ 25%] PASSED tests\unit\data\core\test_data_manager_edge_cov.py::test_load_data_adapter_exception_raises_dataloadererror 
+[gw2] [ 50%] FAILED tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues 
+[gw0] [ 75%] FAILED tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_on_empty_dir 
+tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_with_files 
+[gw0] [100%] FAILED tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_with_files 
+
+================================== FAILURES ===================================
+___________ test_unknown_type_and_failed_validation_triggers_issues ___________
+[gw2] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py:18: in test_unknown_type_and_failed_validation_triggers_issues
+    rep = mon.monitor_quality(df, data_type="unknown_type")
+E   AttributeError: 'UnifiedQualityMonitor' object has no attribute 'monitor_quality'
+____________________ test_collect_disk_usage_on_empty_dir _____________________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\cache\test_disk_cache_stats_edges.py:9: in test_collect_disk_usage_on_empty_dir
+    dc = DiskCache(str(cache_dir))
+src\data\cache\disk_cache.py:99: in __init__
+    self.cache_dir = Path(config.cache_dir)
+E   AttributeError: 'str' object has no attribute 'cache_dir'
+_____________________ test_collect_disk_usage_with_files ______________________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\cache\test_disk_cache_stats_edges.py:22: in test_collect_disk_usage_with_files
+    dc = DiskCache(str(cache_dir))
+src\data\cache\disk_cache.py:99: in __init__
+    self.cache_dir = Path(config.cache_dir)
+E   AttributeError: 'str' object has no attribute 'cache_dir'
+=========================== short test summary info ===========================
+FAILED tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues
+FAILED tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_on_empty_dir
+FAILED tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_with_files
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 3 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!! xdist.dsession.Interrupted: stopping after 3 failures !!!!!!!!!!!!
+=================== 3 failed, 1 passed in 75.67s (0:01:15) ====================

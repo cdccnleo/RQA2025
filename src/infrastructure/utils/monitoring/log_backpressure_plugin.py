@@ -1,0 +1,281 @@
+
+# 日志反压插件常量
+import asyncio
+import time
+
+from datetime import datetime as dt
+from prometheus_client import Gauge, Counter
+from typing import Dict, Optional, Any
+"""
+基础设施层 - 日志系统组件
+
+log_backpressure_plugin 模块
+
+日志系统相关的文件
+提供日志系统相关的功能实现。
+"""
+
+
+class LogBackpressureConstants:
+    """日志反压插件相关常量"""
+
+    # 默认令牌桶配置
+    DEFAULT_INITIAL_RATE = 1000  # 默认初始速率
+    DEFAULT_MAX_RATE = 10000  # 默认最大速率
+    DEFAULT_WINDOW_SIZE = 60  # 默认窗口大小(秒)
+    DEFAULT_BACKOFF_FACTOR = 0.5  # 默认退避因子
+
+    # 容量计算因子
+    CAPACITY_MULTIPLIER = 2  # 容量 = 速率 * 2
+
+    # 自适应调整参数
+    LOAD_THRESHOLD_HIGH = 0.8  # 高负载阈值
+    LOAD_THRESHOLD_LOW = 0.2  # 低负载阈值
+    RATE_MULTIPLIER = 1.0  # 速率调整乘数
+
+    # 最小速率限制
+    MIN_RATE = 100  # 最小速率/秒
+
+    # 监控间隔
+    MONITOR_INTERVAL = 1  # 监控间隔(秒)
+
+    # 默认令牌数
+    DEFAULT_TOKENS = 1  # 默认消耗令牌数
+
+# 全局Prometheus指标单例
+
+
+class PrometheusMetrics:
+
+    _instance = None
+    _initialized = False
+
+    def __new__(cls):
+
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+
+        if not self._initialized:
+            self.metrics = {
+                "tokens": Gauge("log_bucket_tokens", "当前令牌数"),
+                "drops": Counter("log_backpressure_drops", "丢弃日志数"),
+            }
+
+            self._initialized = True
+
+    def get_metrics(self):
+
+        return self.metrics
+
+
+# 全局指标实例 - 懒加载避免重复注册
+_metrics = None
+
+
+def get_metrics():
+    """获取全局指标实例"""
+    global _metrics
+    if _metrics is None:
+        _metrics = PrometheusMetrics()
+    return _metrics
+
+
+class TokenBucket:
+    """令牌桶算法实现"""
+
+    def __init__(self, rate: float, capacity: int):
+        """
+        Args:
+            rate: 令牌产生速率 (tokens / second)
+            capacity: 桶容量
+        """
+        self._rate = rate
+        self._capacity = capacity
+        self._tokens = capacity
+        self._last_time = time.monotonic()
+
+        # 使用全局指标实例
+        self.metrics = get_metrics().get_metrics()
+
+    async def consume(self, tokens: int = LogBackpressureConstants.DEFAULT_TOKENS) -> bool:
+        """消费令牌，返回是否允许通过"""
+        now = time.monotonic()
+        elapsed = now - self._last_time
+        self._last_time = now
+
+        # 添加新令牌
+        self._tokens = min(self._capacity, self._tokens + elapsed * self._rate)
+
+        self.metrics["tokens"].set(self._tokens)
+
+        # 检查令牌是否足够
+        if self._tokens >= tokens:
+            self._tokens -= tokens
+            return True
+
+        self.metrics["drops"].inc()
+        return False
+
+
+class AdaptiveBackpressurePlugin:
+    """自适应背压控制器"""
+
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """
+        Args:
+            config: {}
+                'initial_rate': LogBackpressureConstants.DEFAULT_INITIAL_RATE,      # 默认初始速率
+                'max_rate': LogBackpressureConstants.DEFAULT_MAX_RATE,            # 默认最大速率
+                'window_size': LogBackpressureConstants.DEFAULT_WINDOW_SIZE,      # 默认窗口大小
+                'backoff_factor': LogBackpressureConstants.DEFAULT_BACKOFF_FACTOR # 默认退避因子
+
+        """
+        # 设置默认值
+        initial_rate = config.get("initial_rate", LogBackpressureConstants.DEFAULT_INITIAL_RATE)
+        max_rate = config.get("max_rate", LogBackpressureConstants.DEFAULT_MAX_RATE)
+        window_size = config.get("window_size", LogBackpressureConstants.DEFAULT_WINDOW_SIZE)
+        backoff_factor = config.get(
+            "backoff_factor", LogBackpressureConstants.DEFAULT_BACKOFF_FACTOR)
+
+        self.bucket = TokenBucket(
+            rate=initial_rate, capacity=initial_rate * LogBackpressureConstants.CAPACITY_MULTIPLIER
+        )
+
+        self.max_rate = max_rate
+        self.window_size = window_size
+        self.backoff_factor = backoff_factor
+        self._rates = []
+
+    async def adjust_rate(self, current_load: float):
+        """根据系统负载动态调整速率"""
+        self._rates.append(current_load)
+        if len(self._rates) > self.window_size:
+            self._rates.pop(0)
+
+        avg_load = sum(self._rates) / len(self._rates)
+        new_rate = min(
+            self.max_rate,
+            self.bucket._rate
+            * (LogBackpressureConstants.RATE_MULTIPLIER +
+               (LogBackpressureConstants.LOAD_THRESHOLD_HIGH - avg_load)),
+        )
+
+        self.bucket._rate = max(LogBackpressureConstants.MIN_RATE, new_rate)  # 保持最小速率
+
+    async def protect(self):
+        """保护系统免受过载"""
+        if not await self.bucket.consume():
+            # 触发降级策略
+            await self._apply_backoff()
+            raise BackpressureError("系统过载, 拒绝日志写入")
+
+    async def _apply_backoff(self):
+        """指数退避"""
+        self.bucket._rate *= self.backoff_factor
+        await asyncio.sleep(LogBackpressureConstants.MONITOR_INTERVAL)
+
+    @property
+    def is_triggered(self):
+        """
+        判断当前是否处于熔断 / 背压触发状态
+        """
+        return getattr(self, "_is_triggered", False)
+
+    def check(self) -> bool:
+        """
+        检查当前背压 / 熔断状态，True 表示未触发，False 表示已触发
+        """
+        return not self.is_triggered
+
+
+class BackpressureError(Exception):
+    """背压异常"""
+
+
+class TradingSampler:
+    """交易时段动态采样器"""
+
+    TRADING_SCHEDULE = {
+        "night": ((21, 0), (2, 30)),  # 夜盘时段
+        "morning": ((9, 30), (11, 30)),  # 早盘
+        "afternoon": ((13, 0), (15, 0)),  # 午盘
+    }
+
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """
+        Args:
+            config: {
+                'base_sample_rate': 1.0,  # 默认1.0(全采样)
+                'trading_hours': {  # 可选，默认为空
+                    'night': 0.2,
+                    'morning': 0.8,
+                    'afternoon': 0.6
+                }
+            }
+        """
+        self.base_rate = config.get("base_sample_rate", 1.0)  # 默认全采样
+        self.rates = config.get("trading_hours", {})  # 默认为空字典
+
+    def current_period(self) -> str:
+        """获取当前交易时段"""
+        now = dt.now()
+        current_time = now.hour + now.minute / 60
+
+        for period, ((sh, sm), (eh, em)) in self.TRADING_SCHEDULE.items():
+            start = sh + sm / 60
+            end = eh + em / 60
+        if start <= current_time < end:
+            return period
+        return "off"  # 非交易时段
+
+    def get_sample_rate(self) -> float:
+        """获取当前采样率"""
+        period = self.current_period()
+        return self.base_rate * self.rates.get(period, 0.3)
+
+
+class BackpressureHandlerPlugin:
+    """背压处理器"""
+
+    def __init__(self, max_queue_size: int = 1000):
+
+        self.max_queue_size = max_queue_size
+        self.queue = asyncio.Queue(maxsize=max_queue_size)
+        self.backpressure = AdaptiveBackpressurePlugin({"window_size": 60, "backoff_factor": 0.5})
+
+    def handle_log(self, message: str) -> bool:
+        """处理日志消息，返回是否成功"""
+        try:
+            if self.queue.qsize() < self.max_queue_size:
+                # 使用非阻塞方式添加消息到队列
+                try:
+                    self.queue.put_nowait(message)
+                    return True
+                except asyncio.QueueFull:
+                    return False
+            else:
+                return False
+        except Exception:
+            return False
+
+    async def process_logs(self):
+        """处理队列中的日志"""
+        while True:
+            try:
+                message = await self.queue.get()
+                await self.backpressure.protect()
+                # 处理日志消息
+                await self._process_message(message)
+            except BackpressureError:
+                # 系统过载, 丢弃消息
+                pass
+            except Exception as e:
+                # 记录错误
+                print(f"Error processing log: {e}")
+
+    async def _process_message(self, message: str):
+        """处理单个日志消息"""
+        # 实际处理逻辑

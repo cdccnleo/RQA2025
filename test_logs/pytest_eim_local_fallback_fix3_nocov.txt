@@ -1,0 +1,27 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+=================================== ERRORS ====================================
+_ ERROR collecting unit/data/integration/test_enhanced_integration_manager_unit.py _
+ImportError while importing test module 'C:\PythonProject\RQA2025\tests\unit\data\integration\test_enhanced_integration_manager_unit.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests\conftest.py:32: in _import_module_with_patch
+    module = _ORIGINAL_IMPORT_MODULE(name, package)
+tests\conftest.py:32: in _import_module_with_patch
+    module = _ORIGINAL_IMPORT_MODULE(name, package)
+C:\Users\AILeo\miniconda3\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\unit\data\integration\test_enhanced_integration_manager_unit.py:19: in <module>
+    mod = importlib.reload(mod)
+C:\Users\AILeo\miniconda3\lib\importlib\__init__.py:168: in reload
+    raise ModuleNotFoundError(f"spec not found for the module {name!r}", name=name)
+E   ModuleNotFoundError: spec not found for the module 'src.data.integration.enhanced_integration_manager'
+------------------------------- Captured stderr -------------------------------
+WARNING:src.data:Using fallback DataManagerSingleton implementation
+INFO:src.data:Using real DataModel implementation
+WARNING:src.data:LoadBalancingStrategy not available
+WARNING:src.data:PerformanceMonitor not available
+=========================== short test summary info ===========================
+ERROR tests\unit\data\integration\test_enhanced_integration_manager_unit.py
+1 error in 3.03s

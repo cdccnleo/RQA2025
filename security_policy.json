@@ -1,0 +1,58 @@
+{
+  "pod_security_standards": {
+    "privileged": false,
+    "allow_privilege_escalation": false,
+    "run_as_non_root": true,
+    "read_only_root_filesystem": true
+  },
+  "resource_limits": {
+    "cpu_limit": "500m",
+    "memory_limit": "1Gi",
+    "storage_limit": "5Gi"
+  },
+  "network_policy": {
+    "ingress_rules": [
+      {
+        "from": [
+          "10.0.0.0/8"
+        ],
+        "ports": [
+          8000
+        ]
+      },
+      {
+        "from": [
+          "192.168.0.0/16"
+        ],
+        "ports": [
+          8000
+        ]
+      }
+    ],
+    "egress_rules": [
+      {
+        "to": [
+          "api.external.com"
+        ],
+        "ports": [
+          443
+        ]
+      },
+      {
+        "to": [
+          "db.internal"
+        ],
+        "ports": [
+          5432
+        ]
+      }
+    ]
+  },
+  "security_context": {
+    "capabilities_drop": [
+      "ALL"
+    ],
+    "seccomp_profile": "runtime/default",
+    "apparmor_profile": "rqa2025-container"
+  }
+}

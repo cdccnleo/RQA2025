@@ -1,0 +1,627 @@
+#!/usr/bin/env python3
+"""
+CI/CD集成工具基础测试用例
+
+测试CICDTools类的基本功能
+"""
+
+import pytest
+import tempfile
+import os
+from pathlib import Path
+from unittest.mock import Mock, patch, MagicMock
+from datetime import datetime
+from src.tools.core.ci_cd_integration import (
+
+CICDTools,
+    PipelineResult,
+    QualityGate
+)
+
+# 设置测试超时，避免死锁和无限等待
+pytestmark = [
+    pytest.mark.timeout(30),  # 30秒超时
+    pytest.mark.deadlock_risk,  # 标记为可能存在死锁风险
+    pytest.mark.concurrent,  # 并发测试
+    pytest.mark.infinite_loop_risk  # 可能存在无限循环风险
+]
+
+
+
+
+class TestCICDToolsBasic:
+    """CI/CD集成工具基础测试类"""
+
+    @pytest.fixture
+    def ci_cd_tools(self):
+        """CI/CD工具实例"""
+        return CICDTools()
+
+    def test_initialization(self, ci_cd_tools):
+        """测试初始化"""
+        assert ci_cd_tools.pipeline_results is not None
+        assert ci_cd_tools.quality_gates is not None
+        assert isinstance(ci_cd_tools.pipeline_results, dict)
+        assert isinstance(ci_cd_tools.quality_gates, dict)
+
+        # 验证默认质量门禁已设置
+        assert len(ci_cd_tools.quality_gates) > 0
+
+    def test_pipeline_result_creation(self):
+        """测试流水线结果创建"""
+        pipeline_id = "test_pipeline_123"
+        stage = "test_stage"
+        start_time = datetime.now()
+
+        result = PipelineResult(
+            pipeline_id=pipeline_id,
+            stage=stage,
+            status="running",
+            start_time=start_time
+        )
+
+        assert result.pipeline_id == pipeline_id
+        assert result.stage == stage
+        assert result.status == "running"
+        assert result.start_time == start_time
+        assert result.end_time is None
+        assert result.duration_seconds is None
+        assert isinstance(result.logs, list)
+        assert isinstance(result.artifacts, dict)
+        assert isinstance(result.metrics, dict)
+
+    def test_quality_gate_creation(self):
+        """测试质量门禁创建"""
+        gate_id = "test_gate_123"
+        name = "Test Quality Gate"
+        conditions = {
+            "coverage_threshold": 80.0,
+            "test_pass_rate": 95.0
+        }
+
+        gate = QualityGate(
+            gate_id=gate_id,
+            name=name,
+            conditions=conditions,
+            enabled=True
+        )
+
+        assert gate.gate_id == gate_id
+        assert gate.name == name
+        assert gate.conditions == conditions
+        assert gate.enabled is True
+
+    @patch('subprocess.run')
+    def test_run_pipeline_stage_success(self, mock_subprocess, ci_cd_tools):
+        """测试运行流水线阶段成功"""
+        # Mock subprocess.run
+        mock_process = MagicMock()
+        mock_process.returncode = 0
+        mock_process.stdout = "Test output"
+        mock_process.stderr = ""
+        mock_subprocess.return_value = mock_process
+
+        stage_name = "test_stage"
+        commands = ["echo 'Hello World'", "python --version"]
+
+        result = ci_cd_tools.run_pipeline_stage(stage_name, commands)
+
+        assert result.stage == stage_name
+        assert result.status == "success"
+        assert result.end_time is not None
+        assert result.duration_seconds is not None
+        assert len(result.logs) > 0
+
+        # 验证命令被执行
+        assert mock_subprocess.call_count == len(commands)
+
+    @patch('subprocess.run')
+    def test_run_pipeline_stage_failure(self, mock_subprocess, ci_cd_tools):
+        """测试运行流水线阶段失败"""
+        # Mock subprocess.run to fail
+        mock_process = MagicMock()
+        mock_process.returncode = 1
+        mock_process.stdout = ""
+        mock_process.stderr = "Command failed"
+        mock_subprocess.return_value = mock_process
+
+        stage_name = "failing_stage"
+        commands = ["failing_command"]
+
+        result = ci_cd_tools.run_pipeline_stage(stage_name, commands)
+
+        assert result.stage == stage_name
+        assert result.status == "failure"
+        assert result.end_time is not None
+        assert result.duration_seconds is not None
+
+    def test_get_pipeline_result(self, ci_cd_tools):
+        """测试获取流水线结果"""
+        # 先运行一个流水线
+        stage_name = "test_stage"
+        commands = ["echo 'test'"]
+
+        # Mock the _run_command method
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Command executed successfully']
+            }
+
+            result = ci_cd_tools.run_pipeline_stage(stage_name, commands)
+
+            # 获取结果
+            retrieved_result = ci_cd_tools.get_pipeline_result(result.pipeline_id)
+
+            assert retrieved_result is not None
+            assert retrieved_result.pipeline_id == result.pipeline_id
+            assert retrieved_result.stage == stage_name
+
+    def test_get_pipeline_result_nonexistent(self, ci_cd_tools):
+        """测试获取不存在的流水线结果"""
+        result = ci_cd_tools.get_pipeline_result("nonexistent_id")
+        assert result is None
+
+    def test_list_pipeline_results(self, ci_cd_tools):
+        """测试列出流水线结果"""
+        # 创建多个流水线结果
+        initial_count = len(ci_cd_tools.list_pipeline_results())
+
+        # Mock and run pipelines
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Success']
+            }
+
+            ci_cd_tools.run_pipeline_stage("stage1", ["cmd1"])
+            ci_cd_tools.run_pipeline_stage("stage2", ["cmd2"])
+
+        results = ci_cd_tools.list_pipeline_results()
+        assert len(results) >= initial_count + 2
+
+    def test_add_quality_gate(self, ci_cd_tools):
+        """测试添加质量门禁"""
+        gate = QualityGate(
+            gate_id="custom_gate",
+            name="Custom Quality Gate",
+            conditions={"metric": "value"},
+            enabled=True
+        )
+
+        ci_cd_tools.add_quality_gate(gate)
+
+        assert "custom_gate" in ci_cd_tools.quality_gates
+        assert ci_cd_tools.quality_gates["custom_gate"] == gate
+
+    def test_get_quality_gate(self, ci_cd_tools):
+        """测试获取质量门禁"""
+        gate_id = "test_gate"
+        gate = QualityGate(
+            gate_id=gate_id,
+            name="Test Gate",
+            conditions={"test": True}
+        )
+
+        ci_cd_tools.add_quality_gate(gate)
+
+        retrieved_gate = ci_cd_tools.get_quality_gate(gate_id)
+
+        assert retrieved_gate is not None
+        assert retrieved_gate.gate_id == gate_id
+        assert retrieved_gate.name == "Test Gate"
+
+    def test_get_quality_gate_nonexistent(self, ci_cd_tools):
+        """测试获取不存在的质量门禁"""
+        gate = ci_cd_tools.get_quality_gate("nonexistent_gate")
+        assert gate is None
+
+    def test_list_quality_gates(self, ci_cd_tools):
+        """测试列出质量门禁"""
+        initial_count = len(ci_cd_tools.list_quality_gates())
+
+        # 添加一个质量门禁
+        gate = QualityGate(
+            gate_id="list_test_gate",
+            name="List Test Gate",
+            conditions={"enabled": True}
+        )
+
+        ci_cd_tools.add_quality_gate(gate)
+
+        gates = ci_cd_tools.list_quality_gates()
+        assert len(gates) >= initial_count + 1
+
+        # 验证新添加的门禁在列表中
+        gate_ids = [g.gate_id for g in gates]
+        assert "list_test_gate" in gate_ids
+
+    def test_evaluate_quality_gate(self, ci_cd_tools):
+        """测试评估质量门禁"""
+        # 创建质量门禁
+        gate = QualityGate(
+            gate_id="eval_gate",
+            name="Evaluation Gate",
+            conditions={
+                "coverage": {"min": 80.0},
+                "tests_passed": {"min": 95.0}
+            }
+        )
+
+        ci_cd_tools.add_quality_gate(gate)
+
+        # 测试通过的指标
+        passing_metrics = {
+            "coverage": 85.0,
+            "tests_passed": 98.0
+        }
+
+        result = ci_cd_tools.evaluate_quality_gate("eval_gate", passing_metrics)
+
+        assert result["passed"] is True
+        assert len(result["failed_conditions"]) == 0
+
+    def test_evaluate_quality_gate_failure(self, ci_cd_tools):
+        """测试质量门禁评估失败"""
+        gate = QualityGate(
+            gate_id="fail_gate",
+            name="Failing Gate",
+            conditions={
+                "coverage": {"min": 80.0},
+                "complexity": {"max": 10.0}
+            }
+        )
+
+        ci_cd_tools.add_quality_gate(gate)
+
+        # 测试失败的指标
+        failing_metrics = {
+            "coverage": 75.0,  # 低于最小值
+            "complexity": 15.0  # 超过最大值
+        }
+
+        result = ci_cd_tools.evaluate_quality_gate("fail_gate", failing_metrics)
+
+        assert result["passed"] is False
+        assert len(result["failed_conditions"]) >= 1
+
+    def test_evaluate_quality_gate_nonexistent(self, ci_cd_tools):
+        """测试评估不存在的质量门禁"""
+        result = ci_cd_tools.evaluate_quality_gate("nonexistent_gate", {})
+        assert result["passed"] is False
+        assert "error" in result
+
+    def test_run_quality_gates(self, ci_cd_tools):
+        """测试运行所有质量门禁"""
+        # 添加多个质量门禁
+        gate1 = QualityGate(
+            gate_id="gate1",
+            name="Gate 1",
+            conditions={"metric1": {"min": 50.0}}
+        )
+
+        gate2 = QualityGate(
+            gate_id="gate2",
+            name="Gate 2",
+            conditions={"metric2": {"max": 100.0}}
+        )
+
+        ci_cd_tools.add_quality_gate(gate1)
+        ci_cd_tools.add_quality_gate(gate2)
+
+        # 测试指标
+        metrics = {
+            "metric1": 60.0,
+            "metric2": 90.0
+        }
+
+        results = ci_cd_tools.run_quality_gates(metrics)
+
+        assert isinstance(results, dict)
+        assert len(results) >= 2
+
+        # 验证结果包含我们添加的门禁
+        assert "gate1" in results
+        assert "gate2" in results
+
+    def test_generate_test_report(self, ci_cd_tools):
+        """测试生成测试报告"""
+        # 添加一些流水线结果
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Test passed']
+            }
+
+            ci_cd_tools.run_pipeline_stage("unit_tests", ["pytest tests/unit/"])
+            ci_cd_tools.run_pipeline_stage("integration_tests", ["pytest tests/integration/"])
+
+        # 生成报告
+        report = ci_cd_tools.generate_test_report()
+
+        assert isinstance(report, dict)
+        assert "total_pipelines" in report
+        assert "successful_pipelines" in report
+        assert "failed_pipelines" in report
+        assert "success_rate" in report
+
+    def test_get_pipeline_stats(self, ci_cd_tools):
+        """测试获取流水线统计信息"""
+        # 添加一些流水线结果
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            # 成功的流水线
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Success']
+            }
+            ci_cd_tools.run_pipeline_stage("success_stage", ["success_cmd"])
+
+            # 失败的流水线
+            mock_run.return_value = {
+                'return_code': 1,
+                'logs': ['Failed']
+            }
+            ci_cd_tools.run_pipeline_stage("fail_stage", ["fail_cmd"])
+
+        stats = ci_cd_tools.get_pipeline_stats()
+
+        assert isinstance(stats, dict)
+        assert "total" in stats
+        assert "successful" in stats
+        assert "failed" in stats
+        assert "success_rate" in stats
+
+        assert stats["total"] >= 2
+        assert stats["successful"] >= 1
+        assert stats["failed"] >= 1
+
+    def test_cleanup_old_results(self, ci_cd_tools):
+        """测试清理旧结果"""
+        # 添加一些结果
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Success']
+            }
+
+            for i in range(5):
+                ci_cd_tools.run_pipeline_stage(f"stage_{i}", [f"cmd_{i}"])
+
+        initial_count = len(ci_cd_tools.pipeline_results)
+
+        # 清理旧结果（保留最近的2个）
+        ci_cd_tools.cleanup_old_results(max_results=2)
+
+        final_count = len(ci_cd_tools.pipeline_results)
+        assert final_count <= 2 or final_count == initial_count  # 如果结果不够多，不会清理
+
+    def test_export_pipeline_results(self, ci_cd_tools, tmp_path):
+        """测试导出流水线结果"""
+        # 添加一些结果
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Success']
+            }
+
+            ci_cd_tools.run_pipeline_stage("export_test", ["test_cmd"])
+
+        # 导出结果
+        export_path = tmp_path / "pipeline_results.json"
+        result = ci_cd_tools.export_pipeline_results(str(export_path))
+
+        assert result is True
+        assert export_path.exists()
+
+        # 验证导出的文件内容
+        import json
+        with open(export_path) as f:
+            exported_data = json.load(f)
+
+        assert isinstance(exported_data, dict)
+        assert len(exported_data) > 0
+
+    def test_import_pipeline_results(self, ci_cd_tools, tmp_path):
+        """测试导入流水线结果"""
+        # 创建测试数据
+        test_data = {
+            "pipeline_123": {
+                "pipeline_id": "pipeline_123",
+                "stage": "import_test",
+                "status": "success",
+                "start_time": "2025-01-01T10:00:00",
+                "logs": ["Import test"],
+                "artifacts": {},
+                "metrics": {}
+            }
+        }
+
+        # 写入文件
+        import_path = tmp_path / "import_results.json"
+        import json
+        with open(import_path, 'w') as f:
+            json.dump(test_data, f)
+
+        # 导入结果
+        result = ci_cd_tools.import_pipeline_results(str(import_path))
+
+        assert result is True
+        assert "pipeline_123" in ci_cd_tools.pipeline_results
+
+    def test_error_handling_invalid_commands(self, ci_cd_tools):
+        """测试无效命令的错误处理"""
+        with patch('subprocess.run', side_effect=Exception("Command not found")):
+            result = ci_cd_tools.run_pipeline_stage("error_stage", ["invalid_command"])
+
+            assert result.status == "failure"
+            assert result.end_time is not None
+            assert len(result.logs) > 0
+
+    def test_concurrent_pipeline_execution(self, ci_cd_tools):
+        """测试并发流水线执行"""
+        import threading
+        import queue
+
+        results = queue.Queue()
+        errors = []
+
+        def run_pipeline(stage_name):
+            try:
+                with patch.object(ci_cd_tools, '_run_command') as mock_run:
+                    mock_run.return_value = {
+                        'return_code': 0,
+                        'logs': ['Success']
+                    }
+
+                    result = ci_cd_tools.run_pipeline_stage(stage_name, ["test_cmd"])
+                    results.put(result)
+            except Exception as e:
+                errors.append(f"Error in {stage_name}: {e}")
+
+        # 创建多个线程
+        threads = []
+        for i in range(3):
+            thread = threading.Thread(target=run_pipeline, args=(f"concurrent_stage_{i}",))
+            threads.append(thread)
+            thread.start()
+
+        # 等待所有线程完成
+        for thread in threads:
+            thread.join()
+
+        # 验证结果
+        successful_runs = 0
+        while not results.empty():
+            result = results.get()
+            if result.status == "success":
+                successful_runs += 1
+
+        assert successful_runs == 3  # 3个并发流水线都成功
+        assert len(errors) == 0  # 没有错误
+
+    @pytest.mark.parametrize("return_code,expected_status", [
+        (0, "success"),
+        (1, "failure"),
+        (2, "failure"),
+    ])
+    def test_different_command_return_codes(self, ci_cd_tools, return_code, expected_status):
+        """参数化测试不同命令返回码"""
+        with patch('subprocess.run') as mock_subprocess:
+            mock_process = MagicMock()
+            mock_process.returncode = return_code
+            mock_process.stdout = f"Return code: {return_code}"
+            mock_process.stderr = ""
+            mock_subprocess.return_value = mock_process
+
+            result = ci_cd_tools.run_pipeline_stage("param_test", ["test_command"])
+
+            assert result.status == expected_status
+
+    def test_empty_command_list(self, ci_cd_tools):
+        """测试空命令列表"""
+        result = ci_cd_tools.run_pipeline_stage("empty_test", [])
+
+        assert result.status == "success"  # 空命令列表应该成功
+        assert result.end_time is not None
+
+    def test_working_directory_handling(self, ci_cd_tools, tmp_path):
+        """测试工作目录处理"""
+        test_dir = tmp_path / "test_workdir"
+        test_dir.mkdir()
+
+        with patch('subprocess.run') as mock_subprocess:
+            mock_process = MagicMock()
+            mock_process.returncode = 0
+            mock_process.stdout = "Success"
+            mock_process.stderr = ""
+            mock_subprocess.return_value = mock_process
+
+            result = ci_cd_tools.run_pipeline_stage(
+                "workdir_test",
+                ["pwd"],
+                working_dir=str(test_dir)
+            )
+
+            assert result.status == "success"
+
+            # 验证subprocess.run被调用时包含了正确的cwd参数
+            mock_subprocess.assert_called()
+            call_args = mock_subprocess.call_args
+            assert 'cwd' in call_args.kwargs
+            assert call_args.kwargs['cwd'] == str(test_dir)
+
+    def test_pipeline_result_persistence(self, ci_cd_tools):
+        """测试流水线结果持久化"""
+        # 运行流水线
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Persistent test']
+            }
+
+            result = ci_cd_tools.run_pipeline_stage("persistent_test", ["test_cmd"])
+
+        # 验证结果被存储
+        stored_result = ci_cd_tools.pipeline_results.get(result.pipeline_id)
+
+        assert stored_result is not None
+        assert stored_result.pipeline_id == result.pipeline_id
+        assert stored_result.status == "success"
+
+    def test_large_log_handling(self, ci_cd_tools):
+        """测试大日志处理"""
+        # 生成大量日志
+        large_logs = [f"Log line {i}" for i in range(1000)]
+
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': large_logs
+            }
+
+            result = ci_cd_tools.run_pipeline_stage("large_log_test", ["big_command"])
+
+        assert result.status == "success"
+        assert len(result.logs) >= 1000  # 应该包含所有日志
+
+    def test_metrics_collection(self, ci_cd_tools):
+        """测试指标收集"""
+        # 运行流水线
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Test completed']
+            }
+
+            result = ci_cd_tools.run_pipeline_stage("metrics_test", ["test_cmd"])
+
+        # 添加指标
+        result.metrics["execution_time"] = 1.5
+        result.metrics["memory_usage"] = 85.2
+        result.metrics["cpu_usage"] = 45.8
+
+        # 验证指标被存储
+        assert result.metrics["execution_time"] == 1.5
+        assert result.metrics["memory_usage"] == 85.2
+        assert result.metrics["cpu_usage"] == 45.8
+
+    def test_artifacts_handling(self, ci_cd_tools):
+        """测试制品处理"""
+        # 运行流水线
+        with patch.object(ci_cd_tools, '_run_command') as mock_run:
+            mock_run.return_value = {
+                'return_code': 0,
+                'logs': ['Build completed']
+            }
+
+            result = ci_cd_tools.run_pipeline_stage("artifacts_test", ["build_cmd"])
+
+        # 添加制品
+        result.artifacts["build_output"] = "/path/to/build"
+        result.artifacts["test_reports"] = "/path/to/reports"
+        result.artifacts["coverage_report"] = "/path/to/coverage"
+
+        # 验证制品被存储
+        assert result.artifacts["build_output"] == "/path/to/build"
+        assert result.artifacts["test_reports"] == "/path/to/reports"
+        assert result.artifacts["coverage_report"] == "/path/to/coverage"

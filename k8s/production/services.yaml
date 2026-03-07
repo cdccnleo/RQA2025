@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-app-service
+  namespace: rqa2025-app
+  labels:
+    app: rqa2025
+    component: app
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: rqa2025
+    component: app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: rqa2025-data
+  labels:
+    app: redis
+    component: cache
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  selector:
+    app: redis
+    component: cache
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: rqa2025-data
+  labels:
+    app: postgres
+    component: database
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    app: postgres
+    component: database
+
+
+
+

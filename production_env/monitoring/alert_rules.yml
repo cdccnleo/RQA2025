@@ -1,0 +1,64 @@
+groups:
+- name: rqa2025_application
+  rules:
+  - alert: HighResponseTime
+    annotations:
+      description: 'API响应时间超过2秒 (当前值: {{ $value }}s)'
+      summary: 高响应时间
+    expr: http_request_duration_seconds{quantile="0.95"} > 2.0
+    for: 5m
+    labels:
+      severity: warning
+  - alert: HighErrorRate
+    annotations:
+      description: 'HTTP 5xx错误率超过5% (当前值: {{ $value }})'
+      summary: 高错误率
+    expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])
+      > 0.05
+    for: 5m
+    labels:
+      severity: critical
+  - alert: LowCacheHitRate
+    annotations:
+      description: '缓存命中率低于70% (当前值: {{ $value }})'
+      summary: 缓存命中率低
+    expr: cache_hit_ratio < 0.7
+    for: 10m
+    labels:
+      severity: warning
+- name: rqa2025_system
+  rules:
+  - alert: HighMemoryUsage
+    annotations:
+      description: '系统内存使用率超过85% (当前值: {{ $value }}%)'
+      summary: 内存使用率高
+    expr: 100 - (avg_over_time(node_memory_MemAvailable_bytes[5m]) / avg_over_time(node_memory_MemTotal_bytes[5m])
+      * 100) > 85
+    for: 5m
+    labels:
+      severity: warning
+  - alert: HighCPUUsage
+    annotations:
+      description: '系统CPU使用率超过80% (当前值: {{ $value }}%)'
+      summary: CPU使用率高
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m]))
+      * 100) > 80
+    for: 5m
+    labels:
+      severity: warning
+  - alert: RedisDown
+    annotations:
+      description: Redis服务不可用
+      summary: Redis服务宕机
+    expr: up{job="redis"} == 0
+    for: 1m
+    labels:
+      severity: critical
+  - alert: PostgreSQLDown
+    annotations:
+      description: PostgreSQL服务不可用
+      summary: PostgreSQL服务宕机
+    expr: up{job="postgres"} == 0
+    for: 1m
+    labels:
+      severity: critical

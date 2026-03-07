@@ -1,0 +1,408 @@
+# 增强版数据层监控配置
+# 包括性能指标采集、告警规则和监控面板配置
+
+# 监控配置
+monitoring:
+  enabled: true
+  interval: 60  # 监控间隔（秒）
+  retention_days: 30  # 数据保留天数
+  
+  # 性能指标采集
+  metrics:
+    # 并行加载指标
+    parallel_loading:
+      enabled: true
+      metrics:
+        - total_tasks
+        - completed_tasks
+        - failed_tasks
+        - avg_task_time
+        - current_load
+        - queue_size
+        - active_tasks
+    
+    # 缓存策略指标
+    cache_strategy:
+      enabled: true
+      metrics:
+        - hits
+        - misses
+        - evictions
+        - expirations
+        - hit_rate
+        - current_size
+        - current_items
+        - hot_keys_count
+    
+    # 质量监控指标
+    quality_monitor:
+      enabled: true
+      metrics:
+        - total_rules
+        - enabled_rules
+        - history_size
+        - quality_checks
+        - quality_alerts
+    
+    # 集成性能指标
+    integration:
+      enabled: true
+      metrics:
+        - total_requests
+        - cache_hits
+        - cache_misses
+        - quality_checks
+        - parallel_tasks
+        - avg_response_time
+
+# 告警规则配置
+alerts:
+  enabled: true
+  
+  # 性能告警
+  performance:
+    # 响应时间告警
+    response_time:
+      warning:
+        threshold: 5.0  # 秒
+        duration: "2m"
+        message: "数据加载响应时间超过5秒"
+      critical:
+        threshold: 10.0  # 秒
+        duration: "1m"
+        message: "数据加载响应时间超过10秒"
+    
+    # 成功率告警
+    success_rate:
+      warning:
+        threshold: 0.9  # 90%
+        duration: "5m"
+        message: "数据加载成功率低于90%"
+      critical:
+        threshold: 0.8  # 80%
+        duration: "2m"
+        message: "数据加载成功率低于80%"
+    
+    # 并发任务告警
+    concurrent_tasks:
+      warning:
+        threshold: 50
+        duration: "5m"
+        message: "并发任务数超过50"
+      critical:
+        threshold: 100
+        duration: "2m"
+        message: "并发任务数超过100"
+  
+  # 缓存告警
+  cache:
+    # 缓存命中率告警
+    hit_rate:
+      warning:
+        threshold: 0.7  # 70%
+        duration: "10m"
+        message: "缓存命中率低于70%"
+      critical:
+        threshold: 0.5  # 50%
+        duration: "5m"
+        message: "缓存命中率低于50%"
+    
+    # 缓存大小告警
+    cache_size:
+      warning:
+        threshold: 0.8  # 80%
+        duration: "5m"
+        message: "缓存使用率超过80%"
+      critical:
+        threshold: 0.95  # 95%
+        duration: "2m"
+        message: "缓存使用率超过95%"
+  
+  # 质量监控告警
+  quality:
+    # 质量分数告警
+    quality_score:
+      warning:
+        threshold: 0.8  # 80%
+        duration: "10m"
+        message: "数据质量分数低于80%"
+      critical:
+        threshold: 0.6  # 60%
+        duration: "5m"
+        message: "数据质量分数低于60%"
+    
+    # 质量告警频率
+    alert_frequency:
+      warning:
+        threshold: 5  # 每小时告警次数
+        duration: "1h"
+        message: "质量告警频率过高"
+      critical:
+        threshold: 10  # 每小时告警次数
+        duration: "1h"
+        message: "质量告警频率严重过高"
+  
+  # 系统资源告警
+  system:
+    # CPU使用率告警
+    cpu_usage:
+      warning:
+        threshold: 0.8  # 80%
+        duration: "5m"
+        message: "CPU使用率超过80%"
+      critical:
+        threshold: 0.95  # 95%
+        duration: "2m"
+        message: "CPU使用率超过95%"
+    
+    # 内存使用率告警
+    memory_usage:
+      warning:
+        threshold: 0.8  # 80%
+        duration: "5m"
+        message: "内存使用率超过80%"
+      critical:
+        threshold: 0.95  # 95%
+        duration: "2m"
+        message: "内存使用率超过95%"
+    
+    # 磁盘使用率告警
+    disk_usage:
+      warning:
+        threshold: 0.8  # 80%
+        duration: "10m"
+        message: "磁盘使用率超过80%"
+      critical:
+        threshold: 0.95  # 95%
+        duration: "5m"
+        message: "磁盘使用率超过95%"
+
+# 告警通知配置
+notifications:
+  enabled: true
+  
+  # 通知渠道
+  channels:
+    email:
+      enabled: true
+      smtp_server: "smtp.example.com"
+      smtp_port: 587
+      username: "alerts@example.com"
+      password: "${SMTP_PASSWORD}"
+      recipients:
+        - "admin@example.com"
+        - "ops@example.com"
+    
+    webhook:
+      enabled: true
+      url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+      headers:
+        Content-Type: "application/json"
+    
+    sms:
+      enabled: false
+      provider: "twilio"
+      account_sid: "${TWILIO_ACCOUNT_SID}"
+      auth_token: "${TWILIO_AUTH_TOKEN}"
+      from_number: "+1234567890"
+      to_numbers:
+        - "+1234567890"
+  
+  # 告警级别映射
+  severity_mapping:
+    info:
+      channels: []
+      cooldown: "1h"
+    warning:
+      channels: ["email"]
+      cooldown: "30m"
+    critical:
+      channels: ["email", "webhook"]
+      cooldown: "5m"
+
+# 监控面板配置
+dashboards:
+  enabled: true
+  
+  # 主监控面板
+  main:
+    title: "增强版数据层监控"
+    refresh_interval: 30  # 秒
+    
+    panels:
+      # 性能概览
+      - title: "性能概览"
+        type: "stat"
+        metrics:
+          - "integration.total_requests"
+          - "integration.avg_response_time"
+          - "integration.success_rate"
+          - "cache.hit_rate"
+      
+      # 响应时间趋势
+      - title: "响应时间趋势"
+        type: "line"
+        metrics:
+          - "integration.avg_response_time"
+        time_range: "1h"
+      
+      # 缓存命中率趋势
+      - title: "缓存命中率趋势"
+        type: "line"
+        metrics:
+          - "cache.hit_rate"
+        time_range: "1h"
+      
+      # 并发任务数
+      - title: "并发任务数"
+        type: "line"
+        metrics:
+          - "parallel_loading.active_tasks"
+          - "parallel_loading.queue_size"
+        time_range: "1h"
+      
+      # 质量分数趋势
+      - title: "质量分数趋势"
+        type: "line"
+        metrics:
+          - "quality_monitor.avg_quality_score"
+        time_range: "1h"
+      
+      # 系统资源使用率
+      - title: "系统资源使用率"
+        type: "line"
+        metrics:
+          - "system.cpu_usage"
+          - "system.memory_usage"
+          - "system.disk_usage"
+        time_range: "1h"
+  
+  # 详细监控面板
+  detailed:
+    title: "详细监控"
+    refresh_interval: 60  # 秒
+    
+    panels:
+      # 并行加载详情
+      - title: "并行加载详情"
+        type: "table"
+        metrics:
+          - "parallel_loading.total_tasks"
+          - "parallel_loading.completed_tasks"
+          - "parallel_loading.failed_tasks"
+          - "parallel_loading.avg_task_time"
+          - "parallel_loading.current_load"
+      
+      # 缓存详情
+      - title: "缓存详情"
+        type: "table"
+        metrics:
+          - "cache.hits"
+          - "cache.misses"
+          - "cache.evictions"
+          - "cache.expirations"
+          - "cache.current_size"
+          - "cache.current_items"
+      
+      # 质量监控详情
+      - title: "质量监控详情"
+        type: "table"
+        metrics:
+          - "quality_monitor.total_rules"
+          - "quality_monitor.enabled_rules"
+          - "quality_monitor.history_size"
+          - "quality_monitor.quality_checks"
+          - "quality_monitor.quality_alerts"
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # 文件日志
+  file:
+    enabled: true
+    path: "logs/enhanced_data_monitoring.log"
+    max_size: "100MB"
+    backup_count: 5
+  
+  # 控制台日志
+  console:
+    enabled: true
+    level: "WARNING"
+
+# 数据存储配置
+storage:
+  # 时序数据库配置
+  timeseries:
+    type: "influxdb"  # 或 "prometheus"
+    url: "http://localhost:8086"
+    database: "enhanced_data_monitoring"
+    username: "${INFLUXDB_USERNAME}"
+    password: "${INFLUXDB_PASSWORD}"
+    retention_policy: "30d"
+  
+  # 缓存配置
+  cache:
+    type: "redis"
+    host: "localhost"
+    port: 6379
+    database: 0
+    password: "${REDIS_PASSWORD}"
+    max_connections: 10
+
+# 健康检查配置
+health_check:
+  enabled: true
+  interval: 30  # 秒
+  
+  checks:
+    # 数据源健康检查
+    data_sources:
+      enabled: true
+      timeout: 10  # 秒
+      retries: 3
+    
+    # 缓存健康检查
+    cache:
+      enabled: true
+      timeout: 5  # 秒
+      retries: 2
+    
+    # 并行加载健康检查
+    parallel_loading:
+      enabled: true
+      timeout: 10  # 秒
+      retries: 2
+    
+    # 质量监控健康检查
+    quality_monitor:
+      enabled: true
+      timeout: 5  # 秒
+      retries: 2
+
+# 自动恢复配置
+auto_recovery:
+  enabled: true
+  
+  # 自动重启策略
+  restart:
+    enabled: true
+    max_restarts: 3
+    restart_interval: "5m"
+  
+  # 自动扩缩容
+  scaling:
+    enabled: true
+    min_workers: 2
+    max_workers: 20
+    scale_up_threshold: 0.8
+    scale_down_threshold: 0.3
+    scale_interval: "2m"
+  
+  # 缓存清理
+  cache_cleanup:
+    enabled: true
+    cleanup_interval: "1h"
+    max_age: "24h"
+    max_size: "1GB" 

@@ -1,0 +1,64 @@
+{
+    "application": {
+        "name": "RQA2025 Trading System (Development)",
+        "version": "1.0.0-dev",
+        "environment": "development",
+        "debug": true,
+        "log_level": "DEBUG"
+    },
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "name": "rqa2025_dev",
+        "connection_pool": {
+            "min_connections": 1,
+            "max_connections": 10,
+            "connection_timeout": 30
+        },
+        "credentials": {
+            "username": "postgres",
+            "password": "dev_password"
+        }
+    },
+    "redis": {
+        "host": "localhost",
+        "port": 6379,
+        "db": 0,
+        "connection_pool": {
+            "max_connections": 10
+        },
+        "password": null
+    },
+    "trading": {
+        "max_positions": 100,
+        "risk_limits": {
+            "max_loss_per_trade": 1000,
+            "max_daily_loss": 5000,
+            "max_position_size": 100000
+        },
+        "execution": {
+            "default_timeout": 60,
+            "retry_attempts": 2,
+            "circuit_breaker_threshold": 3
+        }
+    },
+    "monitoring": {
+        "enabled": true,
+        "metrics_interval": 300,
+        "health_check_interval": 60
+    },
+    "security": {
+        "encryption": {
+            "algorithm": "AES256",
+            "key_rotation_days": 30
+        },
+        "authentication": {
+            "jwt_expiry_hours": 24,
+            "refresh_token_expiry_days": 7
+        },
+        "audit": {
+            "enabled": false,
+            "log_retention_days": 30
+        }
+    }
+}

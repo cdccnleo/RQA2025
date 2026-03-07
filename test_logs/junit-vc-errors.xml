@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="6" time="60.254" timestamp="2025-11-16T23:08:19.020787+08:00" hostname="AIPC"><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_version_manager_positive_flow_with_mock_parquet" time="0.946"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_positive_0\vc_pos
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_230913_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_230913_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_230914_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_230913_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_230914_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_230913_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_230914_2
+INFO     __name__:version_manager.py:674 Rolled back to version v_20251116_230913_1, new version: v_20251116_230914_2
+INFO     __name__:version_manager.py:700 Exported version v_20251116_230914_1 to C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_positive_0\export.parquet
+ERROR    __name__:version_manager.py:719 Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_positive_0\v_20251116_230913_1.parquet does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_positive_0\vc_pos
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_230913_1
+INFO:__name__:Loaded version: v_20251116_230913_1
+INFO:__name__:Created new version: v_20251116_230914_1
+INFO:__name__:Loaded version: v_20251116_230913_1
+INFO:__name__:Loaded version: v_20251116_230914_1
+INFO:__name__:Loaded version: v_20251116_230913_1
+INFO:__name__:Created new version: v_20251116_230914_2
+INFO:__name__:Rolled back to version v_20251116_230913_1, new version: v_20251116_230914_2
+INFO:__name__:Exported version v_20251116_230914_1 to C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_positive_0\export.parquet
+ERROR:__name__:Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_positive_0\v_20251116_230913_1.parquet does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_version_manager_negative_paths" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_negative_0\vc
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:656 Version nonexistent does not exist
+ERROR    __name__:version_manager.py:694 Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_negative_0\vc\nonexistent.parquet does not exist
+ERROR    __name__:version_manager.py:719 Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_negative_0\missing.parquet does not exist
+ERROR    __name__:version_manager.py:768 Version nonexistent does not exist
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - Version nonexistent does not exist
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v1, v2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_negative_0\vc
+INFO:__name__:Current version: None
+ERROR:__name__:Version nonexistent does not exist
+ERROR:__name__:Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_negative_0\vc\nonexistent.parquet does not exist
+ERROR:__name__:Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_version_manager_negative_0\missing.parquet does not exist
+ERROR:__name__:Version nonexistent does not exist
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - Version nonexistent does not exist
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v1, v2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_update_metadata_save_failure" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_update_metadata_save_fail0\vc_meta
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:768 Version nonexistent does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_update_metadata_save_fail0\vc_meta
+INFO:__name__:Current version: None
+ERROR:__name__:Version nonexistent does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_create_version_write_failure_rollback" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_create_version_write_fail0\vc_write_fail
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:392 Failed to create version: to_parquet fail
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - Failed to create version: to_parquet fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_create_version_write_fail0\vc_write_fail
+INFO:__name__:Current version: None
+ERROR:__name__:Failed to create version: to_parquet fail
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - Failed to create version: to_parquet fail
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_import_version_read_failure" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_import_version_read_failu0\vc_import
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:753 Failed to import version: read fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_import_version_read_failu0\vc_import
+INFO:__name__:Current version: None
+ERROR:__name__:Failed to import version: read fail
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_compare_versions_alignment_failure" time="0.330"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_compare_versions_alignmen0\vc_cmp
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_230914_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_230914_2
+ERROR    __name__:version_manager.py:465 Failed to load version v_20251116_230914_1: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR    __name__:version_manager.py:465 Failed to load version v_20251116_230914_2: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v_20251116_230914_1, v_20251116_230914_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3990\popen-gw0\test_compare_versions_alignmen0\vc_cmp
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_230914_1
+INFO:__name__:Created new version: v_20251116_230914_2
+ERROR:__name__:Failed to load version v_20251116_230914_1: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR:__name__:Failed to load version v_20251116_230914_2: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v_20251116_230914_1, v_20251116_230914_2
+
+</system-err></testcase></testsuite></testsuites>

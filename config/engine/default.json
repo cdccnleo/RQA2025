@@ -1,0 +1,43 @@
+{
+  "realtime": {
+    "max_workers": 4,
+    "queue_size": 10000,
+    "batch_size": 100,
+    "timeout": 1.0,
+    "enable_monitoring": true
+  },
+  "buffer": {
+    "pool_size": 1000,
+    "chunk_size": 1024,
+    "max_buffers": 100,
+    "memory_limit": 104857600
+  },
+  "dispatcher": {
+    "max_queues": 10,
+    "priority_levels": 5,
+    "load_balancing": true,
+    "event_filtering": true
+  },
+  "level2": {
+    "max_symbols": 1000,
+    "order_book_depth": 10,
+    "data_quality_check": true,
+    "multi_market_support": true
+  },
+  "optimization": {
+    "auto_optimization": true,
+    "optimization_interval": 300,
+    "performance_threshold": 0.8
+  },
+  "production": {
+    "model_serving": true,
+    "api_timeout": 30,
+    "max_concurrent_requests": 100
+  },
+  "monitoring": {
+    "metrics_collection": true,
+    "alerting": true,
+    "performance_analysis": true,
+    "data_retention_days": 30
+  }
+} 

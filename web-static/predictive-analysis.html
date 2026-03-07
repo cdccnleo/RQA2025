@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 预测性分析展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mobile-optimization.css">
+    <script src="mobile-utils.js"></script>
+    <script src="ux-optimization.js"></script>
+    <style>
+        .gradient-bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .prediction-card {
+            transition: all 0.3s ease;
+        }
+        .prediction-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .confidence-high {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            border-left: 4px solid #22c55e;
+        }
+        .confidence-medium {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(234, 179, 8, 0.05));
+            border-left: 4px solid #eab308;
+        }
+        .confidence-low {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            border-left: 4px solid #ef4444;
+        }
+        .trend-up {
+            color: #22c55e;
+        }
+        .trend-down {
+            color: #ef4444;
+        }
+        .trend-stable {
+            color: #6b7280;
+        }
+        .capacity-indicator {
+            position: relative;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .capacity-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .capacity-fill.safe {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+        .capacity-fill.warning {
+            background: linear-gradient(90deg, #eab308, #ca8a04);
+        }
+        .capacity-fill.critical {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+        .anomaly-marker {
+            position: relative;
+        }
+        .anomaly-marker::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+        }
+        .forecast-band {
+            fill: rgba(59, 130, 246, 0.1);
+            stroke: rgba(59, 130, 246, 0.3);
+            stroke-width: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                            <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">预测性分析展示</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-blue-600 font-medium">AI预测运行中</span>
+                    </div>
+                    <button onclick="refreshAll()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新预测
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-chart-line text-indigo-600 mr-3"></i>
+                预测性分析展示
+            </h1>
+            <p class="text-gray-600">基于AI模型的性能预测、容量规划和异常预警</p>
+        </div>
+
+        <!-- Prediction Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 shadow-lg prediction-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-brain text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">预测准确率</dt>
+                        <dd class="text-2xl font-semibold text-blue-600" id="accuracy-rate">94.2%</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg prediction-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-server text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">容量预测</dt>
+                        <dd class="text-2xl font-semibold text-green-600" id="capacity-predictions">8项</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg prediction-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">异常预警</dt>
+                        <dd class="text-2xl font-semibold text-orange-600" id="anomaly-alerts">3个</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg prediction-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-area text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">趋势分析</dt>
+                        <dd class="text-2xl font-semibold text-purple-600 flex items-center">
+                            <span id="trend-indicator">上升</span>
+                            <i class="fas fa-arrow-up ml-1 trend-up"></i>
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8 px-6">
+                    <button onclick="switchTab('performance')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm active-tab" id="tab-performance">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        性能预测
+                    </button>
+                    <button onclick="switchTab('capacity')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-capacity">
+                        <i class="fas fa-server mr-2"></i>
+                        容量规划
+                    </button>
+                    <button onclick="switchTab('anomaly')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-anomaly">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        异常预测
+                    </button>
+                    <button onclick="switchTab('trends')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-trends">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        趋势分析
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- Performance Prediction Tab -->
+                <div id="content-performance" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- CPU Usage Prediction -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">CPU使用率预测</h3>
+                            <canvas id="cpu-prediction-chart" width="400" height="250"></canvas>
+                        </div>
+
+                        <!-- Memory Usage Prediction -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">内存使用率预测</h3>
+                            <canvas id="memory-prediction-chart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Network I/O Prediction -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">网络I/O预测</h3>
+                            <canvas id="network-prediction-chart" width="400" height="250"></canvas>
+                        </div>
+
+                        <!-- Response Time Prediction -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">响应时间预测</h3>
+                            <canvas id="response-time-chart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Accuracy -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">预测准确性评估</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="prediction-accuracy">
+                            <!-- Accuracy metrics will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capacity Planning Tab -->
+                <div id="content-capacity" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Resource Capacity Forecast -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">资源容量预测</h3>
+                            <canvas id="capacity-forecast-chart" width="400" height="300"></canvas>
+                        </div>
+
+                        <!-- Capacity Recommendations -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">容量规划建议</h3>
+                            <div class="space-y-4" id="capacity-recommendations">
+                                <!-- Recommendations will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resource Utilization Trends -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">资源利用趋势</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="resource-utilization">
+                            <!-- Utilization trends will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anomaly Prediction Tab -->
+                <div id="content-anomaly" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Anomaly Detection Timeline -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">异常检测时间线</h3>
+                            <canvas id="anomaly-timeline-chart" width="400" height="250"></canvas>
+                        </div>
+
+                        <!-- Anomaly Types Distribution -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">异常类型分布</h3>
+                            <canvas id="anomaly-types-chart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Active Anomalies -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">活跃异常预警</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="active-anomalies">
+                            <!-- Active anomalies will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Anomaly Impact Analysis -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">异常影响分析</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">异常类型</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">检测时间</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">影响程度</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">预测发生</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">置信度</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="anomaly-impact-table" class="bg-white divide-y divide-gray-200">
+                                    <!-- Anomaly impact will be loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trends Analysis Tab -->
+                <div id="content-trends" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Multi-Metric Trend Analysis -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">多指标趋势分析</h3>
+                            <canvas id="multi-metric-trends-chart" width="400" height="300"></canvas>
+                        </div>
+
+                        <!-- Seasonal Patterns -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">季节性模式分析</h3>
+                            <canvas id="seasonal-patterns-chart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Trend Insights -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">趋势洞察</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="trend-insights">
+                            <!-- Trend insights will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Predictive Scenarios -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">预测情景分析</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="predictive-scenarios">
+                            <!-- Predictive scenarios will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // API基础URL生成函数
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        let currentTab = 'performance';
+        let predictionCharts = {};
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPredictionOverview();
+            loadPerformancePredictions();
+
+            // Set up periodic updates
+            setInterval(() => {
+                loadPredictionOverview();
+                updateCharts();
+            }, 30000); // Update every 30 seconds
+        });
+
+        function switchTab(tabId) {
+            // Update tab styles
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.classList.remove('active-tab', 'border-indigo-500', 'text-indigo-600');
+                tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active-tab', 'border-indigo-500', 'text-indigo-600');
+            document.getElementById(`tab-${tabId}`).classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+            currentTab = tabId;
+
+            // Load tab-specific data
+            switch(tabId) {
+                case 'capacity':
+                    loadCapacityPlanning();
+                    break;
+                case 'anomaly':
+                    loadAnomalyPrediction();
+                    break;
+                case 'trends':
+                    loadTrendsAnalysis();
+                    break;
+            }
+        }
+
+        async function loadPredictionOverview() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/predictive/overview'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updatePredictionOverview(data);
+                }
+            } catch (error) {
+                console.error('加载预测概览失败:', error);
+            }
+        }
+
+        function updatePredictionOverview(data) {
+            // Update metrics
+            document.getElementById('accuracy-rate').textContent = data.accuracy || '94.2%';
+            document.getElementById('capacity-predictions').textContent = data.capacity_predictions || '8项';
+            document.getElementById('anomaly-alerts').textContent = data.anomaly_alerts || '3个';
+
+            const trendElement = document.getElementById('trend-indicator');
+            const trend = data.trend || '上升';
+            trendElement.textContent = trend;
+
+            // Update trend indicator
+            const trendIcon = trendElement.nextElementSibling;
+            trendIcon.className = trend === '上升' ? 'fas fa-arrow-up ml-1 trend-up' :
+                                trend === '下降' ? 'fas fa-arrow-down ml-1 trend-down' :
+                                'fas fa-minus ml-1 trend-stable';
+        }
+
+        async function loadPerformancePredictions() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/predictive/performance'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderPerformanceCharts(data);
+                    renderPredictionAccuracy(data);
+                }
+            } catch (error) {
+                console.error('加载性能预测失败:', error);
+            }
+        }
+
+        function renderPerformanceCharts(data) {
+            const now = new Date();
+            const labels = [];
+            for (let i = -24; i <= 24; i++) {
+                labels.push(new Date(now.getTime() + i * 60 * 60 * 1000));
+            }
+
+            // CPU Prediction Chart
+            const cpuCtx = document.getElementById('cpu-prediction-chart');
+            if (cpuCtx) {
+                predictionCharts.cpu = new Chart(cpuCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '历史CPU使用率',
+                            data: data.cpu?.historical || Array.from({length: 25}, () => Math.random() * 40 + 30),
+                            borderColor: 'rgb(156, 163, 175)',
+                            backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                            fill: false,
+                            tension: 0.4
+                        }, {
+                            label: '预测CPU使用率',
+                            data: data.cpu?.predicted || Array.from({length: 25}, (_, i) => i < 24 ? null : Math.random() * 40 + 30),
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: false,
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }, {
+                            label: '预测区间',
+                            data: data.cpu?.upper || Array.from({length: 25}, (_, i) => i < 24 ? null : Math.random() * 40 + 45),
+                            borderColor: 'rgba(59, 130, 246, 0.3)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: '+1',
+                            tension: 0.4,
+                            pointRadius: 0
+                        }, {
+                            label: '预测区间下限',
+                            data: data.cpu?.lower || Array.from({length: 25}, (_, i) => i < 24 ? null : Math.random() * 40 + 15),
+                            borderColor: 'rgba(59, 130, 246, 0.3)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    displayFormats: { hour: 'HH:mm' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: { display: true, text: 'CPU使用率 (%)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Memory Prediction Chart
+            const memoryCtx = document.getElementById('memory-prediction-chart');
+            if (memoryCtx) {
+                predictionCharts.memory = new Chart(memoryCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '历史内存使用率',
+                            data: data.memory?.historical || Array.from({length: 25}, () => Math.random() * 30 + 50),
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: false,
+                            tension: 0.4
+                        }, {
+                            label: '预测内存使用率',
+                            data: data.memory?.predicted || Array.from({length: 25}, (_, i) => i < 24 ? null : Math.random() * 30 + 50),
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: false,
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    displayFormats: { hour: 'HH:mm' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: { display: true, text: '内存使用率 (%)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Network I/O Prediction
+            const networkCtx = document.getElementById('network-prediction-chart');
+            if (networkCtx) {
+                predictionCharts.network = new Chart(networkCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '历史网络I/O',
+                            data: data.network?.historical || Array.from({length: 25}, () => Math.random() * 500 + 200),
+                            borderColor: 'rgb(245, 158, 11)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            fill: false,
+                            tension: 0.4
+                        }, {
+                            label: '预测网络I/O',
+                            data: data.network?.predicted || Array.from({length: 25}, (_, i) => i < 24 ? null : Math.random() * 500 + 200),
+                            borderColor: 'rgb(245, 158, 11)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            fill: false,
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    displayFormats: { hour: 'HH:mm' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '网络I/O (Mbps)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Response Time Prediction
+            const responseCtx = document.getElementById('response-time-chart');
+            if (responseCtx) {
+                predictionCharts.response = new Chart(responseCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '历史响应时间',
+                            data: data.response?.historical || Array.from({length: 25}, () => Math.random() * 100 + 50),
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: false,
+                            tension: 0.4
+                        }, {
+                            label: '预测响应时间',
+                            data: data.response?.predicted || Array.from({length: 25}, (_, i) => i < 24 ? null : Math.random() * 100 + 50),
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: false,
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    displayFormats: { hour: 'HH:mm' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '响应时间 (ms)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderPredictionAccuracy(data) {
+            const container = document.getElementById('prediction-accuracy');
+            const accuracy = data.accuracy || [
+                { metric: 'CPU预测', accuracy: 0.94, error: '±3.2%' },
+                { metric: '内存预测', accuracy: 0.91, error: '±4.1%' },
+                { metric: '网络预测', accuracy: 0.89, error: '±5.8%' },
+                { metric: '响应时间', accuracy: 0.96, error: '±2.7%' }
+            ];
+
+            const html = accuracy.map(item => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="text-sm font-medium text-gray-900">${item.metric}</div>
+                    <div class="text-2xl font-bold text-blue-600 mt-1">${(item.accuracy * 100).toFixed(1)}%</div>
+                    <div class="text-xs text-gray-500">误差范围: ${item.error}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        async function loadCapacityPlanning() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/predictive/capacity'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderCapacityCharts(data);
+                    renderCapacityRecommendations(data);
+                    renderResourceUtilization(data);
+                }
+            } catch (error) {
+                console.error('加载容量规划失败:', error);
+            }
+        }
+
+        function renderCapacityCharts(data) {
+            // Capacity Forecast Chart
+            const capacityCtx = document.getElementById('capacity-forecast-chart');
+            if (capacityCtx) {
+                predictionCharts.capacity = new Chart(capacityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['当前', '1周后', '2周后', '1个月后', '3个月后'],
+                        datasets: [{
+                            label: 'CPU容量需求',
+                            data: data.cpu_capacity || [75, 82, 88, 95, 105],
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '内存容量需求',
+                            data: data.memory_capacity || [68, 75, 82, 88, 95],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '存储容量需求',
+                            data: data.storage_capacity || [85, 88, 92, 98, 110],
+                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '容量使用率 (%)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderCapacityRecommendations(data) {
+            const container = document.getElementById('capacity-recommendations');
+            const recommendations = data.recommendations || [
+                {
+                    type: 'CPU扩展',
+                    urgency: 'high',
+                    timeline: '2周内',
+                    action: '增加2个CPU核心',
+                    impact: '解决预期性能瓶颈'
+                },
+                {
+                    type: '内存优化',
+                    urgency: 'medium',
+                    timeline: '1个月内',
+                    action: '增加16GB内存',
+                    impact: '提升应用响应速度'
+                },
+                {
+                    type: '存储规划',
+                    urgency: 'low',
+                    timeline: '3个月内',
+                    action: '扩容存储容量20%',
+                    impact: '确保数据存储空间充足'
+                }
+            ];
+
+            const html = recommendations.map(rec => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${rec.type}</h4>
+                        <span class="text-xs ${rec.urgency === 'high' ? 'bg-red-100 text-red-800' : rec.urgency === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} px-2 py-1 rounded">${rec.urgency === 'high' ? '紧急' : rec.urgency === 'medium' ? '中等' : '一般'}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 mb-1">建议时间: ${rec.timeline}</div>
+                    <div class="text-xs text-gray-600 mb-2">行动: ${rec.action}</div>
+                    <div class="text-xs text-gray-500">影响: ${rec.impact}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderResourceUtilization(data) {
+            const container = document.getElementById('resource-utilization');
+            const utilization = data.utilization || [
+                {
+                    resource: 'CPU',
+                    current: 75,
+                    predicted: 95,
+                    status: 'warning',
+                    threshold: 85
+                },
+                {
+                    resource: '内存',
+                    current: 68,
+                    predicted: 88,
+                    status: 'safe',
+                    threshold: 90
+                },
+                {
+                    resource: '存储',
+                    current: 85,
+                    predicted: 110,
+                    status: 'critical',
+                    threshold: 95
+                }
+            ];
+
+            const html = utilization.map(item => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${item.resource}</h4>
+                        <span class="text-xs bg-${item.status === 'critical' ? 'red' : item.status === 'warning' ? 'yellow' : 'green'}-100 text-${item.status === 'critical' ? 'red' : item.status === 'warning' ? 'yellow' : 'green'}-800 px-2 py-1 rounded">${item.status === 'critical' ? '临界' : item.status === 'warning' ? '警告' : '安全'}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 mb-2">当前: ${item.current}% | 预测: ${item.predicted}%</div>
+                    <div class="capacity-indicator">
+                        <div class="capacity-fill ${item.status}" style="width: ${Math.min(item.predicted, 100)}%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">阈值: ${item.threshold}%</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        async function loadAnomalyPrediction() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/predictive/anomaly'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderAnomalyCharts(data);
+                    renderActiveAnomalies(data);
+                    renderAnomalyImpactTable(data);
+                }
+            } catch (error) {
+                console.error('加载异常预测失败:', error);
+            }
+        }
+
+        function renderAnomalyCharts(data) {
+            // Anomaly Timeline Chart
+            const timelineCtx = document.getElementById('anomaly-timeline-chart');
+            if (timelineCtx) {
+                predictionCharts.anomalyTimeline = new Chart(timelineCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: '检测到的异常',
+                            data: data.anomalies || [
+                                { x: '2024-01-01T10:00:00', y: 85 },
+                                { x: '2024-01-01T14:30:00', y: 92 },
+                                { x: '2024-01-01T16:45:00', y: 78 }
+                            ],
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    displayFormats: { hour: 'HH:mm' }
+                                }
+                            },
+                            y: {
+                                title: { display: true, text: '异常得分' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Anomaly Types Distribution
+            const typesCtx = document.getElementById('anomaly-types-chart');
+            if (typesCtx) {
+                predictionCharts.anomalyTypes = new Chart(typesCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['性能异常', '连接异常', '数据异常', '安全异常'],
+                        datasets: [{
+                            data: data.types || [35, 25, 20, 20],
+                            backgroundColor: [
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(249, 115, 22, 0.8)',
+                                'rgba(234, 179, 8, 0.8)',
+                                'rgba(139, 69, 19, 0.8)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderActiveAnomalies(data) {
+            const container = document.getElementById('active-anomalies');
+            const anomalies = data.active || [
+                {
+                    type: '性能异常',
+                    description: 'CPU使用率异常升高',
+                    confidence: 0.94,
+                    predicted_time: '30分钟后',
+                    severity: 'high'
+                },
+                {
+                    type: '连接异常',
+                    description: '数据库连接池耗尽风险',
+                    confidence: 0.87,
+                    predicted_time: '2小时后',
+                    severity: 'medium'
+                }
+            ];
+
+            const html = anomalies.map(anomaly => `
+                <div class="bg-white rounded-lg p-4 border ${anomaly.severity === 'high' ? 'confidence-high' : anomaly.severity === 'medium' ? 'confidence-medium' : 'confidence-low'}">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${anomaly.type}</h4>
+                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">${(anomaly.confidence * 100).toFixed(1)}%</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${anomaly.description}</p>
+                    <div class="text-xs text-gray-500">预计发生: ${anomaly.predicted_time}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderAnomalyImpactTable(data) {
+            const tbody = document.getElementById('anomaly-impact-table');
+            const impacts = data.impacts || [
+                { type: 'CPU峰值', time: '10:30', impact: '高', predicted: '45分钟后', confidence: 0.91 },
+                { type: '内存泄漏', time: '11:15', impact: '中', predicted: '2小时后', confidence: 0.85 },
+                { type: '网络拥塞', time: '13:45', impact: '高', predicted: '3小时后', confidence: 0.78 },
+                { type: '存储空间不足', time: '15:20', impact: '低', predicted: '6小时后', confidence: 0.92 }
+            ];
+
+            const html = impacts.map(impact => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${impact.type}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${impact.time}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${impact.impact === '高' ? 'bg-red-100 text-red-800' : impact.impact === '中' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                            ${impact.impact}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${impact.predicted}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${(impact.confidence * 100).toFixed(1)}%</td>
+                </tr>
+            `).join('');
+
+            tbody.innerHTML = html;
+        }
+
+        async function loadTrendsAnalysis() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/predictive/trends'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderTrendsCharts(data);
+                    renderTrendInsights(data);
+                    renderPredictiveScenarios(data);
+                }
+            } catch (error) {
+                console.error('加载趋势分析失败:', error);
+            }
+        }
+
+        function renderTrendsCharts(data) {
+            // Multi-Metric Trends Chart
+            const multiCtx = document.getElementById('multi-metric-trends-chart');
+            if (multiCtx) {
+                predictionCharts.multiMetric = new Chart(multiCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels || ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                        datasets: [{
+                            label: 'CPU使用率',
+                            data: data.cpu_trend || [65, 68, 72, 75, 78, 70, 66],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '内存使用率',
+                            data: data.memory_trend || [70, 72, 75, 78, 82, 75, 71],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '响应时间',
+                            data: data.response_trend || [45, 48, 52, 55, 58, 50, 46],
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '指标值' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Seasonal Patterns Chart
+            const seasonalCtx = document.getElementById('seasonal-patterns-chart');
+            if (seasonalCtx) {
+                predictionCharts.seasonal = new Chart(seasonalCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['上午', '下午', '晚上', '深夜'],
+                        datasets: [{
+                            label: '平均负载',
+                            data: data.seasonal || [45, 78, 65, 32],
+                            backgroundColor: 'rgba(147, 51, 234, 0.8)',
+                            borderColor: 'rgba(147, 51, 234, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '负载水平' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderTrendInsights(data) {
+            const container = document.getElementById('trend-insights');
+            const insights = data.insights || [
+                {
+                    title: '工作日负载高峰',
+                    description: '每周一至周五下午2-4点负载显著升高',
+                    trend: 'up',
+                    confidence: 0.89
+                },
+                {
+                    title: '周末负载下降',
+                    description: '周末整体负载下降15-20%',
+                    trend: 'down',
+                    confidence: 0.94
+                }
+            ];
+
+            const html = insights.map(insight => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center mb-2">
+                        <i class="fas ${insight.trend === 'up' ? 'fa-arrow-up trend-up' : 'fa-arrow-down trend-down'} mr-2"></i>
+                        <h4 class="text-sm font-medium text-gray-900">${insight.title}</h4>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${insight.description}</p>
+                    <div class="text-xs text-gray-500">置信度: ${(insight.confidence * 100).toFixed(1)}%</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderPredictiveScenarios(data) {
+            const container = document.getElementById('predictive-scenarios');
+            const scenarios = data.scenarios || [
+                {
+                    name: '乐观情景',
+                    description: '业务量增长20%',
+                    probability: 0.35,
+                    impact: '需要增加30%资源'
+                },
+                {
+                    name: '基准情景',
+                    description: '业务量稳定增长5%',
+                    probability: 0.45,
+                    impact: '需要增加10%资源'
+                },
+                {
+                    name: '悲观情景',
+                    description: '业务量下降10%',
+                    probability: 0.20,
+                    impact: '可以减少5%资源'
+                }
+            ];
+
+            const html = scenarios.map(scenario => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${scenario.name}</h4>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${(scenario.probability * 100).toFixed(1)}%</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${scenario.description}</p>
+                    <div class="text-xs text-gray-500">影响: ${scenario.impact}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function updateCharts() {
+            // Update existing charts with new data
+            Object.values(predictionCharts).forEach(chart => {
+                if (chart && chart.update) {
+                    chart.update();
+                }
+            });
+        }
+
+        function refreshAll() {
+            loadPredictionOverview();
+            updateCharts();
+
+            if (currentTab !== 'performance') {
+                switch(currentTab) {
+                    case 'capacity':
+                        loadCapacityPlanning();
+                        break;
+                    case 'anomaly':
+                        loadAnomalyPrediction();
+                        break;
+                    case 'trends':
+                        loadTrendsAnalysis();
+                        break;
+                }
+            }
+
+            // Visual feedback
+            const btn = event.target;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>刷新预测...';
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

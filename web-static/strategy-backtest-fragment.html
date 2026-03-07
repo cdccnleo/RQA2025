@@ -1,0 +1,24 @@
+        function getApiBaseUrl(endpoint = '') {
+            // 始终使用相对路径，通过nginx代理访问API，确保CORS头正确添加
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        // API超时处理机制
+        const API_TIMEOUT_MS = 30000;
+        
+        function fetchWithTimeout(url, timeoutMs) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeoutMs);
+            return fetch(url, { signal: controller.signal })
+                .then(r => { clearTimeout(id); return r; })
+                .catch(e => ({ ok: false, json: () => Promise.resolve({}), status: 0 }));
+        }
+
+        let returnsChart, riskReturnChart, strategyComparisonChart;
+        let chartDataCache = {};
+        let chartDebounceTimer = null;
+        let isChartsVisible = false;
+        let selectedStrategies = new Set();
+        
+        // Toast通知系统

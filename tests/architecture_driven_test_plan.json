@@ -1,0 +1,1269 @@
+{
+  "title": "RQA2025 基于19层架构的综合测试提升计划",
+  "version": "2.0",
+  "created_date": "2025-09-16T22:51:33.079099",
+  "based_on_architecture_docs": [
+    "infrastructure_architecture_design.md",
+    "core_service_layer_architecture_design.md",
+    "data_layer_architecture_design.md",
+    "feature_layer_architecture_design.md",
+    "ml_layer_architecture_design.md",
+    "strategy_layer_architecture_design.md",
+    "trading_layer_architecture_design.md",
+    "risk_control_layer_architecture_design.md",
+    "monitoring_layer_architecture_design.md",
+    "streaming_layer_architecture_design.md",
+    "gateway_layer_architecture_design.md",
+    "optimization_layer_architecture_design.md",
+    "adapter_layer_architecture_design.md",
+    "automation_layer_architecture_design.md",
+    "resilience_layer_architecture_design.md",
+    "testing_layer_architecture_design.md",
+    "utils_layer_architecture_design.md",
+    "distributed_coordinator_architecture_design.md",
+    "ASYNC_PROCESSOR_ARCHITECTURE_DESIGN.md"
+  ],
+  "overall_strategy": {
+    "approach": "分层递进，依赖驱动",
+    "priority_order": [
+      "trading",
+      "strategy",
+      "data",
+      "features",
+      "ml",
+      "risk",
+      "core",
+      "infrastructure"
+    ],
+    "test_coverage_target": 80.0,
+    "monitoring_enabled": true
+  },
+  "layer_plans": {
+    "trading": {
+      "layer_name": "trading",
+      "description": "交易执行层 - 高频交易核心业务",
+      "priority": "critical",
+      "test_coverage_target": 95.0,
+      "estimated_test_files": 4,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure",
+        "data",
+        "strategy",
+        "risk"
+      ],
+      "estimated_effort_days": 7.1
+    },
+    "strategy": {
+      "layer_name": "strategy",
+      "description": "策略服务层 - 量化策略实现",
+      "priority": "critical",
+      "test_coverage_target": 90.0,
+      "estimated_test_files": 16,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "data",
+        "features",
+        "ml",
+        "risk"
+      ],
+      "estimated_effort_days": 31.8
+    },
+    "data": {
+      "layer_name": "data",
+      "description": "数据层 - 数据处理和存储",
+      "priority": "critical",
+      "test_coverage_target": 85.0,
+      "estimated_test_files": 15,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure"
+      ],
+      "estimated_effort_days": 29.2
+    },
+    "features": {
+      "layer_name": "features",
+      "description": "特征层 - 特征工程和处理",
+      "priority": "critical",
+      "test_coverage_target": 85.0,
+      "estimated_test_files": 8,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "data",
+        "ml"
+      ],
+      "estimated_effort_days": 14.4
+    },
+    "ml": {
+      "layer_name": "ml",
+      "description": "模型层 - 机器学习模型",
+      "priority": "critical",
+      "test_coverage_target": 80.0,
+      "estimated_test_files": 6,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "data",
+        "features"
+      ],
+      "estimated_effort_days": 10.8
+    },
+    "risk": {
+      "layer_name": "risk",
+      "description": "风险控制层 - 风险管理和控制",
+      "priority": "critical",
+      "test_coverage_target": 90.0,
+      "estimated_test_files": 4,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "data",
+        "trading"
+      ],
+      "estimated_effort_days": 7.4
+    },
+    "core": {
+      "layer_name": "core",
+      "description": "核心服务层 - 事件总线和业务流程编排",
+      "priority": "high",
+      "test_coverage_target": 85.0,
+      "estimated_test_files": 16,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure"
+      ],
+      "estimated_effort_days": 25.6
+    },
+    "streaming": {
+      "layer_name": "streaming",
+      "description": "流处理层 - 实时数据流处理",
+      "priority": "high",
+      "test_coverage_target": 80.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "data",
+        "infrastructure"
+      ],
+      "estimated_effort_days": 3.4
+    },
+    "gateway": {
+      "layer_name": "gateway",
+      "description": "网关层 - API网关和接口管理",
+      "priority": "high",
+      "test_coverage_target": 85.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "infrastructure"
+      ],
+      "estimated_effort_days": 4.2
+    },
+    "monitoring": {
+      "layer_name": "monitoring",
+      "description": "监控层 - 系统监控和可观测性",
+      "priority": "high",
+      "test_coverage_target": 75.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure"
+      ],
+      "estimated_effort_days": 3.0
+    },
+    "infrastructure": {
+      "layer_name": "infrastructure",
+      "description": "基础设施层 - 基础服务和组件",
+      "priority": "high",
+      "test_coverage_target": 80.0,
+      "estimated_test_files": 40,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "缓存命中率测试",
+          "type": "performance",
+          "complexity": "medium"
+        },
+        {
+          "name": "缓存一致性测试",
+          "type": "integration",
+          "complexity": "high"
+        },
+        {
+          "name": "缓存故障恢复测试",
+          "type": "reliability",
+          "complexity": "medium"
+        },
+        {
+          "name": "配置加载测试",
+          "type": "functional",
+          "complexity": "medium"
+        },
+        {
+          "name": "配置热更新测试",
+          "type": "integration",
+          "complexity": "high"
+        },
+        {
+          "name": "配置验证测试",
+          "type": "validation",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [],
+      "estimated_effort_days": 63.3
+    },
+    "adapters": {
+      "layer_name": "adapters",
+      "description": "适配器层 - 外部系统适配",
+      "priority": "medium",
+      "test_coverage_target": 70.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure"
+      ],
+      "estimated_effort_days": 2.8
+    },
+    "optimization": {
+      "layer_name": "optimization",
+      "description": "优化层 - 系统性能优化",
+      "priority": "medium",
+      "test_coverage_target": 75.0,
+      "estimated_test_files": 4,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "monitoring"
+      ],
+      "estimated_effort_days": 4.4
+    },
+    "automation": {
+      "layer_name": "automation",
+      "description": "自动化层 - 自动化运维和测试",
+      "priority": "medium",
+      "test_coverage_target": 70.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "monitoring"
+      ],
+      "estimated_effort_days": 3.3
+    },
+    "async": {
+      "layer_name": "async",
+      "description": "异步处理器 - 异步任务处理",
+      "priority": "medium",
+      "test_coverage_target": 75.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "core"
+      ],
+      "estimated_effort_days": 2.0
+    },
+    "distributed": {
+      "layer_name": "distributed",
+      "description": "分布式协调器 - 分布式系统协调",
+      "priority": "medium",
+      "test_coverage_target": 70.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure"
+      ],
+      "estimated_effort_days": 1.0
+    },
+    "testing": {
+      "layer_name": "testing",
+      "description": "测试层 - 测试框架和工具",
+      "priority": "low",
+      "test_coverage_target": 60.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [],
+      "estimated_effort_days": 0.7
+    },
+    "tools": {
+      "layer_name": "tools",
+      "description": "工具层 - 开发和运维工具",
+      "priority": "low",
+      "test_coverage_target": 50.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [],
+      "estimated_effort_days": 0.8
+    },
+    "utils": {
+      "layer_name": "utils",
+      "description": "工具库 - 通用工具函数",
+      "priority": "low",
+      "test_coverage_target": 60.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [],
+      "estimated_effort_days": 0.4
+    },
+    "resilience": {
+      "layer_name": "resilience",
+      "description": "弹性层 - 系统弹性和容错",
+      "priority": "low",
+      "test_coverage_target": 70.0,
+      "estimated_test_files": 3,
+      "test_categories": {
+        "unit_tests": {
+          "description": "单元测试 - 测试单个组件的功能",
+          "coverage_target": 80.0,
+          "test_types": [
+            "component_tests",
+            "function_tests",
+            "class_tests"
+          ]
+        },
+        "integration_tests": {
+          "description": "集成测试 - 测试组件间的交互",
+          "coverage_target": 60.0,
+          "test_types": [
+            "api_integration",
+            "data_flow",
+            "service_integration"
+          ]
+        },
+        "performance_tests": {
+          "description": "性能测试 - 测试性能和资源使用",
+          "coverage_target": 40.0,
+          "test_types": [
+            "load_tests",
+            "stress_tests",
+            "benchmark_tests"
+          ]
+        }
+      },
+      "key_test_scenarios": [
+        {
+          "name": "基本功能测试",
+          "type": "functional",
+          "complexity": "low"
+        },
+        {
+          "name": "异常处理测试",
+          "type": "error_handling",
+          "complexity": "medium"
+        },
+        {
+          "name": "边界条件测试",
+          "type": "boundary",
+          "complexity": "medium"
+        }
+      ],
+      "dependencies": [
+        "infrastructure"
+      ],
+      "estimated_effort_days": 0.4
+    }
+  },
+  "timeline": {
+    "phase_1": {
+      "name": "核心业务层测试",
+      "layers": [
+        "trading",
+        "strategy",
+        "data"
+      ],
+      "duration_days": 14,
+      "start_date": "2025-09-16",
+      "milestones": [
+        "单元测试框架建立",
+        "集成测试完成",
+        "性能测试基线建立"
+      ]
+    },
+    "phase_2": {
+      "name": "支撑服务层测试",
+      "layers": [
+        "core",
+        "infrastructure",
+        "streaming",
+        "gateway"
+      ],
+      "duration_days": 14,
+      "start_date": "2025-09-30",
+      "milestones": [
+        "服务集成测试",
+        "基础设施测试",
+        "接口测试完成"
+      ]
+    },
+    "phase_3": {
+      "name": "高级功能层测试",
+      "layers": [
+        "features",
+        "ml",
+        "risk",
+        "monitoring"
+      ],
+      "duration_days": 10,
+      "start_date": "2025-10-14",
+      "milestones": [
+        "机器学习测试",
+        "风险控制测试",
+        "监控系统测试"
+      ]
+    },
+    "phase_4": {
+      "name": "工具和扩展层测试",
+      "layers": [
+        "optimization",
+        "automation",
+        "async",
+        "distributed",
+        "adapters"
+      ],
+      "duration_days": 7,
+      "start_date": "2025-10-24",
+      "milestones": [
+        "自动化测试",
+        "分布式测试",
+        "适配器测试"
+      ]
+    }
+  }
+}

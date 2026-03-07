@@ -1,0 +1,19 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class FAILED [ 50%]
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols FAILED [100%]
+
+================================== FAILURES ===================================
+__________ test_create_enhanced_data_integration_uses_exported_class __________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:21: in test_create_enhanced_data_integration_uses_exported_class
+    monkeypatch.setattr(entry_module, "EnhancedDataIntegration", DummyIntegration)
+E   AttributeError: <module 'src.data.integration.enhanced_data_integration' from 'C:\\PythonProject\\RQA2025\\src\\data\\integration\\enhanced_data_integration.py'> has no attribute 'EnhancedDataIntegration'
+_________________ test_entrypoint_reexports_expected_symbols __________________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:47: in test_entrypoint_reexports_expected_symbols
+    exported = set(entry_module.__all__)
+E   AttributeError: module 'src.data.integration.enhanced_data_integration' has no attribute '__all__'
+=========================== short test summary info ===========================
+FAILED tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class
+FAILED tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols
+============================== 2 failed in 0.76s ==============================

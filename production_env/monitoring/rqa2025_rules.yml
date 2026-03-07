@@ -1,0 +1,252 @@
+groups:
+  - name: rqa2025_critical_alerts
+    rules:
+      # 服务宕机告警
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "服务宕机告警"
+          description: "服务 {{ $labels.job }} 已宕机超过1分钟"
+          value: "{{ $value }}"
+
+      # 高错误率告警
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "高错误率告警"
+          description: "服务 {{ $labels.job }} 5分钟内错误率超过10%"
+          value: "{{ $value }}"
+
+      # 数据库连接失败告警
+      - alert: DatabaseConnectionFailed
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "postgres"
+        annotations:
+          summary: "数据库连接失败告警"
+          description: "PostgreSQL数据库连接失败"
+          value: "{{ $value }}"
+
+      # Redis连接失败告警
+      - alert: RedisConnectionFailed
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "redis"
+        annotations:
+          summary: "Redis连接失败告警"
+          description: "Redis缓存服务连接失败"
+          value: "{{ $value }}"
+
+  - name: rqa2025_warning_alerts
+    rules:
+      # 高响应时间告警
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "高响应时间告警"
+          description: "服务 {{ $labels.job }} 95%的请求响应时间超过500ms"
+          value: "{{ $value }}"
+
+      # 高内存使用率告警
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: "system"
+        annotations:
+          summary: "高内存使用率告警"
+          description: "系统内存使用率超过90%"
+          value: "{{ $value }}"
+
+      # 高CPU使用率告警
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: "system"
+        annotations:
+          summary: "高CPU使用率告警"
+          description: "系统CPU使用率超过80%"
+          value: "{{ $value }}"
+
+      # 高磁盘使用率告警
+      - alert: HighDiskUsage
+        expr: (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: "system"
+        annotations:
+          summary: "高磁盘使用率告警"
+          description: "磁盘使用率超过90%"
+          value: "{{ $value }}"
+
+  - name: rqa2025_business_alerts
+    rules:
+      # 交易执行失败告警
+      - alert: TradingExecutionFailed
+        expr: rate(trading_execution_failures_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: "trading"
+        annotations:
+          summary: "交易执行失败告警"
+          description: "交易执行失败率超过5%"
+          value: "{{ $value }}"
+
+      # 风险控制触发告警
+      - alert: RiskControlTriggered
+        expr: rate(risk_control_triggers_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: "risk"
+        annotations:
+          summary: "风险控制触发告警"
+          description: "风险控制触发频率过高"
+          value: "{{ $value }}"
+
+      # 模型预测偏差告警
+      - alert: ModelPredictionDrift
+        expr: model_prediction_drift > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          service: "model"
+        annotations:
+          summary: "模型预测偏差告警"
+          description: "模型预测偏差超过20%"
+          value: "{{ $value }}"
+
+      # 数据质量下降告警
+      - alert: DataQualityDegradation
+        expr: data_quality_score < 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: "data"
+        annotations:
+          summary: "数据质量下降告警"
+          description: "数据质量评分低于80%"
+          value: "{{ $value }}"
+
+  - name: rqa2025_infrastructure_alerts
+    rules:
+      # 缓存命中率下降告警
+      - alert: LowCacheHitRate
+        expr: rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) < 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: "cache"
+        annotations:
+          summary: "缓存命中率下降告警"
+          description: "缓存命中率低于80%"
+          value: "{{ $value }}"
+
+      # 队列积压告警
+      - alert: QueueBacklog
+        expr: queue_length > 1000
+        for: 2m
+        labels:
+          severity: warning
+          service: "queue"
+        annotations:
+          summary: "队列积压告警"
+          description: "队列长度超过1000"
+          value: "{{ $value }}"
+
+      # 连接池耗尽告警
+      - alert: ConnectionPoolExhausted
+        expr: database_connections_active / database_connections_max > 0.9
+        for: 2m
+        labels:
+          severity: warning
+          service: "database"
+        annotations:
+          summary: "连接池耗尽告警"
+          description: "数据库连接池使用率超过90%"
+          value: "{{ $value }}"
+
+      # 慢查询告警
+      - alert: SlowQueries
+        expr: rate(pg_stat_activity_max_tx_duration{datname="rqa2025"}[5m]) > 30
+        for: 2m
+        labels:
+          severity: warning
+          service: "database"
+        annotations:
+          summary: "慢查询告警"
+          description: "检测到慢查询，平均执行时间超过30秒"
+          value: "{{ $value }}"
+
+  - name: rqa2025_monitoring_alerts
+    rules:
+      # Prometheus自身告警
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "monitoring"
+        annotations:
+          summary: "Prometheus宕机告警"
+          description: "Prometheus监控服务已宕机"
+          value: "{{ $value }}"
+
+      # Grafana宕机告警
+      - alert: GrafanaDown
+        expr: up{job="grafana"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "monitoring"
+        annotations:
+          summary: "Grafana宕机告警"
+          description: "Grafana监控面板已宕机"
+          value: "{{ $value }}"
+
+      # AlertManager宕机告警
+      - alert: AlertManagerDown
+        expr: up{job="alertmanager"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "monitoring"
+        annotations:
+          summary: "AlertManager宕机告警"
+          description: "AlertManager告警服务已宕机"
+          value: "{{ $value }}"
+
+      # Elasticsearch宕机告警
+      - alert: ElasticsearchDown
+        expr: up{job="elasticsearch"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "logging"
+        annotations:
+          summary: "Elasticsearch宕机告警"
+          description: "Elasticsearch日志服务已宕机"
+          value: "{{ $value }}"
+
+

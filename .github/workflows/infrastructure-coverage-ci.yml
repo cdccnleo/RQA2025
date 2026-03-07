@@ -1,0 +1,212 @@
+name: Infrastructure Layer Test Coverage CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/infrastructure/**'
+      - 'tests/unit/infrastructure/**'
+      - 'tests/integration/test_infrastructure_integration.py'
+      - 'scripts/test_automation_runner.py'
+      - '.github/workflows/infrastructure-coverage-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/infrastructure/**'
+      - 'tests/unit/infrastructure/**'
+      - 'tests/integration/test_infrastructure_integration.py'
+  workflow_dispatch:
+
+jobs:
+  infrastructure-tests:
+    name: Infrastructure Layer Tests
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.9']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-python-${{ matrix.python-version }}-infra-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-${{ matrix.python-version }}-infra-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov pytest-html pytest-xdist coverage[toml]
+        pip install -r requirements-dev.txt
+
+    - name: Set up test environment
+      run: |
+        mkdir -p test_results/infrastructure
+        mkdir -p coverage_reports/infrastructure
+        mkdir -p logs/infrastructure
+
+    - name: Run Infrastructure Core Components Tests
+      run: |
+        python -m pytest tests/unit/infrastructure/test_*_core_components.py -v --tb=short --timeout=300 --maxfail=5 --durations=10
+      continue-on-error: false
+
+    - name: Run Infrastructure Boundary Condition Tests
+      run: |
+        python -m pytest tests/unit/infrastructure/test_boundary_conditions.py -v --tb=short --timeout=300
+      continue-on-error: false
+
+    - name: Run Infrastructure Integration Tests
+      run: |
+        python -m pytest tests/integration/test_infrastructure_integration.py -v --tb=short --timeout=600
+      continue-on-error: false
+
+    - name: Run Infrastructure Performance Tests
+      run: |
+        python -m pytest tests/unit/infrastructure/test_performance_framework.py -v --tb=short --timeout=300
+      continue-on-error: true
+
+    - name: Generate Infrastructure Coverage Report
+      run: |
+        python -m pytest --cov=src/infrastructure --cov-report=xml:coverage_reports/infrastructure/coverage.xml --cov-report=html:coverage_reports/infrastructure/htmlcov --cov-report=term-missing:coverage_reports/infrastructure/term_report.txt tests/unit/infrastructure/ tests/integration/test_infrastructure_integration.py
+
+    - name: Check Infrastructure Coverage Threshold
+      run: |
+        python scripts/check_coverage_threshold.py --coverage-file coverage_reports/infrastructure/coverage.xml --threshold 75 --module infrastructure
+      continue-on-error: false
+
+    - name: Upload Infrastructure Coverage XML
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage_reports/infrastructure/coverage.xml
+        flags: infrastructure-tests
+        name: infrastructure-coverage
+        fail_ci_if_error: false
+
+    - name: Upload Infrastructure Coverage HTML
+      uses: actions/upload-artifact@v3
+      with:
+        name: infrastructure-coverage-html
+        path: coverage_reports/infrastructure/htmlcov/
+        retention-days: 30
+
+    - name: Upload Infrastructure Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: infrastructure-test-results
+        path: |
+          coverage_reports/infrastructure/
+          test_results/infrastructure/
+          logs/infrastructure/
+        retention-days: 30
+
+  quality-gate:
+    name: Infrastructure Quality Gate
+    runs-on: windows-latest
+    needs: infrastructure-tests
+    if: always()
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Download Infrastructure Coverage
+      uses: actions/download-artifact@v3
+      with:
+        name: infrastructure-coverage-html
+        path: coverage_reports/infrastructure/
+
+    - name: Install quality tools
+      run: |
+        pip install flake8 black isort mypy coverage[toml]
+
+    - name: Run Infrastructure Code Quality Checks
+      run: |
+        # Check infrastructure layer code quality
+        python -m flake8 src/infrastructure/ tests/unit/infrastructure/ tests/integration/test_infrastructure_integration.py --max-line-length=120 --extend-ignore=E203,W503 --statistics --count
+
+        # Check formatting
+        python -m black --check --diff src/infrastructure/ tests/unit/infrastructure/ tests/integration/test_infrastructure_integration.py
+
+        # Check import sorting
+        python -m isort --check-only --diff src/infrastructure/ tests/unit/infrastructure/ tests/integration/test_infrastructure_integration.py
+
+    - name: Generate Infrastructure Quality Report
+      run: |
+        echo "# 🏗️ Infrastructure Layer Quality Report" > infrastructure_quality_report.md
+        echo "" >> infrastructure_quality_report.md
+        echo "## 📊 Test Results" >> infrastructure_quality_report.md
+        echo "" >> infrastructure_quality_report.md
+
+        if [ "${{ needs.infrastructure-tests.result }}" == "success" ]; then
+          echo "✅ Infrastructure Tests: PASSED" >> infrastructure_quality_report.md
+        else
+          echo "❌ Infrastructure Tests: FAILED" >> infrastructure_quality_report.md
+        fi
+
+        echo "" >> infrastructure_quality_report.md
+        echo "## 🎯 Coverage Targets" >> infrastructure_quality_report.md
+        echo "- **Target**: 75% minimum coverage" >> infrastructure_quality_report.md
+        echo "- **Current**: See coverage report" >> infrastructure_quality_report.md
+        echo "" >> infrastructure_quality_report.md
+
+        echo "## 📋 Quality Gates" >> infrastructure_quality_report.md
+        echo "- ✅ Code formatting checks" >> infrastructure_quality_report.md
+        echo "- ✅ Import sorting checks" >> infrastructure_quality_report.md
+        echo "- ✅ Linting compliance" >> infrastructure_quality_report.md
+        echo "- ✅ Test coverage threshold" >> infrastructure_quality_report.md
+
+    - name: Upload Infrastructure Quality Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: infrastructure-quality-report
+        path: infrastructure_quality_report.md
+        retention-days: 30
+
+  coverage-dashboard:
+    name: Update Coverage Dashboard
+    runs-on: ubuntu-latest
+    needs: [infrastructure-tests, quality-gate]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download Infrastructure Coverage
+      uses: actions/download-artifact@v3
+      with:
+        name: infrastructure-coverage-html
+        path: coverage_reports/infrastructure/
+
+    - name: Generate Coverage Badge
+      run: |
+        # Generate coverage badge based on current coverage
+        python scripts/generate_coverage_badge.py --coverage-dir coverage_reports/infrastructure/ --output infrastructure_badge.json
+
+    - name: Update README with Coverage Status
+      run: |
+        python scripts/update_readme_coverage.py --badge-file infrastructure_badge.json --readme-file README.md
+
+    - name: Commit Coverage Updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md infrastructure_badge.json
+        git commit -m "Update infrastructure coverage badge [skip ci]" || echo "No changes to commit"

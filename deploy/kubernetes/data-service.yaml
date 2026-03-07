@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-service
+  namespace: rqa2025
+  labels:
+    app: data-service
+    version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-service
+  template:
+    metadata:
+      labels:
+        app: data-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: data-service
+        image: rqa2025/data-service:latest
+        ports:
+        - containerPort: 8002
+          name: http
+        env:
+        - name: SERVICE_NAME
+          value: "data-service"
+        - name: SERVICE_PORT
+          value: "8002"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: url
+        - name: LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8002
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-data-pvc
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: config-volume
+        configMap:
+          name: rqa2025-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-service
+  namespace: rqa2025
+  labels:
+    app: data-service
+spec:
+  selector:
+    app: data-service
+  ports:
+  - name: http
+    port: 8002
+    targetPort: 8002
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: data-service-network-policy
+  namespace: rqa2025
+spec:
+  podSelector:
+    matchLabels:
+      app: data-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8002
+  - from:
+    - podSelector:
+        matchLabels:
+          app: features-service
+    ports:
+    - protocol: TCP
+      port: 8002
+  - from:
+    - podSelector:
+        matchLabels:
+          app: monitoring-service
+    ports:
+    - protocol: TCP
+      port: 8002
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: database-service
+    ports:
+    - protocol: TCP
+      port: 5432 

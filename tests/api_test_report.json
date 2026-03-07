@@ -1,0 +1,1306 @@
+{
+  "test_time": "2026-02-18 13:09:30",
+  "base_url": "http://localhost:8000",
+  "summary": {
+    "total": 26,
+    "passed": 23,
+    "failed": 3,
+    "pass_rate": 88.46153846153845
+  },
+  "results": [
+    {
+      "name": "获取策略列表",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/conceptions",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "conceptions": [
+          {
+            "id": "arbitrage_20260208",
+            "name": "套利策略",
+            "type": "statistical",
+            "description": "",
+            "target_market": null,
+            "risk_level": null,
+            "nodes": [
+              {
+                "x": 100,
+                "y": 100,
+                "id": "data_source_1770531275002_0",
+                "name": "数据源",
+                "type": "data_source",
+                "parameters": {
+                  "symbol": "",
+                  "source_type": "akshare_stock_a"
+                }
+              },
+              {
+                "x": 250,
+                "y": 100,
+                "id": "model_1770531275412_1",
+                "name": "预测模型",
+                "type": "model",
+                "parameters": {
+                  "confidence": 0.95,
+                  "model_type": "linear_regression"
+                }
+              },
+              {
+                "x": 100,
+                "y": 250,
+                "id": "trade_1770531275412_2",
+                "name": "交易信号",
+                "type": "trade",
+                "parameters": {
+                  "exit_signal": "bearish",
+                  "entry_signal": "bullish"
+                }
+              },
+              {
+                "x": 250,
+                "y": 250,
+                "id": "risk_1770531275412_3",
+                "name": "风险控制",
+                "type": "risk",
+                "parameters": {
+                  "stop_loss": 0.05,
+                  "take_profit": 0.1,
+                  "max_position": 100000
+                }
+              }
+            ],
+            "connections": [
+              {
+                "id": "conn_data_source_1770531275002_0_model_1770531275412_1",
+                "source": "data_source_1770531275002_0",
+                "target": "model_1770531275412_1",
+                "sourceType": "data_source",
+                "targetType": "model"
+              },
+              {
+                "id": "conn_model_1770531275412_1_trade_1770531275412_2",
+                "source": "model_1770531275412_1",
+                "target": "trade_1770531275412_2",
+                "sourceType": "model",
+                "targetType": "trade"
+              },
+              {
+                "id": "conn_trade_1770531275412_2_risk_1770531275412_3",
+                "source": "trade_1770531275412_2",
+                "target": "risk_1770531275412_3",
+                "sourceType": "trade",
+                "targetType": "risk"
+              }
+            ],
+            "parameters": {
+              "max_holding_time": "300",
+              "spread_threshold": "0.005",
+              "correlation_threshold": "0.8"
+            },
+            "backtest_result": null,
+            "version": 2,
+            "created_at": "2026-02-08T14:14:44.046657",
+            "updated_at": "2026-02-08T14:14:44.046657",
+            "saved_locally": false
+          },
+          {
+            "id": "ml_based_20260208",
+            "name": "机器学习策略",
+            "type": "ml_based",
+            "description": "",
+            "target_market": null,
+            "risk_level": null,
+            "nodes": [
+              {
+                "x": 100,
+                "y": 100,
+                "id": "data_source_1770531233578_0",
+                "name": "数据源",
+                "type": "data_source",
+                "parameters": {
+                  "symbol": "",
+                  "source_type": "akshare_stock_a"
+                }
+              },
+              {
+                "x": 250,
+                "y": 100,
+                "id": "feature_1770531233935_1",
+                "name": "技术指标",
+                "type": "feature",
+                "parameters": {
+                  "period": 14,
+                  "indicators": [
+                    "SMA",
+                    "RSI"
+                  ]
+                }
+              },
+              {
+                "x": 100,
+                "y": 250,
+                "id": "model_1770531233935_2",
+                "name": "预测模型",
+                "type": "model",
+                "parameters": {
+                  "confidence": 0.95,
+                  "model_type": "linear_regression"
+                }
+              },
+              {
+                "x": 250,
+                "y": 250,
+                "id": "trade_1770531233935_3",
+                "name": "交易信号",
+                "type": "trade",
+                "parameters": {
+                  "exit_signal": "bearish",
+                  "entry_signal": "bullish"
+                }
+              },
+              {
+                "x": 100,
+                "y": 400,
+                "id": "risk_1770531233935_4",
+                "name": "风险控制",
+                "type": "risk",
+                "parameters": {
+                  "stop_loss": 0.05,
+                  "take_profit": 0.1,
+                  "max_position": 100000
+                }
+              }
+            ],
+            "connections": [
+              {
+                "id": "conn_data_source_1770531233578_0_feature_1770531233935_1",
+                "source": "data_source_1770531233578_0",
+                "target": "feature_1770531233935_1",
+                "sourceType": "data_source",
+                "targetType": "feature"
+              },
+              {
+                "id": "conn_feature_1770531233935_1_model_1770531233935_2",
+                "source": "feature_1770531233935_1",
+                "target": "model_1770531233935_2",
+                "sourceType": "feature",
+                "targetType": "model"
+              },
+              {
+                "id": "conn_model_1770531233935_2_trade_1770531233935_3",
+                "source": "model_1770531233935_2",
+                "target": "trade_1770531233935_3",
+                "sourceType": "model",
+                "targetType": "trade"
+              },
+              {
+                "id": "conn_trade_1770531233935_3_risk_1770531233935_4",
+                "source": "trade_1770531233935_3",
+                "target": "risk_1770531233935_4",
+                "sourceType": "trade",
+                "targetType": "risk"
+              }
+            ],
+            "parameters": {
+              "model_type": "random_forest",
+              "feature_count": "10",
+              "training_period": "252",
+              "prediction_horizon": "5"
+            },
+            "backtest_result": null,
+            "version": 2,
+            "created_at": "2026-02-08T14:14:03.977290",
+            "updated_at": "2026-02-08T14:14:03.977291",
+            "saved_locally": false
+          },
+          {
+            "id": "mean_reversion_20260208",
+            "name": "均值回归策略",
+            "type": "mean_reversion",
+            "description": "",
+            "target_market": null,
+            "risk_level": null,
+            "nodes": [
+              {
+                "x": 100,
+                "y": 100,
+                "id": "data_source_1770531208361_0",
+                "name": "数据源",
+                "type": "data_source",
+                "parameters": {
+                  "symbol": "",
+                  "source_type": "akshare_stock_a"
+                }
+              },
+              {
+                "x": 250,
+                "y": 100,
+                "id": "feature_1770531208813_1",
+                "name": "技术指标",
+                "type": "feature",
+                "parameters": {
+                  "period": 14,
+                  "indicators": [
+                    "SMA",
+                    "RSI"
+                  ]
+                }
+              },
+              {
+                "x": 100,
+                "y": 250,
+                "id": "model_1770531208813_2",
+                "name": "预测模型",
+                "type": "model",
+                "parameters": {
+                  "confidence": 0.95,
+                  "model_type": "linear_regression"
+                }
+              },
+              {
+                "x": 250,
+                "y": 250,
+                "id": "trade_1770531208813_3",
+                "name": "交易信号",
+                "type": "trade",
+                "parameters": {
+                  "exit_signal": "bearish",
+                  "entry_signal": "bullish"
+                }
+              },
+              {
+                "x": 100,
+                "y": 400,
+                "id": "risk_1770531208813_4",
+                "name": "风险控制",
+                "type": "risk",
+                "parameters": {
+                  "stop_loss": 0.05,
+                  "take_profit": 0.1,
+                  "max_position": 100000
+                }
+              }
+            ],
+            "connections": [
+              {
+                "id": "conn_data_source_1770531208361_0_feature_1770531208813_1",
+                "source": "data_source_1770531208361_0",
+                "target": "feature_1770531208813_1",
+                "sourceType": "data_source",
+                "targetType": "feature"
+              },
+              {
+                "id": "conn_feature_1770531208813_1_model_1770531208813_2",
+                "source": "feature_1770531208813_1",
+                "target": "model_1770531208813_2",
+                "sourceType": "feature",
+                "targetType": "model"
+              },
+              {
+                "id": "conn_model_1770531208813_2_trade_1770531208813_3",
+                "source": "model_1770531208813_2",
+                "target": "trade_1770531208813_3",
+                "sourceType": "model",
+                "targetType": "trade"
+              },
+              {
+                "id": "conn_trade_1770531208813_3_risk_1770531208813_4",
+                "source": "trade_1770531208813_3",
+                "target": "risk_1770531208813_4",
+                "sourceType": "trade",
+                "targetType": "risk"
+              }
+            ],
+            "parameters": {
+              "holding_period": "5",
+              "lookback_period": "20",
+              "deviation_threshold": "2"
+            },
+            "backtest_result": null,
+            "version": 2,
+            "created_at": "2026-02-08T14:13:41.452800",
+            "updated_at": "2026-02-08T14:13:41.452800",
+            "saved_locally": false
+          },
+          {
+            "id": "trend_following_20260208",
+            "name": "趋势跟踪策略",
+            "type": "trend_following",
+            "description": "",
+            "target_market": null,
+            "risk_level": null,
+            "nodes": [
+              {
+                "x": 100,
+                "y": 100,
+                "id": "data_source_1770531163876_0",
+                "name": "数据源",
+                "type": "data_source",
+                "parameters": {
+                  "symbol": "",
+                  "source_type": "akshare_stock_a"
+                }
+              },
+              {
+                "x": 250,
+                "y": 100,
+                "id": "feature_1770531164308_1",
+                "name": "技术指标",
+                "type": "feature",
+                "parameters": {
+                  "period": 14,
+                  "indicators": [
+                    "SMA",
+                    "RSI"
+                  ]
+                }
+              },
+              {
+                "x": 100,
+                "y": 250,
+                "id": "trade_1770531164308_2",
+                "name": "交易信号",
+                "type": "trade",
+                "parameters": {
+                  "exit_signal": "bearish",
+                  "entry_signal": "bullish"
+                }
+              },
+              {
+                "x": 250,
+                "y": 250,
+                "id": "risk_1770531164308_3",
+                "name": "风险控制",
+                "type": "risk",
+                "parameters": {
+                  "stop_loss": 0.05,
+                  "take_profit": 0.1,
+                  "max_position": 100000
+                }
+              }
+            ],
+            "connections": [
+              {
+                "id": "conn_data_source_1770531163876_0_feature_1770531164308_1",
+                "source": "data_source_1770531163876_0",
+                "target": "feature_1770531164308_1",
+                "sourceType": "data_source",
+                "targetType": "feature"
+              },
+              {
+                "id": "conn_feature_1770531164308_1_trade_1770531164308_2",
+                "source": "feature_1770531164308_1",
+                "target": "trade_1770531164308_2",
+                "sourceType": "feature",
+                "targetType": "trade"
+              },
+              {
+                "id": "conn_trade_1770531164308_2_risk_1770531164308_3",
+                "source": "trade_1770531164308_2",
+                "target": "risk_1770531164308_3",
+                "sourceType": "trade",
+                "targetType": "risk"
+              }
+            ],
+            "parameters": {
+              "trend_period": "20",
+              "exit_threshold": "0.01",
+              "entry_threshold": "0.02"
+            },
+            "backtest_result": null,
+            "version": 2,
+            "created_at": "2026-02-08T14:12:54.276069",
+            "updated_at": "2026-02-08T14:12:54.276069",
+            "saved_locally": false
+          }
+        ],
+        "count": 4,
+        "timestamp": 1771391369.7450314
+      }
+    },
+    {
+      "name": "获取策略统计",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/list",
+      "status_code": 404,
+      "expected_status": 200,
+      "success": false,
+      "response": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "name": "获取回测结果列表",
+      "method": "GET",
+      "endpoint": "/api/v1/backtest",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "backtests": [
+          {
+            "backtest_id": "backtest_model_model_job_1771237605_20260216_182646_1771334173",
+            "strategy_id": "model_model_job_1771237605_20260216_182646",
+            "status": "completed",
+            "start_date": "2026-02-03",
+            "end_date": "2026-02-13",
+            "initial_capital": 100000.0,
+            "final_capital": 111149.58,
+            "total_return": 0.1115,
+            "annualized_return": 6.6193,
+            "sharpe_ratio": 2.0685,
+            "max_drawdown": -0.241,
+            "win_rate": 0.5,
+            "total_trades": 4,
+            "equity_curve": [
+              100000,
+              99824.28,
+              96886.27,
+              96727.36,
+              97063.36,
+              100367.36,
+              100343.36,
+              96911.36,
+              104871.36,
+              107823.36,
+              133663.36,
+              132706.49,
+              126846.94,
+              124339.99,
+              128965.99,
+              135724.99,
+              135427.99,
+              146443.99,
+              111149.58
+            ],
+            "trades": [
+              {
+                "cost": 87991.72,
+                "type": "buy",
+                "price": 109.88,
+                "symbol": "002837",
+                "quantity": 800,
+                "timestamp": "2026-02-03 00:00:00",
+                "commission": 87.9
+              },
+              {
+                "pnl": -3025.83,
+                "type": "sell",
+                "price": 106.2,
+                "symbol": "002837",
+                "revenue": 84877.99,
+                "quantity": 800,
+                "timestamp": "2026-02-04 00:00:00",
+                "commission": 84.96,
+                "pnl_percent": -3.44,
+                "holding_period": "1 days 00:00:00"
+              },
+              {
+                "cost": 79574.91,
+                "type": "buy",
+                "price": 99.37,
+                "symbol": "002837",
+                "quantity": 800,
+                "timestamp": "2026-02-05 00:00:00",
+                "commission": 79.5
+              },
+              {
+                "cost": 14456.87,
+                "type": "buy",
+                "price": 144.42,
+                "symbol": "688702",
+                "quantity": 100,
+                "timestamp": "2026-02-04 00:00:00",
+                "commission": 14.44
+              },
+              {
+                "pnl": -689.97,
+                "type": "sell",
+                "price": 137.66,
+                "symbol": "688702",
+                "revenue": 13752.45,
+                "quantity": 100,
+                "timestamp": "2026-02-05 00:00:00",
+                "commission": 13.77,
+                "pnl_percent": -4.78,
+                "holding_period": "1 days 00:00:00"
+              },
+              {
+                "cost": 13496.95,
+                "type": "buy",
+                "price": 134.83,
+                "symbol": "688702",
+                "quantity": 100,
+                "timestamp": "2026-02-06 00:00:00",
+                "commission": 13.48
+              },
+              {
+                "pnl": 10835.65,
+                "note": "End of backtest forced liquidation",
+                "type": "sell_forced",
+                "price": 113.03,
+                "symbol": "002837",
+                "revenue": 90331.07,
+                "quantity": 800,
+                "timestamp": "2026-02-13 00:00:00",
+                "commission": 90.42,
+                "pnl_percent": 13.63
+              },
+              {
+                "pnl": 4225.06,
+                "note": "End of backtest forced liquidation",
+                "type": "sell_forced",
+                "price": 177.26,
+                "symbol": "688702",
+                "revenue": 17708.53,
+                "quantity": 100,
+                "timestamp": "2026-02-13 00:00:00",
+                "commission": 17.73,
+                "pnl_percent": 31.34
+              }
+            ],
+            "metrics": {
+              "symbols": [
+                "002837",
+                "688702"
+              ],
+              "model_id": "model_job_1771237605_20260216_182646",
+              "slippage": 0.001,
+              "win_rate": 50.0,
+              "data_points": 18,
+              "max_drawdown": -24.1,
+              "sharpe_ratio": 2.07,
+              "total_return": 11.15,
+              "total_trades": 4,
+              "final_capital": 111149.58,
+              "commission_rate": 0.001,
+              "initial_capital": 100000,
+              "annualized_return": 661.93
+            },
+            "created_at": "2026-02-17T21:16:13.158034+00:00",
+            "updated_at": "2026-02-17T21:16:13.158061+00:00"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "获取优化结果列表",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/optimization/results",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "results": [
+          {
+            "id": "opt_1771387775",
+            "parameters": {
+              "entry_threshold": 70,
+              "exit_threshold": 90,
+              "trend_period": 20
+            },
+            "score": 1056.2832960739318,
+            "sharpe_ratio": 1056.2832960739318,
+            "total_return": -0.007170558214872447,
+            "max_drawdown": -0.04523432778193148
+          },
+          {
+            "id": "opt_1771387753",
+            "parameters": {
+              "entry_threshold": 100,
+              "exit_threshold": 40,
+              "trend_period": 90
+            },
+            "score": 1114.7541670874102,
+            "sharpe_ratio": 1114.7541670874102,
+            "total_return": 0.020399114331542068,
+            "max_drawdown": -0.04766032316684887
+          },
+          {
+            "id": "opt_1771387739",
+            "parameters": {
+              "entry_threshold": 50,
+              "exit_threshold": 50,
+              "trend_period": 10
+            },
+            "score": 1080.6102005127564,
+            "sharpe_ratio": 1080.6102005127564,
+            "total_return": 0.022309072755914094,
+            "max_drawdown": -0.05546332856877023
+          },
+          {
+            "id": "opt_1771387719",
+            "parameters": {
+              "entry_threshold": 80,
+              "exit_threshold": 10,
+              "trend_period": 0
+            },
+            "score": 1246.541876843164,
+            "sharpe_ratio": 1246.541876843164,
+            "total_return": -0.00044851591459904583,
+            "max_drawdown": -0.0448613495665493
+          },
+          {
+            "id": "opt_1771387690",
+            "parameters": {
+              "deviation_threshold": 40,
+              "holding_period": 20,
+              "lookback_period": 40
+            },
+            "score": 1405.4468249870538,
+            "sharpe_ratio": 1405.4468249870538,
+            "total_return": 0.008943622778109006,
+            "max_drawdown": -0.03569034608831301
+          },
+          {
+            "id": "opt_1771381843",
+            "parameters": {
+              "entry_threshold": 10,
+              "exit_threshold": 0,
+              "trend_period": 100
+            },
+            "score": 1210.4979967033887,
+            "sharpe_ratio": 1210.4979967033887,
+            "total_return": -0.01768722542372947,
+            "max_drawdown": -0.05106982496922552
+          },
+          {
+            "id": "opt_1771381698",
+            "parameters": {
+              "deviation_threshold": 90,
+              "holding_period": 10,
+              "lookback_period": 90
+            },
+            "score": 1273.5475086008605,
+            "sharpe_ratio": 1273.5475086008605,
+            "total_return": -0.01636366093798214,
+            "max_drawdown": -0.04113168819019031
+          }
+        ]
+      }
+    },
+    {
+      "name": "创建工作流",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/workflow/create",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "success": true,
+        "workflow_id": "wf_1771391369_test_str",
+        "strategy_id": "test_strategy_api_001",
+        "current_status": "design",
+        "message": "工作流创建成功"
+      }
+    },
+    {
+      "name": "获取工作流进度",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/workflow/wf_1771391369_test_str/progress",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "workflow_id": "wf_1771391369_test_str",
+        "strategy_id": "test_strategy_api_001",
+        "strategy_name": "测试策略",
+        "current_status": "design",
+        "progress_percent": 25.0,
+        "completed_steps": 1,
+        "total_steps": 4,
+        "steps": [
+          {
+            "step_name": "design",
+            "status": "completed",
+            "start_time": 1771391369.8085186,
+            "end_time": 1771391369.8085186,
+            "result": {
+              "message": "策略设计完成"
+            },
+            "error_message": null
+          }
+        ],
+        "created_at": 1771391369.8085155,
+        "updated_at": 1771391369.8085163,
+        "completed_at": null
+      }
+    },
+    {
+      "name": "工作流状态转换",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/workflow/wf_1771391369_test_str/transition",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "success": true,
+        "message": "状态已转换到: backtest",
+        "progress": {
+          "workflow_id": "wf_1771391369_test_str",
+          "strategy_id": "test_strategy_api_001",
+          "strategy_name": "测试策略",
+          "current_status": "backtest",
+          "progress_percent": 25.0,
+          "completed_steps": 1,
+          "total_steps": 4,
+          "steps": [
+            {
+              "step_name": "design",
+              "status": "completed",
+              "start_time": 1771391369.8085186,
+              "end_time": 1771391369.8085186,
+              "result": {
+                "message": "策略设计完成"
+              },
+              "error_message": null
+            },
+            {
+              "step_name": "backtest",
+              "status": "running",
+              "start_time": 1771391369.8389013,
+              "end_time": null,
+              "result": null,
+              "error_message": null
+            }
+          ],
+          "created_at": 1771391369.8085155,
+          "updated_at": 1771391369.8388994,
+          "completed_at": null
+        }
+      }
+    },
+    {
+      "name": "列工作流",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/workflows",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "workflows": [
+          {
+            "workflow_id": "wf_1771391369_test_str",
+            "strategy_id": "test_strategy_api_001",
+            "strategy_name": "测试策略",
+            "current_status": "backtest",
+            "created_at": 1771391369.8085155,
+            "updated_at": 1771391369.8388994,
+            "completed_at": null
+          },
+          {
+            "workflow_id": "wf_1771391315_test_str",
+            "strategy_id": "test_strategy_api_001",
+            "strategy_name": "测试策略",
+            "current_status": "backtest",
+            "created_at": 1771391315.1363475,
+            "updated_at": 1771391315.1668704,
+            "completed_at": null
+          }
+        ],
+        "total": 2
+      }
+    },
+    {
+      "name": "创建生命周期",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/lifecycle/create",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "success": true,
+        "strategy_id": "test_strategy_api_001",
+        "strategy_name": "测试策略",
+        "current_status": "draft",
+        "created_at": 1771391369.8690543,
+        "message": "策略生命周期创建成功"
+      }
+    },
+    {
+      "name": "获取生命周期",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/lifecycle",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "exists": true,
+        "strategy_id": "test_strategy_api_001",
+        "strategy_name": "测试策略",
+        "current_status": "draft",
+        "created_at": 1771391369.8690543,
+        "updated_at": 1771391369.8690546,
+        "stats": {
+          "strategy_id": "test_strategy_api_001",
+          "strategy_name": "测试策略",
+          "current_status": "draft",
+          "created_at": 1771391369.8690543,
+          "updated_at": 1771391369.8690546,
+          "total_duration": 0.015405654907226562,
+          "stage_durations": {
+            "design": 0,
+            "backtest": 0,
+            "optimize": 0,
+            "paper_trading": 0
+          },
+          "event_count": 1
+        }
+      }
+    },
+    {
+      "name": "生命周期状态转换",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/lifecycle/transition",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "success": true,
+        "message": "状态已转换到: design",
+        "strategy_id": "test_strategy_api_001",
+        "current_status": "design"
+      }
+    },
+    {
+      "name": "获取生命周期时间线",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/lifecycle/timeline",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "timeline": [
+          {
+            "time": "2026-02-18 13:09:29",
+            "event": "create",
+            "from": null,
+            "to": "draft",
+            "operator": "system",
+            "reason": "策略创建"
+          },
+          {
+            "time": "2026-02-18 13:09:29",
+            "event": "transition",
+            "from": "draft",
+            "to": "design",
+            "operator": "user",
+            "reason": "测试"
+          }
+        ],
+        "total_events": 2
+      }
+    },
+    {
+      "name": "获取生命周期统计",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/lifecycle/stats",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "strategy_name": "测试策略",
+        "current_status": "design",
+        "created_at": 1771391369.8690543,
+        "updated_at": 1771391369.9005768,
+        "total_duration": 0.050966501235961914,
+        "stage_durations": {
+          "design": 0,
+          "backtest": 0,
+          "optimize": 0,
+          "paper_trading": 0
+        },
+        "event_count": 2
+      }
+    },
+    {
+      "name": "列生命周期",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/lifecycles",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "lifecycles": [
+          {
+            "strategy_id": "test_strategy_api_001",
+            "strategy_name": "测试策略",
+            "current_status": "design",
+            "created_at": 1771391369.8690543,
+            "updated_at": 1771391369.9005768
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "获取生命周期概览",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/lifecycles/overview",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "total_strategies": 1,
+        "status_distribution": {
+          "draft": 0,
+          "design": 1,
+          "backtesting": 0,
+          "optimizing": 0,
+          "paper_trading": 0,
+          "live_trading": 0,
+          "paused": 0,
+          "archived": 0,
+          "failed": 0
+        },
+        "recent_active": [
+          {
+            "strategy_id": "test_strategy_api_001",
+            "strategy_name": "测试策略",
+            "current_status": "design",
+            "updated_at": 1771391369.9005768
+          }
+        ]
+      }
+    },
+    {
+      "name": "列策略版本",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/versions",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "versions": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "创建策略版本",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/version/create",
+      "status_code": 404,
+      "expected_status": 200,
+      "success": false,
+      "response": {
+        "detail": "策略不存在"
+      }
+    },
+    {
+      "name": "获取推荐列表",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/recommendations",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "total": 4,
+        "recommendations": [
+          {
+            "recommendation_id": "rec_1771391315_53",
+            "type": "strategy_improvement",
+            "title": "胜率偏低",
+            "description": "当前胜率 35.0% 低于建议值 40.0%，建议优化入场条件",
+            "confidence": 0.8,
+            "priority": 4,
+            "created_at": 1771391315.3702226,
+            "is_read": false,
+            "is_applied": false,
+            "metadata": {
+              "current_win_rate": 0.35
+            }
+          },
+          {
+            "recommendation_id": "rec_1771391315_5784",
+            "type": "performance_improvement",
+            "title": "夏普比率偏低",
+            "description": "当前夏普比率 0.30 低于建议值 0.5，建议优化参数或调整策略逻辑",
+            "confidence": 0.85,
+            "priority": 4,
+            "created_at": 1771391315.370208,
+            "is_read": false,
+            "is_applied": false,
+            "metadata": {
+              "current_sharpe": 0.3,
+              "threshold": 0.5
+            }
+          },
+          {
+            "recommendation_id": "rec_1771391315_1007",
+            "type": "risk_warning",
+            "title": "最大回撤偏高",
+            "description": "当前最大回撤 25.0% 偏高，建议优化风险控制",
+            "confidence": 0.75,
+            "priority": 3,
+            "created_at": 1771391315.3702185,
+            "is_read": false,
+            "is_applied": false,
+            "metadata": {
+              "current_drawdown": 0.25
+            }
+          },
+          {
+            "recommendation_id": "rec_1771391315_4601",
+            "type": "sample_size_warning",
+            "title": "交易样本不足",
+            "description": "当前交易次数 0 较少，统计结果可能不可靠，建议延长回测时间",
+            "confidence": 0.9,
+            "priority": 2,
+            "created_at": 1771391315.3702264,
+            "is_read": false,
+            "is_applied": false,
+            "metadata": {
+              "total_trades": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "获取未读推荐数量",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/recommendations/unread-count",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "total_unread": 4,
+        "priority_distribution": {
+          "1": 0,
+          "2": 1,
+          "3": 1,
+          "4": 2,
+          "5": 0
+        },
+        "has_high_priority": true
+      }
+    },
+    {
+      "name": "分析回测结果",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/recommendations/analyze",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "success": true,
+        "strategy_id": "test_strategy_api_001",
+        "recommendations_generated": 4,
+        "recommendations": [
+          {
+            "recommendation_id": "rec_1771391370_6614",
+            "type": "performance_improvement",
+            "title": "夏普比率偏低",
+            "description": "当前夏普比率 0.30 低于建议值 0.5，建议优化参数或调整策略逻辑",
+            "confidence": 0.85,
+            "priority": 4,
+            "created_at": 1771391370.0274887
+          },
+          {
+            "recommendation_id": "rec_1771391370_7021",
+            "type": "risk_warning",
+            "title": "最大回撤偏高",
+            "description": "当前最大回撤 25.0% 偏高，建议优化风险控制",
+            "confidence": 0.75,
+            "priority": 3,
+            "created_at": 1771391370.0274963
+          },
+          {
+            "recommendation_id": "rec_1771391370_8590",
+            "type": "strategy_improvement",
+            "title": "胜率偏低",
+            "description": "当前胜率 35.0% 低于建议值 40.0%，建议优化入场条件",
+            "confidence": 0.8,
+            "priority": 4,
+            "created_at": 1771391370.0275
+          },
+          {
+            "recommendation_id": "rec_1771391370_9611",
+            "type": "sample_size_warning",
+            "title": "交易样本不足",
+            "description": "当前交易次数 0 较少，统计结果可能不可靠，建议延长回测时间",
+            "confidence": 0.9,
+            "priority": 2,
+            "created_at": 1771391370.027504
+          }
+        ]
+      }
+    },
+    {
+      "name": "记录性能",
+      "method": "POST",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/performance/record",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "success": true,
+        "snapshot_id": "snap_1771391370_7344",
+        "strategy_id": "test_strategy_api_001",
+        "timestamp": 1771391370.042683,
+        "message": "性能记录成功"
+      }
+    },
+    {
+      "name": "获取性能历史",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/performance/history?days=7",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "metric": "all",
+        "days": 7,
+        "data_points": 2,
+        "history": [
+          {
+            "timestamp": 1771391315.3857973,
+            "metrics": {
+              "sharpe_ratio": 1.2,
+              "total_return": 0.15,
+              "max_drawdown": 0.1,
+              "win_rate": 0.55
+            }
+          },
+          {
+            "timestamp": 1771391370.042683,
+            "metrics": {
+              "sharpe_ratio": 1.2,
+              "total_return": 0.15,
+              "max_drawdown": 0.1,
+              "win_rate": 0.55
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "获取最新指标",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/performance/latest",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "timestamp": 1771391370.075649,
+        "metrics": {
+          "total_return": 0.15,
+          "sharpe_ratio": 1.2,
+          "max_drawdown": 0.1,
+          "win_rate": 0.55
+        }
+      }
+    },
+    {
+      "name": "获取指标定义",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/performance/metrics",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "metrics": {
+          "total_return": {
+            "label": "总收益率",
+            "unit": "%",
+            "format": ".2f"
+          },
+          "annual_return": {
+            "label": "年化收益率",
+            "unit": "%",
+            "format": ".2f"
+          },
+          "sharpe_ratio": {
+            "label": "夏普比率",
+            "unit": "",
+            "format": ".2f"
+          },
+          "max_drawdown": {
+            "label": "最大回撤",
+            "unit": "%",
+            "format": ".2f"
+          },
+          "volatility": {
+            "label": "波动率",
+            "unit": "%",
+            "format": ".2f"
+          },
+          "win_rate": {
+            "label": "胜率",
+            "unit": "%",
+            "format": ".1f"
+          },
+          "profit_factor": {
+            "label": "盈亏比",
+            "unit": "",
+            "format": ".2f"
+          },
+          "total_trades": {
+            "label": "交易次数",
+            "unit": "",
+            "format": "d"
+          },
+          "avg_trade_return": {
+            "label": "平均交易收益",
+            "unit": "%",
+            "format": ".2f"
+          },
+          "calmar_ratio": {
+            "label": "卡玛比率",
+            "unit": "",
+            "format": ".2f"
+          }
+        }
+      }
+    },
+    {
+      "name": "计算性能评分",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/performance/score",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response": {
+        "strategy_id": "test_strategy_api_001",
+        "overall_score": 64.2,
+        "grade": "B",
+        "grade_description": "良好",
+        "component_scores": {
+          "sharpe_ratio": 60.0,
+          "max_drawdown": 50.0,
+          "win_rate": 91.7
+        },
+        "weights": {
+          "sharpe_ratio": 0.3,
+          "total_return": 0.25,
+          "max_drawdown": 0.2,
+          "win_rate": 0.15,
+          "profit_factor": 0.1
+        },
+        "calculated_at": 1771391370.0950134
+      }
+    },
+    {
+      "name": "生成性能报告",
+      "method": "GET",
+      "endpoint": "/api/v1/strategy/test_strategy_api_001/performance/report?days=7",
+      "status_code": 400,
+      "expected_status": 200,
+      "success": false,
+      "response": {
+        "detail": "analyze_trend() got an unexpected keyword argument 'start_time'"
+      }
+    }
+  ]
+}

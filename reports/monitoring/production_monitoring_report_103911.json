@@ -1,0 +1,93 @@
+{
+  "monitoring_info": {
+    "timestamp": "2025-08-04T10:39:11.689117",
+    "prometheus_enabled": true,
+    "grafana_enabled": true,
+    "alertmanager_enabled": true,
+    "logging_enabled": true,
+    "tracing_enabled": true
+  },
+  "monitoring_status": {
+    "prometheus": "success",
+    "grafana": "success",
+    "alertmanager": "success",
+    "logging": "success",
+    "tracing": "success",
+    "alert_rules": "success"
+  },
+  "alert_rules_count": 8,
+  "alert_rules": [
+    {
+      "name": "HighCPUUsage",
+      "severity": "warning",
+      "condition": "cpu_usage > 80",
+      "threshold": 80.0,
+      "description": "CPU使用率超过80%"
+    },
+    {
+      "name": "HighMemoryUsage",
+      "severity": "warning",
+      "condition": "memory_usage > 85",
+      "threshold": 85.0,
+      "description": "内存使用率超过85%"
+    },
+    {
+      "name": "HighResponseTime",
+      "severity": "warning",
+      "condition": "response_time > 200",
+      "threshold": 200.0,
+      "description": "响应时间超过200ms"
+    },
+    {
+      "name": "HighErrorRate",
+      "severity": "critical",
+      "condition": "error_rate > 5",
+      "threshold": 5.0,
+      "description": "错误率超过5%"
+    },
+    {
+      "name": "ServiceDown",
+      "severity": "critical",
+      "condition": "up == 0",
+      "threshold": 0.0,
+      "description": "服务不可用"
+    },
+    {
+      "name": "LowThroughput",
+      "severity": "warning",
+      "condition": "throughput < 500",
+      "threshold": 500.0,
+      "description": "吞吐量低于500 req/s"
+    },
+    {
+      "name": "HighDiskUsage",
+      "severity": "warning",
+      "condition": "disk_usage > 90",
+      "threshold": 90.0,
+      "description": "磁盘使用率超过90%"
+    },
+    {
+      "name": "HighNetworkLatency",
+      "severity": "warning",
+      "condition": "network_latency > 100",
+      "threshold": 100.0,
+      "description": "网络延迟超过100ms"
+    }
+  ],
+  "configuration": {
+    "enable_prometheus": true,
+    "enable_grafana": true,
+    "enable_alertmanager": true,
+    "enable_logging": true,
+    "enable_tracing": true,
+    "alert_thresholds": null,
+    "retention_days": 30,
+    "scrape_interval": 30
+  },
+  "summary": {
+    "total_components": 6,
+    "successful_setups": 6,
+    "failed_setups": 0,
+    "alert_rules": 8
+  }
+}

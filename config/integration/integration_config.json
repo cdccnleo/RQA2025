@@ -1,0 +1,400 @@
+{
+  "integration_name": "business_process_integration",
+  "version": "1.0.0",
+  "description": "业务流程集成配置",
+  "author": "RQA Team",
+  "created_date": "2025-01-27",
+  
+  "general": {
+    "enabled": true,
+    "max_processes": 20,
+    "enable_health_monitoring": true,
+    "enable_performance_monitoring": true,
+    "log_level": "INFO",
+    "timeout_seconds": 300
+  },
+  
+  "external_systems": {
+    "market_data_providers": {
+      "alpha_vantage": {
+        "enabled": true,
+        "api_key": "${ALPHA_VANTAGE_API_KEY}",
+        "base_url": "https://www.alphavantage.co/query",
+        "rate_limit": "5 requests per minute",
+        "timeout_seconds": 30,
+        "retry_count": 3,
+        "retry_delay_seconds": 60
+      },
+      "yahoo_finance": {
+        "enabled": true,
+        "base_url": "https://query1.finance.yahoo.com",
+        "timeout_seconds": 20,
+        "retry_count": 2,
+        "retry_delay_seconds": 30
+      },
+      "polygon": {
+        "enabled": false,
+        "api_key": "${POLYGON_API_KEY}",
+        "base_url": "https://api.polygon.io",
+        "rate_limit": "5 requests per minute",
+        "timeout_seconds": 25,
+        "retry_count": 3,
+        "retry_delay_seconds": 60
+      }
+    },
+    
+    "ml_services": {
+      "model_service": {
+        "enabled": true,
+        "url": "http://localhost:8082",
+        "timeout_seconds": 60,
+        "retry_count": 2,
+        "retry_delay_seconds": 30,
+        "models": {
+          "ensemble_model_v2": {
+            "version": "2.1.0",
+            "input_features": 20,
+            "output_horizons": 5,
+            "confidence_threshold": 0.7
+          },
+          "lstm_model": {
+            "version": "1.5.0",
+            "input_features": 15,
+            "output_horizons": 3,
+            "confidence_threshold": 0.6
+          }
+        }
+      },
+      "feature_service": {
+        "enabled": true,
+        "url": "http://localhost:8083",
+        "timeout_seconds": 45,
+        "retry_count": 2,
+        "retry_delay_seconds": 20,
+        "features": [
+          "sma", "ema", "rsi", "macd", "bollinger_bands",
+          "stochastic", "williams_r", "cci", "adx", "atr"
+        ]
+      }
+    },
+    
+    "risk_services": {
+      "risk_engine": {
+        "enabled": true,
+        "url": "http://localhost:8084",
+        "timeout_seconds": 30,
+        "retry_count": 2,
+        "retry_delay_seconds": 15,
+        "risk_metrics": [
+          "var", "cvar", "sharpe_ratio", "max_drawdown",
+          "correlation", "beta", "volatility"
+        ]
+      },
+      "compliance_engine": {
+        "enabled": true,
+        "url": "http://localhost:8085",
+        "timeout_seconds": 25,
+        "retry_count": 1,
+        "retry_delay_seconds": 10,
+        "compliance_rules": [
+          "position_limits", "concentration_limits",
+          "volatility_limits", "correlation_limits"
+        ]
+      }
+    },
+    
+    "execution_services": {
+      "order_router": {
+        "enabled": true,
+        "url": "http://localhost:8086",
+        "timeout_seconds": 45,
+        "retry_count": 2,
+        "retry_delay_seconds": 20,
+        "brokers": [
+          "interactive_brokers", "td_ameritrade", "fidelity"
+        ]
+      },
+      "execution_engine": {
+        "enabled": true,
+        "url": "http://localhost:8087",
+        "timeout_seconds": 60,
+        "retry_count": 3,
+        "retry_delay_seconds": 30,
+        "execution_strategies": [
+          "market_order", "limit_order", "stop_order",
+          "twap", "vwap", "iceberg"
+        ]
+      }
+    }
+  },
+  
+  "data_integration": {
+    "data_sources": {
+      "real_time": {
+        "websocket": {
+          "enabled": true,
+          "url": "wss://stream.data.rqa.com",
+          "reconnect_attempts": 5,
+          "reconnect_delay_seconds": 10
+        },
+        "rest_api": {
+          "enabled": true,
+          "polling_interval_seconds": 30,
+          "batch_size": 100
+        }
+      },
+      "historical": {
+        "database": {
+          "enabled": true,
+          "type": "postgresql",
+          "connection_string": "${DB_CONNECTION_STRING}",
+          "max_connections": 20,
+          "connection_timeout_seconds": 30
+        },
+        "file_storage": {
+          "enabled": true,
+          "type": "s3",
+          "bucket": "rqa-market-data",
+          "region": "us-east-1",
+          "access_key": "${AWS_ACCESS_KEY}",
+          "secret_key": "${AWS_SECRET_KEY}"
+        }
+      }
+    },
+    
+    "data_formats": {
+      "input_formats": ["json", "csv", "parquet", "avro"],
+      "output_formats": ["json", "csv", "parquet"],
+      "intermediate_formats": ["pickle", "numpy", "pandas"],
+      "compression": ["gzip", "lz4", "snappy"]
+    },
+    
+    "data_quality": {
+      "validation_rules": {
+        "required_fields": ["symbol", "timestamp", "price", "volume"],
+        "data_types": {
+          "symbol": "string",
+          "timestamp": "datetime",
+          "price": "float",
+          "volume": "integer"
+        },
+        "value_ranges": {
+          "price": "> 0",
+          "volume": ">= 0",
+          "timestamp": "within_last_24h"
+        }
+      },
+      "quality_metrics": [
+        "completeness", "accuracy", "consistency",
+        "timeliness", "validity"
+      ],
+      "quality_thresholds": {
+        "completeness": 0.95,
+        "accuracy": 0.99,
+        "consistency": 0.98,
+        "timeliness": 30
+      }
+    }
+  },
+  
+  "api_integration": {
+    "rest_apis": {
+      "enabled": true,
+      "base_url": "https://api.rqa.com",
+      "version": "v1",
+      "authentication": {
+        "method": "jwt",
+        "token_expiry_hours": 24,
+        "refresh_token_enabled": true
+      },
+      "rate_limiting": {
+        "enabled": true,
+        "requests_per_minute": 1000,
+        "burst_limit": 100
+      },
+      "endpoints": {
+        "market_data": "/market-data",
+        "trading": "/trading",
+        "risk": "/risk",
+        "analytics": "/analytics"
+      }
+    },
+    
+    "graphql": {
+      "enabled": false,
+      "endpoint": "/graphql",
+      "introspection": true,
+      "playground": false
+    },
+    
+    "grpc": {
+      "enabled": false,
+      "port": 9090,
+      "ssl_enabled": true,
+      "max_message_size_mb": 100
+    }
+  },
+  
+  "message_queue": {
+    "kafka": {
+      "enabled": true,
+      "bootstrap_servers": ["localhost:9092"],
+      "topics": {
+        "market_data": "market-data-stream",
+        "trading_signals": "trading-signals",
+        "risk_alerts": "risk-alerts",
+        "execution_results": "execution-results"
+      },
+      "consumer_groups": {
+        "market_data_consumer": "market-data-group",
+        "trading_consumer": "trading-group",
+        "risk_consumer": "risk-group"
+      },
+      "producer_config": {
+        "acks": "all",
+        "retries": 3,
+        "batch_size": 16384,
+        "linger_ms": 10
+      },
+      "consumer_config": {
+        "auto_offset_reset": "latest",
+        "enable_auto_commit": false,
+        "max_poll_records": 500
+      }
+    },
+    
+    "redis": {
+      "enabled": true,
+      "host": "localhost",
+      "port": 6379,
+      "db": 0,
+      "password": "${REDIS_PASSWORD}",
+      "use_caching": true,
+      "cache_ttl_seconds": 3600
+    }
+  },
+  
+  "monitoring": {
+    "health_checks": {
+      "enabled": true,
+      "check_interval_seconds": 60,
+      "timeout_seconds": 10,
+      "endpoints": [
+        "/health",
+        "/ready",
+        "/live"
+      ]
+    },
+    
+    "metrics": {
+      "enabled": true,
+      "collection_interval_seconds": 30,
+      "exporters": {
+        "prometheus": {
+          "enabled": true,
+          "port": 9090,
+          "path": "/metrics"
+        },
+        "influxdb": {
+          "enabled": false,
+          "url": "http://localhost:8086",
+          "database": "rqa_metrics"
+        }
+      }
+    },
+    
+    "logging": {
+      "level": "INFO",
+      "format": "json",
+      "output": ["file", "console"],
+      "file_rotation": {
+        "max_size_mb": 100,
+        "backup_count": 5
+      },
+      "external_logging": {
+        "elasticsearch": {
+          "enabled": false,
+          "url": "http://localhost:9200",
+          "index": "rqa-logs"
+        }
+      }
+    }
+  },
+  
+  "error_handling": {
+    "retry_strategies": {
+      "exponential_backoff": {
+        "enabled": true,
+        "initial_delay_seconds": 1,
+        "max_delay_seconds": 300,
+        "multiplier": 2
+      },
+      "circuit_breaker": {
+        "enabled": true,
+        "failure_threshold": 5,
+        "recovery_timeout_seconds": 300,
+        "half_open_max_calls": 3
+      }
+    },
+    
+    "fallback_strategies": {
+      "data_source_fallback": {
+        "primary": "alpha_vantage",
+        "fallback": "yahoo_finance",
+        "cache_fallback": true
+      },
+      "service_fallback": {
+        "ml_service": "local_model",
+        "risk_service": "basic_risk_check",
+        "execution_service": "manual_execution"
+      }
+    },
+    
+    "error_notification": {
+      "enabled": true,
+      "channels": ["email", "slack", "webhook"],
+      "error_levels": {
+        "critical": ["email", "slack", "webhook"],
+        "error": ["email", "slack"],
+        "warning": ["slack"],
+        "info": ["log"]
+      }
+    }
+  },
+  
+  "security": {
+    "authentication": {
+      "enabled": true,
+      "methods": ["jwt", "oauth2", "api_key"],
+      "jwt": {
+        "secret_key": "${JWT_SECRET_KEY}",
+        "algorithm": "HS256",
+        "expiry_hours": 24
+      }
+    },
+    
+    "authorization": {
+      "enabled": true,
+      "role_based_access": true,
+      "permissions": {
+        "admin": ["read", "write", "delete", "execute"],
+        "operator": ["read", "write", "execute"],
+        "viewer": ["read"]
+      }
+    },
+    
+    "encryption": {
+      "data_at_rest": true,
+      "data_in_transit": true,
+      "algorithm": "AES-256",
+      "key_rotation_days": 90
+    },
+    
+    "audit": {
+      "enabled": true,
+      "log_all_operations": true,
+      "retention_days": 365,
+      "export_format": "json"
+    }
+  }
+}

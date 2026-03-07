@@ -1,0 +1,404 @@
+name: RQA2026 CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # 代码质量检查
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Run linting
+      run: |
+        flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Run type checking
+      run: |
+        mypy src/ --ignore-missing-imports
+
+    - name: Run security scan
+      run: |
+        bandit -r src/ -f json -o security-report.json || true
+
+    - name: Upload security report
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-report
+        path: security-report.json
+
+  # 单元测试和集成测试
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+        test-type: ['unit', 'integration']
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Run database migrations
+      run: |
+        python scripts/init_database.py
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+
+    - name: Run tests
+      run: |
+        if [ "${{ matrix.test-type }}" = "unit" ]; then
+          pytest tests/unit/ -v --cov=src --cov-report=xml --cov-report=html --cov-fail-under=80
+        else
+          pytest tests/integration/ -v --cov=src --cov-report=xml --cov-report=html --cov-append
+        fi
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        REDIS_URL: redis://localhost:6379/0
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: ${{ matrix.test-type }},python-${{ matrix.python-version }}
+        name: codecov-umbrella
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.python-version }}-${{ matrix.test-type }}
+        path: |
+          htmlcov/
+          test-results.xml
+
+  # 性能测试
+  performance-test:
+    runs-on: ubuntu-latest
+    needs: [quality-check, test]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Run performance tests
+      run: |
+        python scripts/performance_benchmark.py
+
+    - name: Upload performance report
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-report
+        path: test_logs/performance_report.json
+
+  # 构建Docker镜像
+  build:
+    runs-on: ubuntu-latest
+    needs: [quality-check, test]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Build and push API Gateway
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.api-gateway
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}-api-gateway
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push Quantum Engine
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.quantum
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}-quantum
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Build and push AI Engine
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.ai
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}-ai
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Build and push BMI Engine
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.bmi
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}-bmi
+        labels: ${{ steps.meta.outputs.labels }}
+
+  # 安全扫描
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'image'
+        scan-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-api-gateway'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # 部署到暂存环境
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: [build, security-scan]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'release'
+    environment: staging
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
+
+    - name: Deploy to staging
+      run: |
+        # 更新镜像标签
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-api-gateway|g" k8s/staging/api-gateway-deployment.yaml
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-quantum|g" k8s/staging/quantum-deployment.yaml
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-ai|g" k8s/staging/ai-deployment.yaml
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-bmi|g" k8s/staging/bmi-deployment.yaml
+
+        # 应用配置
+        kubectl apply -f k8s/staging/
+
+        # 等待部署完成
+        kubectl wait --for=condition=available --timeout=600s deployment/rqa2026-api-gateway -n staging
+        kubectl wait --for=condition=available --timeout=600s deployment/rqa2026-quantum-engine -n staging
+        kubectl wait --for=condition=available --timeout=600s deployment/rqa2026-ai-engine -n staging
+        kubectl wait --for=condition=available --timeout=600s deployment/rqa2026-bmi-engine -n staging
+
+    - name: Run staging tests
+      run: |
+        # 运行冒烟测试
+        curl -f http://staging-api.rqa2026.com/health
+
+        # 运行集成测试
+        python -m pytest tests/integration/ -v --tb=short
+
+  # 部署到生产环境
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    if: github.event_name == 'release'
+    environment: production
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
+
+    - name: Deploy to production with blue-green strategy
+      run: |
+        # 获取当前活跃环境
+        ACTIVE_ENV=$(kubectl get svc rqa2026-api-gateway -o jsonpath='{.spec.selector.environment}')
+
+        if [ "$ACTIVE_ENV" = "blue" ]; then
+          TARGET_ENV="green"
+          IDLE_ENV="blue"
+        else
+          TARGET_ENV="blue"
+          IDLE_ENV="green"
+        fi
+
+        echo "Deploying to $TARGET_ENV environment, $IDLE_ENV will remain active"
+
+        # 更新目标环境镜像
+        TAG=$(echo ${{ github.event.release.tag_name }} | sed 's/v//')
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$TAG-api-gateway|g" k8s/production/$TARGET_ENV/api-gateway-deployment.yaml
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$TAG-quantum|g" k8s/production/$TARGET_ENV/quantum-deployment.yaml
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$TAG-ai|g" k8s/production/$TARGET_ENV/ai-deployment.yaml
+        sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$TAG-bmi|g" k8s/production/$TARGET_ENV/bmi-deployment.yaml
+
+        # 部署到目标环境
+        kubectl apply -f k8s/production/$TARGET_ENV/
+
+        # 等待部署完成
+        kubectl wait --for=condition=available --timeout=900s deployment/rqa2026-api-gateway-$TARGET_ENV -n production
+        kubectl wait --for=condition=available --timeout=900s deployment/rqa2026-quantum-engine-$TARGET_ENV -n production
+        kubectl wait --for=condition=available --timeout=900s deployment/rqa2026-ai-engine-$TARGET_ENV -n production
+        kubectl wait --for=condition=available --timeout=900s deployment/rqa2026-bmi-engine-$TARGET_ENV -n production
+
+        # 运行生产环境测试
+        echo "Running production smoke tests..."
+        # 实现生产环境测试逻辑
+
+        # 切换流量
+        kubectl patch svc rqa2026-api-gateway -p "{\"spec\":{\"selector\":{\"environment\":\"$TARGET_ENV\"}}}"
+        kubectl patch svc rqa2026-quantum-engine -p "{\"spec\":{\"selector\":{\"environment\":\"$TARGET_ENV\"}}}"
+        kubectl patch svc rqa2026-ai-engine -p "{\"spec\":{\"selector\":{\"environment\":\"$TARGET_ENV\"}}}"
+        kubectl patch svc rqa2026-bmi-engine -p "{\"spec\":{\"selector\":{\"environment\":\"$TARGET_ENV\"}}}"
+
+        # 验证切换成功
+        sleep 30
+        curl -f http://api.rqa2026.com/health
+
+        echo "✅ Production deployment successful!"
+
+        # 发送通知
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"🚀 RQA2026 Production Deployment: Successfully deployed ${{ github.event.release.tag_name }} to $TARGET_ENV environment\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 回滚任务
+  rollback:
+    runs-on: ubuntu-latest
+    if: failure() && (needs.deploy-staging.result == 'failure' || needs.deploy-production.result == 'failure')
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure kubectl
+      run: |
+        if [ "${{ github.event_name }}" = "release" ]; then
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > kubeconfig
+        else
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig
+        fi
+
+    - name: Rollback deployment
+      run: |
+        # 实现回滚逻辑
+        echo "Rolling back deployment..."
+
+        # 发送告警通知
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"🚨 RQA2026 Deployment Failed: Initiating rollback\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+
+

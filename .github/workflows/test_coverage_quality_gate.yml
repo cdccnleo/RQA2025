@@ -1,0 +1,71 @@
+# RQA2025 Test Coverage Quality Gate
+# 自动化测试覆盖率质量门配置
+
+name: Test Coverage Quality Gate
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-coverage-audit:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist coverage
+
+    - name: Run layered test coverage audit
+      run: |
+        python scripts/run_layered_coverage_audit.py
+
+    - name: Generate coverage report
+      run: |
+        python -m pytest --cov=src --cov-report=xml --cov-report=html -q
+
+    - name: Check coverage thresholds
+      run: |
+        python scripts/check_coverage_thresholds.py
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
+  quality-gate-check:
+    runs-on: windows-latest
+    needs: test-coverage-audit
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check layer coverage requirements
+      run: |
+        python scripts/validate_layer_coverage.py
+
+    - name: Generate audit report
+      run: |
+        python scripts/generate_coverage_audit_report.py
+
+    - name: Upload audit report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-audit-report
+        path: test_logs/

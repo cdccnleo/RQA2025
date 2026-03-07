@@ -1,0 +1,54 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+16 workers [4 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\quality\test_unified_quality_monitor.py::test_validator_handles_none_data 
+tests\unit\data\quality\test_unified_quality_monitor.py::TestUnifiedDataValidatorAdditional::test_normalize_data_type_default 
+tests\unit\data\test_data_quality.py::TestUnifiedQualityMonitor::test_quality_check_basic 
+tests\unit\data\quality\test_unified_quality_monitor.py::TestUnifiedQualityMonitorAdditional::test_get_quality_history_all_types 
+[gw2] [ 25%] FAILED tests\unit\data\quality\test_unified_quality_monitor.py::TestUnifiedQualityMonitorAdditional::test_get_quality_history_all_types 
+[gw3] [ 50%] FAILED tests\unit\data\test_data_quality.py::TestUnifiedQualityMonitor::test_quality_check_basic 
+[gw0] [ 75%] FAILED tests\unit\data\quality\test_unified_quality_monitor.py::test_validator_handles_none_data 
+[gw1] [100%] FAILED tests\unit\data\quality\test_unified_quality_monitor.py::TestUnifiedDataValidatorAdditional::test_normalize_data_type_default 
+
+================================== FAILURES ===================================
+___ TestUnifiedQualityMonitorAdditional.test_get_quality_history_all_types ____
+[gw2] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\quality\test_unified_quality_monitor.py:564: in test_get_quality_history_all_types
+    assert len(history) == 2
+E   assert 1 == 2
+E    +  where 1 = len([QualityMetrics(completeness=0.0, accuracy=0.0, consistency=0.0, timeliness=0.0, validity=0.0, overall_score=0.0, timestamp=datetime.datetime(2025, 11, 16, 20, 26, 36, 397532))])
+_____________ TestUnifiedQualityMonitor.test_quality_check_basic ______________
+[gw3] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\test_data_quality.py:126: in test_quality_check_basic
+    result = self.monitor.check_quality(test_data, DataSourceType.STOCK)
+C:\Users\AILeo\miniconda3\lib\enum.py:429: in __getattr__
+    raise AttributeError(name) from None
+E   AttributeError: STOCK
+______________________ test_validator_handles_none_data _______________________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\quality\test_unified_quality_monitor.py:22: in test_validator_handles_none_data
+    result = validator.validate(None, DataSourceType.DATABASE)
+C:\Users\AILeo\miniconda3\lib\enum.py:429: in __getattr__
+    raise AttributeError(name) from None
+E   AttributeError: DATABASE
+_____ TestUnifiedDataValidatorAdditional.test_normalize_data_type_default _____
+[gw1] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\quality\test_unified_quality_monitor.py:191: in test_normalize_data_type_default
+    unknown_type = DataSourceType.STOCK  # 鍋囪杩欐槸宸茬煡鐨勶紝浣嗘祴璇曢粯璁よ矾寰?
+C:\Users\AILeo\miniconda3\lib\enum.py:429: in __getattr__
+    raise AttributeError(name) from None
+E   AttributeError: STOCK
+=========================== short test summary info ===========================
+FAILED tests\unit\data\quality\test_unified_quality_monitor.py::TestUnifiedQualityMonitorAdditional::test_get_quality_history_all_types
+FAILED tests\unit\data\test_data_quality.py::TestUnifiedQualityMonitor::test_quality_check_basic
+FAILED tests\unit\data\quality\test_unified_quality_monitor.py::test_validator_handles_none_data
+FAILED tests\unit\data\quality\test_unified_quality_monitor.py::TestUnifiedDataValidatorAdditional::test_normalize_data_type_default
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 4 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!! xdist.dsession.Interrupted: stopping after 3 failures !!!!!!!!!!!!
+======================== 4 failed in 83.51s (0:01:23) =========================

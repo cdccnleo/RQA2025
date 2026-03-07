@@ -1,0 +1,197 @@
+[
+  {
+    "name": "cpu_usage_percent",
+    "type": "system",
+    "description": "CPU使用率百分比",
+    "unit": "percent",
+    "collection_method": "prometheus",
+    "query": "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+    "thresholds": {
+      "warning": 70.0,
+      "critical": 85.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "memory_usage_percent",
+    "type": "system",
+    "description": "内存使用率百分比",
+    "unit": "percent",
+    "collection_method": "prometheus",
+    "query": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+    "thresholds": {
+      "warning": 75.0,
+      "critical": 90.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "disk_usage_percent",
+    "type": "system",
+    "description": "磁盘使用率百分比",
+    "unit": "percent",
+    "collection_method": "prometheus",
+    "query": "(node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100",
+    "thresholds": {
+      "warning": 80.0,
+      "critical": 95.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "network_connections",
+    "type": "system",
+    "description": "网络连接数",
+    "unit": "count",
+    "collection_method": "prometheus",
+    "query": "node_netstat_Tcp_CurrEstab",
+    "thresholds": {
+      "warning": 1000,
+      "critical": 2000
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "application_response_time",
+    "type": "application",
+    "description": "应用响应时间",
+    "unit": "milliseconds",
+    "collection_method": "prometheus",
+    "query": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) * 1000",
+    "thresholds": {
+      "warning": 1000.0,
+      "critical": 5000.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "application_requests_per_second",
+    "type": "application",
+    "description": "应用请求速率",
+    "unit": "requests_per_second",
+    "collection_method": "prometheus",
+    "query": "rate(http_requests_total[5m])",
+    "thresholds": {
+      "warning": 100.0,
+      "critical": 10.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "application_error_rate",
+    "type": "application",
+    "description": "应用错误率",
+    "unit": "percent",
+    "collection_method": "prometheus",
+    "query": "(rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m])) * 100",
+    "thresholds": {
+      "warning": 1.0,
+      "critical": 5.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "application_memory_usage",
+    "type": "application",
+    "description": "应用内存使用量",
+    "unit": "bytes",
+    "collection_method": "custom",
+    "query": null,
+    "thresholds": {
+      "warning": 1073741824,
+      "critical": 2147483648
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "database_connections_active",
+    "type": "application",
+    "description": "数据库活跃连接数",
+    "unit": "count",
+    "collection_method": "prometheus",
+    "query": "pg_stat_activity_count{state=\"active\"}",
+    "thresholds": {
+      "warning": 50,
+      "critical": 100
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "redis_memory_usage",
+    "type": "application",
+    "description": "Redis内存使用量",
+    "unit": "bytes",
+    "collection_method": "prometheus",
+    "query": "redis_memory_used_bytes",
+    "thresholds": {
+      "warning": 536870912,
+      "critical": 1073741824
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "trading_volume_per_minute",
+    "type": "business",
+    "description": "每分钟交易量",
+    "unit": "trades_per_minute",
+    "collection_method": "custom",
+    "query": null,
+    "thresholds": {
+      "warning": 10.0,
+      "critical": 1.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "market_data_latency",
+    "type": "business",
+    "description": "市场数据延迟",
+    "unit": "milliseconds",
+    "collection_method": "custom",
+    "query": null,
+    "thresholds": {
+      "warning": 100.0,
+      "critical": 500.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "order_execution_success_rate",
+    "type": "business",
+    "description": "订单执行成功率",
+    "unit": "percent",
+    "collection_method": "custom",
+    "query": null,
+    "thresholds": {
+      "warning": 95.0,
+      "critical": 90.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "portfolio_value_change",
+    "type": "business",
+    "description": "投资组合价值变化",
+    "unit": "percent",
+    "collection_method": "custom",
+    "query": null,
+    "thresholds": {
+      "warning": -5.0,
+      "critical": -10.0
+    },
+    "alerting_enabled": true
+  },
+  {
+    "name": "risk_exposure_level",
+    "type": "business",
+    "description": "风险暴露水平",
+    "unit": "percent",
+    "collection_method": "custom",
+    "query": null,
+    "thresholds": {
+      "warning": 80.0,
+      "critical": 95.0
+    },
+    "alerting_enabled": true
+  }
+]

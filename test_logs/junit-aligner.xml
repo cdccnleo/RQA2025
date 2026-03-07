@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="6" time="0.310" timestamp="2025-11-16T17:05:51.273860+08:00" hostname="AIPC"><testcase classname="unit.data.alignment.test_data_aligner_unit" name="test_align_time_series_inner_and_history" time="0.110"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:data_processor.py:69 DataProcessor initialized
+INFO     __name__:data_aligner.py:68 DataAligner initialized
+INFO     __name__:data_aligner.py:580 对齐历史记录已保存到 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3776\test_align_time_series_inner_a0\history.json
+INFO     __name__:data_aligner.py:600 从 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3776\test_align_time_series_inner_a0\history.json 加载了 1 条对齐历史记录
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:DataProcessor initialized
+INFO:__name__:DataAligner initialized
+INFO:__name__:对齐历史记录已保存到 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3776\test_align_time_series_inner_a0\history.json
+INFO:__name__:从 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3776\test_align_time_series_inner_a0\history.json 加载了 1 条对齐历史记录
+
+</system-err></testcase><testcase classname="unit.data.alignment.test_data_aligner_unit" name="test_align_time_series_invalid_index_raises" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:data_processor.py:69 DataProcessor initialized
+INFO     __name__:data_aligner.py:68 DataAligner initialized
+ERROR    root:exceptions.py:33 基础设施异常: DATA_PROCESSING_ERROR - 数据框 'bad' 的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: not-a-date, at position 0
+ERROR    __name__:data_aligner.py:274 数据框 'bad' 的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: not-a-date, at position 0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:DataProcessor initialized
+INFO:__name__:DataAligner initialized
+ERROR:root:基础设施异常: DATA_PROCESSING_ERROR - 数据框 'bad' 的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: not-a-date, at position 0
+ERROR:__name__:数据框 'bad' 的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: not-a-date, at position 0
+
+</system-err></testcase><testcase classname="unit.data.alignment.test_data_aligner_unit" name="test_align_and_merge_outer_basic" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:data_processor.py:69 DataProcessor initialized
+INFO     __name__:data_aligner.py:68 DataAligner initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:DataProcessor initialized
+INFO:__name__:DataAligner initialized
+
+</system-err></testcase><testcase classname="unit.data.alignment.test_data_aligner_unit" name="test_align_to_reference_infer_freq_and_fill" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:data_processor.py:69 DataProcessor initialized
+INFO     __name__:data_aligner.py:68 DataAligner initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:DataProcessor initialized
+INFO:__name__:DataAligner initialized
+
+</system-err></testcase><testcase classname="unit.data.alignment.test_data_aligner_unit" name="test_align_to_reference_bad_ref_raises" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:data_processor.py:69 DataProcessor initialized
+INFO     __name__:data_aligner.py:68 DataAligner initialized
+ERROR    root:exceptions.py:33 基础设施异常: DATA_PROCESSING_ERROR - 参考数据框的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: bad, at position 0
+ERROR    __name__:data_aligner.py:414 参考数据框的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: bad, at position 0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:DataProcessor initialized
+INFO:__name__:DataAligner initialized
+ERROR:root:基础设施异常: DATA_PROCESSING_ERROR - 参考数据框的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: bad, at position 0
+ERROR:__name__:参考数据框的索引无法转换为DatetimeIndex: Unknown datetime string format, unable to parse: bad, at position 0
+
+</system-err></testcase><testcase classname="unit.data.alignment.test_data_aligner_unit" name="test_align_multi_frequency_resample_and_fill" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:data_processor.py:69 DataProcessor initialized
+INFO     __name__:data_aligner.py:68 DataAligner initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:DataProcessor initialized
+INFO:__name__:DataAligner initialized
+
+</system-err></testcase></testsuite></testsuites>

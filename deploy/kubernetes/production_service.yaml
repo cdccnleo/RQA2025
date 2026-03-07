@@ -1,0 +1,286 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-engine-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-engine
+    environment: production
+    cloud-native: "true"
+    tier: backend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "HTTP"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "8001"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/health"
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8001"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8001
+    targetPort: 8001
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-engine
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-infrastructure-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-infrastructure
+    environment: production
+    cloud-native: "true"
+    tier: backend
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8002"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8002
+    targetPort: 8002
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-infrastructure
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-business-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-business
+    environment: production
+    cloud-native: "true"
+    tier: backend
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8003"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8003
+    targetPort: 8003
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-business
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-api-gateway
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-api-gateway
+    environment: production
+    cloud-native: "true"
+    tier: frontend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "HTTP"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "8000"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-west-2:123456789012:certificate/your-certificate-id"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+    prometheus.io/path: "/metrics"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 8443
+    protocol: TCP
+    name: https
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-api-gateway
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+  externalTrafficPolicy: Local
+  healthCheckNodePort: 30000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-redis-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-redis
+    environment: production
+    cloud-native: "true"
+    tier: cache
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "6379"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-redis
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-postgres-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-postgres
+    environment: production
+    cloud-native: "true"
+    tier: database
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5432"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-postgres
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-prometheus-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-prometheus
+    environment: production
+    cloud-native: "true"
+    tier: monitoring
+  annotations:
+    prometheus.io/scrape: "false"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: http
+  selector:
+    app: rqa2025-prometheus
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-grafana-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-grafana
+    environment: production
+    cloud-native: "true"
+    tier: monitoring
+  annotations:
+    prometheus.io/scrape: "false"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: rqa2025-grafana
+    environment: production
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  publishNotReadyAddresses: false

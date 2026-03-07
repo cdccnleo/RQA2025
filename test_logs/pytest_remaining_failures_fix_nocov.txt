@@ -1,0 +1,87 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+16 workers [7 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\edge\test_edge_node_edges.py::test_edge_network_add_route_and_optimize 
+tests\unit\data\core\test_data_manager_deep_errors.py::test_load_data_cache_write_failure_raises 
+tests\unit\data\distributed\test_distributed_loader_and_sharding_unit.py::test_distributed_loader_round_robin_and_execution 
+tests\unit\data\processing\test_processing_unified_and_perf_unit.py::test_performance_optimizer_init_and_shutdown 
+tests\unit\data\distributed\test_ddl_ai_errors.py::test_select_node_raises_when_no_available_nodes 
+[gw4] [ 14%] PASSED tests\unit\data\edge\test_edge_node_edges.py::test_edge_network_add_route_and_optimize 
+[gw1] [ 28%] PASSED tests\unit\data\distributed\test_ddl_ai_errors.py::test_select_node_raises_when_no_available_nodes 
+tests\unit\data\distributed\test_ddl_ai_errors.py::test_execute_task_failure_path_updates_stats 
+[gw3] [ 42%] PASSED tests\unit\data\distributed\test_distributed_loader_and_sharding_unit.py::test_distributed_loader_round_robin_and_execution 
+[gw2] [ 57%] PASSED tests\unit\data\processing\test_processing_unified_and_perf_unit.py::test_performance_optimizer_init_and_shutdown 
+[gw1] [ 71%] PASSED tests\unit\data\distributed\test_ddl_ai_errors.py::test_execute_task_failure_path_updates_stats 馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+[gw0] [ 85%] FAILED tests\unit\data\core\test_data_manager_deep_errors.py::test_load_data_cache_write_failure_raises 
+tests\unit\data\core\test_data_manager_deep_errors.py::test_load_multi_source_aggregates_errors 
+[gw0] [100%] PASSED tests\unit\data\core\test_data_manager_deep_errors.py::test_load_multi_source_aggregates_errors 
+
+================================== FAILURES ===================================
+__________________ test_load_data_cache_write_failure_raises __________________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\core\test_data_manager_deep_errors.py:12: in load
+    return DataModel(self._data, frequency, metadata={"src": "dummy"})
+E   TypeError: Can't instantiate abstract class DataModel with abstract method get_data
+
+During handling of the above exception, another exception occurred:
+tests\unit\data\core\test_data_manager_deep_errors.py:66: in test_load_data_cache_write_failure_raises
+    _run(dm.load_data("stock", "2024-01-01", "2024-01-31", "1d", symbols=["X"]))
+tests\unit\data\core\test_data_manager_deep_errors.py:48: in _run
+    return loop.run_until_complete(coro)
+C:\Users\AILeo\miniconda3\lib\asyncio\base_events.py:647: in run_until_complete
+    return future.result()
+src\data\core\data_manager.py:960: in load_data
+    raise DataLoaderError(f"Data loading failed: {e}")
+E   src.infrastructure.utils.core.exceptions.DataLoaderError: Data loading failed: Can't instantiate abstract class DataModel with abstract method get_data
+
+During handling of the above exception, another exception occurred:
+tests\unit\data\core\test_data_manager_deep_errors.py:66: in test_load_data_cache_write_failure_raises
+    _run(dm.load_data("stock", "2024-01-01", "2024-01-31", "1d", symbols=["X"]))
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'Cache write failed'
+E    Input: "Data loading failed: Can't instantiate abstract class DataModel with abstract method get_data"
+---------------------------- Captured stderr call -----------------------------
+WARNING:data_manager:缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄦ爣鍑唋ogging
+WARNING:data_manager:浣跨敤闄嶇骇鍩虹璁炬柦鏈嶅姟
+WARNING:data_manager:闄嶇骇缂撳瓨鍒濆鍖栧け璐? No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 22:12:20,054 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:浣跨敤闄嶇骇缂撳瓨绠＄悊鍣?
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:鏍稿績鏈嶅姟娉ㄥ唽瀹屾垚
+INFO:data_manager:DataManager initialized successfully
+ERROR:data_manager:Failed to load data: Can't instantiate abstract class DataModel with abstract method get_data
+ERROR:root:鍩虹璁炬柦寮傚父: DATA_LOADER_ERROR - Data loading failed: Can't instantiate abstract class DataModel with abstract method get_data
+INFO:data_manager:DataManager shutdown completed
+------------------------------ Captured log call ------------------------------
+WARNING  data_manager:data_manager.py:459 缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄦ爣鍑唋ogging
+WARNING  data_manager:data_manager.py:495 浣跨敤闄嶇骇鍩虹璁炬柦鏈嶅姟
+WARNING  data_manager:data_manager.py:516 闄嶇骇缂撳瓨鍒濆鍖栧け璐? No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 浣跨敤闄嶇骇缂撳瓨绠＄悊鍣?
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 鏍稿績鏈嶅姟娉ㄥ唽瀹屾垚
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+ERROR    data_manager:data_manager.py:959 Failed to load data: Can't instantiate abstract class DataModel with abstract method get_data
+ERROR    root:exceptions.py:33 鍩虹璁炬柦寮傚父: DATA_LOADER_ERROR - Data loading failed: Can't instantiate abstract class DataModel with abstract method get_data
+INFO     data_manager:data_manager.py:1258 DataManager shutdown completed
+-------------------------- Captured stderr teardown ---------------------------
+2025-11-16 22:12:20,211 - disk_cache - INFO - Cleaned up 30 expired cache files
+INFO:disk_cache:Cleaned up 30 expired cache files
+=========================== short test summary info ===========================
+FAILED tests\unit\data\core\test_data_manager_deep_errors.py::test_load_data_cache_write_failure_raises
+=================== 1 failed, 6 passed in 62.22s (0:01:02) ====================

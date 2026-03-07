@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="1" skipped="0" tests="4" time="3.583" timestamp="2025-11-16T13:18:27.453845+08:00" hostname="AIPC"><testcase classname="unit.features.processors.test_feature_correlation_extra" name="test_export_and_plot_correlation_report" time="0.899"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_correlation:feature_correlation.py:53 开始特征相关性分析，特征数量: 3
+INFO     src.features.processors.feature_correlation:feature_correlation.py:75 特征相关性分析完成，检测到 1 个多重共线性组
+INFO     src.features.processors.feature_correlation:feature_correlation.py:382 特征相关性报告已导出到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3657\test_export_and_plot_correlati0\corr_report.json
+INFO     src.features.processors.feature_correlation:feature_correlation.py:358 相关性热力图已保存到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3657\test_export_and_plot_correlati0\corr_heatmap.png
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_correlation:开始特征相关性分析，特征数量: 3
+INFO:src.features.processors.feature_correlation:特征相关性分析完成，检测到 1 个多重共线性组
+INFO:src.features.processors.feature_correlation:特征相关性报告已导出到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3657\test_export_and_plot_correlati0\corr_report.json
+INFO:src.features.processors.feature_correlation:相关性热力图已保存到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3657\test_export_and_plot_correlati0\corr_heatmap.png
+
+</system-err></testcase><testcase classname="unit.features.processors.test_feature_correlation_extra" name="test_group_correlated_features_empty_and_pair" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.processors.test_feature_correlation_extra" name="test_get_feature_recommendations_coverage" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.processors.test_feature_importance_fallback" name="test_permutation_importance_double_fallback" time="0.003"><failure message="sklearn.utils._param_validation.InvalidParameterError: The 'estimator' parameter of permutation_importance must be an object implementing 'fit'. Got &lt;RQA2025.tests.unit.features.processors.test_feature_importance_fallback._DummyModel object at 0x0000028C1EE788B0&gt; instead.">tests\unit\features\processors\test_feature_importance_fallback.py:40: in test_permutation_importance_double_fallback
+    scores = analyzer.calculate_permutation_importance(X, y, feature_names, n_repeats=3, scoring="accuracy")
+src\features\processors\feature_importance.py:75: in calculate_permutation_importance
+    result = permutation_importance(
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\sklearn\utils\_param_validation.py:203: in wrapper
+    validate_parameter_constraints(
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\sklearn\utils\_param_validation.py:95: in validate_parameter_constraints
+    raise InvalidParameterError(
+E   sklearn.utils._param_validation.InvalidParameterError: The 'estimator' parameter of permutation_importance must be an object implementing 'fit'. Got &lt;RQA2025.tests.unit.features.processors.test_feature_importance_fallback._DummyModel object at 0x0000028C1EE788B0&gt; instead.</failure><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

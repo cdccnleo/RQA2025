@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 策略回测分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .strategy-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .strategy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+        }
+        .performance-indicator {
+            position: relative;
+        }
+        .performance-indicator.positive::after {
+            content: '↗';
+            color: #10b981;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+        .performance-indicator.negative::after {
+            content: '↘';
+            color: #ef4444;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+        
+        /* Toast 通知样式 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .toast.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        .toast.info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        .toast i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        .toast .toast-message {
+            flex: 1;
+        }
+        .toast .toast-close {
+            margin-left: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+        .toast .toast-close:hover {
+            opacity: 1;
+        }
+        
+        /* 按钮加载状态 */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            width: 16px;
+            height: 16px;
+            margin-top: -8px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 进度条动画 */
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        
+        /* 表格行动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .table-row-animation {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        /* 策略卡片选择动画 */
+        .strategy-select-card {
+            transition: all 0.2s ease;
+        }
+        .strategy-select-card:hover {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
+        }
+        .strategy-select-card.selected {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                            <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">策略回测分析</span>
+                    <button onclick="runBacktest()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-play mr-2"></i>运行回测
+                    </button>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-chart-area text-purple-600 mr-3"></i>
+                策略回测分析
+            </h1>
+            <p class="text-gray-600">量化策略的历史回测分析、收益评估和风险指标监控</p>
+        </div>
+
+        <!-- Strategy Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-robot text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">活跃策略</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="active-strategies">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">平均年化收益</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-annual-return">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-balance-scale text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">夏普比率</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-sharpe-ratio">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">最大回撤</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="max-drawdown">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Performance Table -->
+        <div class="bg-white rounded-lg shadow-lg mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">策略性能排行</h3>
+                    <div class="flex space-x-2">
+                        <select class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <option>按年化收益排序</option>
+                            <option>按夏普比率排序</option>
+                            <option>按最大回撤排序</option>
+                            <option>按胜率排序</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">年化收益</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">夏普比率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最大回撤</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">胜率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总收益率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategies-table-body" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>正在加载策略数据...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Cumulative Returns Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-green-600 mr-2"></i>
+                    策略累计收益率对比
+                </h3>
+                <canvas id="returnsChart" width="400" height="250"></canvas>
+            </div>
+
+            <!-- Risk-Return Scatter Plot -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-scatter-chart text-blue-600 mr-2"></i>
+                    风险收益散点图
+                </h3>
+                <canvas id="riskReturnChart" width="400" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Strategy Comparison -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-balance-scale text-blue-600 mr-2"></i>
+                策略对比分析
+            </h3>
+
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-sm font-medium text-gray-700">选择策略进行对比</h4>
+                    <button onclick="compareSelectedStrategies()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300 flex items-center text-sm">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        开始对比
+                    </button>
+                </div>
+                
+                <div id="strategy-selection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                    <!-- 策略选择项将通过JavaScript动态添加 -->
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-info-circle text-xl mb-2"></i>
+                        <div>请先加载策略列表</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h4 class="text-sm font-medium text-gray-700 mb-3">策略对比图表</h4>
+                <canvas id="strategyComparisonChart" width="400" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Detailed Performance Metrics -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-tachometer-alt text-purple-600 mr-2"></i>
+                详细性能指标
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">收益指标</h4>
+                    <div class="space-y-2" id="return-metrics">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">年化收益率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">月度胜率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">总收益率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">风险指标</h4>
+                    <div class="space-y-2" id="risk-metrics">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">最大回撤</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">波动率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">VaR(95%)</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">效率指标</h4>
+                    <div class="space-y-2" id="efficiency-metrics">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">夏普比率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">索提诺比率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">信息比率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">交易指标</h4>
+                    <div class="space-y-2" id="trading-metrics">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">总交易次数</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">平均持仓时间</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">交易频率</span>
+                            <span class="text-sm font-medium text-gray-400">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backtest Configuration -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-cogs text-gray-600 mr-2"></i>
+                回测配置
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">回测时间范围</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="date" id="backtest-start-date" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <input type="date" id="backtest-end-date" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">初始资金</label>
+                    <input type="number" id="initial-capital" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="100000" placeholder="初始资金">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">交易费用</label>
+                    <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option>无费用</option>
+                        <option>标准费用 (0.1%)</option>
+                        <option>专业费用 (0.05%)</option>
+                        <option>自定义</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-4">
+                <button onclick="exportBacktestResults()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-300 flex items-center">
+                    <i class="fas fa-download mr-2"></i>
+                    导出结果
+                </button>
+                <button onclick="runBacktest()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-300 flex items-center">
+                    <i class="fas fa-play mr-2"></i>
+                    开始回测
+                </button>
+            </div>
+        </div>
+
+        <!-- Export Modal -->
+        <div id="export-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-download text-purple-600 mr-2"></i>
+                        导出回测结果
+                    </h3>
+                    <button onclick="closeExportModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">选择策略</label>
+                    <select id="export-strategy-select" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="all">所有策略</option>
+                        <!-- 策略选项将通过JavaScript动态添加 -->
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">导出格式</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="setExportFormat('csv')" class="export-format-btn px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                            <i class="fas fa-file-csv mr-2 text-green-600"></i>
+                            CSV
+                        </button>
+                        <button onclick="setExportFormat('excel')" class="export-format-btn px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                            <i class="fas fa-file-excel mr-2 text-green-600"></i>
+                            Excel
+                        </button>
+                        <button onclick="setExportFormat('json')" class="export-format-btn px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                            <i class="fas fa-file-code mr-2 text-blue-600"></i>
+                            JSON
+                        </button>
+                        <button onclick="setExportFormat('pdf')" class="export-format-btn px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                            <i class="fas fa-file-pdf mr-2 text-red-600"></i>
+                            PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">导出内容</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="export-metrics" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" checked>
+                            <label for="export-metrics" class="ml-2 block text-sm text-gray-700">性能指标</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="export-trades" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" checked>
+                            <label for="export-trades" class="ml-2 block text-sm text-gray-700">交易记录</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="export-positions" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" checked>
+                            <label for="export-positions" class="ml-2 block text-sm text-gray-700">持仓记录</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="export-returns" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" checked>
+                            <label for="export-returns" class="ml-2 block text-sm text-gray-700">收益数据</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeExportModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition duration-300">
+                        取消
+                    </button>
+                    <button onclick="performExport()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-download mr-2"></i>
+                        开始导出
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backtest Progress Modal -->
+        <div id="backtest-progress-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-sync-alt text-green-600 mr-2"></i>
+                        回测进度
+                    </h3>
+                    <button onclick="closeBacktestProgress()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-gray-700">回测进度</span>
+                        <span id="backtest-progress-percent" class="text-sm font-medium text-green-600">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div id="backtest-progress-bar" class="bg-green-600 h-4 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="text-sm font-medium text-gray-700 mb-2">当前状态</div>
+                    <div id="backtest-status" class="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                        准备开始回测...
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="cancel-backtest-btn" onclick="cancelBacktest()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-times mr-2"></i>
+                        取消回测
+                    </button>
+                    <button id="close-progress-btn" onclick="closeBacktestProgress()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300 flex items-center justify-center" disabled>
+                        <i class="fas fa-check mr-2"></i>
+                        完成
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL生成函数（环境感知）
+        function getApiBaseUrl(endpoint = '') {
+            // 始终使用相对路径，通过nginx代理访问API，确保CORS头正确添加
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        let returnsChart, riskReturnChart, strategyComparisonChart;
+        let chartDataCache = {};
+        let chartDebounceTimer = null;
+        let isChartsVisible = false;
+        let selectedStrategies = new Set();
+        
+        // Toast通知系统
+        const toastSystem = {
+            toasts: [],
+            maxToasts: 3,
+            
+            show(message, type = 'info', duration = 3000) {
+                // 限制最大toast数量
+                if (this.toasts.length >= this.maxToasts) {
+                    this.removeToast(this.toasts[0]);
+                }
+                
+                const toast = this.createToast(message, type, duration);
+                document.body.appendChild(toast);
+                this.toasts.push(toast);
+                
+                // 显示toast
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+                
+                // 自动隐藏
+                if (duration > 0) {
+                    setTimeout(() => {
+                        this.removeToast(toast);
+                    }, duration);
+                }
+                
+                return toast;
+            },
+            
+            createToast(message, type, duration) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const iconMap = {
+                    success: 'fas fa-check-circle',
+                    error: 'fas fa-exclamation-circle',
+                    warning: 'fas fa-exclamation-triangle',
+                    info: 'fas fa-info-circle'
+                };
+                
+                toast.innerHTML = `
+                    <i class="${iconMap[type] || iconMap.info}"></i>
+                    <div class="toast-message">${message}</div>
+                    <div class="toast-close" onclick="toastSystem.removeToast(this.parentElement)">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                
+                return toast;
+            },
+            
+            removeToast(toast) {
+                if (!toast) return;
+                
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                    const index = this.toasts.indexOf(toast);
+                    if (index > -1) {
+                        this.toasts.splice(index, 1);
+                    }
+                }, 300);
+            },
+            
+            success(message, duration = 3000) {
+                return this.show(message, 'success', duration);
+            },
+            
+            error(message, duration = 4000) {
+                return this.show(message, 'error', duration);
+            },
+            
+            warning(message, duration = 3500) {
+                return this.show(message, 'warning', duration);
+            },
+            
+            info(message, duration = 3000) {
+                return this.show(message, 'info', duration);
+            }
+        };
+        
+        // 全局Toast函数
+        function showToast(message, type = 'info', duration = 3000) {
+            toastSystem.show(message, type, duration);
+        }
+        
+        function showSuccessToast(message, duration = 3000) {
+            toastSystem.success(message, duration);
+        }
+        
+        function showErrorToast(message, duration = 4000) {
+            toastSystem.error(message, duration);
+        }
+        
+        function showWarningToast(message, duration = 3500) {
+            toastSystem.warning(message, duration);
+        }
+        
+        function showInfoToast(message, duration = 3000) {
+            toastSystem.info(message, duration);
+        }
+        
+        // 模块化组织：API相关函数
+        const ApiService = {
+            // API基础URL生成函数（环境感知）
+            getBaseUrl(endpoint = '') {
+                // 始终使用相对路径，通过nginx代理访问API，确保CORS头正确添加
+                const baseUrl = '/api/v1';
+                return baseUrl + endpoint;
+            },
+            
+            // 发送GET请求
+            async get(endpoint, params = {}) {
+                try {
+                    const url = new URL(this.getBaseUrl(endpoint));
+                    Object.keys(params).forEach(key => {
+                        if (params[key] !== undefined && params[key] !== null) {
+                            url.searchParams.append(key, params[key]);
+                        }
+                    });
+                    
+                    const response = await fetch(url.toString());
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error(`GET请求失败: ${endpoint}`, error);
+                    throw error;
+                }
+            },
+            
+            // 发送POST请求
+            async post(endpoint, data = {}) {
+                try {
+                    const response = await fetch(this.getBaseUrl(endpoint), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ detail: '请求失败' }));
+                        throw new Error(errorData.detail || `HTTP ${response.status}`);
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error(`POST请求失败: ${endpoint}`, error);
+                    throw error;
+                }
+            }
+        };
+        
+        // 模块化组织：图表相关函数
+        const ChartService = {
+            charts: {},
+            
+            // 初始化图表
+            init() {
+                // 使用全局图表变量，确保与现有代码兼容
+                this.charts.returns = window.returnsChart;
+                this.charts.riskReturn = window.riskReturnChart;
+                this.charts.comparison = window.strategyComparisonChart;
+            },
+            
+            // 更新累计收益率图表
+            updateReturnsChart(labels, datasets) {
+                if (this.charts.returns) {
+                    this.charts.returns.data.labels = labels;
+                    this.charts.returns.data.datasets = datasets;
+                    this.charts.returns.update('none');
+                }
+            },
+            
+            // 更新风险收益散点图
+            updateRiskReturnChart(data) {
+                if (this.charts.riskReturn) {
+                    this.charts.riskReturn.data.datasets = [{
+                        label: '量化策略',
+                        data: data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        pointHitRadius: 8
+                    }];
+                    this.charts.riskReturn.update('none');
+                }
+            },
+            
+            // 更新策略对比图表
+            updateComparisonChart(datasets) {
+                if (this.charts.comparison) {
+                    this.charts.comparison.data.datasets = datasets;
+                    this.charts.comparison.update('none');
+                }
+            }
+        };
+        
+        // 模块化组织：性能监控服务
+        const PerformanceMonitor = {
+            metrics: {
+                apiCalls: 0,
+                cacheHits: 0,
+                cacheMisses: 0,
+                renderTime: 0,
+                dataLoadTime: 0
+            },
+            
+            // 记录API调用
+            recordApiCall() {
+                this.metrics.apiCalls++;
+                this.logMetrics();
+            },
+            
+            // 记录缓存命中
+            recordCacheHit() {
+                this.metrics.cacheHits++;
+                this.logMetrics();
+            },
+            
+            // 记录缓存未命中
+            recordCacheMiss() {
+                this.metrics.cacheMisses++;
+                this.logMetrics();
+            },
+            
+            // 记录渲染时间
+            recordRenderTime(time) {
+                this.metrics.renderTime = time;
+                this.logMetrics();
+            },
+            
+            // 记录数据加载时间
+            recordDataLoadTime(time) {
+                this.metrics.dataLoadTime = time;
+                this.logMetrics();
+            },
+            
+            // 记录性能指标
+            logMetrics() {
+                console.log('性能监控指标:', this.metrics);
+                
+                // 每10次API调用或5秒记录一次详细日志
+                if (this.metrics.apiCalls % 10 === 0) {
+                    this.logDetailedMetrics();
+                }
+            },
+            
+            // 记录详细性能指标
+            logDetailedMetrics() {
+                const metrics = {
+                    ...this.metrics,
+                    memory: performance.memory ? {
+                        used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB',
+                        total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + 'MB',
+                        limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024) + 'MB'
+                    } : 'not available',
+                    navigation: performance.navigation ? {
+                        type: performance.navigation.type,
+                        redirectCount: performance.navigation.redirectCount
+                    } : 'not available',
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('详细性能监控指标:', metrics);
+            },
+            
+            // 导出性能报告
+            exportReport() {
+                const report = {
+                    metrics: this.metrics,
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    screen: {
+                        width: screen.width,
+                        height: screen.height
+                    }
+                };
+                
+                console.log('性能报告:', report);
+                return report;
+            }
+        };
+        
+        // 模块化组织：数据加载相关函数
+        const DataService = {
+            // 缓存配置
+            cache: {
+                expiry: 5 * 60 * 1000, // 5分钟
+                data: {}
+            },
+            
+            // 检查缓存
+            checkCache(key) {
+                const cached = this.cache.data[key];
+                if (cached && (Date.now() - cached.timestamp) < this.cache.expiry) {
+                    PerformanceMonitor.recordCacheHit();
+                    console.log('使用缓存的策略列表数据');
+                    return cached.data;
+                }
+                PerformanceMonitor.recordCacheMiss();
+                return null;
+            },
+            
+            // 设置缓存
+            setCache(key, data) {
+                this.cache.data[key] = {
+                    data: data,
+                    timestamp: Date.now()
+                };
+            },
+            
+            // 加载策略列表
+            async loadStrategies(page = 1, pageSize = 10) {
+                const startTime = Date.now();
+                const cacheKey = `strategies_${page}_${pageSize}`;
+                const cached = this.checkCache(cacheKey);
+                
+                if (cached) {
+                    return cached;
+                }
+                
+                try {
+                    PerformanceMonitor.recordApiCall();
+                    const data = await ApiService.get('/strategy/conceptions', {
+                        page: page,
+                        page_size: pageSize
+                    });
+                    this.setCache(cacheKey, data);
+                    PerformanceMonitor.recordDataLoadTime(Date.now() - startTime);
+                    return data;
+                } catch (error) {
+                    console.error('加载策略列表失败:', error);
+                    // 尝试获取所有数据
+                    try {
+                        PerformanceMonitor.recordApiCall();
+                        const data = await ApiService.get('/strategy/conceptions');
+                        // 手动分页
+                        if (data.conceptions && Array.isArray(data.conceptions)) {
+                            const startIndex = (page - 1) * pageSize;
+                            const endIndex = startIndex + pageSize;
+                            data.conceptions = data.conceptions.slice(startIndex, endIndex);
+                        }
+                        this.setCache(cacheKey, data);
+                        PerformanceMonitor.recordDataLoadTime(Date.now() - startTime);
+                        return data;
+                    } catch (fallbackError) {
+                        console.error('备用加载策略列表失败:', fallbackError);
+                        throw fallbackError;
+                    }
+                }
+
+        };
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化图表
+            initCharts();
+            
+            // 初始化图表服务
+            ChartService.init();
+            
+            // 加载数据
+            loadStrategies();
+            loadBacktestStats();
+            loadPerformanceMetrics();
+            initializeBacktestConfig();
+            
+            // 实现图表的按需渲染
+            setupChartIntersectionObserver();
+        });
+        
+        // 设置图表交叉观察器，实现按需渲染
+        function setupChartIntersectionObserver() {
+            const chartElements = document.querySelectorAll('canvas[id="returnsChart"], canvas[id="riskReturnChart"]');
+            if (chartElements.length > 0) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // 当图表进入视口时加载数据
+                            loadBacktestCharts(true);
+                            // 不立即断开观察器，以便在数据更新时重新加载
+                        }
+                    });
+                }, {
+                    threshold: 0.1
+                });
+                
+                chartElements.forEach(element => {
+                    observer.observe(element);
+                });
+            }
+        }
+
+        function initializeBacktestConfig() {
+            // 设置默认日期范围（最近1年）
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() - 1);
+            
+            document.getElementById('backtest-start-date').value = startDate.toISOString().split('T')[0];
+            document.getElementById('backtest-end-date').value = endDate.toISOString().split('T')[0];
+        }
+
+        // 加载回测统计数据
+        async function loadBacktestStats() {
+            console.log('开始加载回测统计数据...');
+            try {
+                // 显示加载状态
+                document.getElementById('active-strategies').textContent = '加载中...';        
+                document.getElementById('avg-annual-return').textContent = '加载中...';        
+                document.getElementById('avg-sharpe-ratio').textContent = '加载中...';
+                document.getElementById('max-drawdown').textContent = '加载中...';
+
+                // 调用后端API获取回测数据
+                console.log('调用API端点:', getApiBaseUrl('/backtest'));
+                const response = await fetch(getApiBaseUrl('/backtest'));
+                console.log('API响应状态:', response.status);
+                
+                if (!response.ok) {
+                    const errorMessage = `HTTP错误! 状态码: ${response.status}`;
+                    console.error(errorMessage);
+                    throw new Error(errorMessage);
+                }
+                
+                const data = await response.json();
+                console.log('API返回数据:', data);
+                const backtests = data.backtests || [];
+                console.log('回测数据数量:', backtests.length);
+
+                if (backtests.length > 0) {
+                    // 计算统计数据
+                    const annualReturns = backtests.map(b => b.annualized_return || 0).filter(r => r > 0);
+                    const sharpeRatios = backtests.map(b => b.sharpe_ratio || 0).filter(s => s > 0);
+                    const maxDrawdowns = backtests.map(b => b.max_drawdown || 0);
+                    
+                    console.log('计算的统计数据:', {
+                        annualReturns,
+                        sharpeRatios,
+                        maxDrawdowns
+                    });
+
+                    // 更新UI
+                    document.getElementById('active-strategies').textContent = backtests.length;
+                    document.getElementById('avg-annual-return').textContent = annualReturns.length > 0 ? `${(annualReturns.reduce((a, b) => a + b, 0) / annualReturns.length * 100).toFixed(1)}%` : '0.0%';
+                    document.getElementById('avg-sharpe-ratio').textContent = sharpeRatios.length > 0 ? (sharpeRatios.reduce((a, b) => a + b, 0) / sharpeRatios.length).toFixed(2) : '0.00';       
+                    document.getElementById('max-drawdown').textContent = maxDrawdowns.length > 0 ? `${(Math.min(...maxDrawdowns) * 100).toFixed(1)}%` : '0.0%';
+                    
+                    console.log('回测统计数据加载成功');
+                    showSuccessToast('回测统计数据加载成功');
+                } else {
+                    // 无数据时的默认值
+                    console.log('无回测数据');
+                    document.getElementById('active-strategies').textContent = '0';
+                    document.getElementById('avg-annual-return').textContent = '0.0%';
+                    document.getElementById('avg-sharpe-ratio').textContent = '0.00';
+                    document.getElementById('max-drawdown').textContent = '0.0%';
+                    showInfoToast('暂无回测数据');
+                }
+            } catch (error) {
+                console.error('加载回测统计失败:', error);
+                // 错误时的默认值
+                document.getElementById('active-strategies').textContent = '0';
+                document.getElementById('avg-annual-return').textContent = '0.0%';
+                document.getElementById('avg-sharpe-ratio').textContent = '0.00';
+                document.getElementById('max-drawdown').textContent = '0.0%';
+                showErrorToast(`加载回测统计失败: ${error.message}`);
+            }
+        }
+
+        // 加载性能指标数据
+        async function loadPerformanceMetrics() {
+            console.log('开始加载性能指标数据...');
+            try {
+                // 调用后端API获取回测数据
+                console.log('调用API端点:', getApiBaseUrl('/backtest'));
+                const response = await fetch(getApiBaseUrl('/backtest'));
+                console.log('API响应状态:', response.status);
+                
+                if (!response.ok) {
+                    const errorMessage = `HTTP错误! 状态码: ${response.status}`;
+                    console.error(errorMessage);
+                    throw new Error(errorMessage);
+                }
+                
+                const data = await response.json();
+                console.log('API返回数据:', data);
+                const backtests = data.backtests || [];
+                console.log('回测数据数量:', backtests.length);
+
+                if (backtests.length > 0) {
+                    // 获取最新的回测结果
+                    const latestBacktest = backtests[0];
+                    const metrics = latestBacktest.metrics || {};
+                    console.log('使用的回测结果:', latestBacktest);
+
+                    // 更新收益指标
+                    document.querySelector('#return-metrics .flex.justify-between:nth-child(1) span:nth-child(2)').textContent = `${((latestBacktest.annualized_return || 0) * 100).toFixed(1)}%`;
+                    document.querySelector('#return-metrics .flex.justify-between:nth-child(2) span:nth-child(2)').textContent = `${((latestBacktest.win_rate || 0) * 100).toFixed(1)}%`;
+                    document.querySelector('#return-metrics .flex.justify-between:nth-child(3) span:nth-child(2)').textContent = `${((latestBacktest.total_return || 0) * 100).toFixed(1)}%`;
+
+                    // 更新风险指标
+                    document.querySelector('#risk-metrics .flex.justify-between:nth-child(1) span:nth-child(2)').textContent = `${((latestBacktest.max_drawdown || 0) * 100).toFixed(1)}%`;
+                    document.querySelector('#risk-metrics .flex.justify-between:nth-child(2) span:nth-child(2)').textContent = `${((metrics.volatility || 0) * 100).toFixed(1)}%`;
+                    document.querySelector('#risk-metrics .flex.justify-between:nth-child(3) span:nth-child(2)').textContent = `${((metrics.var || 0) * 100).toFixed(1)}%`;
+
+                    // 更新效率指标
+                    document.querySelector('#efficiency-metrics .flex.justify-between:nth-child(1) span:nth-child(2)').textContent = (latestBacktest.sharpe_ratio || 0).toFixed(2);
+                    document.querySelector('#efficiency-metrics .flex.justify-between:nth-child(2) span:nth-child(2)').textContent = (metrics.sortino_ratio || 0).toFixed(2);
+                    document.querySelector('#efficiency-metrics .flex.justify-between:nth-child(3) span:nth-child(2)').textContent = (metrics.info_ratio || 0).toFixed(2);
+
+                    // 更新交易指标
+                    document.querySelector('#trading-metrics .flex.justify-between:nth-child(1) span:nth-child(2)').textContent = latestBacktest.total_trades || 0;
+                    document.querySelector('#trading-metrics .flex.justify-between:nth-child(2) span:nth-child(2)').textContent = `${(metrics.avg_holding_period || 0).toFixed(1)}天`;
+                    document.querySelector('#trading-metrics .flex.justify-between:nth-child(3) span:nth-child(2)').textContent = `${(metrics.trades_per_month || 0).toFixed(1)}次/月`;
+                    
+                    console.log('性能指标数据加载成功');
+                    showSuccessToast('性能指标数据加载成功');
+                } else {
+                    console.log('无回测数据，无法加载性能指标');
+                    showInfoToast('暂无回测数据，无法加载性能指标');
+                }
+            } catch (error) {
+                console.error('加载性能指标失败:', error);
+                showErrorToast(`加载性能指标失败: ${error.message}`);
+            }
+        }
+
+        // 加载图表数据
+        async function loadBacktestCharts(forceRefresh = false) {
+            console.log('开始加载图表数据...');
+            try {
+                // 调用后端API获取回测数据
+                console.log('调用API端点:', getApiBaseUrl('/backtest'));
+                const response = await fetch(getApiBaseUrl('/backtest'));
+                console.log('API响应状态:', response.status);
+                
+                if (!response.ok) {
+                    const errorMessage = `HTTP错误! 状态码: ${response.status}`;
+                    console.error(errorMessage);
+                    throw new Error(errorMessage);
+                }
+                
+                const data = await response.json();
+                console.log('API返回数据:', data);
+                const backtests = data.backtests || [];
+                console.log('回测数据数量:', backtests.length);
+                
+                if (backtests.length > 0) {
+                    // 更新累计收益率图表
+                    const latestBacktest = backtests[0];
+                    const equityCurve = latestBacktest.equity_curve || [];
+                    console.log('使用的回测结果:', latestBacktest);
+                    console.log('权益曲线数据长度:', equityCurve.length);
+                    
+                    if (equityCurve.length > 0) {
+                        const labels = equityCurve.map((_, i) => `Day ${i + 1}`);
+                        const returnsData = equityCurve.map(value => (value * 100).toFixed(2));
+                        console.log('生成的图表标签数量:', labels.length);
+                        console.log('生成的收益率数据:', returnsData);
+                        
+                        ChartService.updateReturnsChart(labels, [{
+                            label: '累计收益率',
+                            data: returnsData,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]);
+                    } else {
+                        console.log('权益曲线数据为空，跳过收益率图表更新');
+                    }
+                    
+                    // 更新风险收益散点图
+                    const riskReturnData = backtests.map(backtest => ({
+                        x: (backtest.metrics?.volatility || 0) * 100,
+                        y: (backtest.annualized_return || 0) * 100
+                    }));
+                    console.log('生成的风险收益数据:', riskReturnData);
+                    
+                    ChartService.updateRiskReturnChart(riskReturnData);
+                    console.log('图表数据加载成功');
+                    showSuccessToast('图表数据加载成功');
+                } else {
+                    console.log('无回测数据，无法加载图表');
+                    showInfoToast('暂无回测数据，无法加载图表');
+                }
+            } catch (error) {
+                console.error('加载图表数据失败:', error);
+                showErrorToast(`加载图表数据失败: ${error.message}`);
+            }
+        }
+
+        function initCharts() {
+            // Cumulative Returns Chart - 初始化为空数据，等待API数据加载
+            const returnsCtx = document.getElementById('returnsChart').getContext('2d');
+            window.returnsChart = new Chart(returnsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '策略累计收益率走势'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: '累计收益率 (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Risk-Return Scatter Plot - 初始化为空数据，等待API数据加载
+            const riskReturnCtx = document.getElementById('riskReturnChart').getContext('2d');
+            window.riskReturnChart = new Chart(riskReturnCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '风险收益分布图'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `年化波动率: ${context.parsed.x.toFixed(1)}%, 年化收益率: ${context.parsed.y.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '年化波动率 (%)'
+                            },
+                            beginAtZero: true
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '年化收益率 (%)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Strategy Comparison Chart - 初始化为空数据，等待API数据加载
+            const comparisonCtx = document.getElementById('strategyComparisonChart').getContext('2d');
+            window.strategyComparisonChart = new Chart(comparisonCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['年化收益率', '夏普比率', '最大回撤', '胜率', '信息比率'],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '策略多维度对比'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0
+                        }
+                    }
+                }
+            });
+            
+            // 同时更新局部变量，确保与现有代码兼容
+            returnsChart = window.returnsChart;
+            riskReturnChart = window.riskReturnChart;
+            strategyComparisonChart = window.strategyComparisonChart;
+        }
+        
+        // 加载策略选择项
+        function loadStrategySelection() {
+            const selectionContainer = document.getElementById('strategy-selection');
+            if (!selectionContainer) return;
+            
+            // 从API获取策略列表
+            fetch(getApiBaseUrl('/strategy/conceptions'))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.conceptions && data.conceptions.length > 0) {
+                        selectionContainer.innerHTML = data.conceptions.map(strategy => {
+                            const strategyId = strategy.id || strategy.strategy_id || 'unknown';
+                            const strategyName = strategy.name || strategy.strategy_name || '未命名策略';
+                            const backtestResult = strategy.backtest_result || {};
+                            const annualReturn = backtestResult.annual_return || backtestResult.annualized_return || null;
+                            
+                            return `
+                                <div class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                                    <input type="checkbox" id="strategy-${strategyId}" value="${strategyId}" 
+                                           class="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                           onchange="toggleStrategySelection('${strategyId}')">
+                                    <div class="flex-1 min-w-0">
+                                        <label for="strategy-${strategyId}" class="text-sm font-medium text-gray-900 truncate cursor-pointer">
+                                            ${strategyName}
+                                        </label>
+                                        <p class="text-xs text-gray-500">
+                                            ${annualReturn !== null ? `年化收益: ${annualReturn > 0 ? '+' : ''}${annualReturn.toFixed(1)}%` : '未回测'}
+                                        </p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        selectionContainer.innerHTML = `
+                            <div class="text-center text-gray-500 py-8">
+                                <i class="fas fa-inbox text-xl mb-2"></i>
+                                <div>暂无策略数据</div>
+                                <div class="text-sm text-gray-400 mt-1">请先创建策略</div>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('加载策略选择项失败:', error);
+                    selectionContainer.innerHTML = `
+                        <div class="text-center text-red-500 py-8">
+                            <i class="fas fa-exclamation-circle text-xl mb-2"></i>
+                            <div>加载失败: ${error.message}</div>
+                        </div>
+                    `;
+                });
+        }
+        
+        // 切换策略选择状态
+        function toggleStrategySelection(strategyId) {
+            if (selectedStrategies.has(strategyId)) {
+                selectedStrategies.delete(strategyId);
+            } else {
+                // 限制最多选择4个策略进行对比
+                if (selectedStrategies.size >= 4) {
+                    alert('最多只能选择4个策略进行对比');
+                    document.getElementById(`strategy-${strategyId}`).checked = false;
+                    return;
+                }
+                selectedStrategies.add(strategyId);
+            }
+        }
+        
+        // 对比选中的策略
+        function compareSelectedStrategies() {
+            if (selectedStrategies.size < 2) {
+                alert('请至少选择2个策略进行对比');
+                return;
+            }
+            
+            const strategyIds = Array.from(selectedStrategies);
+            
+            // 从API获取策略详情
+            Promise.all(
+                strategyIds.map(id => 
+                    fetch(getApiBaseUrl(`/strategy/conceptions/${id}`))
+                        .then(response => response.json())
+                )
+            )
+            .then(strategies => {
+                // 构建对比图表数据
+                const colors = [
+                    'rgb(59, 130, 246)',   // blue
+                    'rgb(16, 185, 129)',   // green
+                    'rgb(245, 158, 11)',   // orange
+                    'rgb(168, 85, 247)'    // purple
+                ];
+                
+                const datasets = strategies.map((strategy, index) => {
+                    const result = strategy.backtest_result || {};
+                    const annualReturn = result.annual_return || result.annualized_return || 0;
+                    const sharpeRatio = result.sharpe_ratio || 0;
+                    const maxDrawdown = result.max_drawdown || 0;
+                    const winRate = result.win_rate || 0;
+                    const infoRatio = result.info_ratio || 0;
+                    
+                    return {
+                        label: strategy.name || strategy.strategy_name || `策略${index + 1}`,
+                        data: [
+                            annualReturn * 100,  // 年化收益率 (%)
+                            sharpeRatio,
+                            maxDrawdown * 100,   // 最大回撤 (%)
+                            winRate * 100,       // 胜率 (%)
+                            infoRatio
+                        ],
+                        backgroundColor: colors[index % colors.length].replace('rgb', 'rgba').replace(')', ', 0.2)'),
+                        borderColor: colors[index % colors.length],
+                        pointBackgroundColor: colors[index % colors.length],
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: colors[index % colors.length]
+                    };
+                });
+                
+                // 更新对比图表
+                strategyComparisonChart.data.datasets = datasets;
+                strategyComparisonChart.update();
+            })
+            .catch(error => {
+                console.error('获取策略详情失败:', error);
+                alert('获取策略详情失败，请重试');
+            });
+        }
+
+        async function loadStrategies(page = 1, pageSize = 10) {
+            try {
+                // 检查缓存
+                const cacheKey = `strategies_list_${page}_${pageSize}`;
+                const cachedData = localStorage.getItem(cacheKey);
+                const cacheExpiry = localStorage.getItem(cacheKey + '_expiry');
+                const now = Date.now();
+                
+                let data;
+                let useCache = false;
+                
+                // 检查缓存是否有效（5分钟有效期）
+                if (cachedData && cacheExpiry && (now - parseInt(cacheExpiry)) < 5 * 60 * 1000) {
+                    data = JSON.parse(cachedData);
+                    useCache = true;
+                    console.log('使用缓存的策略列表数据');
+                } else {
+                    // 从API获取数据，支持分页
+                    const response = await fetch(`${getApiBaseUrl('/strategy/conceptions')}?page=${page}&page_size=${pageSize}`);
+                    if (!response.ok) {
+                        // 如果API不支持分页，尝试获取所有数据
+                        const fallbackResponse = await fetch(getApiBaseUrl('/strategy/conceptions'));
+                        if (!fallbackResponse.ok) {
+                            throw new Error(`HTTP error! status: ${fallbackResponse.status}`);
+                        }
+                        data = await fallbackResponse.json();
+                        // 手动分页
+                        if (data.conceptions && Array.isArray(data.conceptions)) {
+                            const startIndex = (page - 1) * pageSize;
+                            const endIndex = startIndex + pageSize;
+                            data.conceptions = data.conceptions.slice(startIndex, endIndex);
+                        }
+                    } else {
+                        data = await response.json();
+                    }
+                    
+                    // 更新缓存
+                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                    localStorage.setItem(cacheKey + '_expiry', now.toString());
+                    console.log('更新策略列表缓存');
+                    
+                    // 预加载下一页数据
+                    preloadNextPage('strategies', page + 1, pageSize);
+                }
+                
+                const tbody = document.getElementById('strategies-table-body');
+                if (!tbody) return;
+                
+                if (data.conceptions && data.conceptions.length > 0) {
+                    tbody.innerHTML = data.conceptions.map(strategy => {
+                        const strategyId = strategy.id || strategy.strategy_id || 'unknown';
+                        const strategyName = strategy.name || strategy.strategy_name || '未命名策略';
+                        const strategyType = strategy.type || strategy.strategy_type || '未知类型';
+                        const description = strategy.description || '';
+                        
+                        // 获取回测结果（如果有）
+                        const backtestResult = strategy.backtest_result || {};
+                        const annualReturn = backtestResult.annual_return || backtestResult.annualized_return || null;
+                        const sharpeRatio = backtestResult.sharpe_ratio || null;
+                        const maxDrawdown = backtestResult.max_drawdown || null;
+                        const winRate = backtestResult.win_rate || null;
+                        const totalReturn = backtestResult.total_return || null;
+                        
+                        // 格式化显示
+                        const annualReturnDisplay = annualReturn !== null ? `${annualReturn > 0 ? '+' : ''}${annualReturn.toFixed(1)}%` : '未回测';
+                        const sharpeRatioDisplay = sharpeRatio !== null ? sharpeRatio.toFixed(2) : '--';
+                        const maxDrawdownDisplay = maxDrawdown !== null ? `${maxDrawdown.toFixed(1)}%` : '--';
+                        const winRateDisplay = winRate !== null ? `${(winRate * 100).toFixed(1)}%` : '--';
+                        const totalReturnDisplay = totalReturn !== null ? `${totalReturn > 0 ? '+' : ''}${totalReturn.toFixed(1)}%` : '--';
+                        
+                        // 确定颜色
+                        const returnColor = annualReturn !== null ? (annualReturn > 0 ? 'green' : 'red') : 'gray';
+                        const returnClass = annualReturn !== null ? (annualReturn > 0 ? 'positive' : 'negative') : '';
+                        
+                        return `
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-brain text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">${strategyName}</div>
+                                            <div class="text-sm text-gray-500">${description || '策略描述'}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        ${strategyType}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium performance-indicator ${returnClass} text-${returnColor}-600">${annualReturnDisplay}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${sharpeRatioDisplay}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${maxDrawdownDisplay}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium text-${returnColor}-600">${winRateDisplay}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium performance-indicator ${returnClass} text-${returnColor}-600">${totalReturnDisplay}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button onclick="viewStrategyDetail('${strategyId}')" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                        <i class="fas fa-chart-line"></i> 详情
+                                    </button>
+                                    <button onclick="runBacktest('${strategyId}')" class="text-green-600 hover:text-green-900">
+                                        <i class="fas fa-play"></i> 回测
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                    
+                    // 添加分页控件
+                    addPaginationControls('strategies', page, pageSize, data.total || data.conceptions.length);
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-inbox text-2xl mb-2"></i>
+                                <div>暂无策略数据</div>

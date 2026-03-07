@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trading-monitor-service
+  namespace: rqa2025-monitoring
+  labels:
+    app: rqa2025
+    component: trading-monitor
+    version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: trading-monitor
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: trading-monitor
+        version: v1.0.0
+    spec:
+      containers:
+      - name: trading-monitor
+        image: rqa2025/trading-service:latest
+        ports:
+        - containerPort: 5002
+          name: http
+          protocol: TCP
+        env:
+        - name: FLASK_APP
+          value: "src/monitoring/trading_monitor_dashboard.py"
+        - name: FLASK_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: FLASK_ENV
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: LOG_LEVEL
+        - name: DASHBOARD_REFRESH_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-web-config
+              key: DASHBOARD_REFRESH_INTERVAL
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rqa2025-secrets
+              key: WEB_SECRET_KEY
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: cache-volume
+          mountPath: /app/cache
+      volumes:
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-cache-pvc
+      restartPolicy: Always
+      imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trading-monitor-service
+  namespace: rqa2025-monitoring
+  labels:
+    app: rqa2025
+    component: trading-monitor
+spec:
+  selector:
+    app: rqa2025
+    component: trading-monitor
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5002
+    protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: trading-monitor-ingress
+  namespace: rqa2025-monitoring
+  labels:
+    app: rqa2025
+    component: trading-monitor
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - trading.rqa2025.com
+    secretName: trading-monitor-tls
+  rules:
+  - host: trading.rqa2025.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: trading-monitor-service
+            port:
+              number: 80

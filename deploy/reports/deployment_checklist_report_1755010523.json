@@ -1,0 +1,121 @@
+{
+  "overall_status": "fail",
+  "check_results": {
+    "infrastructure": {
+      "server_resources": {
+        "status": "pass",
+        "cpu": {
+          "status": "pass",
+          "cores": 32,
+          "usage_percent": 24.5,
+          "recommendation": "CPU使用率正常"
+        },
+        "memory": {
+          "status": "pass",
+          "total_gb": 63.22,
+          "available_gb": 43.25,
+          "usage_percent": 31.6,
+          "recommendation": "内存使用率正常"
+        },
+        "disk": {
+          "status": "pass",
+          "total_gb": 300.01,
+          "free_gb": 51.42,
+          "usage_percent": 82.9,
+          "recommendation": "磁盘空间充足"
+        }
+      },
+      "network_config": {
+        "status": "fail",
+        "connectivity": {
+          "Google DNS": {
+            "status": "pass",
+            "port": 53
+          },
+          "Localhost": {
+            "status": "fail",
+            "port": 80
+          },
+          "External HTTP": {
+            "status": "fail",
+            "error": "HTTPConnectionPool(host='www.google.com', port=80): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000001231E3C2B50>, 'Connection to www.google.com timed out. (connect timeout=5)'))"
+          }
+        },
+        "port_status": {
+          "5432": "occupied",
+          "6379": "occupied",
+          "8000": "occupied",
+          "8001": "free",
+          "9090": "occupied",
+          "3000": "occupied"
+        },
+        "recommendation": "网络配置存在问题，需要检查"
+      },
+      "security_config": {
+        "status": "warning",
+        "ssh": {
+          "status": "unknown",
+          "recommendations": []
+        },
+        "firewall": {
+          "status": "enabled",
+          "recommendation": "防火墙已启用"
+        }
+      }
+    },
+    "database": {
+      "postgresql": {
+        "status": "pass",
+        "version": "PostgreSQL 15.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit",
+        "table_count": 0,
+        "connection_count": 6,
+        "recommendation": "PostgreSQL连接正常"
+      },
+      "redis": {
+        "status": "pass",
+        "version": "7.4.5",
+        "memory_used": "1.08M",
+        "connected_clients": 1,
+        "basic_operations": "working",
+        "recommendation": "Redis连接正常"
+      },
+      "overall_status": "pass"
+    },
+    "monitoring": {
+      "prometheus": {
+        "status": "warning",
+        "error": "状态检查失败: 404",
+        "recommendation": "检查Prometheus配置"
+      },
+      "grafana": {
+        "status": "pass",
+        "health": "healthy",
+        "database": "connected",
+        "recommendation": "Grafana运行正常"
+      },
+      "overall_status": "fail"
+    },
+    "api_services": {
+      "api": {
+        "status": "pass",
+        "health": "healthy",
+        "api_endpoint": "working",
+        "response_time": 0.12115,
+        "recommendation": "API服务运行正常"
+      },
+      "inference": {
+        "status": "fail",
+        "error": "HTTPConnectionPool(host='localhost', port=8001): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001231F02C910>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+        "recommendation": "检查推理服务状态和网络连接"
+      },
+      "overall_status": "fail"
+    }
+  },
+  "execution_time": 21.323569297790527,
+  "timestamp": 1755010523.687446,
+  "recommendations": [
+    "infrastructure.network_config: 网络配置存在问题，需要检查",
+    "monitoring.prometheus: 检查Prometheus配置",
+    "api_services.inference: 检查推理服务状态和网络连接"
+  ]
+}

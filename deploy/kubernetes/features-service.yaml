@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: features-service
+  namespace: rqa2025
+  labels:
+    app: features-service
+    version: v1.0.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: features-service
+  template:
+    metadata:
+      labels:
+        app: features-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: features-service
+        image: rqa2025/features-service:latest
+        ports:
+        - containerPort: 8001
+          name: http
+        env:
+        - name: SERVICE_NAME
+          value: "features-service"
+        - name: SERVICE_PORT
+          value: "8001"
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: url
+        - name: LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: cache-volume
+          mountPath: /app/cache
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-cache-pvc
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: config-volume
+        configMap:
+          name: rqa2025-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: features-service
+  namespace: rqa2025
+  labels:
+    app: features-service
+spec:
+  selector:
+    app: features-service
+  ports:
+  - name: http
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: features-service-network-policy
+  namespace: rqa2025
+spec:
+  podSelector:
+    matchLabels:
+      app: features-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8001
+  - from:
+    - podSelector:
+        matchLabels:
+          app: monitoring-service
+    ports:
+    - protocol: TCP
+      port: 8001
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: database-service
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis-service
+    ports:
+    - protocol: TCP
+      port: 6379 

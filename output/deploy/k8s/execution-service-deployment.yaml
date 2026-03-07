@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: execution-service
+  namespace: rqa-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: execution-service
+  template:
+    metadata:
+      labels:
+        app: execution-service
+    spec:
+      containers:
+      - name: execution-service
+        image: registry.rqa.com/execution-service:prod
+        resources:
+          limits:
+            cpu: "4"
+            memory: 8Gi
+        ports:
+        - containerPort: 8080

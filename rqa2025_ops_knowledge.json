@@ -1,0 +1,90 @@
+{
+  "incident_patterns": {
+    "high_cpu_usage": {
+      "symptoms": [
+        "cpu_usage > 80%",
+        "response_time > 2000ms"
+      ],
+      "possible_causes": [
+        "内存泄漏",
+        "无限循环",
+        "高并发请求"
+      ],
+      "solutions": [
+        "重启相关服务",
+        "优化代码性能",
+        "增加CPU资源",
+        "实施负载均衡"
+      ]
+    },
+    "memory_leak": {
+      "symptoms": [
+        "memory_usage > 85%",
+        "out_of_memory_errors"
+      ],
+      "possible_causes": [
+        "对象未释放",
+        "缓存未清理",
+        "连接池泄漏"
+      ],
+      "solutions": [
+        "重启服务释放内存",
+        "代码审查内存使用",
+        "实施内存监控告警",
+        "定期内存清理"
+      ]
+    },
+    "database_connection_error": {
+      "symptoms": [
+        "connection_timeout",
+        "connection_pool_exhausted"
+      ],
+      "possible_causes": [
+        "数据库服务宕机",
+        "连接池配置不当",
+        "网络问题"
+      ],
+      "solutions": [
+        "检查数据库服务状态",
+        "调整连接池配置",
+        "实施连接重试机制",
+        "数据库高可用部署"
+      ]
+    }
+  },
+  "performance_baselines": {
+    "cpu_usage": {
+      "normal": "< 70%",
+      "warning": "70-85%",
+      "critical": "> 85%"
+    },
+    "memory_usage": {
+      "normal": "< 75%",
+      "warning": "75-90%",
+      "critical": "> 90%"
+    },
+    "response_time": {
+      "normal": "< 1000ms",
+      "warning": "1000-2000ms",
+      "critical": "> 2000ms"
+    },
+    "error_rate": {
+      "normal": "< 1%",
+      "warning": "1-5%",
+      "critical": "> 5%"
+    }
+  },
+  "learned_patterns": {
+    "learned_INC20251204001": {
+      "symptoms": [
+        "response_time > 2000ms",
+        "cpu_usage > 85%",
+        "error_rate > 5%"
+      ],
+      "root_cause": "内存泄漏",
+      "resolution": "重启了故障的交易服务实例",
+      "success_rate": 1.0,
+      "occurrences": 1
+    }
+  }
+}

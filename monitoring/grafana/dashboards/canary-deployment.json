@@ -1,0 +1,135 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "RQA2025 灰度发布监控",
+    "tags": ["rqa2025", "canary", "deployment"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "部署状态概览",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"rqa2025\"}",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "text": "DOWN",
+                    "color": "red"
+                  },
+                  "1": {
+                    "text": "UP",
+                    "color": "green"
+                  }
+                },
+                "type": "value"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "金丝雀版本性能对比",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{version=\"canary\"}[5m])",
+            "legendFormat": "金丝雀版本 QPS"
+          },
+          {
+            "expr": "rate(http_requests_total{version=\"stable\"}[5m])",
+            "legendFormat": "稳定版本 QPS"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "错误率监控",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\",version=\"canary\"}[5m]) / rate(http_requests_total{version=\"canary\"}[5m])",
+            "legendFormat": "金丝雀版本错误率"
+          },
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\",version=\"stable\"}[5m]) / rate(http_requests_total{version=\"stable\"}[5m])",
+            "legendFormat": "稳定版本错误率"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "响应时间对比",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=\"canary\"}[5m]))",
+            "legendFormat": "金丝雀版本 P95"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=\"stable\"}[5m]))",
+            "legendFormat": "稳定版本 P95"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "资源使用率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{container=\"rqa2025-app-canary\"}[5m])",
+            "legendFormat": "金丝雀CPU使用率"
+          },
+          {
+            "expr": "container_memory_usage_bytes{container=\"rqa2025-app-canary\"}",
+            "legendFormat": "金丝雀内存使用"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "部署进度",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "sum(up{job=\"rqa2025\",version=\"canary\"}) / sum(up{job=\"rqa2025\"}) * 100",
+            "legendFormat": "金丝雀部署比例"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent"
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+}
+
+

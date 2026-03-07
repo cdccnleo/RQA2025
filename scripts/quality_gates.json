@@ -1,0 +1,238 @@
+{
+  "version": "1.0",
+  "description": "RQA2025 项目质量门禁配置",
+  "quality_gates": {
+    "test_quality": {
+      "description": "测试质量检查",
+      "rules": [
+        {
+          "name": "no_test_failures",
+          "description": "不允许有测试失败",
+          "type": "threshold",
+          "metric": "failed_tests",
+          "operator": "eq",
+          "value": 0,
+          "severity": "critical"
+        },
+        {
+          "name": "minimum_test_pass_rate",
+          "description": "最低测试通过率",
+          "type": "threshold",
+          "metric": "pass_rate",
+          "operator": "gte",
+          "value": 95.0,
+          "severity": "high"
+        }
+      ]
+    },
+    "code_coverage": {
+      "description": "代码覆盖率检查",
+      "rules": [
+        {
+          "name": "overall_coverage",
+          "description": "总体代码覆盖率",
+          "type": "threshold",
+          "metric": "overall_coverage",
+          "operator": "gte",
+          "value": 75.0,
+          "severity": "high"
+        },
+        {
+          "name": "core_layer_coverage",
+          "description": "核心层代码覆盖率",
+          "type": "threshold",
+          "metric": "layer_coverage.core",
+          "operator": "gte",
+          "value": 85.0,
+          "severity": "critical"
+        },
+        {
+          "name": "infrastructure_coverage",
+          "description": "基础设施层代码覆盖率",
+          "type": "threshold",
+          "metric": "layer_coverage.infrastructure",
+          "operator": "gte",
+          "value": 80.0,
+          "severity": "high"
+        },
+        {
+          "name": "data_layer_coverage",
+          "description": "数据层代码覆盖率",
+          "type": "threshold",
+          "metric": "layer_coverage.data",
+          "operator": "gte",
+          "value": 80.0,
+          "severity": "high"
+        },
+        {
+          "name": "trading_coverage",
+          "description": "交易层代码覆盖率",
+          "type": "threshold",
+          "metric": "layer_coverage.trading",
+          "operator": "gte",
+          "value": 75.0,
+          "severity": "medium"
+        },
+        {
+          "name": "risk_coverage",
+          "description": "风险控制层代码覆盖率",
+          "type": "threshold",
+          "metric": "layer_coverage.risk",
+          "operator": "gte",
+          "value": 75.0,
+          "severity": "medium"
+        },
+        {
+          "name": "ml_coverage",
+          "description": "机器学习层代码覆盖率",
+          "type": "threshold",
+          "metric": "layer_coverage.ml",
+          "operator": "gte",
+          "value": 70.0,
+          "severity": "medium"
+        }
+      ]
+    },
+    "code_quality": {
+      "description": "代码质量检查",
+      "rules": [
+        {
+          "name": "no_critical_lint_errors",
+          "description": "不允许有严重的代码质量问题",
+          "type": "threshold",
+          "metric": "critical_lint_errors",
+          "operator": "eq",
+          "value": 0,
+          "severity": "high"
+        },
+        {
+          "name": "complexity_check",
+          "description": "代码复杂度控制",
+          "type": "threshold",
+          "metric": "cyclomatic_complexity_avg",
+          "operator": "lte",
+          "value": 15,
+          "severity": "medium"
+        }
+      ]
+    },
+    "performance": {
+      "description": "性能检查",
+      "rules": [
+        {
+          "name": "test_execution_time",
+          "description": "测试执行时间限制",
+          "type": "threshold",
+          "metric": "total_duration",
+          "operator": "lte",
+          "value": 1800,
+          "severity": "medium"
+        },
+        {
+          "name": "memory_usage",
+          "description": "内存使用控制",
+          "type": "threshold",
+          "metric": "memory_usage_mb",
+          "operator": "lte",
+          "value": 2048,
+          "severity": "low"
+        }
+      ]
+    },
+    "security": {
+      "description": "安全检查",
+      "rules": [
+        {
+          "name": "no_security_vulnerabilities",
+          "description": "不允许有安全漏洞",
+          "type": "threshold",
+          "metric": "security_vulnerabilities",
+          "operator": "eq",
+          "value": 0,
+          "severity": "critical"
+        },
+        {
+          "name": "dependency_vulnerabilities",
+          "description": "第三方依赖安全检查",
+          "type": "threshold",
+          "metric": "dependency_vulnerabilities",
+          "operator": "eq",
+          "value": 0,
+          "severity": "high"
+        }
+      ]
+    }
+  },
+  "deployment_gates": {
+    "production": {
+      "description": "生产环境部署门禁",
+      "required_gates": [
+        "test_quality.no_test_failures",
+        "code_coverage.overall_coverage",
+        "code_coverage.core_layer_coverage",
+        "code_coverage.infrastructure_coverage",
+        "security.no_security_vulnerabilities"
+      ]
+    },
+    "staging": {
+      "description": "预发布环境部署门禁",
+      "required_gates": [
+        "test_quality.minimum_test_pass_rate",
+        "code_coverage.overall_coverage",
+        "code_coverage.core_layer_coverage"
+      ]
+    },
+    "development": {
+      "description": "开发环境部署门禁",
+      "required_gates": [
+        "test_quality.minimum_test_pass_rate"
+      ]
+    }
+  },
+  "reporting": {
+    "formats": ["json", "markdown", "html"],
+    "metrics": [
+      "test_pass_rate",
+      "code_coverage",
+      "cyclomatic_complexity",
+      "maintainability_index",
+      "security_score",
+      "performance_score"
+    ],
+    "alerts": {
+      "email": {
+        "enabled": true,
+        "recipients": ["qa@company.com", "devops@company.com"],
+        "triggers": ["gate_failure", "coverage_drop", "performance_regression"]
+      },
+      "slack": {
+        "enabled": true,
+        "webhook_url": "https://hooks.slack.com/services/...",
+        "channels": ["#qa-alerts", "#devops"],
+        "triggers": ["gate_failure", "deployment_ready"]
+      }
+    }
+  },
+  "environments": {
+    "local": {
+      "description": "本地开发环境",
+      "gates": ["development"],
+      "parallel_execution": false,
+      "timeout_minutes": 30
+    },
+    "ci": {
+      "description": "持续集成环境",
+      "gates": ["staging"],
+      "parallel_execution": true,
+      "timeout_minutes": 45,
+      "max_workers": 8
+    },
+    "production": {
+      "description": "生产环境",
+      "gates": ["production"],
+      "parallel_execution": true,
+      "timeout_minutes": 60,
+      "max_workers": 12
+    }
+  }
+}

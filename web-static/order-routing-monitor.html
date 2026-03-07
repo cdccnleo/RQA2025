@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 订单智能路由监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">订单智能路由监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-route text-purple-600 mr-3"></i>
+                订单智能路由监控
+            </h1>
+            <p class="text-gray-600">路由策略配置、路由决策跟踪和路由性能分析</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exchange-alt text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">今日路由数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="today-routes">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">路由成功率</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="route-success-rate">--%</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-dollar-sign text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均成本</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-cost">--</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-tachometer-alt text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均延迟</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-latency">--ms</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Routing Decisions -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">路由决策</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">订单ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">路由策略</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">目标路由</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">成本</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">延迟</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routingDecisionsBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Routing Performance -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">路由性能趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">路由策略分布</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="strategyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Optimization -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">成本优化监控</h3>
+            </div>
+            <div class="p-6">
+                <canvas id="costChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Routing Failures -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">路由失败分析</h3>
+            </div>
+            <div class="p-6">
+                <div id="failureAnalysis" class="space-y-4">
+                    <!-- 将通过JavaScript填充 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let performanceChart, strategyChart, costChart;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadRoutingData() {
+            try {
+                const [decisionsRes, statsRes, performanceRes] = await Promise.all([
+                    fetch(getApiBaseUrl('/trading/routing/decisions')),
+                    fetch(getApiBaseUrl('/trading/routing/stats')),
+                    fetch(getApiBaseUrl('/trading/routing/performance'))
+                ]);
+
+                if (decisionsRes.ok) {
+                    const decisionsData = await decisionsRes.json();
+                    renderRoutingDecisions(decisionsData.decisions || []);
+                }
+
+                if (statsRes.ok) {
+                    const statsData = await statsRes.json();
+                    updateStatistics(statsData);
+                }
+
+                if (performanceRes.ok) {
+                    const performanceData = await performanceRes.json();
+                    updateCharts(performanceData);
+                    renderFailureAnalysis(performanceData.failures || []);
+                }
+            } catch (error) {
+                console.error('加载路由数据失败:', error);
+            }
+        }
+
+        function updateStatistics(data) {
+            const stats = data.stats || {};
+            document.getElementById('today-routes').textContent = stats.today_routes || 0;
+            document.getElementById('route-success-rate').textContent = 
+                stats.success_rate ? (stats.success_rate * 100).toFixed(1) + '%' : '--%';
+            document.getElementById('avg-cost').textContent = 
+                stats.avg_cost ? stats.avg_cost.toFixed(4) : '--';
+            document.getElementById('avg-latency').textContent = 
+                stats.avg_latency ? stats.avg_latency.toFixed(1) + 'ms' : '--ms';
+        }
+
+        function renderRoutingDecisions(decisions) {
+            const tbody = document.getElementById('routingDecisionsBody');
+            
+            if (decisions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无路由决策</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = decisions.map(decision => {
+                const statusColor = {
+                    'success': 'bg-green-100 text-green-800',
+                    'failed': 'bg-red-100 text-red-800',
+                    'pending': 'bg-yellow-100 text-yellow-800'
+                }[decision.status] || 'bg-gray-100 text-gray-800';
+
+                const statusText = {
+                    'success': '成功',
+                    'failed': '失败',
+                    'pending': '处理中'
+                }[decision.status] || decision.status;
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${decision.order_id || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${decision.routing_strategy || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${decision.target_route || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${decision.cost ? decision.cost.toFixed(4) : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${decision.latency ? decision.latency.toFixed(1) + 'ms' : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${decision.timestamp ? new Date(decision.timestamp * 1000).toLocaleString('zh-CN') : '--'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateCharts(data) {
+            const performanceTrend = data.performance_trend || [];
+            const strategyDistribution = data.strategy_distribution || {};
+            const costTrend = data.cost_trend || [];
+
+            if (performanceChart && performanceTrend.length > 0) {
+                const labels = performanceTrend.map((_, i) => {
+                    const date = new Date();
+                    date.setHours(date.getHours() - (performanceTrend.length - i));
+                    return date.toLocaleTimeString();
+                });
+                performanceChart.data.labels = labels;
+                performanceChart.data.datasets[0].data = performanceTrend.map(t => t.success_rate || 0);
+                performanceChart.update();
+            }
+
+            if (strategyChart && Object.keys(strategyDistribution).length > 0) {
+                strategyChart.data.labels = Object.keys(strategyDistribution);
+                strategyChart.data.datasets[0].data = Object.values(strategyDistribution);
+                strategyChart.update();
+            }
+
+            if (costChart && costTrend.length > 0) {
+                const labels = costTrend.map((_, i) => {
+                    const date = new Date();
+                    date.setHours(date.getHours() - (costTrend.length - i));
+                    return date.toLocaleTimeString();
+                });
+                costChart.data.labels = labels;
+                costChart.data.datasets[0].data = costTrend.map(t => t.cost || 0);
+                costChart.update();
+            }
+        }
+
+        function renderFailureAnalysis(failures) {
+            const container = document.getElementById('failureAnalysis');
+            
+            if (failures.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
+                        <div>无路由失败</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = failures.map(failure => `
+                <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-medium text-red-900">${failure.reason || '未知原因'}</div>
+                            <div class="text-sm text-red-700 mt-1">订单ID: ${failure.order_id || '--'}</div>
+                        </div>
+                        <div class="text-sm text-red-600">
+                            ${failure.timestamp ? new Date(failure.timestamp * 1000).toLocaleString('zh-CN') : '--'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function refreshData() {
+            loadRoutingData();
+        }
+
+        function initCharts() {
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '成功率',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 1 }
+                    }
+                }
+            });
+
+            const strategyCtx = document.getElementById('strategyChart').getContext('2d');
+            strategyChart = new Chart(strategyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(139, 92, 246, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            costChart = new Chart(costCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '平均成本',
+                        data: [],
+                        borderColor: 'rgb(245, 158, 11)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // WebSocket连接
+        let wsOrderRouting = null;
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/order-routing`;
+            
+            try {
+                wsOrderRouting = new WebSocket(wsUrl);
+                
+                wsOrderRouting.onopen = function() {
+                    console.log('订单路由WebSocket连接已建立');
+                };
+                
+                wsOrderRouting.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'order_routing' && data.data) {
+                            updateStatistics({ stats: data.data });
+                        }
+                    } catch (error) {
+                        console.error('处理WebSocket消息失败:', error);
+                    }
+                };
+                
+                wsOrderRouting.onerror = function(error) {
+                    console.error('WebSocket错误:', error);
+                };
+                
+                wsOrderRouting.onclose = function() {
+                    console.log('订单路由WebSocket连接已关闭，5秒后重连...');
+                    setTimeout(connectWebSocket, 5000);
+                };
+            } catch (error) {
+                console.error('WebSocket连接失败:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadRoutingData();
+            connectWebSocket();
+            setInterval(loadRoutingData, 30000); // 每30秒刷新（WebSocket负责实时更新）
+        });
+
+        // 页面关闭时断开WebSocket
+        window.addEventListener('beforeunload', function() {
+            if (wsOrderRouting) {
+                wsOrderRouting.close();
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  rqa2025-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    environment:
+      - ENVIRONMENT=development
+      - RQA_ENV=development
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - REDIS_URL=redis://redis:6379
+      - DB_URL=postgresql://rqa2025:rqa2025_dev_pass@postgres:5432/rqa2025_dev
+    volumes:
+      # 挂载源代码目录 - 开发模式
+      - ./src:/app/src
+      - ./main.py:/app/main.py
+      - ./debug_container.py:/app/debug_container.py
+      # 数据持久化
+      - ./logs:/app/logs
+      - ./data:/app/data
+      # Python缓存（可选，避免每次重建）
+      - ~/.cache/pip:/root/.cache/pip:cached
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+    command: ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/src"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health').raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=rqa2025_dev
+      - POSTGRES_USER=rqa2025
+      - POSTGRES_PASSWORD=rqa2025_dev_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rqa2025 -d rqa2025_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis_data:
+  postgres_data:

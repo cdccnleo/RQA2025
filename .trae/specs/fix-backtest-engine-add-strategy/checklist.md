@@ -1,0 +1,6 @@
+- [x] BacktestEngine 类包含 add_strategy 方法
+- [x] add_strategy 方法接受策略对象参数
+- [x] 策略可以被成功添加到回测引擎
+- [x] 参数优化器可以正常调用 add_strategy 方法
+- [x] 策略优化功能正常执行
+- [x] 无 `AttributeError: 'BacktestEngine' object has no attribute 'add_strategy'` 错误

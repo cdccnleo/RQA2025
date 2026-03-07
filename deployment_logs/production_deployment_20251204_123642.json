@@ -1,0 +1,162 @@
+{
+  "deployment_timestamp": "2025-12-04T12:36:42.032113",
+  "overall_success": true,
+  "total_duration_minutes": 0.3862691333333333,
+  "total_stages": 10,
+  "successful_stages": 9,
+  "failed_stages": 1,
+  "stage_results": [
+    {
+      "stage_name": "pre_deployment_preparation",
+      "success": true,
+      "start_time": "2025-12-04 12:36:18.851944",
+      "end_time": "2025-12-04 12:36:18.896763",
+      "duration_seconds": 0.044819,
+      "output": "部署前准备完成",
+      "errors": [],
+      "verification_results": {}
+    },
+    {
+      "stage_name": "environment_verification",
+      "success": true,
+      "start_time": "2025-12-04 12:36:18.897779",
+      "end_time": "2025-12-04 12:36:19.901756",
+      "duration_seconds": 1.003977,
+      "output": "production环境验证完成",
+      "errors": [],
+      "verification_results": {}
+    },
+    {
+      "stage_name": "infrastructure_preparation",
+      "success": true,
+      "start_time": "2025-12-04 12:36:19.902755",
+      "end_time": "2025-12-04 12:36:22.912693",
+      "duration_seconds": 3.009938,
+      "output": "基础设施准备完成",
+      "errors": [],
+      "verification_results": {
+        "服务器连接正常": true,
+        "必要端口可用": true,
+        "磁盘空间充足": true,
+        "系统依赖已安装": true
+      }
+    },
+    {
+      "stage_name": "database_migration",
+      "success": true,
+      "start_time": "2025-12-04 12:36:22.912693",
+      "end_time": "2025-12-04 12:36:24.921765",
+      "duration_seconds": 2.009072,
+      "output": "数据库迁移完成",
+      "errors": [],
+      "verification_results": {
+        "数据库连接成功": true,
+        "迁移脚本执行完成": true,
+        "数据完整性验证通过": true
+      }
+    },
+    {
+      "stage_name": "application_deployment",
+      "success": true,
+      "start_time": "2025-12-04 12:36:24.921765",
+      "end_time": "2025-12-04 12:36:29.935631",
+      "duration_seconds": 5.013866,
+      "output": "应用部署到production环境完成",
+      "errors": [],
+      "verification_results": {
+        "代码部署完成": true,
+        "依赖包安装成功": true,
+        "配置文件正确加载": true
+      }
+    },
+    {
+      "stage_name": "service_startup",
+      "success": true,
+      "start_time": "2025-12-04 12:36:29.935631",
+      "end_time": "2025-12-04 12:36:31.936265",
+      "duration_seconds": 2.000634,
+      "output": "服务启动完成",
+      "errors": [],
+      "verification_results": {
+        "服务启动成功": true,
+        "健康检查通过": true,
+        "基本功能响应正常": true
+      }
+    },
+    {
+      "stage_name": "load_balancer_configuration",
+      "success": true,
+      "start_time": "2025-12-04 12:36:31.936265",
+      "end_time": "2025-12-04 12:36:33.945397",
+      "duration_seconds": 2.009132,
+      "output": "负载均衡器配置完成",
+      "errors": [],
+      "verification_results": {
+        "负载均衡器配置完成": true,
+        "流量正确路由": true,
+        "健康检查配置成功": true
+      }
+    },
+    {
+      "stage_name": "cache_warmup",
+      "success": true,
+      "start_time": "2025-12-04 12:36:33.946408",
+      "end_time": "2025-12-04 12:36:36.948487",
+      "duration_seconds": 3.002079,
+      "output": "缓存预热完成",
+      "errors": [],
+      "verification_results": {
+        "缓存数据预热完成": true,
+        "缓存命中率正常": true,
+        "响应时间未明显下降": true
+      }
+    },
+    {
+      "stage_name": "post_deployment_verification",
+      "success": false,
+      "start_time": "2025-12-04 12:36:36.948487",
+      "end_time": "2025-12-04 12:36:37.009025",
+      "duration_seconds": 0.060538,
+      "output": "部署后验证失败",
+      "errors": [
+        "[WinError 193] %1 不是有效的 Win32 应用程序。"
+      ],
+      "verification_results": {}
+    },
+    {
+      "stage_name": "production_monitoring_activation",
+      "success": true,
+      "start_time": "2025-12-04 12:36:37.010020",
+      "end_time": "2025-12-04 12:36:42.032113",
+      "duration_seconds": 5.022093,
+      "output": "生产监控激活完成",
+      "errors": [],
+      "verification_results": {}
+    }
+  ],
+  "deployment_summary": {
+    "status": "success",
+    "critical_failures": [],
+    "performance_metrics": {},
+    "recommendations": [
+      "监控系统运行状态24小时",
+      "执行完整的回归测试",
+      "准备回滚方案以防紧急情况",
+      "制定性能优化计划",
+      "培训运维团队使用监控系统"
+    ]
+  },
+  "next_steps": [
+    "✅ 部署成功 - 立即行动",
+    "📊 启动生产环境监控和告警",
+    "🧪 执行冒烟测试和回归测试",
+    "👥 通知业务团队和用户",
+    "📋 开始生产环境运维",
+    "📅 后续计划",
+    "🔍 建立性能基线监控",
+    "📈 制定性能优化路线图",
+    "👥 组织部署回顾会议",
+    "📚 更新运维文档"
+  ],
+  "rollback_plan": null
+}

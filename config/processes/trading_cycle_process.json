@@ -1,0 +1,284 @@
+{
+  "process_name": "trading_cycle_process",
+  "version": "1.0.0",
+  "description": "完整的交易周期业务流程，包括数据采集、特征提取、模型预测、策略决策、风险检查和交易执行",
+  "author": "RQA Team",
+  "created_date": "2025-01-27",
+  "process_type": "trading_cycle",
+  "enabled": true,
+  "max_instances": 10,
+  "timeout_seconds": 300,
+  "retry_count": 3,
+  "retry_delay_seconds": 30,
+  
+  "stages": [
+    {
+      "stage_id": "data_collection",
+      "stage_name": "数据采集",
+      "description": "从数据源采集市场数据",
+      "order": 1,
+      "required": true,
+      "timeout_seconds": 60,
+      "retry_count": 2,
+      "retry_delay_seconds": 10,
+      "dependencies": [],
+      "service_name": "data_collection_service",
+      "parameters": {
+        "data_source": "market_data_provider",
+        "symbols": ["${symbols}"],
+        "timeframe": "1m",
+        "lookback_period": 100,
+        "include_indicators": true
+      },
+      "output_mapping": {
+        "market_data": "stage_output.market_data",
+        "symbols": "stage_output.symbols",
+        "timestamp": "stage_output.timestamp"
+      },
+      "success_criteria": {
+        "data_quality": "high",
+        "min_data_points": 50,
+        "max_latency_seconds": 30
+      }
+    },
+    {
+      "stage_id": "feature_extraction",
+      "stage_name": "特征提取",
+      "description": "从原始数据中提取技术指标和特征",
+      "order": 2,
+      "required": true,
+      "timeout_seconds": 45,
+      "retry_count": 2,
+      "retry_delay_seconds": 15,
+      "dependencies": ["data_collection"],
+      "service_name": "feature_extraction_service",
+      "parameters": {
+        "technical_indicators": ["sma", "ema", "rsi", "macd", "bollinger_bands"],
+        "feature_window": 20,
+        "normalization": "zscore",
+        "feature_selection": "correlation_based"
+      },
+      "input_mapping": {
+        "market_data": "previous_stage.data_collection.market_data",
+        "symbols": "previous_stage.data_collection.symbols"
+      },
+      "output_mapping": {
+        "features": "stage_output.features",
+        "feature_names": "stage_output.feature_names",
+        "feature_matrix": "stage_output.feature_matrix"
+      },
+      "success_criteria": {
+        "feature_count": ">= 10",
+        "data_quality": "high",
+        "completeness": ">= 95%"
+      }
+    },
+    {
+      "stage_id": "model_prediction",
+      "stage_name": "模型预测",
+      "description": "使用机器学习模型进行价格预测",
+      "order": 3,
+      "required": true,
+      "timeout_seconds": 60,
+      "retry_count": 2,
+      "retry_delay_seconds": 20,
+      "dependencies": ["feature_extraction"],
+      "service_name": "ml_prediction_service",
+      "parameters": {
+        "model_name": "ensemble_model_v2",
+        "prediction_horizon": 5,
+        "confidence_threshold": 0.7,
+        "ensemble_method": "weighted_average"
+      },
+      "input_mapping": {
+        "features": "previous_stage.feature_extraction.features",
+        "feature_matrix": "previous_stage.feature_extraction.feature_matrix"
+      },
+      "output_mapping": {
+        "predictions": "stage_output.predictions",
+        "confidence_scores": "stage_output.confidence_scores",
+        "prediction_horizons": "stage_output.prediction_horizons"
+      },
+      "success_criteria": {
+        "prediction_count": ">= 1",
+        "min_confidence": ">= 0.6",
+        "model_performance": ">= baseline"
+      }
+    },
+    {
+      "stage_id": "strategy_decision",
+      "stage_name": "策略决策",
+      "description": "基于预测结果制定交易策略",
+      "order": 4,
+      "required": true,
+      "timeout_seconds": 30,
+      "retry_count": 1,
+      "retry_delay_seconds": 10,
+      "dependencies": ["model_prediction"],
+      "service_name": "strategy_decision_service",
+      "parameters": {
+        "strategy_name": "${strategy_name}",
+        "risk_tolerance": "moderate",
+        "position_sizing": "kelly_criterion",
+        "entry_exit_rules": "trend_following"
+      },
+      "input_mapping": {
+        "predictions": "previous_stage.model_prediction.predictions",
+        "confidence_scores": "previous_stage.model_prediction.confidence_scores",
+        "market_data": "stages.data_collection.market_data"
+      },
+      "output_mapping": {
+        "trading_signals": "stage_output.trading_signals",
+        "position_sizes": "stage_output.position_sizes",
+        "entry_prices": "stage_output.entry_prices",
+        "stop_losses": "stage_output.stop_losses",
+        "take_profits": "stage_output.take_profits"
+      },
+      "success_criteria": {
+        "signal_count": ">= 1",
+        "signal_quality": "high",
+        "risk_metrics": "within_limits"
+      }
+    },
+    {
+      "stage_id": "risk_check",
+      "stage_name": "风险检查",
+      "description": "检查交易策略的风险指标",
+      "order": 5,
+      "required": true,
+      "timeout_seconds": 20,
+      "retry_count": 1,
+      "retry_delay_seconds": 5,
+      "dependencies": ["strategy_decision"],
+      "service_name": "risk_management_service",
+      "parameters": {
+        "max_position_size": "${max_position}",
+        "max_portfolio_risk": 0.02,
+        "var_confidence": 0.95,
+        "correlation_threshold": 0.7
+      },
+      "input_mapping": {
+        "trading_signals": "previous_stage.strategy_decision.trading_signals",
+        "position_sizes": "previous_stage.strategy_decision.position_sizes",
+        "market_data": "stages.data_collection.market_data"
+      },
+      "output_mapping": {
+        "risk_assessment": "stage_output.risk_assessment",
+        "risk_score": "stage_output.risk_score",
+        "approved_signals": "stage_output.approved_signals",
+        "rejected_signals": "stage_output.rejected_signals",
+        "risk_mitigation": "stage_output.risk_mitigation"
+      },
+      "success_criteria": {
+        "risk_score": "<= 0.8",
+        "approval_rate": ">= 80%",
+        "compliance": "100%"
+      }
+    },
+    {
+      "stage_id": "execution",
+      "stage_name": "交易执行",
+      "description": "执行通过风险检查的交易信号",
+      "order": 6,
+      "required": true,
+      "timeout_seconds": 45,
+      "retry_count": 2,
+      "retry_delay_seconds": 15,
+      "dependencies": ["risk_check"],
+      "service_name": "trade_execution_service",
+      "parameters": {
+        "execution_strategy": "smart_order_routing",
+        "slippage_tolerance": 0.001,
+        "partial_fills": true,
+        "time_in_force": "day"
+      },
+      "input_mapping": {
+        "approved_signals": "previous_stage.risk_check.approved_signals",
+        "position_sizes": "previous_stage.strategy_decision.position_sizes",
+        "entry_prices": "previous_stage.strategy_decision.entry_prices"
+      },
+      "output_mapping": {
+        "execution_results": "stage_output.execution_results",
+        "filled_orders": "stage_output.filled_orders",
+        "execution_prices": "stage_output.execution_prices",
+        "execution_timestamps": "stage_output.execution_timestamps"
+      },
+      "success_criteria": {
+        "execution_rate": ">= 90%",
+        "slippage": "<= 0.001",
+        "fill_quality": "high"
+      }
+    }
+  ],
+  
+  "error_handling": {
+    "global_error_strategy": "continue_on_error",
+    "stage_error_strategy": "retry_then_skip",
+    "error_notification": {
+      "email": ["trading@rqa.com"],
+      "slack": "#trading-alerts",
+      "log_level": "ERROR"
+    },
+    "fallback_actions": {
+      "data_collection": "use_cached_data",
+      "feature_extraction": "use_basic_features",
+      "model_prediction": "use_simple_model",
+      "strategy_decision": "use_conservative_strategy",
+      "risk_check": "apply_strict_limits",
+      "execution": "manual_review"
+    }
+  },
+  
+  "monitoring": {
+    "metrics": [
+      "stage_duration",
+      "stage_success_rate",
+      "data_quality_score",
+      "prediction_accuracy",
+      "risk_score",
+      "execution_quality"
+    ],
+    "alerts": {
+      "high_risk": "risk_score > 0.8",
+      "low_quality": "data_quality_score < 0.7",
+      "slow_execution": "stage_duration > timeout * 0.8",
+      "high_failure_rate": "stage_success_rate < 0.9"
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "structured",
+      "retention_days": 30
+    }
+  },
+  
+  "performance": {
+    "target_duration_seconds": 180,
+    "max_memory_usage_mb": 512,
+    "max_cpu_usage_percent": 80,
+    "concurrent_stages": 2,
+    "resource_limits": {
+      "cpu_cores": 2,
+      "memory_mb": 1024,
+      "disk_gb": 10
+    }
+  },
+  
+  "integration": {
+    "external_services": [
+      "market_data_provider",
+      "ml_model_service",
+      "risk_engine",
+      "execution_engine"
+    ],
+    "data_formats": {
+      "input": ["json", "csv", "parquet"],
+      "output": ["json", "csv"],
+      "intermediate": ["pickle", "numpy"]
+    },
+    "api_endpoints": {
+      "status": "/api/process/{process_id}/status",
+      "control": "/api/process/{process_id}/control",
+      "metrics": "/api/process/{process_id}/metrics"
+    }
+  }
+}

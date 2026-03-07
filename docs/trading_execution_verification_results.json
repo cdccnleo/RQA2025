@@ -1,0 +1,109 @@
+{
+  "persistence": {
+    "execution_persistence.py": {
+      "exists": true,
+      "description": "策略执行状态持久化",
+      "path": "C:\\PythonProject\\RQA2025\\src\\gateway\\web\\execution_persistence.py"
+    },
+    "signal_persistence.py": {
+      "exists": true,
+      "description": "交易信号持久化",
+      "path": "C:\\PythonProject\\RQA2025\\src\\gateway\\web\\signal_persistence.py"
+    },
+    "routing_persistence.py": {
+      "exists": true,
+      "description": "订单路由持久化",
+      "path": "C:\\PythonProject\\RQA2025\\src\\gateway\\web\\routing_persistence.py"
+    },
+    "trading_execution_persistence.py": {
+      "exists": true,
+      "description": "交易执行记录持久化",
+      "path": "C:\\PythonProject\\RQA2025\\src\\gateway\\web\\trading_execution_persistence.py"
+    }
+  },
+  "api": {
+    "/api/v1/trading/execution/flow": {
+      "exists": true,
+      "description": "交易执行流程监控"
+    },
+    "/api/v1/trading/overview": {
+      "exists": true,
+      "description": "交易概览"
+    }
+  },
+  "service": {
+    "strategy_execution_service.py": {
+      "integrated": true,
+      "has_import": true,
+      "has_save": true
+    },
+    "trading_signal_service.py": {
+      "integrated": true,
+      "has_import": true,
+      "has_save": true
+    },
+    "order_routing_service.py": {
+      "integrated": true,
+      "has_import": true,
+      "has_save": true
+    }
+  },
+  "hardcoded": {
+    "web-static/trading-execution.html": {
+      "has_hardcoded": true,
+      "is_fixed": true
+    },
+    "src/gateway/web/trading_signal_service.py": {
+      "has_hardcoded": false,
+      "is_fixed": true
+    }
+  },
+  "mock": {
+    "src/gateway/web/trading_signal_service.py": {
+      "removed": true,
+      "found_functions": []
+    },
+    "src/gateway/web/order_routing_service.py": {
+      "removed": true,
+      "found_functions": []
+    }
+  },
+  "chart": {
+    "has_hardcoded_perf": false,
+    "has_empty_perf": true,
+    "has_hardcoded_risk": false,
+    "has_empty_risk": true,
+    "is_fixed": true
+  },
+  "summary": {
+    "persistence": {
+      "count": 4,
+      "total": 4,
+      "complete": true
+    },
+    "api": {
+      "count": 2,
+      "total": 2,
+      "complete": true
+    },
+    "service": {
+      "count": 3,
+      "total": 3,
+      "complete": true
+    },
+    "hardcoded": {
+      "count": 2,
+      "total": 2,
+      "complete": true
+    },
+    "mock": {
+      "count": 2,
+      "total": 2,
+      "complete": true
+    },
+    "chart": {
+      "fixed": true
+    },
+    "overall": true
+  }
+}

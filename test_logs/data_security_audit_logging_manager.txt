@@ -1,0 +1,53 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+============================= test session starts =============================
+platform win32 -- Python 3.9.23, pytest-8.4.1, pluggy-1.6.0
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: C:\PythonProject\RQA2025\tests
+configfile: pytest.ini
+plugins: anyio-4.9.0, dash-3.1.1, Faker-37.4.0, hypothesis-6.135.4, asyncio-1.0.0, benchmark-5.1.0, cov-6.0.0, html-4.1.1, metadata-3.1.1, mock-3.14.1, timeout-2.4.0, xdist-3.7.0
+asyncio: mode=strict, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+created: 16/16 workers
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+16 workers [12 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\security\test_audit_logging_manager_real.py::test_log_event_basic 
+[gw0] [  8%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_log_event_basic 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_log_security_event 
+[gw0] [ 16%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_log_security_event 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_log_access_event 
+[gw0] [ 25%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_log_access_event 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_log_data_operation 
+[gw0] [ 33%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_log_data_operation 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_query_events_by_type 
+[gw0] [ 41%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_query_events_by_type 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_query_events_by_user 
+[gw0] [ 50%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_query_events_by_user 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_query_events_by_time_range 
+[gw0] [ 58%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_query_events_by_time_range 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_get_security_report 
+[gw0] [ 66%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_get_security_report 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_get_compliance_report 
+[gw0] [ 75%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_get_compliance_report 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_audit_rule_triggering 
+[gw0] [ 83%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_audit_rule_triggering 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_event_statistics_update 
+[gw0] [ 91%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_event_statistics_update 
+tests\unit\data\security\test_audit_logging_manager_real.py::test_add_audit_rule 
+[gw0] [100%] PASSED tests\unit\data\security\test_audit_logging_manager_real.py::test_add_audit_rule 
+
+---------- coverage: platform win32, python 3.9.23-final-0 -----------
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\data\security\audit_logging_manager.py     324    117    64%   86, 122-152, 156-165, 169-171, 235, 464-470, 474-490, 506-509, 516-517, 522-528, 532-545, 549-555, 575-593, 649, 652, 661, 664, 765, 774, 776, 781, 783, 818-820, 829-831, 840-842, 855, 878-894, 901
+--------------------------------------------------------------------------
+TOTAL                                          324    117    64%
+
+
+======================== 12 passed in 68.57s (0:01:08) ========================

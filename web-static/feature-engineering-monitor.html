@@ -1,0 +1,2799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 特征工程监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/chart.js" onload="console.log('✅ Chart.js 本地加载成功')" onerror="console.error('❌ Chart.js 本地加载失败')"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .task-status {
+            position: relative;
+        }
+        .task-status.running::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">特征工程监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-cogs text-purple-600 mr-3"></i>
+                特征工程监控
+            </h1>
+            <p class="text-gray-600">特征提取任务监控、技术指标计算状态和特征质量评估</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-tasks text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">活跃任务</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="active-tasks">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">特征总数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="total-features">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-tachometer-alt text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">处理速度</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="processing-speed">--</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">特征质量</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="feature-quality">--</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduler Status Card -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">特征任务调度器状态</h3>
+                    <div class="space-x-2">
+                        <button onclick="startScheduler()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+                            <i class="fas fa-play mr-2"></i>启动
+                        </button>
+                        <button onclick="stopScheduler()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm">
+                            <i class="fas fa-stop mr-2"></i>停止
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm font-medium text-gray-500 mb-1">调度器状态</div>
+                        <div class="flex items-center">
+                            <span id="scheduler-status" class="text-lg font-semibold text-gray-900">加载中...</span>
+                            <span id="scheduler-status-indicator" class="ml-2 w-3 h-3 rounded-full bg-yellow-400"></span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm font-medium text-gray-500 mb-1">活跃工作节点</div>
+                        <div class="text-lg font-semibold text-gray-900" id="active-workers">0</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm font-medium text-gray-500 mb-1">队列大小</div>
+                        <div class="text-lg font-semibold text-gray-900" id="queue-size">0</div>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs font-medium text-gray-500">总任务数</div>
+                        <div class="text-md font-semibold text-gray-900" id="total-tasks">0</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs font-medium text-gray-500">已完成</div>
+                        <div class="text-md font-semibold text-gray-900" id="completed-tasks">0</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs font-medium text-gray-500">失败</div>
+                        <div class="text-md font-semibold text-gray-900" id="failed-tasks">0</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs font-medium text-gray-500">等待中</div>
+                        <div class="text-md font-semibold text-gray-900" id="pending-tasks">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Extraction Tasks -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">特征提取任务</h3>
+                    <button onclick="createFeatureTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-plus mr-2"></i>新建任务
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">任务ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">任务类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">进度</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">特征数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">开始时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="featureTasksBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Technical Indicators Status -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">技术指标计算状态</h3>
+                </div>
+                <div class="p-6">
+                    <div id="indicatorsStatus" class="space-y-3">
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <div>加载中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">特征质量分布</h3>
+                    <button onclick="openQualityConfigModal()" 
+                            class="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg hover:bg-indigo-200 transition flex items-center">
+                        <i class="fas fa-cog mr-1"></i>自定义评分
+                    </button>
+                </div>
+                <div class="p-6">
+                    <!-- 整体质量评分 -->
+                    <div class="text-center mb-6">
+                        <div class="text-sm text-gray-500 mb-1">整体质量评分</div>
+                        <div id="overall-quality-score" class="text-3xl font-bold text-gray-600">0.0</div>
+                    </div>
+                    
+                    <!-- 质量分布图表 -->
+                    <canvas id="featureQualityChart"></canvas>
+                    
+                    <!-- 质量统计详情 -->
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-green-50 rounded-lg p-3 text-center">
+                            <div class="text-xs text-green-600 mb-1">优秀</div>
+                            <div id="quality-count-优秀" class="text-lg font-semibold text-green-700">0 (0.0%)</div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-3 text-center">
+                            <div class="text-xs text-blue-600 mb-1">良好</div>
+                            <div id="quality-count-良好" class="text-lg font-semibold text-blue-700">0 (0.0%)</div>
+                        </div>
+                        <div class="bg-yellow-50 rounded-lg p-3 text-center">
+                            <div class="text-xs text-yellow-600 mb-1">一般</div>
+                            <div id="quality-count-一般" class="text-lg font-semibold text-yellow-700">0 (0.0%)</div>
+                        </div>
+                        <div class="bg-red-50 rounded-lg p-3 text-center">
+                            <div class="text-xs text-red-600 mb-1">较差</div>
+                            <div id="quality-count-较差" class="text-lg font-semibold text-red-700">0 (0.0%)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Selection Process -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">特征选择过程</h3>
+            </div>
+            <div class="p-6">
+                <canvas id="featureSelectionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Feature Store -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">特征存储</h3>
+                    <div class="flex gap-2">
+                        <button onclick="refreshFeatures()" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>刷新特征</span>
+                        </button>
+                        <input type="text" id="featureSearch" placeholder="搜索特征..." 
+                               onkeyup="searchFeatures()" 
+                               class="border border-gray-300 rounded-lg px-4 py-2 text-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">特征名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">质量评分</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">重要性</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">版本</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">更新时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="featureStoreBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务详情模态框 -->
+    <div id="taskDetailModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-[700px] shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>任务详情
+                    </h3>
+                    <button onclick="closeTaskDetailModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="taskDetailContent" class="space-y-4">
+                    <!-- 动态内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建任务模态框 -->
+    <div id="createTaskModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-[600px] shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">创建特征提取任务</h3>
+                    <button onclick="closeCreateTaskModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- 任务模式选择 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">任务模式</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="taskMode" value="single" checked onchange="toggleTaskMode()" class="mr-2">
+                            <span>单只股票</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="taskMode" value="batch" onchange="toggleTaskMode()" class="mr-2">
+                            <span>批量计算</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 单只股票模式 -->
+                <div id="singleStockMode">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">股票代码</label>
+                        <input type="text" id="singleSymbol" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="例如: 002837">
+                    </div>
+                </div>
+                
+                <!-- 批量计算模式 -->
+                <div id="batchMode" class="hidden">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">股票池</label>
+                        <select id="stockPoolSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="all">全市场</option>
+                            <option value="hs300">沪深300</option>
+                            <option value="csi500">中证500</option>
+                            <option value="growth">创业板</option>
+                            <option value="star">科创板</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1" id="poolInfo">加载中...</p>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">每批股票数</label>
+                        <input type="number" id="batchSize" value="100" min="10" max="500" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <p class="text-xs text-gray-500 mt-1">建议值: 50-200</p>
+                    </div>
+                </div>
+                
+                <!-- 共同字段 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">任务类型</label>
+                    <select id="taskTypeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="技术指标">技术指标</option>
+                        <option value="统计特征">统计特征</option>
+                        <option value="情感特征">情感特征</option>
+                        <option value="自定义特征">自定义特征</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">技术指标</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="indicators" value="SMA" checked class="mr-2">
+                            <span class="text-sm">SMA (简单移动平均)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="indicators" value="EMA" checked class="mr-2">
+                            <span class="text-sm">EMA (指数移动平均)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="indicators" value="RSI" checked class="mr-2">
+                            <span class="text-sm">RSI (相对强弱指标)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="indicators" value="MACD" checked class="mr-2">
+                            <span class="text-sm">MACD (指数平滑异同)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="indicators" value="KDJ" class="mr-2">
+                            <span class="text-sm">KDJ (随机指标)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="indicators" value="BOLL" class="mr-2">
+                            <span class="text-sm">BOLL (布林带)</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">开始日期</label>
+                        <input type="date" id="startDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">结束日期</label>
+                        <input type="date" id="endDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">任务描述（可选）</label>
+                    <textarea id="taskDescription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="请输入任务描述..."></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeCreateTaskModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                        取消
+                    </button>
+                    <button onclick="submitCreateTask()" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                        <i class="fas fa-plus mr-2"></i>创建任务
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let featureQualityChart, featureSelectionChart;
+
+        const API_TIMEOUT_MS = 8000;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        function fetchWithTimeout(url, timeoutMs) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeoutMs);
+            return fetch(url, { signal: controller.signal })
+                .then(r => { clearTimeout(id); return r; })
+                .catch(e => ({ ok: false, json: () => Promise.resolve({}), status: 0 }));
+        }
+
+        function loadFeatureEngineeringData() {
+            const emptyQuality = { "优秀": 0, "良好": 0, "一般": 0, "较差": 0 };
+            let tasksData = { tasks: [], stats: {} };
+            let featuresData = { features: [], stats: {}, quality_distribution: emptyQuality, selection_history: [] };
+            let indicatorsData = { indicators: [] };
+
+            // 显示全局加载状态
+            showGlobalLoading(true);
+
+            function applyMergedStats() {
+                const merged = {
+                    ...(tasksData.stats || {}),
+                    ...(featuresData.stats || {}),
+                    total_features: (featuresData.stats && featuresData.stats.total_features !== undefined) ? featuresData.stats.total_features : (tasksData.stats && tasksData.stats.total_features),
+                    processing_speed: (featuresData.stats && featuresData.stats.processing_speed !== undefined) ? featuresData.stats.processing_speed : (tasksData.stats && tasksData.stats.processing_speed),
+                    avg_quality: (featuresData.stats && featuresData.stats.avg_quality !== undefined) ? featuresData.stats.avg_quality : (tasksData.stats && tasksData.stats.avg_quality)
+                };
+                if (merged.total_features === undefined) merged.total_features = 0;
+                updateStatistics({ stats: merged });
+            }
+
+            function handleFetchError(endpoint, error) {
+                console.error(`请求 ${endpoint} 失败:`, error);
+                // 可以在这里添加错误统计或告警
+            }
+
+            // 任务列表：独立请求，先返回先渲染，不阻塞其他区块
+            fetchWithTimeout(getApiBaseUrl('/features/engineering/tasks'), API_TIMEOUT_MS)
+                .then(async (res) => {
+                    if (!res.ok) { 
+                        handleFetchError('tasks', new Error(`HTTP ${res.status}`));
+                        renderFeatureTasks([], true); 
+                        applyMergedStats(); 
+                        return; 
+                    }
+                    try { 
+                        tasksData = await (res.json && res.json()); 
+                    } catch (e) {
+                        handleFetchError('tasks', e);
+                        tasksData = { tasks: [], stats: {} };
+                    }
+                    if (!tasksData.tasks) tasksData = { tasks: [], stats: tasksData.stats || {} };
+                    renderFeatureTasks(tasksData.tasks || []);
+                    applyMergedStats();
+                })
+                .catch((error) => { 
+                    handleFetchError('tasks', error);
+                    renderFeatureTasks([], true); 
+                    applyMergedStats(); 
+                });
+
+            // 特征列表 + 质量分布 + 特征选择图：独立请求
+            fetchWithTimeout(getApiBaseUrl('/features/engineering/features'), API_TIMEOUT_MS)
+                .then(async (res) => {
+                    if (!res.ok) { 
+                        handleFetchError('features', new Error(`HTTP ${res.status}`));
+                        renderFeatureStore([], true); 
+                        updateFeatureCharts({ quality_distribution: emptyQuality, selection_history: [] }); 
+                        applyMergedStats(); 
+                        return; 
+                    }
+                    try {
+                        const raw = await (res.json && typeof res.json === 'function' ? res.json() : Promise.resolve({}));
+                        featuresData = { 
+                            features: raw.features || [], 
+                            stats: raw.stats || {}, 
+                            quality_distribution: raw.quality_distribution || emptyQuality, 
+                            selection_history: raw.selection_history || [] 
+                        };
+                    } catch (e) {
+                        handleFetchError('features', e);
+                        featuresData = { features: [], stats: {}, quality_distribution: emptyQuality, selection_history: [] };
+                    }
+                    renderFeatureStore(featuresData.features);
+                    updateFeatureCharts(featuresData);
+                    applyMergedStats();
+                })
+                .catch((error) => { 
+                    handleFetchError('features', error);
+                    renderFeatureStore([], true); 
+                    updateFeatureCharts({ quality_distribution: emptyQuality, selection_history: [] }); 
+                    applyMergedStats(); 
+                });
+
+            // 技术指标：独立请求
+            fetchWithTimeout(getApiBaseUrl('/features/engineering/indicators'), API_TIMEOUT_MS)
+                .then(async (res) => {
+                    if (!res.ok) { 
+                        handleFetchError('indicators', new Error(`HTTP ${res.status}`));
+                        renderIndicatorsStatus([], true); 
+                        return; 
+                    }
+                    try {
+                        const data = await (res.json && typeof res.json === 'function' ? res.json() : Promise.resolve({}));
+                        indicatorsData = { indicators: data.indicators || [] };
+                        renderIndicatorsStatus(data.indicators || []);
+                    } catch (e) {
+                        handleFetchError('indicators', e);
+                        renderIndicatorsStatus([], true);
+                    }
+                })
+                .catch((error) => { 
+                    handleFetchError('indicators', error);
+                    renderIndicatorsStatus([], true); 
+                });
+
+            // 加载调度器状态
+            loadSchedulerStatus().finally(() => {
+                // 隐藏全局加载状态
+                setTimeout(() => showGlobalLoading(false), 500);
+            });
+        }
+
+        function showGlobalLoading(show) {
+            const loadingOverlay = document.getElementById('globalLoading');
+            if (!loadingOverlay) {
+                // 创建全局加载覆盖层
+                const overlay = document.createElement('div');
+                overlay.id = 'globalLoading';
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50';
+                overlay.innerHTML = `
+                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mb-4"></div>
+                        <p class="text-gray-700">加载中...</p>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+            }
+            const overlay = document.getElementById('globalLoading');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
+        function updateStatistics(data) {
+            const stats = data.stats || {};
+            document.getElementById('active-tasks').textContent = stats.active_tasks || 0;
+            document.getElementById('total-features').textContent = stats.total_features || 0;
+            document.getElementById('processing-speed').textContent = 
+                stats.processing_speed ? stats.processing_speed + ' 特征/秒' : '--';
+            document.getElementById('feature-quality').textContent = 
+                stats.avg_quality ? (stats.avg_quality * 100).toFixed(1) + '%' : '--';
+        }
+
+        function renderFeatureTasks(tasks, loadFailed) {
+            const tbody = document.getElementById('featureTasksBody');
+            
+            if (loadFailed) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-amber-600">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                            <div>加载失败，请检查网络或 API 服务</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            if (tasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无特征提取任务</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = tasks.map(task => {
+                const statusColor = {
+                    'running': 'bg-blue-100 text-blue-800',
+                    'completed': 'bg-green-100 text-green-800',
+                    'failed': 'bg-red-100 text-red-800',
+                    'pending': 'bg-yellow-100 text-yellow-800'
+                }[task.status] || 'bg-gray-100 text-gray-800';
+
+                const statusText = {
+                    'running': '运行中',
+                    'completed': '已完成',
+                    'failed': '失败',
+                    'pending': '等待中'
+                }[task.status] || task.status;
+
+                return `
+                    <tr class="hover:bg-gray-50 task-status ${task.status}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${task.task_id || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${task.task_type || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                                </div>
+                                <span class="text-sm font-medium">${task.progress || 0}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${task.feature_count || 0}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${task.start_time ? new Date(task.start_time * 1000).toLocaleString('zh-CN') : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            ${task.status === 'running' ? `
+                                <button onclick="stopTask('${task.task_id}')" class="text-red-600 hover:text-red-900 mr-3">
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                            ` : ''}
+                            <button onclick="viewTaskDetails('${task.task_id}')" class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="deleteTask('${task.task_id}')" class="text-gray-600 hover:text-gray-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderIndicatorsStatus(indicators, loadFailed) {
+            const container = document.getElementById('indicatorsStatus');
+            
+            if (loadFailed) {
+                container.innerHTML = `
+                    <div class="text-center text-amber-600 py-8">
+                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                        <div>加载失败，请检查网络或 API 服务</div>
+                    </div>
+                `;
+                return;
+            }
+            if (indicators.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <div>暂无技术指标</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = indicators.map(indicator => {
+                const statusColor = indicator.status === 'active' ? 'text-green-500' : 'text-gray-400';
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-line ${statusColor} mr-3"></i>
+                            <div>
+                                <div class="font-medium text-gray-900">${indicator.name}</div>
+                                <div class="text-xs text-gray-500">${indicator.description || ''}</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            ${indicator.computed_count || 0} 次计算
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderFeatureStore(features, loadFailed) {
+            const tbody = document.getElementById('featureStoreBody');
+            if (loadFailed) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-amber-600">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                            <div>加载失败，请检查网络或 API 服务</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            const searchTerm = document.getElementById('featureSearch').value.toLowerCase();
+            let filtered = features || [];
+            if (searchTerm) {
+                filtered = (features || []).filter(f => 
+                    (f.name && f.name.toLowerCase().includes(searchTerm)) ||
+                    (f.description && f.description.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无特征</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(feature => {
+                const qualityScore = feature.quality_score || 0;
+                const qualityColor = qualityScore >= 0.9 ? 'text-green-600' : 
+                                    qualityScore >= 0.7 ? 'text-blue-600' : 
+                                    qualityScore >= 0.5 ? 'text-yellow-600' : 'text-red-600';
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${feature.display_name || feature.name}</div>
+                            <div class="text-sm text-gray-500">${feature.name}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${feature.type || feature.feature_type || '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${qualityScore * 100}%"></div>
+                                </div>
+                                <span class="text-sm font-medium ${qualityColor}">${(qualityScore * 100).toFixed(1)}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${feature.importance ? feature.importance.toFixed(3) : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${feature.correlation ? feature.correlation.toFixed(2) : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${feature.updated_at ? new Date(feature.updated_at * 1000).toLocaleDateString('zh-CN') : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="viewFeatureDetails('${feature.name}')" class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 数字动画函数
+        function animateValue(element, start, end, duration) {
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 使用缓动函数
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = start + (end - start) * easeOutQuart;
+                
+                element.textContent = current.toFixed(1);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // 更新整体质量评分显示
+        function updateOverallQualityScore(score) {
+            const scoreElement = document.getElementById('overall-quality-score');
+            if (scoreElement) {
+                // 动画显示评分
+                animateValue(scoreElement, 0, score * 100, 1000);
+                
+                // 根据评分设置颜色
+                let colorClass = 'text-gray-600';
+                if (score >= 0.9) colorClass = 'text-green-600';
+                else if (score >= 0.7) colorClass = 'text-blue-600';
+                else if (score >= 0.5) colorClass = 'text-yellow-600';
+                else colorClass = 'text-red-600';
+                
+                scoreElement.className = `text-3xl font-bold ${colorClass}`;
+            }
+        }
+
+        // 更新质量统计
+        function updateQualityStats(distribution) {
+            const total = Object.values(distribution).reduce((a, b) => a + b, 0);
+            if (total === 0) return;
+            
+            // 更新各等级数量
+            Object.keys(distribution).forEach(level => {
+                const count = distribution[level];
+                const percentage = ((count / total) * 100).toFixed(1);
+                const element = document.getElementById(`quality-count-${level}`);
+                if (element) {
+                    element.textContent = `${count} (${percentage}%)`;
+                }
+            });
+        }
+
+        function updateFeatureCharts(data) {
+            const qualityDistribution = data.quality_distribution || { "优秀": 0, "良好": 0, "一般": 0, "较差": 0 };
+            const labels = Object.keys(qualityDistribution);
+            const values = Object.values(qualityDistribution);
+            
+            console.log('📊 updateFeatureCharts - quality_distribution:', qualityDistribution);
+            console.log('📊 updateFeatureCharts - labels:', labels);
+            console.log('📊 updateFeatureCharts - values:', values);
+            
+            if (featureQualityChart) {
+                // 确保图表始终有有效的标签和数据
+                featureQualityChart.data.labels = labels.length ? labels : ['优秀', '良好', '一般', '较差'];
+                featureQualityChart.data.datasets[0].data = values.length ? values : [0, 0, 0, 0];
+                featureQualityChart.update();
+                console.log('✅ 质量分布图表已更新');
+            }
+            
+            // 更新质量统计卡片和整体评分
+            const avgQuality = data.stats && data.stats.avg_quality ? data.stats.avg_quality : 0;
+            console.log('📊 updateFeatureCharts - avg_quality:', avgQuality);
+            
+            // 更新整体质量评分
+            if (typeof updateOverallQualityScore === 'function') {
+                updateOverallQualityScore(avgQuality);
+                console.log('✅ 整体质量评分已更新:', avgQuality);
+            }
+            
+            // 更新质量统计卡片
+            if (typeof updateQualityStats === 'function') {
+                updateQualityStats(qualityDistribution);
+                console.log('✅ 质量统计卡片已更新');
+            }
+
+            const selectionHistory = data.selection_history || [];
+            console.log('📊 特征选择历史数据:', selectionHistory);
+            
+            if (featureSelectionChart) {
+                // 使用实际的timestamp生成标签
+                const selLabels = selectionHistory.length > 0
+                    ? selectionHistory.map(h => {
+                        const timestamp = h.timestamp || h.created_at || Date.now() / 1000;
+                        const date = new Date(timestamp * 1000);
+                        return date.toLocaleTimeString('zh-CN', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                    })
+                    : [];
+                
+                const selData = selectionHistory.length > 0 
+                    ? selectionHistory.map(h => h.selected_count || 0) 
+                    : [];
+                
+                console.log('📊 特征选择图表标签:', selLabels);
+                console.log('📊 特征选择图表数据:', selData);
+                
+                featureSelectionChart.data.labels = selLabels;
+                featureSelectionChart.data.datasets[0].data = selData;
+                
+                // 添加空数据时的提示
+                if (selectionHistory.length === 0) {
+                    console.log('⚠️ 暂无特征选择历史数据');
+                } else {
+                    console.log(`✅ 特征选择图表已更新，${selectionHistory.length} 条记录`);
+                }
+                
+                featureSelectionChart.update('active');
+            } else {
+                console.error('❌ featureSelectionChart 未初始化');
+            }
+        }
+
+        function searchFeatures() {
+            loadFeatureEngineeringData();
+        }
+
+        async function refreshFeatures() {
+            try {
+                showGlobalLoading(true);
+                console.log('🔄 正在刷新特征...');
+                
+                // 使用fetch直接发送POST请求
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+                
+                const response = await fetch(getApiBaseUrl('/features/engineering/refresh'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(id);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('✅ 刷新特征成功:', result.message);
+                    alert(result.message);
+                    // 重新加载特征列表
+                    await loadFeatureEngineeringData();
+                } else {
+                    console.warn('⚠️ 刷新特征失败:', result.message);
+                    alert('刷新失败: ' + result.message);
+                }
+            } catch (error) {
+                console.error('❌ 刷新特征失败:', error);
+                alert('刷新特征失败，请检查网络连接');
+            } finally {
+                showGlobalLoading(false);
+            }
+        }
+
+        // 初始化日期字段
+        function initializeDateFields() {
+            const today = new Date();
+            const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+            
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            document.getElementById('startDate').value = oneYearAgo.toISOString().split('T')[0];
+        }
+
+        function createFeatureTask() {
+            // 显示创建任务模态框
+            document.getElementById('createTaskModal').classList.remove('hidden');
+            // 初始化日期
+            initializeDateFields();
+            // 加载股票池信息
+            loadStockPoolInfo();
+        }
+
+        function closeCreateTaskModal() {
+            // 关闭创建任务模态框
+            document.getElementById('createTaskModal').classList.add('hidden');
+            // 重置表单
+            document.querySelector('input[name="taskMode"][value="single"]').checked = true;
+            toggleTaskMode();
+            document.getElementById('singleSymbol').value = '';
+            document.getElementById('stockPoolSelect').value = 'all';
+            document.getElementById('batchSize').value = '100';
+            document.getElementById('taskTypeSelect').value = '技术指标';
+            document.getElementById('taskDescription').value = '';
+            // 重置技术指标选择
+            document.querySelectorAll('input[name="indicators"]').forEach(cb => {
+                cb.checked = ['SMA', 'EMA', 'RSI', 'MACD'].includes(cb.value);
+            });
+        }
+
+        function toggleTaskMode() {
+            const mode = document.querySelector('input[name="taskMode"]:checked').value;
+            if (mode === 'single') {
+                document.getElementById('singleStockMode').classList.remove('hidden');
+                document.getElementById('batchMode').classList.add('hidden');
+            } else {
+                document.getElementById('singleStockMode').classList.add('hidden');
+                document.getElementById('batchMode').classList.remove('hidden');
+            }
+        }
+
+        async function loadStockPoolInfo() {
+            try {
+                const response = await fetch(getApiBaseUrl('/features/engineering/pools'));
+                if (response.ok) {
+                    const data = await response.json();
+                    const poolInfo = document.getElementById('poolInfo');
+                    if (data.pools && data.pools.length > 0) {
+                        const totalStocks = data.total_stocks || 0;
+                        poolInfo.textContent = `全市场共 ${totalStocks} 只股票`;
+                    } else {
+                        poolInfo.textContent = '暂无股票池数据';
+                    }
+                }
+            } catch (error) {
+                console.error('加载股票池信息失败:', error);
+                document.getElementById('poolInfo').textContent = '加载失败';
+            }
+        }
+
+        async function submitCreateTask() {
+            const mode = document.querySelector('input[name="taskMode"]:checked').value;
+            const taskType = document.getElementById('taskTypeSelect').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const description = document.getElementById('taskDescription').value;
+            
+            // 获取选中的技术指标
+            const indicators = Array.from(document.querySelectorAll('input[name="indicators"]:checked'))
+                .map(cb => cb.value);
+            
+            if (!taskType) {
+                alert('请选择任务类型');
+                return;
+            }
+            
+            if (!startDate || !endDate) {
+                alert('请选择开始和结束日期');
+                return;
+            }
+            
+            // 显示加载状态
+            const submitBtn = event.target;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>创建中...';
+            
+            try {
+                let response;
+                let result;
+                
+                if (mode === 'single') {
+                    // 单只股票模式
+                    const symbol = document.getElementById('singleSymbol').value.trim();
+                    if (!symbol) {
+                        alert('请输入股票代码');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                        return;
+                    }
+                    
+                    response = await fetch(getApiBaseUrl('/features/engineering/tasks'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            task_type: taskType,
+                            config: {
+                                symbol: symbol,
+                                start_date: startDate,
+                                end_date: endDate,
+                                indicators: indicators,
+                                description: description || undefined,
+                                task_id_prefix: `feature_task_single_${symbol}`
+                            }
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ detail: '创建任务失败' }));
+                        throw new Error(errorData.detail || `HTTP ${response.status}`);
+                    }
+                    
+                    result = await response.json();
+                    alert(`特征提取任务创建成功！\n任务ID: ${result.task_id}\n类型: ${taskType}\n股票: ${symbol}`);
+                    
+                } else {
+                    // 批量计算模式
+                    const stockPool = document.getElementById('stockPoolSelect').value;
+                    const batchSize = parseInt(document.getElementById('batchSize').value) || 100;
+                    
+                    response = await fetch(getApiBaseUrl('/features/engineering/tasks/batch'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            stock_pool: stockPool,
+                            date_range: {
+                                start: startDate,
+                                end: endDate
+                            },
+                            task_type: taskType,
+                            indicators: indicators,
+                            batch_size: batchSize,
+                            priority: 'medium',
+                            task_id_prefix: 'feature_task_pool'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ detail: '创建批量任务失败' }));
+                        throw new Error(errorData.detail || `HTTP ${response.status}`);
+                    }
+                    
+                    result = await response.json();
+                    alert(`批量特征提取任务创建成功！\n股票池: ${result.pool_name}\n总股票数: ${result.total_symbols}\n批次数量: ${result.batch_count}\n成功创建: ${result.created_tasks.length} 批任务`);
+                }
+                
+                // 关闭模态框
+                closeCreateTaskModal();
+                
+                // 刷新数据
+                await loadFeatureEngineeringData();
+                
+            } catch (error) {
+                console.error('创建特征任务失败:', error);
+                alert(`创建特征任务失败: ${error.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        async function stopTask(taskId) {
+            if (!confirm('确定要停止此任务吗？')) return;
+            
+            try {
+                const response = await fetch(getApiBaseUrl(`/features/engineering/tasks/${taskId}/stop`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '停止任务失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // 显示成功消息
+                alert(`任务 ${taskId} 已停止`);
+                
+                // 刷新数据
+                await loadFeatureEngineeringData();
+            } catch (error) {
+                console.error('停止任务失败:', error);
+                alert(`停止任务失败: ${error.message}`);
+            }
+        }
+
+        async function deleteTask(taskId) {
+            if (!confirm('确定要删除此任务吗？此操作不可撤销。')) return;
+            
+            try {
+                const response = await fetch(getApiBaseUrl(`/features/engineering/tasks/${taskId}`), {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '删除任务失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // 显示成功消息
+                alert(`任务 ${taskId} 已删除`);
+                
+                // 刷新数据
+                await loadFeatureEngineeringData();
+            } catch (error) {
+                console.error('删除任务失败:', error);
+                alert(`删除任务失败: ${error.message}`);
+            }
+        }
+
+        async function viewTaskDetails(taskId) {
+            try {
+                const response = await fetch(getApiBaseUrl(`/features/engineering/tasks/${taskId}`));
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '获取任务详情失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const task = await response.json();
+                
+                // 状态颜色映射
+                const statusColors = {
+                    'pending': 'bg-yellow-100 text-yellow-800',
+                    'submitted': 'bg-blue-100 text-blue-800',
+                    'running': 'bg-green-100 text-green-800',
+                    'completed': 'bg-green-100 text-green-800',
+                    'failed': 'bg-red-100 text-red-800',
+                    'cancelled': 'bg-gray-100 text-gray-800'
+                };
+                
+                const statusLabels = {
+                    'pending': '等待中',
+                    'submitted': '已提交',
+                    'running': '运行中',
+                    'completed': '已完成',
+                    'failed': '失败',
+                    'cancelled': '已取消'
+                };
+                
+                // 构建详情HTML
+                let html = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">任务ID</label>
+                            <div class="text-sm font-mono text-gray-800 break-all">${task.task_id || '--'}</div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">任务类型</label>
+                            <div class="text-sm font-medium text-gray-800">${task.task_type || '--'}</div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">状态</label>
+                            <div class="mt-1">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[task.status] || 'bg-gray-100 text-gray-800'}">
+                                    ${statusLabels[task.status] || task.status || '--'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">进度</label>
+                            <div class="flex items-center mt-1">
+                                <div class="flex-1 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                                </div>
+                                <span class="text-sm text-gray-700">${task.progress || 0}%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">特征数</label>
+                            <div class="text-sm font-medium text-gray-800">${task.feature_count || 0}</div>
+                        </div>
+                        
+                        ${task.start_time ? `
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">开始时间</label>
+                            <div class="text-sm text-gray-800">${new Date(task.start_time * 1000).toLocaleString('zh-CN')}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${task.end_time ? `
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">结束时间</label>
+                            <div class="text-sm text-gray-800">${new Date(task.end_time * 1000).toLocaleString('zh-CN')}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${task.created_at ? `
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <label class="text-xs text-gray-500">创建时间</label>
+                            <div class="text-sm text-gray-800">${new Date(task.created_at * 1000).toLocaleString('zh-CN')}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                // 配置信息
+                if (task.config && Object.keys(task.config).length > 0) {
+                    html += `
+                        <div class="mt-4">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-cog text-gray-400 mr-1"></i>配置信息
+                            </label>
+                            <div class="bg-gray-50 p-3 rounded-lg space-y-2">
+                    `;
+                    for (const [key, value] of Object.entries(task.config)) {
+                        html += `
+                            <div class="flex justify-between items-center border-b border-gray-200 pb-1 last:border-0">
+                                <span class="text-xs text-gray-500">${key}</span>
+                                <span class="text-sm text-gray-800 font-mono">${typeof value === 'object' ? JSON.stringify(value) : value}</span>
+                            </div>
+                        `;
+                    }
+                    html += `</div></div>`;
+                }
+                
+                // 错误信息（高亮显示）
+                if (task.error_message) {
+                    html += `
+                        <div class="mt-4">
+                            <label class="text-sm font-medium text-red-700 mb-2 block">
+                                <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>错误信息
+                            </label>
+                            <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
+                                <pre class="text-sm text-red-800 whitespace-pre-wrap font-mono">${task.error_message}</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // 结果信息
+                if (task.result && Object.keys(task.result).length > 0) {
+                    html += `
+                        <div class="mt-4">
+                            <label class="text-sm font-medium text-green-700 mb-2 block">
+                                <i class="fas fa-check-circle text-green-500 mr-1"></i>执行结果
+                            </label>
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <pre class="text-sm text-green-800 whitespace-pre-wrap font-mono">${JSON.stringify(task.result, null, 2)}</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // 添加操作按钮（仅在失败或等待状态时显示重新提交）
+                const canResubmit = ['failed', 'pending', 'cancelled'].includes(task.status);
+                if (canResubmit) {
+                    html += `
+                        <div class="mt-6 flex space-x-3">
+                            <button onclick="resubmitTask('${task.task_id}')" 
+                                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300 flex items-center justify-center">
+                                <i class="fas fa-redo mr-2"></i>重新提交任务
+                            </button>
+                            <button onclick="closeTaskDetailModal()" 
+                                    class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-300">
+                                关闭
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="mt-6 flex justify-end">
+                            <button onclick="closeTaskDetailModal()" 
+                                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-300">
+                                关闭
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('taskDetailContent').innerHTML = html;
+                document.getElementById('taskDetailModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('获取任务详情失败:', error);
+                alert(`获取任务详情失败: ${error.message}`);
+            }
+        }
+        
+        async function resubmitTask(taskId) {
+            try {
+                if (!confirm('确定要重新提交此任务吗？')) {
+                    return;
+                }
+                
+                const response = await fetch(getApiBaseUrl(`/features/engineering/tasks/${taskId}/resubmit`), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '重新提交任务失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // 关闭模态框
+                closeTaskDetailModal();
+                
+                // 显示成功消息
+                alert(`任务重新提交成功！\n新任务ID: ${result.new_task_id || taskId}`);
+                
+                // 刷新任务列表
+                await loadFeatureEngineeringData();
+                
+            } catch (error) {
+                console.error('重新提交任务失败:', error);
+                alert(`重新提交任务失败: ${error.message}`);
+            }
+        }
+        
+        function closeTaskDetailModal() {
+            document.getElementById('taskDetailModal').classList.add('hidden');
+        }
+
+        async function viewFeatureDetails(featureName) {
+            try {
+                const response = await fetch(getApiBaseUrl(`/features/engineering/features/${encodeURIComponent(featureName)}`));
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '获取特征详情失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const feature = await response.json();
+                
+                // 构建详情信息
+                let details = `特征详情\n\n`;
+                details += `特征名称: ${feature.name || '--'}\n`;
+                if (feature.description) {
+                    details += `描述: ${feature.description}\n`;
+                }
+                details += `类型: ${feature.feature_type || '--'}\n`;
+                if (feature.quality_score !== null && feature.quality_score !== undefined) {
+                    details += `质量评分: ${(feature.quality_score * 100).toFixed(1)}%\n`;
+                }
+                if (feature.importance !== null && feature.importance !== undefined) {
+                    details += `重要性: ${feature.importance.toFixed(3)}\n`;
+                }
+                details += `版本: v${feature.version || '1.0'}\n`;
+                if (feature.created_at) {
+                    details += `创建时间: ${new Date(feature.created_at * 1000).toLocaleString('zh-CN')}\n`;
+                }
+                if (feature.updated_at) {
+                    details += `更新时间: ${new Date(feature.updated_at * 1000).toLocaleString('zh-CN')}\n`;
+                }
+                if (feature.metadata && Object.keys(feature.metadata).length > 0) {
+                    details += `\n元数据:\n`;
+                    for (const [key, value] of Object.entries(feature.metadata)) {
+                        details += `  ${key}: ${value}\n`;
+                    }
+                }
+                
+                alert(details);
+            } catch (error) {
+                console.error('获取特征详情失败:', error);
+                alert(`获取特征详情失败: ${error.message}`);
+            }
+        }
+
+        function refreshData() {
+            loadFeatureEngineeringData();
+            loadSchedulerStatus();
+        }
+
+        async function loadSchedulerStatus() {
+            try {
+                const response = await fetch(getApiBaseUrl('/features/engineering/scheduler/status'));
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const status = await response.json();
+                updateSchedulerStatus(status);
+            } catch (error) {
+                console.error('加载调度器状态失败:', error);
+                document.getElementById('scheduler-status').textContent = '加载失败';
+                document.getElementById('scheduler-status-indicator').className = 'ml-2 w-3 h-3 rounded-full bg-red-500';
+            }
+        }
+
+        function updateSchedulerStatus(status) {
+            const isRunning = status.is_running;
+            const stats = status.stats || {};
+            
+            // 更新状态显示
+            document.getElementById('scheduler-status').textContent = isRunning ? '运行中' : '已停止';
+            document.getElementById('scheduler-status-indicator').className = isRunning 
+                ? 'ml-2 w-3 h-3 rounded-full bg-green-500' 
+                : 'ml-2 w-3 h-3 rounded-full bg-red-500';
+            
+            // 更新统计数据（适配统一调度器格式）
+            document.getElementById('active-workers').textContent = stats.active_workers || 0;
+            
+            // 统一调度器使用 queue_sizes 字典，需要计算总数
+            const queueSizes = stats.queue_sizes || {};
+            const totalQueueSize = Object.values(queueSizes).reduce((sum, size) => sum + size, 0);
+            document.getElementById('queue-size').textContent = totalQueueSize;
+            
+            document.getElementById('total-tasks').textContent = stats.total_tasks || 0;
+            document.getElementById('completed-tasks').textContent = stats.completed_tasks || 0;
+            document.getElementById('failed-tasks').textContent = stats.failed_tasks || 0;
+            document.getElementById('pending-tasks').textContent = stats.pending_tasks || 0;
+            
+            // 显示特征工作节点数量（从统一注册表）
+            if (status.feature_workers_count !== undefined) {
+                document.getElementById('active-workers').textContent = status.feature_workers_count;
+            }
+        }
+
+        async function startScheduler() {
+            if (!confirm('确定要启动特征任务调度器吗？')) return;
+            
+            try {
+                const response = await fetch(getApiBaseUrl('/features/engineering/scheduler/start'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '启动失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                alert('特征任务调度器已启动');
+                await loadSchedulerStatus();
+            } catch (error) {
+                console.error('启动调度器失败:', error);
+                alert(`启动调度器失败: ${error.message}`);
+            }
+        }
+
+        async function stopScheduler() {
+            if (!confirm('确定要停止特征任务调度器吗？')) return;
+            
+            try {
+                const response = await fetch(getApiBaseUrl('/features/engineering/scheduler/stop'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: '停止失败' }));
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                alert('特征任务调度器已停止');
+                await loadSchedulerStatus();
+            } catch (error) {
+                console.error('停止调度器失败:', error);
+                alert(`停止调度器失败: ${error.message}`);
+            }
+        }
+
+        function initCharts() {
+            console.log('🎨 开始初始化图表...');
+            
+            // 检查Chart.js是否已加载
+            if (typeof Chart === 'undefined') {
+                console.warn('⚠️ Chart.js not loaded, displaying static content instead');
+                displayStaticCharts();
+                return;
+            }
+            
+            console.log('✅ Chart.js 已加载');
+            
+            try {
+                // 初始化质量分布图表
+                const qualityCanvas = document.getElementById('featureQualityChart');
+                if (!qualityCanvas) {
+                    console.error('❌ 找不到 featureQualityChart 元素');
+                } else {
+                    console.log('✅ 找到 featureQualityChart 元素');
+                    const qualityCtx = qualityCanvas.getContext('2d');
+                    featureQualityChart = new Chart(qualityCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['优秀', '良好', '一般', '较差'],
+                            datasets: [{
+                                data: [0, 0, 0, 0],
+                                backgroundColor: [
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(239, 68, 68, 0.8)'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true
+                        }
+                    });
+                    console.log('✅ featureQualityChart 初始化完成');
+                }
+            } catch (error) {
+                console.error('❌ 初始化质量分布图表失败:', error);
+            }
+
+            try {
+                // 初始化特征选择过程图表
+                const selectionCanvas = document.getElementById('featureSelectionChart');
+                if (!selectionCanvas) {
+                    console.error('❌ 找不到 featureSelectionChart 元素');
+                } else {
+                    console.log('✅ 找到 featureSelectionChart 元素');
+                    const selectionCtx = selectionCanvas.getContext('2d');
+                    featureSelectionChart = new Chart(selectionCtx, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: '已选择特征数',
+                                data: [],
+                                borderColor: 'rgb(139, 92, 246)',
+                                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                    console.log('✅ featureSelectionChart 初始化完成');
+                }
+            } catch (error) {
+                console.error('❌ 初始化特征选择图表失败:', error);
+            }
+            
+            console.log('🎨 图表初始化完成');
+        }
+        
+        // 当Chart.js无法加载时显示静态内容
+        function displayStaticCharts() {
+            console.log('Displaying static chart content');
+            
+            // 质量分布静态显示
+            const qualityChartEl = document.getElementById('featureQualityChart');
+            if (qualityChartEl) {
+                qualityChartEl.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full p-4">
+                        <div class="text-gray-500 mb-2">特征质量分布</div>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="flex items-center"><span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>优秀: 0</div>
+                            <div class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span>良好: 0</div>
+                            <div class="flex items-center"><span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>一般: 0</div>
+                            <div class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>较差: 0</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 特征选择历史静态显示
+            const selectionChartEl = document.getElementById('featureSelectionChart');
+            if (selectionChartEl) {
+                selectionChartEl.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full p-4">
+                        <div class="text-gray-500 mb-2">特征选择历史</div>
+                        <div class="text-sm text-gray-400">暂无数据</div>
+                    </div>
+                `;
+            }
+        }
+
+        // WebSocket连接
+        let wsFeatureEngineering = null;
+        let wsReconnectAttempts = 0;
+        const MAX_RECONNECT_ATTEMPTS = 10;
+        const RECONNECT_DELAY = 5000;
+
+        function connectWebSocket() {
+            // 构建WebSocket URL，优先尝试直接连接后端端口8000
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.hostname;
+            // 直接连接到后端端口8000，绕过Nginx
+            const wsUrl = `${protocol}//${host}:8000/ws/feature-engineering`;
+
+            console.log(`正在连接WebSocket: ${wsUrl}`);
+            console.log(`当前页面URL: ${window.location.href}`);
+            console.log(`当前host: ${window.location.host}`);
+
+            try {
+                wsFeatureEngineering = new WebSocket(wsUrl);
+                
+                wsFeatureEngineering.onopen = function() {
+                    console.log('特征工程WebSocket连接已建立');
+                    wsReconnectAttempts = 0; // 重置重连尝试次数
+                };
+                
+                wsFeatureEngineering.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('📨 WebSocket收到消息:', data);
+                        
+                        // 处理任务状态更新消息
+                        if (data.type === 'task_status_updated') {
+                            console.log(`🔄 任务状态更新: ${data.task_id} -> ${data.status}, 进度: ${data.progress}%`);
+                            
+                            // 更新任务列表中的任务状态
+                            updateTaskStatusInList(data.task_id, data.status, data.progress, data.feature_count);
+                            
+                            // 如果任务完成，更新质量数据
+                            if (data.status === 'completed' && data.quality_data) {
+                                console.log('📊 收到质量数据:', data.quality_data);
+                                updateQualityDashboard(data.quality_data);
+                                
+                                // 显示质量评分
+                                showQualityNotification(data.task_id, data.quality_data.overall_score);
+                            }
+                            
+                            // 如果任务完成或失败，刷新完整数据
+                            if (data.status === 'completed' || data.status === 'failed') {
+                                console.log('🔄 任务完成/失败，刷新完整数据...');
+                                loadFeatureEngineeringData();
+                            }
+                            return;
+                        }
+                        
+                        // 处理任务创建消息
+                        if (data.type === 'feature_task_created') {
+                            console.log(`🆕 新任务创建: ${data.task_id}`);
+                            loadFeatureEngineeringData();
+                            return;
+                        }
+                        
+                        // 处理原有消息类型
+                        if (data.type === 'feature_engineering' && data.data) {
+                            // 更新统计数据
+                            if (data.data.tasks) {
+                                updateStatistics({ stats: data.data.tasks });
+                            }
+                            if (data.data.features) {
+                                updateStatistics({ stats: data.data.features });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('处理WebSocket消息失败:', error);
+                    }
+                };
+                
+                // 更新任务列表中的任务状态（实时更新，不重新加载）
+                function updateTaskStatusInList(taskId, status, progress, featureCount) {
+                    const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+                    if (taskElement) {
+                        // 更新状态显示
+                        const statusBadge = taskElement.querySelector('.task-status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = `task-status-badge px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(status)}`;
+                            statusBadge.textContent = getStatusLabel(status);
+                        }
+                        
+                        // 更新进度条
+                        const progressBar = taskElement.querySelector('.task-progress-bar');
+                        if (progressBar) {
+                            progressBar.style.width = `${progress || 0}%`;
+                        }
+                        
+                        // 更新特征数
+                        const featureCountEl = taskElement.querySelector('.task-feature-count');
+                        if (featureCountEl && featureCount !== undefined) {
+                            featureCountEl.textContent = featureCount;
+                        }
+                        
+                        console.log(`✅ 任务 ${taskId} 状态已更新: ${status}`);
+                    } else {
+                        // 如果任务不在列表中，刷新完整数据
+                        console.log(`🔄 任务 ${taskId} 不在当前列表中，刷新完整数据...`);
+                        loadFeatureEngineeringData();
+                    }
+                }
+                
+                // 获取状态样式类
+                function getStatusClass(status) {
+                    const statusClasses = {
+                        'pending': 'bg-yellow-100 text-yellow-800',
+                        'submitted': 'bg-blue-100 text-blue-800',
+                        'running': 'bg-green-100 text-green-800',
+                        'completed': 'bg-green-100 text-green-800',
+                        'failed': 'bg-red-100 text-red-800',
+                        'stopped': 'bg-gray-100 text-gray-800'
+                    };
+                    return statusClasses[status] || 'bg-gray-100 text-gray-800';
+                }
+                
+                // 获取状态标签
+                function getStatusLabel(status) {
+                    const statusLabels = {
+                        'pending': '等待中',
+                        'submitted': '已提交',
+                        'running': '运行中',
+                        'completed': '已完成',
+                        'failed': '失败',
+                        'stopped': '已停止'
+                    };
+                    return statusLabels[status] || status;
+                }
+                
+                // 更新质量仪表盘（WebSocket实时更新）
+                function updateQualityDashboard(qualityData) {
+                    console.log('📊 更新质量仪表盘:', qualityData);
+                    
+                    if (!qualityData) return;
+                    
+                    // 更新质量分布图表
+                    const qualityDistribution = qualityData.quality_distribution || { "优秀": 0, "良好": 0, "一般": 0, "较差": 0 };
+                    if (featureQualityChart) {
+                        const labels = Object.keys(qualityDistribution);
+                        const values = Object.values(qualityDistribution);
+                        featureQualityChart.data.labels = labels.length ? labels : ['优秀', '良好', '一般', '较差'];
+                        featureQualityChart.data.datasets[0].data = values.length ? values : [0, 0, 0, 0];
+                        featureQualityChart.update('active'); // 使用平滑动画更新
+                        console.log('✅ 质量分布图表已更新');
+                    }
+                    
+                    // 更新整体质量评分显示
+                    const overallScore = qualityData.overall_score || 0;
+                    updateOverallQualityScore(overallScore);
+                    
+                    // 更新质量统计卡片
+                    updateQualityStats(qualityDistribution);
+                }
+                
+                // 显示质量评分通知
+                function showQualityNotification(taskId, score) {
+                    // 创建通知元素
+                    const notification = document.createElement('div');
+                    notification.className = 'fixed top-4 right-4 bg-white rounded-lg shadow-lg p-4 z-50 transform translate-x-full transition-transform duration-300';
+                    notification.style.maxWidth = '300px';
+                    
+                    // 根据评分设置样式
+                    let icon = '✅';
+                    let colorClass = 'text-green-600';
+                    let message = '质量优秀';
+                    
+                    if (score < 0.5) {
+                        icon = '⚠️';
+                        colorClass = 'text-red-600';
+                        message = '质量较差，建议检查';
+                    } else if (score < 0.7) {
+                        icon = '📊';
+                        colorClass = 'text-yellow-600';
+                        message = '质量一般';
+                    } else if (score < 0.9) {
+                        icon = '👍';
+                        colorClass = 'text-blue-600';
+                        message = '质量良好';
+                    }
+                    
+                    notification.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <span class="text-2xl">${icon}</span>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">任务完成</h4>
+                                <p class="text-sm text-gray-600">任务 ${taskId.slice(-8)} 执行完成</p>
+                                <div class="mt-2 flex items-center space-x-2">
+                                    <span class="text-lg font-bold ${colorClass}">${(score * 100).toFixed(1)}</span>
+                                    <span class="text-sm text-gray-500">质量评分</span>
+                                </div>
+                                <p class="text-xs ${colorClass}">${message}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(notification);
+                    
+                    // 动画显示
+                    setTimeout(() => {
+                        notification.classList.remove('translate-x-full');
+                    }, 100);
+                    
+                    // 自动关闭
+                    setTimeout(() => {
+                        notification.classList.add('translate-x-full');
+                        setTimeout(() => {
+                            document.body.removeChild(notification);
+                        }, 300);
+                    }, 5000);
+                }
+                
+                wsFeatureEngineering.onerror = function(error) {
+                    console.error('WebSocket错误:', error);
+                };
+                
+                wsFeatureEngineering.onclose = function(event) {
+                    console.log(`特征工程WebSocket连接已关闭 (代码: ${event.code}, 原因: ${event.reason})`);
+                    
+                    // 尝试重连
+                    if (wsReconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                        wsReconnectAttempts++;
+                        const delay = RECONNECT_DELAY * wsReconnectAttempts; // 指数退避
+                        console.log(`WebSocket重连尝试 ${wsReconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}，${delay}ms后重试...`);
+                        setTimeout(connectWebSocket, delay);
+                    } else {
+                        console.error('WebSocket重连失败，已达到最大尝试次数');
+                    }
+                };
+            } catch (error) {
+                console.error('WebSocket连接失败:', error);
+                // 连接失败时也尝试重连
+                if (wsReconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                    wsReconnectAttempts++;
+                    const delay = RECONNECT_DELAY * wsReconnectAttempts;
+                    console.log(`WebSocket连接失败，${delay}ms后重试...`);
+                    setTimeout(connectWebSocket, delay);
+                }
+            }
+        }
+
+        // 手动重连WebSocket
+        function reconnectWebSocket() {
+            console.log('手动重连WebSocket...');
+            if (wsFeatureEngineering) {
+                try {
+                    wsFeatureEngineering.close();
+                } catch (e) {
+                    console.error('关闭WebSocket失败:', e);
+                }
+            }
+            wsReconnectAttempts = 0;
+            connectWebSocket();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                console.log('🚀 初始化特征工程监控页面...');
+                console.log('📊 DOMContentLoaded 事件触发');
+                console.log('📊 Chart.js 状态:', typeof Chart !== 'undefined' ? '已加载' : '未加载');
+                console.log('📊 featureSelectionChart 元素:', document.getElementById('featureSelectionChart') ? '存在' : '不存在');
+                console.log('📊 featureQualityChart 元素:', document.getElementById('featureQualityChart') ? '存在' : '不存在');
+                
+                // 延迟初始化，确保DOM完全加载
+                setTimeout(function() {
+                    console.log('⏱️ 延迟初始化图表...');
+                    // 初始化图表（如果Chart.js未加载会显示静态内容）
+                    initCharts();
+                    
+                    // 加载其他数据
+                    loadFeatureEngineeringData();
+                    loadSchedulerStatus();
+                    connectWebSocket();
+                    
+                    // 设置定时刷新
+                    setInterval(loadFeatureEngineeringData, 30000); // 每30秒刷新（WebSocket负责实时更新）
+                    setInterval(loadSchedulerStatus, 15000); // 每15秒刷新调度器状态
+                    
+                    console.log('✅ 特征工程监控页面初始化完成');
+                }, 100); // 延迟100ms确保DOM完全渲染
+            } catch (error) {
+                console.error('❌ 初始化失败:', error);
+            }
+        });
+
+        // 页面关闭时断开WebSocket
+        window.addEventListener('beforeunload', function() {
+            if (wsFeatureEngineering) {
+                wsFeatureEngineering.close();
+            }
+        });
+
+        // ==================== 自定义评分配置管理 ====================
+        
+        // 全局配置状态
+        let customQualityConfigs = {};
+        let currentEditingFeature = null;
+        
+        /**
+         * 加载用户自定义评分配置
+         */
+        async function loadCustomQualityConfigs() {
+            try {
+                const response = await fetch('/api/v1/features/engineering/quality/config');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 转换为字典格式，便于查找
+                    customQualityConfigs = {};
+                    data.configs.forEach(config => {
+                        if (config.is_active) {
+                            customQualityConfigs[config.feature_name] = config;
+                        }
+                    });
+                    console.log('✅ 自定义评分配置加载完成:', Object.keys(customQualityConfigs).length, '个配置');
+                }
+            } catch (error) {
+                console.error('❌ 加载自定义评分配置失败:', error);
+            }
+        }
+        
+        /**
+         * 加载特征数据（用于自定义评分弹窗）
+         */
+        async function loadFeatures() {
+            try {
+                console.log('🔄 开始加载特征数据...');
+                
+                const emptyQuality = { "优秀": 0, "良好": 0, "一般": 0, "较差": 0 };
+                
+                // 显示加载状态
+                const container = document.getElementById('qualityConfigList');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-spinner fa-spin mb-2 text-2xl"></i>
+                            <p>正在加载特征数据...</p>
+                        </div>
+                    `;
+                }
+                
+                // 调用API加载特征数据
+                const response = await fetch(getApiBaseUrl('/features/engineering/features'));
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const raw = await response.json();
+                
+                // 更新全局featuresData
+                featuresData = { 
+                    features: raw.features || [], 
+                    stats: raw.stats || {}, 
+                    quality_distribution: raw.quality_distribution || emptyQuality, 
+                    selection_history: raw.selection_history || [] 
+                };
+                
+                console.log('✅ 特征数据加载完成:', featuresData.features.length, '个特征');
+                
+                // 重新渲染配置列表
+                renderQualityConfigList();
+                
+                // 同时更新页面上的特征列表显示
+                if (typeof renderFeatureStore === 'function') {
+                    renderFeatureStore(featuresData.features);
+                }
+                if (typeof updateFeatureCharts === 'function') {
+                    updateFeatureCharts(featuresData);
+                }
+                
+            } catch (error) {
+                console.error('❌ 加载特征数据失败:', error);
+                
+                const container = document.getElementById('qualityConfigList');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="text-center text-red-500 py-8">
+                            <i class="fas fa-exclamation-circle mb-2 text-2xl"></i>
+                            <p>加载失败: ${error.message}</p>
+                            <button onclick="loadFeatures()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                                重试
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        /**
+         * 获取特征的评分（优先使用自定义评分）
+         */
+        function getFeatureScore(featureName) {
+            if (customQualityConfigs[featureName]) {
+                return customQualityConfigs[featureName].custom_score;
+            }
+            // 返回默认评分（从featuresData中获取）
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            const feature = features.find(f => f.name === featureName);
+            return feature ? feature.quality_score : 0.8;
+        }
+        
+        /**
+         * 检查特征是否有自定义评分
+         */
+        function hasCustomScore(featureName) {
+            return customQualityConfigs[featureName] !== undefined;
+        }
+        
+        /**
+         * 打开自定义评分管理弹窗
+         */
+        function openQualityConfigModal() {
+            const modal = document.getElementById('qualityConfigModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                renderQualityConfigList();
+            }
+        }
+        
+        /**
+         * 关闭自定义评分管理弹窗
+         */
+        function closeQualityConfigModal() {
+            const modal = document.getElementById('qualityConfigModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+        
+        /**
+         * 提取特征类型
+         */
+        function getFeatureType(feature) {
+            // 优先使用 type 或 feature_type 字段
+            if (feature.type) {
+                return feature.type.toUpperCase();
+            }
+            if (feature.feature_type) {
+                return feature.feature_type.toUpperCase();
+            }
+            // 从名称中提取（如 sma_688702 -> SMA）
+            return feature.name.split('_')[0].toUpperCase();
+        }
+        
+        /**
+         * 按特征类型分组
+         */
+        function groupFeaturesByType(features) {
+            const groups = {};
+            features.forEach(feature => {
+                const type = getFeatureType(feature);
+                if (!groups[type]) {
+                    groups[type] = {
+                        type: type,
+                        features: [],
+                        symbols: new Set(),
+                        defaultScore: feature.quality_score || 0.8
+                    };
+                }
+                groups[type].features.push(feature);
+                if (feature.symbol) {
+                    groups[type].symbols.add(feature.symbol);
+                }
+            });
+            return groups;
+        }
+        
+        /**
+         * 检查特征类型是否有自定义评分
+         */
+        function hasCustomScoreByType(featureType) {
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            return features.some(f => getFeatureType(f) === featureType && customQualityConfigs[f.name]);
+        }
+        
+        /**
+         * 获取特征类型的自定义评分
+         */
+        function getCustomScoreByType(featureType) {
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            const featureWithCustom = features.find(f => {
+                return getFeatureType(f) === featureType && customQualityConfigs[f.name];
+            });
+            return featureWithCustom ? customQualityConfigs[featureWithCustom.name] : null;
+        }
+        
+        /**
+         * 渲染自定义评分配置列表（按特征类型去重）
+         */
+        function renderQualityConfigList() {
+            const container = document.getElementById('qualityConfigList');
+            if (!container) return;
+            
+            // 获取所有特征 - 使用正确的变量名 featuresData
+            const allFeatures = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            
+            // 如果没有特征数据，显示提示
+            if (allFeatures.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-info-circle mb-2 text-2xl"></i>
+                        <p>暂无特征数据，请先加载特征列表</p>
+                        <button onclick="loadFeatures()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            加载特征
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 按特征类型分组
+            const featuresByType = groupFeaturesByType(allFeatures);
+            
+            // 分离已自定义和未自定义的特征类型
+            const customTypes = [];
+            const defaultTypes = [];
+            
+            Object.values(featuresByType).forEach(group => {
+                if (hasCustomScoreByType(group.type)) {
+                    customTypes.push(group);
+                } else {
+                    defaultTypes.push(group);
+                }
+            });
+            
+            let html = '';
+            
+            // 已自定义评分的特征类型
+            if (customTypes.length > 0) {
+                html += '<div class="mb-4"><h4 class="text-sm font-semibold text-gray-700 mb-2">已自定义评分</h4>';
+                customTypes.forEach(group => {
+                    const config = getCustomScoreByType(group.type);
+                    const symbolCount = group.symbols.size;
+                    html += `
+                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg mb-2">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">${group.type}</div>
+                                <div class="text-sm text-gray-500">
+                                    应用于 ${symbolCount} 个股票 | 
+                                    默认: ${group.defaultScore.toFixed(2)} → 
+                                    <span class="font-semibold text-blue-600">自定义: ${config.custom_score.toFixed(2)}</span>
+                                    ${config.reason ? `<span class="text-gray-400 ml-2">(${config.reason})</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="editQualityConfigByType('${group.type}')" 
+                                        class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                    编辑
+                                </button>
+                                <button onclick="resetQualityConfigByType('${group.type}')" 
+                                        class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+                                    恢复默认
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            // 使用默认评分的特征类型
+            if (defaultTypes.length > 0) {
+                html += '<div><h4 class="text-sm font-semibold text-gray-700 mb-2">使用默认评分</h4>';
+                defaultTypes.forEach(group => {
+                    const symbolCount = group.symbols.size;
+                    html += `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">${group.type}</div>
+                                <div class="text-sm text-gray-500">
+                                    应用于 ${symbolCount} 个股票 | 评分: ${group.defaultScore.toFixed(2)}
+                                </div>
+                            </div>
+                            <button onclick="editQualityConfigByType('${group.type}')" 
+                                    class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
+                                自定义
+                            </button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        /**
+         * 打开编辑评分弹窗
+         */
+        function editQualityConfig(featureName) {
+            currentEditingFeature = featureName;
+            // 使用正确的变量名 featuresData
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            const feature = features.find(f => f.name === featureName);
+            const config = customQualityConfigs[featureName];
+            
+            const modal = document.getElementById('editQualityModal');
+            const featureNameEl = document.getElementById('editFeatureName');
+            const defaultScoreEl = document.getElementById('editDefaultScore');
+            const customScoreInput = document.getElementById('editCustomScore');
+            const reasonInput = document.getElementById('editReason');
+            const scoreValueEl = document.getElementById('scoreValue');
+            
+            if (featureNameEl) featureNameEl.textContent = featureName;
+            const defaultScore = feature ? feature.quality_score : 0.8;
+            if (defaultScoreEl) defaultScoreEl.textContent = defaultScore.toFixed(2);
+            
+            if (config) {
+                if (customScoreInput) customScoreInput.value = config.custom_score;
+                if (reasonInput) reasonInput.value = config.reason || '';
+                if (scoreValueEl) scoreValueEl.textContent = config.custom_score.toFixed(2);
+            } else {
+                if (customScoreInput) customScoreInput.value = feature ? feature.quality_score : 0.8;
+                if (reasonInput) reasonInput.value = '';
+                if (scoreValueEl) scoreValueEl.textContent = (feature ? feature.quality_score : 0.8).toFixed(2);
+            }
+            
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+        
+        /**
+         * 关闭编辑评分弹窗
+         */
+        function closeEditQualityModal() {
+            const modal = document.getElementById('editQualityModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            currentEditingFeature = null;
+        }
+        
+        /**
+         * 更新评分滑块显示
+         */
+        function updateScoreSlider(value) {
+            const scoreValueEl = document.getElementById('scoreValue');
+            const qualityLabelEl = document.getElementById('qualityLabel');
+            
+            if (scoreValueEl) scoreValueEl.textContent = parseFloat(value).toFixed(2);
+            
+            if (qualityLabelEl) {
+                let label = '';
+                let colorClass = '';
+                
+                if (value >= 0.9) {
+                    label = '优秀';
+                    colorClass = 'text-green-600';
+                } else if (value >= 0.8) {
+                    label = '良好';
+                    colorClass = 'text-blue-600';
+                } else if (value >= 0.7) {
+                    label = '一般';
+                    colorClass = 'text-yellow-600';
+                } else if (value >= 0.6) {
+                    label = '较差';
+                    colorClass = 'text-orange-600';
+                } else {
+                    label = '差';
+                    colorClass = 'text-red-600';
+                }
+                
+                qualityLabelEl.textContent = label;
+                qualityLabelEl.className = `text-lg font-semibold ${colorClass}`;
+            }
+        }
+        
+        /**
+         * 保存自定义评分配置
+         */
+        async function saveQualityConfig() {
+            if (!currentEditingFeature) return;
+            
+            const customScoreInput = document.getElementById('editCustomScore');
+            const reasonInput = document.getElementById('editReason');
+            
+            const customScore = parseFloat(customScoreInput.value);
+            const reason = reasonInput.value.trim();
+            
+            if (isNaN(customScore) || customScore < 0 || customScore > 1) {
+                alert('评分必须在0-1之间');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/features/engineering/quality/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        feature_name: currentEditingFeature,
+                        custom_score: customScore,
+                        reason: reason
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 更新本地配置
+                    customQualityConfigs[currentEditingFeature] = data.config;
+                    
+                    // 关闭弹窗
+                    closeEditQualityModal();
+                    
+                    // 刷新列表
+                    renderQualityConfigList();
+                    
+                    // 刷新特征数据（更新显示的评分）
+                    loadFeatures();
+                    
+                    // 显示成功提示
+                    showNotification('自定义评分保存成功', 'success');
+                } else {
+                    throw new Error(data.message || '保存失败');
+                }
+            } catch (error) {
+                console.error('❌ 保存自定义评分失败:', error);
+                alert('保存失败: ' + error.message);
+            }
+        }
+        
+        /**
+         * 重置为默认评分
+         */
+        async function resetQualityConfig(featureName) {
+            if (!confirm(`确定要将 ${featureName} 重置为默认评分吗？`)) {
+                return;
+            }
+            
+            const config = customQualityConfigs[featureName];
+            if (!config) return;
+            
+            try {
+                const response = await fetch(`/api/v1/features/engineering/quality/config/${config.config_id}/reset`, {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 删除本地配置
+                    delete customQualityConfigs[featureName];
+                    
+                    // 刷新列表
+                    renderQualityConfigList();
+                    
+                    // 刷新特征数据
+                    loadFeatures();
+                    
+                    // 显示成功提示
+                    showNotification('已恢复为默认评分', 'success');
+                } else {
+                    throw new Error(data.message || '重置失败');
+                }
+            } catch (error) {
+                console.error('❌ 重置自定义评分失败:', error);
+                alert('重置失败: ' + error.message);
+            }
+        }
+        
+        // ==================== 按特征类型的操作函数 ====================
+        
+        let currentEditingFeatureType = null;
+        
+        /**
+         * 按特征类型打开编辑评分弹窗
+         */
+        function editQualityConfigByType(featureType) {
+            currentEditingFeatureType = featureType;
+            currentEditingFeature = null; // 清除单个特征编辑状态
+            
+            // 获取该类型的所有特征
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            const featuresOfType = features.filter(f => getFeatureType(f) === featureType);
+            
+            if (featuresOfType.length === 0) {
+                alert('未找到该类型的特征');
+                return;
+            }
+            
+            // 获取该类型的第一个特征作为参考
+            const firstFeature = featuresOfType[0];
+            const config = getCustomScoreByType(featureType);
+            
+            // 获取所有股票代码
+            const symbols = [...new Set(featuresOfType.map(f => f.symbol).filter(s => s))];
+            
+            const modal = document.getElementById('editQualityModal');
+            const featureNameEl = document.getElementById('editFeatureName');
+            const defaultScoreEl = document.getElementById('editDefaultScore');
+            const customScoreInput = document.getElementById('editCustomScore');
+            const reasonInput = document.getElementById('editReason');
+            const scoreValueEl = document.getElementById('scoreValue');
+            
+            // 更新弹窗标题和内容
+            if (featureNameEl) {
+                featureNameEl.innerHTML = `${featureType} <span class="text-sm font-normal text-gray-500">(应用于 ${symbols.length} 个股票)</span>`;
+            }
+            
+            const defaultScore = firstFeature.quality_score || 0.8;
+            if (defaultScoreEl) defaultScoreEl.textContent = defaultScore.toFixed(2);
+            
+            if (config) {
+                if (customScoreInput) customScoreInput.value = config.custom_score;
+                if (reasonInput) reasonInput.value = config.reason || '';
+                if (scoreValueEl) scoreValueEl.textContent = config.custom_score.toFixed(2);
+            } else {
+                if (customScoreInput) customScoreInput.value = defaultScore;
+                if (reasonInput) reasonInput.value = '';
+                if (scoreValueEl) scoreValueEl.textContent = defaultScore.toFixed(2);
+            }
+            
+            // 添加股票列表显示
+            const symbolsContainer = document.getElementById('editSymbolsList');
+            if (symbolsContainer) {
+                symbolsContainer.innerHTML = `
+                    <div class="mt-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">应用股票</label>
+                        <div class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                            ${symbols.join(', ')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+        
+        /**
+         * 按特征类型保存自定义评分（应用到该类型的所有股票）
+         */
+        async function saveQualityConfigByType() {
+            if (!currentEditingFeatureType) {
+                // 如果没有类型编辑状态，尝试使用单个特征编辑
+                return saveQualityConfig();
+            }
+            
+            const customScoreInput = document.getElementById('editCustomScore');
+            const reasonInput = document.getElementById('editReason');
+            
+            const customScore = parseFloat(customScoreInput.value);
+            const reason = reasonInput.value.trim();
+            
+            if (isNaN(customScore) || customScore < 0 || customScore > 1) {
+                alert('评分必须在0-1之间');
+                return;
+            }
+            
+            // 获取该类型的所有特征
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            const featuresOfType = features.filter(f => getFeatureType(f) === currentEditingFeatureType);
+            
+            if (featuresOfType.length === 0) {
+                alert('未找到该类型的特征');
+                return;
+            }
+            
+            // 构建批量配置
+            const configs = featuresOfType.map(f => ({
+                feature_name: f.name,
+                custom_score: customScore,
+                reason: reason
+            }));
+            
+            try {
+                const response = await fetch('/api/v1/features/engineering/quality/config/batch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ configs })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 更新本地配置 - 为每个特征创建配置记录
+                    featuresOfType.forEach(feature => {
+                        customQualityConfigs[feature.name] = {
+                            config_id: null, // 批量创建不返回单个config_id
+                            custom_score: customScore,
+                            reason: reason
+                        };
+                    });
+                    
+                    // 关闭弹窗
+                    closeEditQualityModal();
+                    currentEditingFeatureType = null;
+                    
+                    // 刷新列表
+                    renderQualityConfigList();
+                    
+                    // 刷新特征数据
+                    loadFeatures();
+                    
+                    // 显示成功提示
+                    showNotification(`已保存 ${data.success_count || featuresOfType.length} 个特征的自定义评分`, 'success');
+                } else {
+                    throw new Error(data.message || '保存失败');
+                }
+            } catch (error) {
+                console.error('❌ 保存自定义评分失败:', error);
+                alert('保存失败: ' + error.message);
+            }
+        }
+        
+        /**
+         * 按特征类型重置为默认评分
+         */
+        async function resetQualityConfigByType(featureType) {
+            if (!confirm(`确定要将 ${featureType} 类型的所有特征重置为默认评分吗？`)) {
+                return;
+            }
+            
+            // 获取该类型的所有特征
+            const features = (typeof featuresData !== 'undefined' && featuresData.features) ? featuresData.features : [];
+            const featuresOfType = features.filter(f => getFeatureType(f) === featureType);
+            
+            if (featuresOfType.length === 0) {
+                alert('未找到该类型的特征');
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            // 逐个重置
+            for (const feature of featuresOfType) {
+                const config = customQualityConfigs[feature.name];
+                if (config) {
+                    // 如果有 config_id，调用API重置；否则直接删除本地配置
+                    if (config.config_id) {
+                        try {
+                            const response = await fetch(`/api/v1/features/engineering/quality/config/${config.config_id}/reset`, {
+                                method: 'POST'
+                            });
+                            
+                            if (response.ok) {
+                                delete customQualityConfigs[feature.name];
+                                successCount++;
+                            } else {
+                                console.error(`重置 ${feature.name} API调用失败`);
+                                failCount++;
+                            }
+                        } catch (error) {
+                            console.error(`重置 ${feature.name} 失败:`, error);
+                            failCount++;
+                        }
+                    } else {
+                        // 没有 config_id，直接删除本地配置
+                        delete customQualityConfigs[feature.name];
+                        successCount++;
+                    }
+                }
+            }
+            
+            // 刷新列表
+            renderQualityConfigList();
+            
+            // 刷新特征数据
+            loadFeatures();
+            
+            // 显示结果提示
+            if (failCount === 0) {
+                showNotification(`已成功重置 ${successCount} 个特征`, 'success');
+            } else {
+                showNotification(`重置完成: 成功 ${successCount}, 失败 ${failCount}`, 'warning');
+            }
+        }
+        
+        /**
+         * 显示通知
+         */
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300 ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // 3秒后自动消失
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // 在页面初始化时加载自定义评分配置
+        document.addEventListener('DOMContentLoaded', function() {
+            // 延迟加载，等待其他数据加载完成
+            setTimeout(() => {
+                loadCustomQualityConfigs();
+            }, 1000);
+        });
+    </script>
+
+    <!-- 自定义评分配置管理弹窗 -->
+    <div id="qualityConfigModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-gray-900">自定义特征质量评分</h3>
+                <button onclick="closeQualityConfigModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[60vh]">
+                <div id="qualityConfigList" class="space-y-4">
+                    <!-- 配置列表将在这里渲染 -->
+                    <div class="text-center text-gray-500 py-8">加载中...</div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button onclick="closeQualityConfigModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑评分弹窗 -->
+    <div id="editQualityModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-gray-900">编辑评分</h3>
+                <button onclick="closeEditQualityModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">特征类型</label>
+                    <div id="editFeatureName" class="text-lg font-semibold text-gray-900"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">系统默认评分</label>
+                    <div id="editDefaultScore" class="text-gray-600"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">自定义评分</label>
+                    <input type="range" id="editCustomScore" min="0" max="1" step="0.01" 
+                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                           oninput="updateScoreSlider(this.value)">
+                    <div class="flex justify-between items-center mt-2">
+                        <span id="scoreValue" class="text-2xl font-bold text-indigo-600">0.85</span>
+                        <span id="qualityLabel" class="text-lg font-semibold text-blue-600">良好</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400 mt-1">
+                        <span>0</span>
+                        <span>0.25</span>
+                        <span>0.5</span>
+                        <span>0.75</span>
+                        <span>1</span>
+                    </div>
+                </div>
+                <!-- 股票列表显示区域 -->
+                <div id="editSymbolsList"></div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">修改原因</label>
+                    <textarea id="editReason" rows="3" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="请输入修改原因（可选）..."></textarea>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button onclick="closeEditQualityModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    取消
+                </button>
+                <button onclick="saveQualityConfigByType()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

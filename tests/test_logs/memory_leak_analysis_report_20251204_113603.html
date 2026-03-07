@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>内存泄漏检测报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .status { background: #fd7e14; color: white; padding: 15px; margin: 10px 0; border-radius: 5px; text-align: center; font-size: 18px; }
+        .metric { background: #e9ecef; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .recommendation { background: #d4edda; padding: 10px; margin: 5px 0; border-radius: 3px; border-left: 4px solid #28a745; }
+        .test-result { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>内存泄漏检测报告</h1>
+        <p>生成时间: 2025-12-04T11:36:03.581759</p>
+        <p>测试时长: 13 分钟</p>
+    </div>
+
+    <div class="status">
+        <strong>内存健康状态: 需要关注</strong>
+    </div>
+
+    <div class="metric">
+        <h2>整体评估</h2>
+        <p><strong>是否检测到泄漏:</strong> 是</p>
+        <p><strong>平均增长率:</strong> 16.49 MB/小时</p>
+        <p><strong>平均置信度:</strong> 0.33</p>
+        <p><strong>风险等级:</strong> high</p>
+    </div>
+
+    <h2>测试结果详情</h2>
+
+    <div class="test-result">
+        <h3>Memory Pressure Test</h3>
+        <p><strong>泄漏状态:</strong> 检测到泄漏</p>
+        <p><strong>增长率:</strong> 38.74 MB/小时</p>
+        <p><strong>置信度:</strong> 0.77</p>
+        <p><strong>持续时间:</strong> 300 秒</p>
+    </div>
+
+    <div class="test-result">
+        <h3>Trading Memory Test</h3>
+        <p><strong>泄漏状态:</strong> 未检测到泄漏</p>
+        <p><strong>增长率:</strong> 5.42 MB/小时</p>
+        <p><strong>置信度:</strong> 0.11</p>
+        <p><strong>持续时间:</strong> 300 秒</p>
+    </div>
+
+    <div class="test-result">
+        <h3>Stability Test</h3>
+        <p><strong>泄漏状态:</strong> 未检测到泄漏</p>
+        <p><strong>增长率:</strong> 5.31 MB/小时</p>
+        <p><strong>置信度:</strong> 0.11</p>
+        <p><strong>持续时间:</strong> 180 秒</p>
+    </div>
+
+    <h2>修复建议</h2>
+
+    <div class="recommendation">
+        <strong>💡</strong> 使用弱引用处理缓存对象
+    </div>
+
+    <div class="recommendation">
+        <strong>💡</strong> 考虑内存池化技术减少分配开销
+    </div>
+
+    <div class="recommendation">
+        <strong>💡</strong> ⚠️ 检测到内存泄漏趋势，建议监控并优化
+    </div>
+
+    <div class="recommendation">
+        <strong>💡</strong> 定期执行垃圾回收以释放内存
+    </div>
+
+    <div class="recommendation">
+        <strong>💡</strong> 实施定期内存监控和告警机制
+    </div>
+
+    <div class="recommendation">
+        <strong>💡</strong> 优化对象生命周期管理，避免长期持有引用
+    </div>
+
+</body>
+</html>

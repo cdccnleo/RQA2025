@@ -1,0 +1,77 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # 数据采集服务指标
+  - job_name: 'data-collection-service'
+    static_configs:
+      - targets: ['host.docker.internal:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # Python应用指标 (如果使用prometheus_client)
+  - job_name: 'rqa2025-python-apps'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:8000'  # FastAPI服务
+          - 'host.docker.internal:8001'  # 其他Python服务
+    metrics_path: '/metrics'
+
+  # 系统指标 - Node Exporter
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+
+  # 容器指标 - cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+
+  # PostgreSQL + TimescaleDB指标
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+
+  # Redis指标 (如果配置了redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['host.docker.internal:9121']
+    scrape_interval: 30s
+
+  # MinIO指标 (如果配置了minio_exporter)
+  - job_name: 'minio'
+    static_configs:
+      - targets: ['host.docker.internal:9000']
+    metrics_path: '/minio/v2/metrics/cluster'
+    scrape_interval: 30s
+
+  # Prometheus自身指标
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+
+# 告警配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 'alertmanager:9093'
+
+# 远程写入 (可选，用于长期存储)
+# remote_write:
+#   - url: "http://victoriametrics:8428/api/v1/write"
+
+# 远程读取 (可选，从长期存储读取)
+# remote_read:
+#   - url: "http://victoriametrics:8428/api/v1/read"

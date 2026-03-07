@@ -1,0 +1,149 @@
+# RQA2026 Prometheus告警规则
+
+groups:
+  # 服务可用性告警
+  - name: rqa2026_service_availability
+    rules:
+      - alert: RQA2026ServiceDown
+        expr: up{job=~"rqa2026-.*"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "RQA2026服务不可用"
+          description: "服务 {{ $labels.job }} 已宕机超过5分钟"
+
+      - alert: RQA2026ServiceHighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~"rqa2026-.*"}[5m])) > 5
+        for: 10m
+        labels:
+          severity: warning
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "RQA2026服务响应延迟过高"
+          description: "服务 {{ $labels.job }} 95分位响应时间超过5秒"
+
+  # 系统资源告警
+  - name: rqa2026_system_resources
+    rules:
+      - alert: RQA2026HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU使用率过高"
+          description: "节点 {{ $labels.instance }} CPU使用率超过85%"
+
+      - alert: RQA2026HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "内存使用率过高"
+          description: "节点 {{ $labels.instance }} 内存使用率超过90%"
+
+      - alert: RQA2026LowDiskSpace
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "磁盘空间不足"
+          description: "节点 {{ $labels.instance }} 可用磁盘空间低于10%"
+
+  # 业务指标告警
+  - name: rqa2026_business_metrics
+    rules:
+      - alert: RQA2026QuantumOptimizationFailure
+        expr: rate(rqa2026_quantum_optimization_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "量子优化失败率过高"
+          description: "量子优化失败率超过10%"
+
+      - alert: RQA2026AISentimentAnalysisFailure
+        expr: rate(rqa2026_ai_sentiment_analysis_failures_total[5m]) > 0.05
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI情绪分析失败率过高"
+          description: "AI情绪分析失败率超过5%"
+
+      - alert: RQA2026BMISignalQualityLow
+        expr: rqa2026_bmi_signal_quality < 0.7
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "BMI信号质量低下"
+          description: "BMI信号质量低于70%阈值"
+
+  # 基础设施告警
+  - name: rqa2026_infrastructure
+    rules:
+      - alert: RQA2026DatabaseConnectionFailure
+        expr: pg_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "数据库连接失败"
+          description: "PostgreSQL数据库连接失败"
+
+      - alert: RQA2026RedisConnectionFailure
+        expr: redis_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis连接失败"
+          description: "Redis缓存服务连接失败"
+
+      - alert: RQA2026MinIOConnectionFailure
+        expr: minio_up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MinIO连接失败"
+          description: "对象存储服务连接失败"
+
+  # 性能监控指标
+  - name: rqa2026_performance_metrics
+    rules:
+      - alert: RQA2026HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HTTP错误率过高"
+          description: "HTTP 5xx错误率超过5%"
+
+      - alert: RQA2026SlowQueries
+        expr: histogram_quantile(0.95, rate(rqa2026_query_duration_seconds_bucket[5m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "查询响应过慢"
+          description: "95分位查询响应时间超过10秒"
+
+      - alert: RQA2026HighQueueLength
+        expr: rqa2026_queue_length > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "队列长度过长"
+          description: "服务队列长度超过1000"
+
+
+
+

@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 Phase 4A质量基线报告</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .score-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: white;
+        }
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .metric-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.3s ease;
+        }
+        .findings {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .priority-high { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .priority-medium { background: #fff3cd; border-left: 4px solid #ffc107; }
+        .priority-low { background: #d1ecf1; border-left: 4px solid #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RQA2025 Phase 4A质量基线数据收集报告</h1>
+            <p>收集时间: 2025-08-26T12:28:14.573922</p>
+            <p>执行人: 孙十一 (质量提升专项组负责人)</p>
+        </div>
+
+        <div class="score-card">
+            <h2>总体质量评分</h2>
+            <div class="score-number">71.1/100</div>
+            <p>共收集 9 个质量指标</p>
+        </div>
+
+        <h2>质量指标详情</h2>
+        <div class="metric-grid">
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">业务流程测试覆盖率</span>
+                    <span class="metric-value">46.0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 51.11111111111111%"></div>
+                </div>
+                <p>目标值: 90.0%</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">E2E测试通过率</span>
+                    <span class="metric-value">92.5%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 95.36082474226805%"></div>
+                </div>
+                <p>目标值: 97.0%</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">CPU使用率</span>
+                    <span class="metric-value">7.4%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 9.25%"></div>
+                </div>
+                <p>目标值: 80.0%</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">内存使用率</span>
+                    <span class="metric-value">31.5%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 45.0%"></div>
+                </div>
+                <p>目标值: 70.0%</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">API响应时间</span>
+                    <span class="metric-value">67.2ms</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                <p>目标值: 50.0ms</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">系统可用性</span>
+                    <span class="metric-value">87.5%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 87.58758758758758%"></div>
+                </div>
+                <p>目标值: 99.9%</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">代码质量评分</span>
+                    <span class="metric-value">82.0/100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 91.11111111111111%"></div>
+                </div>
+                <p>目标值: 90.0/100</p>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-name">安全漏洞数量</span>
+                    <span class="metric-value">1.0个</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p>目标值: 0.0个</p>
+            </div>
+
+        </div>
+
+        <h2>关键发现</h2>
+        <div class="findings">
+            <p>• 总体质量评分: 71.1/100，需要重点关注</p>\n            <p>• 业务流程测试覆盖率: 46% (目标90%)，差距44个百分点</p>\n            <p>• CPU使用率: 7.4% (目标<80%)，正常</p>\n            <p>• 内存使用率: 31.5% (目标<70%)，正常</p>\n            <p>• E2E测试通过率: 92.5% (目标97%)，差距4.5个百分点</p>\n            <p>• 安全漏洞: 1个 (目标0个)，需要立即处理</p>\n
+        </div>
+
+        <h2>改进优先级</h2>
+
+        <div class="findings priority-high">
+            <h3>高优先级</h3>
+            <p><strong>重点:</strong> 核心功能和性能优化</p>
+            <p><strong>指标:</strong> business_flow_coverage, cpu_usage_baseline, memory_usage_baseline</p>
+        </div>
+
+        <div class="findings priority-medium">
+            <h3>中优先级</h3>
+            <p><strong>重点:</strong> 测试稳定性和安全加固</p>
+            <p><strong>指标:</strong> e2e_test_pass_rate, security_vulnerability_baseline</p>
+        </div>
+
+        <div class="findings priority-low">
+            <h3>低优先级</h3>
+            <p><strong>重点:</strong> 质量保障和环境优化</p>
+            <p><strong>指标:</strong> code_quality_baseline, test_environment_stability</p>
+        </div>
+
+        <h2>后续步骤</h2>
+        <div class="findings">
+            <p>• 4月8日-4月12日：实施业务流程测试覆盖提升</p>\n            <p>• 4月8日-4月12日：开展CPU/内存使用率优化</p>\n            <p>• 4月13日-4月19日：完善E2E测试执行效率</p>\n            <p>• 4月20日-4月26日：加强安全漏洞修复</p>\n            <p>• 4月27日-4月30日：整体质量评估和调优</p>\n
+        </div>
+    </div>
+</body>
+</html>

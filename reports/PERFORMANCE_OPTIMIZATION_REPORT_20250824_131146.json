@@ -1,0 +1,91 @@
+{
+  "performance_test_summary": {
+    "start_time": "2025-08-24T13:11:46.553245",
+    "end_time": "2025-08-24T13:11:46.564079",
+    "duration_seconds": 0.010834,
+    "total_tests": 5,
+    "passed_tests": 4,
+    "warning_tests": 0,
+    "failed_tests": 1,
+    "success_rate": 80.0,
+    "performance_score": 86.0,
+    "overall_status": "failed"
+  },
+  "performance_results": [
+    {
+      "test_name": "module_import_performance",
+      "status": "passed",
+      "message": "模块导入性能优秀，平均时间: 0.001秒",
+      "metrics": {
+        "import_times": {
+          "src.infrastructure": 0.00099945068359375,
+          "src.core": Infinity,
+          "src.data": Infinity
+        },
+        "avg_import_time": 0.00099945068359375,
+        "max_import_time": 0.00099945068359375,
+        "modules_tested": 3
+      }
+    },
+    {
+      "test_name": "component_initialization_performance",
+      "status": "passed",
+      "message": "组件初始化性能优秀，平均时间: 0.000秒",
+      "metrics": {
+        "init_times": {
+          "infrastructure": 0.0,
+          "core": Infinity,
+          "data": Infinity
+        },
+        "avg_init_time": 0.0,
+        "components_tested": 1
+      }
+    },
+    {
+      "test_name": "business_logic_performance",
+      "status": "passed",
+      "message": "业务逻辑性能优秀，平均执行时间: 0.0000秒",
+      "metrics": {
+        "test_iterations": 10,
+        "avg_execution_time": 0.0,
+        "min_execution_time": 0.0,
+        "max_execution_time": 0.0,
+        "execution_times": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "test_name": "memory_usage_optimization",
+      "status": "passed",
+      "message": "内存使用优化良好，增长: 0.0MB, GC回收: 0.0MB",
+      "metrics": {
+        "initial_memory": 20.57421875,
+        "after_memory": 20.57421875,
+        "memory_increase": 0.0,
+        "after_gc_memory": 20.57421875,
+        "gc_effectiveness": 0.0
+      }
+    },
+    {
+      "test_name": "concurrent_processing_performance",
+      "status": "failed",
+      "message": "并发处理性能一般，加速比: 0.00x",
+      "metrics": {
+        "single_thread_time": 0.0,
+        "multi_thread_time": 0.001001119613647461,
+        "speedup": 0.0,
+        "test_data_count": 10
+      }
+    }
+  ]
+}

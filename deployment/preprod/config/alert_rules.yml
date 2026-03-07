@@ -1,0 +1,130 @@
+groups:
+  - name: rqa2025_alerts
+    rules:
+
+    # Health Monitor Service Alerts
+    - alert: HealthMonitorDown
+      expr: up{job="rqa2025-health-monitor"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: health-monitor
+      annotations:
+        summary: "Health Monitor service is down"
+        description: "Health Monitor service has been down for more than 1 minute."
+
+    - alert: HealthMonitorHighResponseTime
+      expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="rqa2025-health-monitor"}[5m])) > 0.1
+      for: 2m
+      labels:
+        severity: warning
+        service: health-monitor
+      annotations:
+        summary: "High response time for Health Monitor"
+        description: "95th percentile response time is above 100ms for 2 minutes."
+
+    # Database Alerts
+    - alert: PostgreSQLDown
+      expr: up{job="postgres"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: database
+      annotations:
+        summary: "PostgreSQL database is down"
+        description: "PostgreSQL database has been down for more than 1 minute."
+
+    - alert: PostgreSQLHighConnections
+      expr: pg_stat_activity_count{datname="rqa2025"} > 80
+      for: 2m
+      labels:
+        severity: warning
+        service: database
+      annotations:
+        summary: "High PostgreSQL connection count"
+        description: "PostgreSQL has more than 80 active connections for 2 minutes."
+
+    # InfluxDB Alerts
+    - alert: InfluxDBDown
+      expr: up{job="influxdb"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: influxdb
+      annotations:
+        summary: "InfluxDB is down"
+        description: "InfluxDB has been down for more than 1 minute."
+
+    # Redis Alerts
+    - alert: RedisDown
+      expr: up{job="redis"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: cache
+      annotations:
+        summary: "Redis cache is down"
+        description: "Redis cache has been down for more than 1 minute."
+
+    - alert: RedisHighMemoryUsage
+      expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+      for: 2m
+      labels:
+        severity: warning
+        service: cache
+      annotations:
+        summary: "High Redis memory usage"
+        description: "Redis memory usage is above 80% for 2 minutes."
+
+    # System Resource Alerts
+    - alert: HighCPUUsage
+      expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      for: 5m
+      labels:
+        severity: warning
+        service: system
+      annotations:
+        summary: "High CPU usage"
+        description: "CPU usage is above 80% for 5 minutes."
+
+    - alert: HighMemoryUsage
+      expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 85
+      for: 5m
+      labels:
+        severity: warning
+        service: system
+      annotations:
+        summary: "High memory usage"
+        description: "Memory usage is above 85% for 5 minutes."
+
+    - alert: LowDiskSpace
+      expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 10
+      for: 5m
+      labels:
+        severity: warning
+        service: system
+      annotations:
+        summary: "Low disk space"
+        description: "Disk space is below 10% for 5 minutes."
+
+    # Application Specific Alerts
+    - alert: HealthCheckFailures
+      expr: increase(health_check_failures_total[5m]) > 5
+      for: 2m
+      labels:
+        severity: warning
+        service: health-check
+      annotations:
+        summary: "High health check failure rate"
+        description: "Health check failures increased by more than 5 in 5 minutes."
+
+    - alert: SlowQueries
+      expr: histogram_quantile(0.95, rate(database_query_duration_seconds_bucket[5m])) > 1.0
+      for: 2m
+      labels:
+        severity: warning
+        service: database
+      annotations:
+        summary: "Slow database queries detected"
+        description: "95th percentile query duration is above 1 second for 2 minutes."
+

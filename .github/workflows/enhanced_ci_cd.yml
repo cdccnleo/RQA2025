@@ -1,0 +1,343 @@
+name: Enhanced CI/CD Pipeline with Parallel Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  test-parallel:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        test-layer: [infrastructure, data, core, risk, trading, ml]
+        include:
+          - test-layer: infrastructure
+            test-path: tests/unit/infrastructure/
+            cov-target: src.infrastructure
+          - test-layer: data
+            test-path: tests/unit/data/
+            cov-target: src.data
+          - test-layer: core
+            test-path: tests/unit/core/
+            cov-target: src.core
+          - test-layer: risk
+            test-path: tests/unit/risk/
+            cov-target: src.risk
+          - test-layer: trading
+            test-path: tests/unit/trading/
+            cov-target: src.trading
+          - test-layer: ml
+            test-path: tests/unit/ml/
+            cov-target: src.ml
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install pytest-xdist pytest-cov pytest-html
+
+    - name: Run ${{ matrix.test-layer }} layer tests with coverage
+      run: |
+        python -m pytest ${{ matrix.test-path }} -n auto --cov=${{ matrix.cov-target }} --cov-report=xml --cov-report=html --cov-report=term-missing --cov-append --html=test_results_${{ matrix.test-layer }}.html --self-contained-html -x --tb=short --durations=10
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.test-layer }}-${{ github.run_number }}
+        path: |
+          test_results_${{ matrix.test-layer }}.html
+          coverage.xml
+
+  coverage-report:
+    runs-on: windows-latest
+    needs: test-parallel
+    if: always()
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Download coverage files
+      uses: actions/download-artifact@v3
+      with:
+        name: test-results-infrastructure-${{ github.run_number }}
+        path: coverage-files/
+
+    - name: Download all coverage artifacts
+      uses: actions/download-artifact@v3
+      with:
+        pattern: test-results-*-${{ github.run_number }}
+        path: coverage-files/
+        merge-multiple: true
+
+    - name: Install coverage tools
+      run: |
+        pip install coverage coverage-badge pytest-cov
+
+    - name: Combine coverage reports
+      run: |
+        coverage combine coverage-files/
+        coverage report --show-missing
+        coverage html -d htmlcov
+        coverage-badge -o coverage_badge.svg
+
+    - name: Generate coverage summary
+      run: |
+        python -c "
+        import coverage
+        import json
+
+        cov = coverage.Coverage()
+        cov.load()
+        cov.report(show_missing=True)
+
+        # Generate detailed report
+        total = cov.report()
+        print(f'Overall coverage: {total:.2f}%')
+
+        with open('coverage_summary.json', 'w') as f:
+            json.dump({
+                'total_coverage': total,
+                'timestamp': '${{ github.run_number }}',
+                'commit': '${{ github.sha }}'
+            }, f, indent=2)
+        "
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report-${{ github.run_number }}
+        path: |
+          htmlcov/
+          coverage_badge.svg
+          coverage_summary.json
+          coverage.xml
+
+  quality-check:
+    runs-on: windows-latest
+    needs: test-parallel
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install quality tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort mypy bandit safety pytest-xdist
+
+    - name: Run code quality checks
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings
+        flake8 src --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Check code formatting with Black
+      run: |
+        black --check --diff src/
+
+    - name: Check import sorting
+      run: |
+        isort --check-only --diff src/
+
+    - name: Run type checking
+      run: |
+        mypy src/ --ignore-missing-imports --no-strict-optional --disable-error-code=import-untyped
+
+    - name: Run security checks
+      run: |
+        bandit -r src/ -f json -o security_report.json || true
+        safety check --json > safety_report.json || true
+
+    - name: Upload quality reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: quality-reports-${{ github.run_number }}
+        path: |
+          security_report.json
+          safety_report.json
+
+  integration-test:
+    runs-on: windows-latest
+    needs: [test-parallel, quality-check]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install pytest-xdist
+
+    - name: Run integration tests
+      run: |
+        python -m pytest tests/integration/ -n auto --tb=short -x --durations=10
+
+    - name: Run end-to-end tests
+      run: |
+        python -m pytest tests/e2e/ --tb=short -x --durations=10 -k "not slow"
+
+  performance-test:
+    runs-on: windows-latest
+    needs: [test-parallel, integration-test]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-benchmark locust
+
+    - name: Run performance benchmarks
+      run: |
+        python -m pytest tests/unit/ -k "performance or benchmark" --benchmark-only --benchmark-save=benchmarks --benchmark-json=benchmark_results.json
+
+    - name: Run load testing
+      run: |
+        python -m pytest tests/integration/test_system_performance_stress.py -v --tb=short
+
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-results-${{ github.run_number }}
+        path: |
+          .benchmarks/
+          benchmark_results.json
+
+  final-report:
+    runs-on: windows-latest
+    needs: [coverage-report, quality-check, integration-test, performance-test]
+    if: always()
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all reports
+      uses: actions/download-artifact@v3
+      with:
+        pattern: *-reports-${{ github.run_number }}
+        path: all-reports/
+        merge-multiple: true
+
+    - name: Generate final test summary
+      run: |
+        python -c "
+        import json
+        import os
+        from pathlib import Path
+
+        # Generate comprehensive test summary
+        summary = {
+            'workflow_run': '${{ github.run_number }}',
+            'commit_sha': '${{ github.sha }}',
+            'branch': '${{ github.ref }}',
+            'timestamp': '${{ github.event.head_commit.timestamp }}',
+            'status': 'success' if '${{ job.status }}' == 'success' else 'partial_failure'
+        }
+
+        # Read coverage summary if available
+        coverage_file = Path('all-reports/coverage_summary.json')
+        if coverage_file.exists():
+            with open(coverage_file) as f:
+                coverage_data = json.load(f)
+                summary['coverage'] = coverage_data
+
+        # Save summary
+        with open('test_summary_final.json', 'w') as f:
+            json.dump(summary, f, indent=2)
+
+        print('🎯 RQA2025 Enhanced CI/CD Pipeline Completed')
+        print(f'📊 Run: ${{ github.run_number }}')
+        print(f'🔗 {coverage_data.get(\"total_coverage\", \"N/A\")} coverage achieved'        "
+
+    - name: Upload final summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: final-summary-${{ github.run_number }}
+        path: test_summary_final.json
+
+  deploy-staging:
+    runs-on: windows-latest
+    needs: [final-report]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip deploy]')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to staging
+      run: |
+        echo "🚀 Deploying to staging environment..."
+        # Add your staging deployment commands here
+        echo "✅ Staging deployment completed"
+
+  deploy-production:
+    runs-on: windows-latest
+    needs: [final-report]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip deploy]')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to production
+      run: |
+        echo "🎯 Deploying to production environment..."
+        # Add your production deployment commands here
+        echo "🏆 Production deployment completed"

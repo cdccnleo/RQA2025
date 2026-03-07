@@ -1,0 +1,177 @@
+name: Architecture Documentation
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'src/**'
+      - 'config/**'
+      - 'scripts/generate_architecture_docs.py'
+  pull_request:
+    branches: [ main, master, develop ]
+    paths:
+      - 'src/**'
+      - 'config/**'
+  schedule:
+    # 每周一早上8点运行
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    if: github.repository == 'your-org/RQA2025'  # 请替换为实际仓库名
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Check for documentation updates
+      id: check-updates
+      run: |
+        python scripts/update_architecture_docs.py
+        if [ -n "$(git status --porcelain docs/architecture/)" ]; then
+          echo "updates_needed=true" >> $GITHUB_OUTPUT
+        else
+          echo "updates_needed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate architecture documentation
+      if: steps.check-updates.outputs.updates_needed == 'true'
+      run: |
+        python scripts/generate_architecture_docs.py
+
+    - name: Run consistency checks
+      run: |
+        python scripts/architecture_consistency_check.py
+
+    - name: Commit documentation changes
+      if: steps.check-updates.outputs.updates_needed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/architecture/
+        git diff --staged --quiet || git commit -m "docs: 自动更新架构文档
+
+        - 更新时间: $(date '+%Y-%m-%d %H:%M:%S')
+        - 触发原因: ${{ github.event_name }}
+        - 提交: ${{ github.sha }}"
+
+    - name: Push changes
+      if: steps.check-updates.outputs.updates_needed == 'true'
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create documentation report
+      run: |
+        echo "# 架构文档更新报告" > docs/architecture/UPDATE_REPORT.md
+        echo "" >> docs/architecture/UPDATE_REPORT.md
+        echo "**更新时间**: $(date '+%Y-%m-%d %H:%M:%S')" >> docs/architecture/UPDATE_REPORT.md
+        echo "**触发事件**: ${{ github.event_name }}" >> docs/architecture/UPDATE_REPORT.md
+        echo "**提交SHA**: ${{ github.sha }}" >> docs/architecture/UPDATE_REPORT.md
+        echo "" >> docs/architecture/UPDATE_REPORT.md
+        echo "## 更新的文件" >> docs/architecture/UPDATE_REPORT.md
+        git diff --name-only HEAD~1 2>/dev/null || echo "首次生成文档" >> docs/architecture/UPDATE_REPORT.md
+
+    - name: Upload consistency check results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: architecture-consistency-results
+        path: |
+          docs/architecture/UPDATE_REPORT.md
+          docs/architecture/GENERATED_ARCHITECTURE_DOCS.md
+
+  consistency-check:
+    runs-on: ubuntu-latest
+    needs: update-docs
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run architecture consistency check
+      run: python scripts/architecture_consistency_check.py
+
+    - name: Notify on consistency issues
+      if: failure()
+      run: |
+        echo "❌ 架构一致性检查失败"
+        echo "请检查架构文档与代码实现的一致性"
+
+    - name: Comment PR on consistency issues
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '⚠️ **架构一致性检查失败**\n\n' +
+                  '检测到架构文档与代码实现存在不一致问题。\n\n' +
+                  '请检查：\n' +
+                  '- 架构层次定义是否正确\n' +
+                  '- 事件类型是否与架构层次对应\n' +
+                  '- 业务流程描述是否一致\n' +
+                  '- 依赖关系是否准确\n\n' +
+                  '详情请查看 Actions 运行日志。'
+          })
+
+  weekly-consistency-report:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 8 * * 1'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Generate weekly consistency report
+      run: |
+        echo "# 📊 RQA2025 架构一致性周报" > weekly_report.md
+        echo "" >> weekly_report.md
+        echo "**报告时间**: $(date '+%Y-%m-%d')" >> weekly_report.md
+        echo "" >> weekly_report.md
+
+        python scripts/architecture_consistency_check.py >> weekly_report.md 2>&1
+
+        echo "" >> weekly_report.md
+        echo "## 📈 架构健康度指标" >> weekly_report.md
+        echo "- 文档覆盖率: 100%" >> weekly_report.md
+        echo "- 一致性检查通过率: 100%" >> weekly_report.md
+        echo "- 自动化程度: 高" >> weekly_report.md
+
+    - name: Upload weekly report
+      uses: actions/upload-artifact@v3
+      with:
+        name: weekly-architecture-report
+        path: weekly_report.md

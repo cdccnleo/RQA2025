@@ -1,0 +1,63 @@
+name: Data Layer Review Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-review-package:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: "3.9"
+          activate-environment: rqa
+          environment-file: ""
+          auto-activate-base: false
+
+      - name: Create/Activate conda env rqa
+        shell: pwsh
+        run: |
+          if (-not (conda info --envs | Select-String -SimpleMatch "rqa")) {
+            conda create -y -n rqa python=3.9
+          }
+          conda activate rqa
+          python --version
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          conda activate rqa
+          if (Test-Path "requirements.txt") {
+            pip install -r requirements.txt
+          }
+          if (Test-Path "requirements-dev.txt") {
+            pip install -r requirements-dev.txt
+          }
+          # Ensure core test deps present
+          pip install -q pytest pytest-xdist pytest-cov
+
+      - name: Build review package (pytest -n auto)
+        shell: pwsh
+        run: |
+          conda activate rqa
+          pwsh -NoProfile -File "scripts/build_data_layer_review.ps1"
+
+      - name: Upload review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-layer-review-package
+          path: |
+            test_logs/data-layer-review-package.zip
+            reports/data-layer-review-summary.md
+          if-no-files-found: warn
+
+

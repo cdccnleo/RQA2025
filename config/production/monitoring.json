@@ -1,0 +1,35 @@
+{
+  "monitoring": {
+    "prometheus": {
+      "enabled": true,
+      "port": 9090,
+      "metrics_path": "/metrics"
+    },
+    "grafana": {
+      "enabled": true,
+      "port": 3000,
+      "admin_user": "admin",
+      "admin_password": "fdxrLdS*G6zJGjsf"
+    },
+    "alertmanager": {
+      "enabled": true,
+      "port": 9093,
+      "smtp": {
+        "host": "smtp.gmail.com",
+        "port": 587,
+        "user": "alerts@rqa2025.com",
+        "password": "d2Skm3OV2W!6VGs^"
+      }
+    },
+    "health_checks": {
+      "enabled": true,
+      "interval": 30,
+      "timeout": 10,
+      "endpoints": [
+        "/health",
+        "/api/v1/health",
+        "/metrics"
+      ]
+    }
+  }
+}

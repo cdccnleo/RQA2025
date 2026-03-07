@@ -1,0 +1,87 @@
+{
+  "pre_deployment_checks": [
+    {
+      "item": "系统资源检查",
+      "description": "验证CPU、内存、磁盘满足要求",
+      "command": "python scripts/pre_deploy_check.sh",
+      "expected_result": "所有检查通过",
+      "critical": true
+    },
+    {
+      "item": "依赖包验证",
+      "description": "确认所有Python依赖已正确安装",
+      "command": "pip check",
+      "expected_result": "无依赖冲突",
+      "critical": true
+    },
+    {
+      "item": "配置文件验证",
+      "description": "检查所有配置文件语法正确",
+      "command": "python -m json.tool config/production.json",
+      "expected_result": "JSON格式正确",
+      "critical": true
+    }
+  ],
+  "deployment_checks": [
+    {
+      "item": "服务启动",
+      "description": "验证服务能够正常启动",
+      "command": "sudo systemctl start rqa2025 && sleep 10 && sudo systemctl status rqa2025",
+      "expected_result": "服务状态为active",
+      "critical": true
+    },
+    {
+      "item": "端口监听",
+      "description": "确认应用监听正确端口",
+      "command": "sudo lsof -i :8000",
+      "expected_result": "端口8000被监听",
+      "critical": true
+    },
+    {
+      "item": "数据库连接",
+      "description": "验证数据库连接正常",
+      "command": "python -c \"import os; os.environ['RQA2025_DATABASE_URL']; # test connection\"",
+      "expected_result": "连接成功",
+      "critical": true
+    }
+  ],
+  "post_deployment_checks": [
+    {
+      "item": "健康检查",
+      "description": "执行应用健康检查",
+      "command": "curl -f http://localhost:8000/health",
+      "expected_result": "返回200状态码",
+      "critical": true
+    },
+    {
+      "item": "基本功能测试",
+      "description": "验证核心API功能",
+      "command": "curl -f http://localhost:8000/api/v1/market-data",
+      "expected_result": "返回有效数据",
+      "critical": true
+    },
+    {
+      "item": "性能基准",
+      "description": "运行基础性能测试",
+      "command": "python -m pytest tests/performance/benchmark_framework.py -k 'trading_core' --tb=short",
+      "expected_result": "测试通过",
+      "critical": false
+    },
+    {
+      "item": "日志验证",
+      "description": "检查日志文件生成",
+      "command": "ls -la /var/log/rqa2025/",
+      "expected_result": "存在日志文件",
+      "critical": false
+    },
+    {
+      "item": "监控指标",
+      "description": "验证监控端点工作",
+      "command": "curl -f http://localhost:8000/metrics",
+      "expected_result": "返回监控数据",
+      "critical": false
+    }
+  ],
+  "production_readiness_score": 66.32812499999999,
+  "automated_validation_available": true
+}

@@ -1,0 +1,1365 @@
+{
+  "generated_at": "2025-09-29T06:27:26.943304",
+  "metrics": {
+    "total_modules": 72,
+    "total_classes": 192,
+    "total_functions": 665
+  },
+  "modules": {
+    "__init__": {
+      "path": "src\\infrastructure\\resource\\__init__.py",
+      "classes": [],
+      "functions": []
+    },
+    "api.monitoringservice": {
+      "path": "src\\infrastructure\\resource\\api\\monitoringservice.py",
+      "classes": [
+        "MonitoringService"
+      ],
+      "functions": [
+        "record_metric",
+        "get_metric"
+      ]
+    },
+    "api.resource_api": {
+      "path": "src\\infrastructure\\resource\\api\\resource_api.py",
+      "classes": [
+        "ResourceAPI"
+      ],
+      "functions": [
+        "get_system_usage",
+        "get_gpu_usage",
+        "get_usage_history",
+        "get_strategy_usage"
+      ]
+    },
+    "config.config_classes": {
+      "path": "src\\infrastructure\\resource\\config\\config_classes.py",
+      "classes": [
+        "ProcessConfig",
+        "MonitorConfig",
+        "GPUConfig",
+        "MetricsConfig",
+        "AlertConfig",
+        "ResourceConfig",
+        "TaskConfig",
+        "OptimizationConfig",
+        "APIConfig",
+        "StrategyUsageConfig",
+        "ResourceMonitorConfig",
+        "AlertChannelConfig",
+        "AlertRuleConfig",
+        "MonitoringConfig",
+        "MetricsCollectionConfig",
+        "SystemStatusConfig",
+        "PerformanceReportConfig",
+        "ResourceAnalysisConfig",
+        "OptimizationReportConfig"
+      ],
+      "functions": []
+    },
+    "core.alert_manager_component": {
+      "path": "src\\infrastructure\\resource\\core\\alert_manager_component.py",
+      "classes": [
+        "AlertManager"
+      ],
+      "functions": [
+        "add_alert_rule",
+        "remove_alert_rule",
+        "register_alert_handler",
+        "check_alerts",
+        "resolve_alert",
+        "get_active_alerts",
+        "get_alert_history",
+        "get_alert_statistics",
+        "call_handlers"
+      ]
+    },
+    "core.alert_rule_manager": {
+      "path": "src\\infrastructure\\resource\\core\\alert_rule_manager.py",
+      "classes": [
+        "AlertRuleManager"
+      ],
+      "functions": [
+        "add_alert_rule",
+        "remove_alert_rule",
+        "get_alert_rules",
+        "get_enabled_rules",
+        "enable_rule",
+        "disable_rule",
+        "check_alerts",
+        "get_rule_statistics"
+      ]
+    },
+    "core.base": {
+      "path": "src\\infrastructure\\resource\\core\\base.py",
+      "classes": [
+        "UnifiedBaseResourceComponent"
+      ],
+      "functions": []
+    },
+    "core.base_component": {
+      "path": "src\\infrastructure\\resource\\core\\base_component.py",
+      "classes": [
+        "ParameterConfig",
+        "IBaseResourceComponent",
+        "BaseResourceComponent"
+      ],
+      "functions": [
+        "merge",
+        "from_dict",
+        "to_dict",
+        "initialize",
+        "get_status",
+        "shutdown",
+        "initialize",
+        "get_status",
+        "shutdown",
+        "update_config",
+        "is_healthy",
+        "record_operation",
+        "get_operation_stats",
+        "reset_stats",
+        "log_operation"
+      ]
+    },
+    "core.configuration_manager": {
+      "path": "src\\infrastructure\\resource\\core\\configuration_manager.py",
+      "classes": [
+        "ConfigurationManager"
+      ],
+      "functions": [
+        "get_config",
+        "set_config",
+        "update_config",
+        "save_to_file",
+        "reset_to_defaults",
+        "validate_config",
+        "get_config_summary",
+        "export_config",
+        "import_config",
+        "get_config_diff",
+        "dict_diff"
+      ]
+    },
+    "core.dependency_container": {
+      "path": "src\\infrastructure\\resource\\core\\dependency_container.py",
+      "classes": [
+        "DependencyResolutionError",
+        "CircularDependencyError",
+        "ServiceNotFoundError",
+        "ServiceRegistrationError",
+        "ServiceLifetime",
+        "ServiceDescriptor",
+        "DependencyContainer",
+        "ServiceCollection"
+      ],
+      "functions": [
+        "injectable",
+        "singleton",
+        "transient",
+        "scoped",
+        "register",
+        "register_factory",
+        "register_instance",
+        "unregister",
+        "resolve",
+        "begin_scope",
+        "is_registered",
+        "get_registered_services",
+        "get_service_info",
+        "clear",
+        "decorator",
+        "add_singleton",
+        "add_transient",
+        "add_scoped",
+        "add_singleton_factory",
+        "add_transient_factory",
+        "add_scoped_factory",
+        "add_instance"
+      ]
+    },
+    "core.event_bus": {
+      "path": "src\\infrastructure\\resource\\core\\event_bus.py",
+      "classes": [
+        "Event",
+        "ResourceEvent",
+        "SystemEvent",
+        "PerformanceEvent",
+        "EventFilter",
+        "EventSubscription",
+        "EventBus",
+        "EventTypes"
+      ],
+      "functions": [
+        "create_resource_event",
+        "create_system_event",
+        "create_performance_event",
+        "matches",
+        "matches",
+        "start",
+        "stop",
+        "subscribe",
+        "unsubscribe",
+        "publish",
+        "get_event_history",
+        "get_stats",
+        "clear_history",
+        "get_subscriptions",
+        "reset_stats"
+      ]
+    },
+    "core.event_handler": {
+      "path": "src\\infrastructure\\resource\\core\\event_handler.py",
+      "classes": [
+        "EventHandler"
+      ],
+      "functions": [
+        "register_handler",
+        "register_async_handler",
+        "unregister_handler",
+        "dispatch_event",
+        "get_handler_count",
+        "clear_handlers"
+      ]
+    },
+    "core.event_storage": {
+      "path": "src\\infrastructure\\resource\\core\\event_storage.py",
+      "classes": [
+        "EventStorage"
+      ],
+      "functions": [
+        "store_event",
+        "get_events",
+        "get_event_count",
+        "clear_events",
+        "get_storage_stats"
+      ]
+    },
+    "core.gpu_manager": {
+      "path": "src\\infrastructure\\resource\\core\\gpu_manager.py",
+      "classes": [
+        "GPUManager"
+      ],
+      "functions": [
+        "get_gpu_usage",
+        "get_gpu_memory_info",
+        "get_gpu_temperature",
+        "get_gpu_health_status",
+        "allocate_gpu_memory",
+        "free_gpu_memory"
+      ]
+    },
+    "core.interfaces": {
+      "path": "src\\infrastructure\\resource\\core\\interfaces.py",
+      "classes": [
+        "IResourceComponent"
+      ],
+      "functions": [
+        "initialize",
+        "get_status",
+        "shutdown"
+      ]
+    },
+    "core.notification_channel_manager": {
+      "path": "src\\infrastructure\\resource\\core\\notification_channel_manager.py",
+      "classes": [
+        "NotificationChannelManager"
+      ],
+      "functions": [
+        "configure_channel",
+        "enable_channel",
+        "disable_channel",
+        "get_channel_status",
+        "get_channel_config",
+        "send_notification",
+        "get_notification_stats",
+        "reset_stats",
+        "test_channel"
+      ]
+    },
+    "core.optimization_config": {
+      "path": "src\\infrastructure\\resource\\core\\optimization_config.py",
+      "classes": [
+        "MemoryOptimizationConfig",
+        "CpuOptimizationConfig",
+        "DiskOptimizationConfig",
+        "ParallelizationConfig",
+        "CheckpointingConfig",
+        "ResourceOptimizationConfig"
+      ],
+      "functions": [
+        "to_dict",
+        "to_dict",
+        "to_dict",
+        "to_dict",
+        "to_dict",
+        "from_dict",
+        "to_dict",
+        "get_enabled_configs",
+        "validate"
+      ]
+    },
+    "core.pool_components": {
+      "path": "src\\infrastructure\\resource\\core\\pool_components.py",
+      "classes": [
+        "IPoolComponent",
+        "PoolComponent",
+        "PoolComponentFactory"
+      ],
+      "functions": [
+        "create_pool_pool_component_6",
+        "create_pool_pool_component_12",
+        "create_pool_pool_component_18",
+        "create_pool_pool_component_24",
+        "create_pool_pool_component_30",
+        "create_pool_pool_component_36",
+        "create_pool_pool_component_42",
+        "create_pool_pool_component_48",
+        "create_pool_pool_component_54",
+        "create_pool_pool_component_60",
+        "get_info",
+        "process",
+        "get_status",
+        "get_pool_id",
+        "get_pool_id",
+        "get_info",
+        "process",
+        "get_status",
+        "create_component",
+        "get_available_pools",
+        "create_all_pools",
+        "get_factory_info"
+      ]
+    },
+    "core.quota_components": {
+      "path": "src\\infrastructure\\resource\\core\\quota_components.py",
+      "classes": [
+        "IQuotaComponent",
+        "QuotaComponent",
+        "QuotaComponentFactory"
+      ],
+      "functions": [
+        "create_quota_quota_component_4",
+        "create_quota_quota_component_10",
+        "create_quota_quota_component_16",
+        "create_quota_quota_component_22",
+        "create_quota_quota_component_28",
+        "create_quota_quota_component_34",
+        "create_quota_quota_component_40",
+        "create_quota_quota_component_46",
+        "create_quota_quota_component_52",
+        "create_quota_quota_component_58",
+        "create_quota_quota_component_64",
+        "get_info",
+        "process",
+        "get_status",
+        "get_quota_id",
+        "get_quota_id",
+        "get_info",
+        "process",
+        "get_status",
+        "create_component",
+        "get_available_quotas",
+        "create_all_quotas",
+        "get_factory_info"
+      ]
+    },
+    "core.resource_allocation_manager": {
+      "path": "src\\infrastructure\\resource\\core\\resource_allocation_manager.py",
+      "classes": [
+        "ResourceAllocationManager"
+      ],
+      "functions": [
+        "request_resource",
+        "release_resource",
+        "get_allocation",
+        "get_allocations_for_consumer",
+        "get_allocations_for_resource_type",
+        "get_allocation_count",
+        "get_request_count",
+        "get_allocation_summary",
+        "get_active_allocations",
+        "clear_expired_allocations",
+        "force_release_allocation",
+        "clear_all_allocations"
+      ]
+    },
+    "core.resource_components": {
+      "path": "src\\infrastructure\\resource\\core\\resource_components.py",
+      "classes": [
+        "IResourceProcessorComponent",
+        "ResourceComponent",
+        "ResourceComponentFactory"
+      ],
+      "functions": [
+        "create_resource_resource_component_1",
+        "create_resource_resource_component_7",
+        "create_resource_resource_component_13",
+        "create_resource_resource_component_19",
+        "create_resource_resource_component_25",
+        "create_resource_resource_component_31",
+        "create_resource_resource_component_37",
+        "create_resource_resource_component_43",
+        "create_resource_resource_component_49",
+        "create_resource_resource_component_55",
+        "create_resource_resource_component_61",
+        "get_info",
+        "process",
+        "get_status",
+        "get_resource_id",
+        "get_resource_id",
+        "get_info",
+        "process",
+        "get_status",
+        "create_component",
+        "create_component_static",
+        "get_available_resources",
+        "create_all_resources",
+        "get_factory_info"
+      ]
+    },
+    "core.resource_consumer_registry": {
+      "path": "src\\infrastructure\\resource\\core\\resource_consumer_registry.py",
+      "classes": [
+        "ResourceConsumerRegistry"
+      ],
+      "functions": [
+        "register_consumer",
+        "unregister_consumer",
+        "get_consumer",
+        "get_consumers",
+        "get_consumer_ids",
+        "has_consumer",
+        "get_consumer_count",
+        "get_consumer_info",
+        "get_all_consumer_info",
+        "clear"
+      ]
+    },
+    "core.resource_manager": {
+      "path": "src\\infrastructure\\resource\\core\\resource_manager.py",
+      "classes": [
+        "CoreResourceManager"
+      ],
+      "functions": [
+        "start_monitoring",
+        "get_current_usage",
+        "get_usage_history",
+        "get_resource_limits",
+        "check_resource_health",
+        "stop_monitoring"
+      ]
+    },
+    "core.resource_optimization": {
+      "path": "src\\infrastructure\\resource\\core\\resource_optimization.py",
+      "classes": [
+        "ResourceOptimizer"
+      ],
+      "functions": [
+        "get_system_resources",
+        "analyze_threads",
+        "detect_memory_leaks",
+        "generate_optimization_report",
+        "optimize_resources",
+        "get_recommendations",
+        "monitor_performance",
+        "decorator",
+        "wrapper"
+      ]
+    },
+    "core.resource_optimization_engine": {
+      "path": "src\\infrastructure\\resource\\core\\resource_optimization_engine.py",
+      "classes": [
+        "ResourceOptimizationEngine"
+      ],
+      "functions": [
+        "optimize_resources",
+        "optimize_resources_with_config",
+        "get_optimization_recommendations"
+      ]
+    },
+    "core.resource_optimizer_new": {
+      "path": "src\\infrastructure\\resource\\core\\resource_optimizer_new.py",
+      "classes": [
+        "NewResourceOptimizer"
+      ],
+      "functions": [
+        "get_system_resources",
+        "analyze_threads",
+        "detect_memory_leaks",
+        "generate_optimization_report",
+        "optimize_resources",
+        "get_recommendations",
+        "monitor_performance",
+        "decorator",
+        "wrapper"
+      ]
+    },
+    "core.resource_provider_registry": {
+      "path": "src\\infrastructure\\resource\\core\\resource_provider_registry.py",
+      "classes": [
+        "ResourceProviderRegistry"
+      ],
+      "functions": [
+        "register_provider",
+        "unregister_provider",
+        "get_provider",
+        "get_providers",
+        "get_provider_types",
+        "has_provider",
+        "get_provider_count",
+        "get_provider_status",
+        "get_all_provider_status",
+        "clear"
+      ]
+    },
+    "core.resource_status_reporter": {
+      "path": "src\\infrastructure\\resource\\core\\resource_status_reporter.py",
+      "classes": [
+        "ResourceStatusReporter"
+      ],
+      "functions": [
+        "get_resource_status",
+        "get_detailed_report",
+        "export_report"
+      ]
+    },
+    "core.shared_interfaces": {
+      "path": "src\\infrastructure\\resource\\core\\shared_interfaces.py",
+      "classes": [
+        "IConfigValidator",
+        "ILogger",
+        "IErrorHandler",
+        "ISharedResourceManager",
+        "IDataValidator",
+        "StandardLogger",
+        "BaseErrorHandler",
+        "ConfigValidator",
+        "DataValidator",
+        "ResourceManager",
+        "ResourceException",
+        "ConfigurationException",
+        "ValidationException",
+        "StandardResponse"
+      ],
+      "functions": [
+        "safe_execute",
+        "validate_and_execute",
+        "with_error_handling",
+        "with_logging",
+        "validate_config",
+        "get_validation_errors",
+        "log_info",
+        "log_error",
+        "log_warning",
+        "handle_error",
+        "should_retry",
+        "acquire_resource",
+        "release_resource",
+        "get_resource_status",
+        "validate_data",
+        "sanitize_data",
+        "log_info",
+        "log_error",
+        "log_warning",
+        "handle_error",
+        "should_retry",
+        "validate_config",
+        "get_validation_errors",
+        "validate_required_fields",
+        "validate_field_types",
+        "validate_data",
+        "sanitize_data",
+        "acquire_resource",
+        "release_resource",
+        "get_resource_status",
+        "decorator",
+        "decorator",
+        "success_response",
+        "error_response",
+        "wrapper",
+        "wrapper"
+      ]
+    },
+    "core.system_coordinator": {
+      "path": "src\\infrastructure\\resource\\core\\system_coordinator.py",
+      "classes": [
+        "SystemCoordinator"
+      ],
+      "functions": [
+        "set_components",
+        "start",
+        "stop",
+        "is_running",
+        "get_system_status"
+      ]
+    },
+    "core.system_health_monitor": {
+      "path": "src\\infrastructure\\resource\\core\\system_health_monitor.py",
+      "classes": [
+        "SystemHealthMonitor"
+      ],
+      "functions": [
+        "set_components",
+        "get_system_status",
+        "get_system_health_report",
+        "get_health_trends",
+        "get_component_health"
+      ]
+    },
+    "core.system_monitor": {
+      "path": "src\\infrastructure\\resource\\core\\system_monitor.py",
+      "classes": [
+        "SystemMonitorConfig",
+        "SystemInfoCollector",
+        "MetricsCalculator",
+        "SystemAlertManager",
+        "MonitorEngine",
+        "SystemMonitorFacade",
+        "Gauge"
+      ],
+      "functions": [
+        "get_system_info",
+        "calculate_system_stats",
+        "check_system_status",
+        "trigger_alerts",
+        "start_monitoring",
+        "stop_monitoring",
+        "get_stats",
+        "get_alerts_history",
+        "start_monitoring",
+        "stop_monitoring",
+        "get_stats",
+        "get_alerts_history",
+        "get_system_info",
+        "check_interval",
+        "alert_handlers",
+        "set"
+      ]
+    },
+    "core.system_resource_analyzer": {
+      "path": "src\\infrastructure\\resource\\core\\system_resource_analyzer.py",
+      "classes": [
+        "SystemResourceAnalyzer"
+      ],
+      "functions": [
+        "get_system_resources",
+        "get_resource_summary"
+      ]
+    },
+    "core.unified_resource_interfaces": {
+      "path": "src\\infrastructure\\resource\\core\\unified_resource_interfaces.py",
+      "classes": [
+        "ResourceInfo",
+        "ResourceRequest",
+        "ResourceAllocation",
+        "ResourceMetrics",
+        "IResourceProvider",
+        "IResourceConsumer",
+        "IResourceMonitor",
+        "IResourceScheduler",
+        "IResourceManager",
+        "IResourceEventHandler",
+        "IResourcePolicy",
+        "IResourceManagerFactory",
+        "IResourceAdapter",
+        "IResourceConfig",
+        "ResourceError",
+        "ResourceNotFoundError",
+        "ResourceAllocationError",
+        "ResourceReleaseError",
+        "ResourceQuotaExceededError",
+        "ResourceTimeoutError",
+        "ResourceUnavailableError"
+      ],
+      "functions": [
+        "resource_type",
+        "get_available_resources",
+        "allocate_resource",
+        "release_resource",
+        "get_resource_status",
+        "optimize_resources",
+        "request_resource",
+        "release_resource",
+        "get_consumed_resources",
+        "get_resource_usage",
+        "start_monitoring",
+        "stop_monitoring",
+        "collect_metrics",
+        "get_current_metrics",
+        "get_metrics_history",
+        "detect_anomalies",
+        "schedule_request",
+        "prioritize_requests",
+        "balance_load",
+        "predict_demand",
+        "get_schedule_status",
+        "register_provider",
+        "unregister_provider",
+        "get_providers",
+        "register_consumer",
+        "unregister_consumer",
+        "get_consumers",
+        "request_resource",
+        "release_resource",
+        "get_resource_status",
+        "optimize_resources",
+        "get_health_report",
+        "on_resource_allocated",
+        "on_resource_released",
+        "on_resource_failed",
+        "on_resource_anomaly",
+        "evaluate_request",
+        "check_constraints",
+        "calculate_priority",
+        "get_policy_config",
+        "create_resource_manager",
+        "create_provider",
+        "create_consumer",
+        "create_monitor",
+        "create_scheduler",
+        "adapt_resource_info",
+        "adapt_request",
+        "adapt_allocation",
+        "adapt_metrics",
+        "get_resource_config",
+        "update_resource_config",
+        "validate_resource_config"
+      ]
+    },
+    "core.unified_resource_manager": {
+      "path": "src\\infrastructure\\resource\\core\\unified_resource_manager.py",
+      "classes": [
+        "UnifiedResourceManager"
+      ],
+      "functions": [
+        "start",
+        "stop",
+        "register_provider",
+        "unregister_provider",
+        "get_providers",
+        "register_consumer",
+        "unregister_consumer",
+        "get_consumers",
+        "request_resource",
+        "release_resource",
+        "get_resource_status",
+        "get_health_report",
+        "optimize_resources",
+        "get_event_bus",
+        "get_container"
+      ]
+    },
+    "core.unified_resource_manager_new": {
+      "path": "src\\infrastructure\\resource\\core\\unified_resource_manager_new.py",
+      "classes": [
+        "NewUnifiedResourceManager"
+      ],
+      "functions": [
+        "start",
+        "stop",
+        "register_provider",
+        "unregister_provider",
+        "get_providers",
+        "register_consumer",
+        "unregister_consumer",
+        "get_consumers",
+        "request_resource",
+        "release_resource",
+        "get_resource_status",
+        "get_health_report",
+        "optimize_resources",
+        "get_event_bus",
+        "get_container"
+      ]
+    },
+    "models.alert_dataclasses": {
+      "path": "src\\infrastructure\\resource\\models\\alert_dataclasses.py",
+      "classes": [
+        "AlertRule",
+        "Alert",
+        "AlertPerformanceMetrics",
+        "TestExecutionInfo"
+      ],
+      "functions": []
+    },
+    "models.alert_enums": {
+      "path": "src\\infrastructure\\resource\\models\\alert_enums.py",
+      "classes": [
+        "AlertLevel",
+        "AlertType",
+        "MonitoringEvent"
+      ],
+      "functions": []
+    },
+    "monitoring.monitoring_system_coordinator": {
+      "path": "src\\infrastructure\\resource\\monitoring\\monitoring_system_coordinator.py",
+      "classes": [
+        "MonitoringSystemCoordinator"
+      ],
+      "functions": [
+        "start",
+        "stop",
+        "start_monitoring",
+        "stop_monitoring",
+        "get_system_status",
+        "get_system_health_report"
+      ]
+    },
+    "monitoring.monitor_components": {
+      "path": "src\\infrastructure\\resource\\monitoring\\monitor_components.py",
+      "classes": [
+        "IMonitorComponent",
+        "MonitorComponent",
+        "MonitorComponentFactory"
+      ],
+      "functions": [
+        "create_monitor_monitor_component_3",
+        "create_monitor_monitor_component_9",
+        "create_monitor_monitor_component_15",
+        "create_monitor_monitor_component_21",
+        "create_monitor_monitor_component_27",
+        "create_monitor_monitor_component_33",
+        "create_monitor_monitor_component_39",
+        "create_monitor_monitor_component_45",
+        "create_monitor_monitor_component_51",
+        "create_monitor_monitor_component_57",
+        "create_monitor_monitor_component_63",
+        "get_info",
+        "process",
+        "get_status",
+        "get_monitor_id",
+        "get_monitor_id",
+        "get_info",
+        "process",
+        "get_status",
+        "create_component",
+        "get_available_monitors",
+        "create_all_monitors",
+        "get_factory_info"
+      ]
+    },
+    "monitoring.notification_manager_component": {
+      "path": "src\\infrastructure\\resource\\monitoring\\notification_manager_component.py",
+      "classes": [
+        "NotificationChannelRegistry",
+        "EmailNotificationHandler",
+        "WebhookNotificationHandler",
+        "WechatNotificationHandler",
+        "NotificationCoordinator",
+        "NotificationManager"
+      ],
+      "functions": [
+        "register_channel",
+        "unregister_channel",
+        "get_channel",
+        "get_channel_config",
+        "list_channels",
+        "is_channel_available",
+        "send_email_notification",
+        "send_email_notification_with_config",
+        "send_webhook_notification",
+        "send_wechat_notification",
+        "send_notification",
+        "get_channel_status",
+        "register_channel",
+        "send_notification",
+        "send_email_notification",
+        "send_webhook_notification",
+        "send_wechat_notification",
+        "get_channel_status"
+      ]
+    },
+    "monitoring.unified_monitor_adapter": {
+      "path": "src\\infrastructure\\resource\\monitoring\\unified_monitor_adapter.py",
+      "classes": [
+        "UnifiedMonitor",
+        "UnifiedMonitorAdapter"
+      ],
+      "functions": [
+        "start",
+        "stop",
+        "get_status",
+        "get_metrics",
+        "get_alerts",
+        "start",
+        "stop",
+        "record_metric",
+        "record_alert",
+        "get_metrics",
+        "get_alerts",
+        "get_status",
+        "collect_metrics",
+        "get_system_status",
+        "register_monitor",
+        "get_registered_monitors",
+        "get_underlying_monitor"
+      ]
+    },
+    "monitoring.alerts.alert_coordinator": {
+      "path": "src\\infrastructure\\resource\\monitoring\\alerts\\alert_coordinator.py",
+      "classes": [
+        "AlertCoordinator"
+      ],
+      "functions": [
+        "get_active_alerts",
+        "resolve_alert",
+        "get_alert_statistics",
+        "check_alerts"
+      ]
+    },
+    "monitoring.alerts.alert_manager_component": {
+      "path": "src\\infrastructure\\resource\\monitoring\\alerts\\alert_manager_component.py",
+      "classes": [
+        "MonitoringAlertManager"
+      ],
+      "functions": [
+        "add_alert_rule",
+        "remove_alert_rule",
+        "register_alert_handler",
+        "check_alerts",
+        "resolve_alert",
+        "get_active_alerts",
+        "get_alert_history",
+        "get_alert_statistics",
+        "call_handlers"
+      ]
+    },
+    "monitoring.alerts.monitoring_alert_system": {
+      "path": "src\\infrastructure\\resource\\monitoring\\alerts\\monitoring_alert_system.py",
+      "classes": [],
+      "functions": []
+    },
+    "monitoring.alerts.monitoring_alert_system_facade": {
+      "path": "src\\infrastructure\\resource\\monitoring\\alerts\\monitoring_alert_system_facade.py",
+      "classes": [
+        "LegacyMonitoringAlertSystemFacade"
+      ],
+      "functions": [
+        "add_alert_rule",
+        "remove_alert_rule",
+        "get_alert_rules",
+        "configure_notification_channel",
+        "get_notification_channels",
+        "register_test",
+        "update_test_status",
+        "get_active_tests",
+        "get_test_history",
+        "get_current_metrics",
+        "get_metrics_history",
+        "get_average_metrics",
+        "get_active_alerts",
+        "resolve_alert",
+        "get_alert_statistics",
+        "start",
+        "stop",
+        "get_system_status",
+        "get_system_health_report",
+        "update_configuration",
+        "get_configuration"
+      ]
+    },
+    "monitoring.alerts.monitoring_alert_system_new": {
+      "path": "src\\infrastructure\\resource\\monitoring\\alerts\\monitoring_alert_system_new.py",
+      "classes": [],
+      "functions": []
+    },
+    "monitoring.health.health_checker": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_checker.py",
+      "classes": [
+        "HealthCheckConfig",
+        "HealthChecker"
+      ],
+      "functions": [
+        "start_health_checking",
+        "add_health_check",
+        "remove_health_check",
+        "start_checking",
+        "stop_checking",
+        "run_health_checks",
+        "get_health_status",
+        "get_check_results",
+        "get_health_report"
+      ]
+    },
+    "monitoring.health.health_check_executor": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_check_executor.py",
+      "classes": [
+        "HealthCheckExecutor"
+      ],
+      "functions": [
+        "execute_check",
+        "execute_checks",
+        "target"
+      ]
+    },
+    "monitoring.health.health_check_manager": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_check_manager.py",
+      "classes": [
+        "HealthCheck",
+        "HealthCheckManager"
+      ],
+      "functions": [
+        "register_check",
+        "unregister_check",
+        "get_check",
+        "get_all_checks",
+        "enable_check",
+        "disable_check",
+        "get_enabled_checks"
+      ]
+    },
+    "monitoring.health.health_check_scheduler": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_check_scheduler.py",
+      "classes": [
+        "HealthCheckScheduler"
+      ],
+      "functions": [
+        "start_scheduler",
+        "stop_scheduler",
+        "schedule_check",
+        "get_scheduler_status",
+        "execute_and_callback"
+      ]
+    },
+    "monitoring.health.health_evaluator": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_evaluator.py",
+      "classes": [
+        "HealthEvaluator"
+      ],
+      "functions": [
+        "evaluate_overall_health"
+      ]
+    },
+    "monitoring.health.health_metrics_collector": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_metrics_collector.py",
+      "classes": [
+        "HealthMetricsCollector"
+      ],
+      "functions": [
+        "collect_current_metrics",
+        "collect_historical_metrics",
+        "get_metrics_summary",
+        "clear_cache"
+      ]
+    },
+    "monitoring.health.health_reporter": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_reporter.py",
+      "classes": [
+        "HealthReporter"
+      ],
+      "functions": [
+        "generate_health_report",
+        "generate_trend_report",
+        "generate_component_health_report"
+      ]
+    },
+    "monitoring.health.health_status": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_status.py",
+      "classes": [
+        "HealthStatus"
+      ],
+      "functions": []
+    },
+    "monitoring.health.health_status_reporter": {
+      "path": "src\\infrastructure\\resource\\monitoring\\health\\health_status_reporter.py",
+      "classes": [
+        "HealthStatusReporter"
+      ],
+      "functions": [
+        "report_result",
+        "get_current_status",
+        "get_health_report",
+        "get_failed_checks"
+      ]
+    },
+    "monitoring.metrics.business_metrics_monitor": {
+      "path": "src\\infrastructure\\resource\\monitoring\\metrics\\business_metrics_monitor.py",
+      "classes": [
+        "BaseMonitorComponent",
+        "TradingMetricType",
+        "ModelMetricType",
+        "BusinessMetricType",
+        "BusinessMetricsMonitor"
+      ],
+      "functions": [
+        "initialize",
+        "get_status",
+        "shutdown",
+        "record_metric",
+        "get_metric_stats",
+        "set_alert_rule",
+        "get_metric",
+        "get_trading_metrics",
+        "get_model_metrics",
+        "get_business_metrics",
+        "clear_metrics",
+        "get_monitor_stats"
+      ]
+    },
+    "monitoring.metrics.metrics_analyzer": {
+      "path": "src\\infrastructure\\resource\\monitoring\\metrics\\metrics_analyzer.py",
+      "classes": [
+        "MetricsAnalyzer"
+      ],
+      "functions": [
+        "get_statistics",
+        "analyze_trends"
+      ]
+    },
+    "monitoring.metrics.metrics_collector": {
+      "path": "src\\infrastructure\\resource\\monitoring\\metrics\\metrics_collector.py",
+      "classes": [
+        "CachedMetricsCollector"
+      ],
+      "functions": [
+        "get_current_metrics",
+        "collect_metrics",
+        "get_metrics_history",
+        "get_average_metrics"
+      ]
+    },
+    "monitoring.metrics.metrics_storage": {
+      "path": "src\\infrastructure\\resource\\monitoring\\metrics\\metrics_storage.py",
+      "classes": [
+        "MetricsStorage"
+      ],
+      "functions": [
+        "store_metrics",
+        "get_current_metrics",
+        "get_metrics_history",
+        "get_metrics_in_time_range",
+        "get_storage_stats"
+      ]
+    },
+    "monitoring.performance.performance_monitor": {
+      "path": "src\\infrastructure\\resource\\monitoring\\performance\\performance_monitor.py",
+      "classes": [
+        "PerformanceMetrics",
+        "PerformanceConfig",
+        "PerformanceMonitorLegacy"
+      ],
+      "functions": [
+        "start_monitoring",
+        "stop_monitoring",
+        "get_current_metrics",
+        "get_metrics_history",
+        "get_statistics",
+        "get_health_status",
+        "reset_statistics"
+      ]
+    },
+    "monitoring.performance.performance_monitor_component": {
+      "path": "src\\infrastructure\\resource\\monitoring\\performance\\performance_monitor_component.py",
+      "classes": [
+        "MonitoringPerformanceMonitor"
+      ],
+      "functions": [
+        "start_monitoring",
+        "stop_monitoring",
+        "get_current_metrics",
+        "get_metrics_history",
+        "get_average_metrics"
+      ]
+    },
+    "monitoring.tests.test_execution_manager": {
+      "path": "src\\infrastructure\\resource\\monitoring\\tests\\test_execution_manager.py",
+      "classes": [
+        "TestExecutionManager"
+      ],
+      "functions": [
+        "register_test",
+        "update_test_status",
+        "get_active_tests",
+        "get_test_history"
+      ]
+    },
+    "monitoring.tests.test_execution_monitor_component": {
+      "path": "src\\infrastructure\\resource\\monitoring\\tests\\test_execution_monitor_component.py",
+      "classes": [
+        "MonitoringTestExecutionMonitor"
+      ],
+      "functions": [
+        "register_event_handler",
+        "start_monitoring",
+        "stop_monitoring",
+        "register_test",
+        "update_test_status",
+        "get_active_tests",
+        "get_test_history",
+        "get_test_by_id",
+        "get_test_statistics"
+      ]
+    },
+    "scheduling.task_scheduler": {
+      "path": "src\\infrastructure\\resource\\scheduling\\task_scheduler.py",
+      "classes": [],
+      "functions": []
+    },
+    "scheduling.task_scheduler_refactored": {
+      "path": "src\\infrastructure\\resource\\scheduling\\task_scheduler_refactored.py",
+      "classes": [
+        "TaskPriority",
+        "TaskStatus",
+        "TaskNotFoundException",
+        "TaskNotCompletedError",
+        "Task",
+        "TaskManager",
+        "TaskQueueManager",
+        "TaskWorkerManager",
+        "TaskMonitor",
+        "TaskSchedulerCore",
+        "TaskSchedulerFacade"
+      ],
+      "functions": [
+        "add_task",
+        "get_task",
+        "update_task_status",
+        "remove_task",
+        "get_all_tasks",
+        "put_task",
+        "get_next_task",
+        "get_pending_count",
+        "start_workers",
+        "stop_workers",
+        "is_running",
+        "record_task_start",
+        "record_task_completion",
+        "record_task_failure",
+        "record_task_cancellation",
+        "update_uptime",
+        "get_stats",
+        "submit_task",
+        "submit_task_with_config",
+        "execute_task",
+        "cancel_task",
+        "get_task_status",
+        "get_task_result",
+        "start",
+        "stop",
+        "submit_task",
+        "submit_task_with_config",
+        "cancel_task",
+        "get_task_status",
+        "get_task_result",
+        "get_stats",
+        "submit_task_object",
+        "get_next_task",
+        "pending_tasks",
+        "shutdown",
+        "set_task_executor"
+      ]
+    },
+    "ui.resource_dashboard": {
+      "path": "src\\infrastructure\\resource\\ui\\resource_dashboard.py",
+      "classes": [
+        "DashboardConfig",
+        "ResourceDashboardUI",
+        "ResourceDashboardData",
+        "ResourceDashboardCallbacks",
+        "ResourceDashboardController"
+      ],
+      "functions": [
+        "create_layout",
+        "start_data_collection",
+        "stop_data_collection",
+        "get_system_data",
+        "get_gpu_data",
+        "get_alerts",
+        "register_callbacks",
+        "run_server",
+        "shutdown",
+        "update_system_charts",
+        "update_gpu_charts",
+        "update_alerts"
+      ]
+    },
+    "utils.common_validators": {
+      "path": "src\\infrastructure\\resource\\utils\\common_validators.py",
+      "classes": [
+        "TaskConfigValidator",
+        "ProcessConfigValidator",
+        "MonitorConfigValidator",
+        "AlertConfigValidator",
+        "ResourceConfigValidator",
+        "OptimizationConfigValidator",
+        "APIConfigValidator"
+      ],
+      "functions": [
+        "get_config_validator",
+        "validate_config_safely",
+        "validate_task_config",
+        "validate_process_config",
+        "validate_monitor_config",
+        "validate_alert_config",
+        "validate_resource_config",
+        "validate_optimization_config",
+        "validate_api_config",
+        "validate_config",
+        "validate_config",
+        "validate_config",
+        "validate_config",
+        "validate_config",
+        "validate_config",
+        "validate_config"
+      ]
+    },
+    "utils.decorators": {
+      "path": "src\\infrastructure\\resource\\utils\\decorators.py",
+      "classes": [],
+      "functions": [
+        "monitor_performance",
+        "monitor_errors",
+        "monitor_resource",
+        "decorator",
+        "decorator",
+        "decorator",
+        "wrapper",
+        "wrapper",
+        "wrapper"
+      ]
+    },
+    "utils.memory_leak_detector": {
+      "path": "src\\infrastructure\\resource\\utils\\memory_leak_detector.py",
+      "classes": [
+        "MemoryLeakDetector"
+      ],
+      "functions": [
+        "detect_memory_leaks",
+        "start_memory_monitoring",
+        "get_memory_report",
+        "monitor_loop"
+      ]
+    },
+    "utils.optimization_report_generator": {
+      "path": "src\\infrastructure\\resource\\utils\\optimization_report_generator.py",
+      "classes": [
+        "OptimizationReportGenerator"
+      ],
+      "functions": [
+        "generate_optimization_report",
+        "export_report"
+      ]
+    },
+    "utils.thread_analyzer": {
+      "path": "src\\infrastructure\\resource\\utils\\thread_analyzer.py",
+      "classes": [
+        "ThreadAnalyzer"
+      ],
+      "functions": [
+        "analyze_threads",
+        "detect_thread_issues",
+        "get_thread_summary"
+      ]
+    }
+  },
+  "design_patterns": {
+    "Adapter": [
+      "monitoring.unified_monitor_adapter"
+    ],
+    "Facade": [
+      "monitoring.alerts.monitoring_alert_system_facade"
+    ]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "report_info": {
+    "generated_at": "2025-07-26T12:34:23.311303",
+    "total_alerts": 0,
+    "alert_rules_count": 5,
+    "notification_channels_count": 3
+  },
+  "alert_rules": [
+    {
+      "name": "high_cpu_usage",
+      "description": "CPU使用率过高",
+      "severity": "warning",
+      "condition": "cpu_usage > 80",
+      "duration": "5m",
+      "labels": {
+        "component": "system",
+        "service": "rqa2025"
+      },
+      "annotations": {
+        "description": "系统CPU使用率持续超过80%，可能影响性能",
+        "summary": "CPU使用率超过80%"
+      },
+      "enabled": true
+    },
+    {
+      "name": "high_memory_usage",
+      "description": "内存使用率过高",
+      "severity": "warning",
+      "condition": "memory_usage > 85",
+      "duration": "5m",
+      "labels": {
+        "component": "system",
+        "service": "rqa2025"
+      },
+      "annotations": {
+        "description": "系统内存使用率持续超过85%，可能导致性能下降",
+        "summary": "内存使用率超过85%"
+      },
+      "enabled": true
+    },
+    {
+      "name": "disk_space_low",
+      "description": "磁盘空间不足",
+      "severity": "critical",
+      "condition": "disk_usage > 90",
+      "duration": "2m",
+      "labels": {
+        "component": "storage",
+        "service": "rqa2025"
+      },
+      "annotations": {
+        "description": "磁盘使用率超过90%，需要立即处理",
+        "summary": "磁盘空间不足"
+      },
+      "enabled": true
+    },
+    {
+      "name": "service_down",
+      "description": "服务不可用",
+      "severity": "critical",
+      "condition": "service_status != 'running'",
+      "duration": "1m",
+      "labels": {
+        "component": "service",
+        "service": "rqa2025"
+      },
+      "annotations": {
+        "description": "关键服务停止运行，需要立即检查",
+        "summary": "服务不可用"
+      },
+      "enabled": true
+    },
+    {
+      "name": "high_error_rate",
+      "description": "错误率过高",
+      "severity": "warning",
+      "condition": "error_rate > 5",
+      "duration": "3m",
+      "labels": {
+        "component": "application",
+        "service": "rqa2025"
+      },
+      "annotations": {
+        "description": "应用错误率持续超过5%，需要关注",
+        "summary": "错误率超过5%"
+      },
+      "enabled": true
+    }
+  ],
+  "notification_channels": [
+    {
+      "name": "email_admin",
+      "type": "email",
+      "config": {
+        "password": "${SMTP_PASSWORD}",
+        "recipients": [
+          "admin@rqa2025.com"
+        ],
+        "smtp_port": 587,
+        "smtp_server": "smtp.gmail.com",
+        "subject_template": "[{severity}] {alert_name} - {summary}",
+        "username": "alerts@rqa2025.com"
+      },
+      "enabled": true
+    },
+    {
+      "name": "slack_alerts",
+      "type": "slack",
+      "config": {
+        "channel": "#alerts",
+        "icon_emoji": ":warning:",
+        "username": "RQA2025 Alert Bot",
+        "webhook_url": "${SLACK_WEBHOOK_URL}"
+      },
+      "enabled": true
+    },
+    {
+      "name": "webhook_custom",
+      "type": "webhook",
+      "config": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "timeout": 30,
+        "url": "${WEBHOOK_URL}"
+      },
+      "enabled": true
+    }
+  ],
+  "recent_alerts": [],
+  "statistics": {
+    "critical_alerts": 0,
+    "warning_alerts": 0,
+    "info_alerts": 0,
+    "successful_notifications": 0
+  }
+}

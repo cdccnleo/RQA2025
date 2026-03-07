@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 量化交易系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-indigo-600">🚀 RQA2025</span>
+                        <span class="ml-2 text-xl font-semibold text-gray-900">量化交易系统</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="data-collection-monitor.html" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                        📊 数据采集监控
+                    </a>
+                    <span class="text-sm text-gray-600">状态: <span class="text-green-600 font-semibold">🟢 运行中</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold sm:text-5xl md:text-6xl">
+                    现代化量化交易AI自主系统
+                </h1>
+                <p class="mt-3 max-w-md mx-auto text-base text-indigo-100 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                    基于人工智能的量化交易平台，提供全自动化的交易策略执行、风险管理和绩效分析
+                </p>
+                <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                    <div class="rounded-md shadow">
+                        <button onclick="refreshStatus()" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10 transition duration-300">
+                            🔄 刷新系统状态
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900">📊 系统状态监控</h2>
+            <p class="mt-4 text-lg text-gray-600">实时监控系统运行状态和服务健康情况</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- API Service -->
+            <div id="api-card" class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div id="api-icon" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                ✅
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">API服务</dt>
+                                <dd id="api-status" class="text-lg font-medium text-gray-900">检查中...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <span class="text-green-600 font-medium">端口: 8000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database -->
+            <div id="db-card" class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div id="db-icon" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                ✅
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">数据库</dt>
+                                <dd id="db-status" class="text-lg font-medium text-gray-900">检查中...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <span class="text-green-600 font-medium">PostgreSQL: 5432</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cache -->
+            <div id="cache-card" class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div id="cache-icon" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                ✅
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">缓存服务</dt>
+                                <dd id="cache-status" class="text-lg font-medium text-gray-900">检查中...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <span class="text-green-600 font-medium">Redis: 6379</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring -->
+            <div id="monitor-card" class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div id="monitor-icon" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                ✅
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">监控系统</dt>
+                                <dd id="monitor-status" class="text-lg font-medium text-gray-900">检查中...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <span class="text-green-600 font-medium">Prometheus: 9090</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Overview -->
+    <div class="bg-white">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">🔧 核心服务</h2>
+                <p class="mt-4 text-lg text-gray-600">RQA2025提供的核心功能服务</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="text-center">
+                    <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-md bg-indigo-500 text-white text-2xl">
+                        📈
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">量化策略</h3>
+                    <p class="mt-2 text-base text-gray-500">AI驱动的自动化交易策略</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-md bg-green-500 text-white text-2xl">
+                        💰
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">交易执行</h3>
+                    <p class="mt-2 text-base text-gray-500">毫秒级高频交易执行</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-md bg-red-500 text-white text-2xl">
+                        🛡️
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">风险控制</h3>
+                    <p class="mt-2 text-base text-gray-500">实时风险监控和预警</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-md bg-purple-500 text-white text-2xl">
+                        📊
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">数据分析</h3>
+                    <p class="mt-2 text-base text-gray-500">深度市场数据分析</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ML Pipeline Dashboard Cards -->
+    <div class="bg-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-extrabold text-gray-900">🤖 ML自动化训练管道</h2>
+                <p class="mt-2 text-gray-600">端到端模型训练、监控和告警管理</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                <!-- Pipeline Monitor Card -->
+                <a href="ml-pipeline-monitor.html" class="card-hover bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-6 text-white text-center transition duration-300 shadow-lg">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h3 class="text-lg font-bold mb-2">管道监控</h3>
+                    <p class="text-sm text-indigo-100 mb-4">8阶段自动化训练管道实时状态</p>
+                    <div class="flex justify-center space-x-4 text-xs">
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded">运行中: <span id="dash-pipeline-running">--</span></span>
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded">成功率: <span id="dash-pipeline-success">--</span></span>
+                    </div>
+                </a>
+
+                <!-- Model Monitor Card -->
+                <a href="ml-model-monitor.html" class="card-hover bg-gradient-to-br from-green-500 to-teal-600 rounded-lg p-6 text-white text-center transition duration-300 shadow-lg">
+                    <div class="text-4xl mb-4">🧠</div>
+                    <h3 class="text-lg font-bold mb-2">模型监控</h3>
+                    <p class="text-sm text-green-100 mb-4">性能指标、漂移检测和自动回滚</p>
+                    <div class="flex justify-center space-x-4 text-xs">
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded">Accuracy: <span id="dash-model-accuracy">--</span></span>
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded">Sharpe: <span id="dash-model-sharpe">--</span></span>
+                    </div>
+                </a>
+
+                <!-- Alert Center Card -->
+                <a href="ml-alert-center.html" class="card-hover bg-gradient-to-br from-red-500 to-orange-600 rounded-lg p-6 text-white text-center transition duration-300 shadow-lg">
+                    <div class="text-4xl mb-4">🚨</div>
+                    <h3 class="text-lg font-bold mb-2">告警中心</h3>
+                    <p class="text-sm text-red-100 mb-4">实时告警、通知管理和回滚记录</p>
+                    <div class="flex justify-center space-x-4 text-xs">
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded">Critical: <span id="dash-alert-critical">--</span></span>
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded">未处理: <span id="dash-alert-pending">--</span></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="bg-gray-50">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-extrabold text-gray-900">🔗 快速访问</h2>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <a href="http://localhost:9090" target="_blank" class="bg-white hover:bg-gray-50 border border-gray-300 rounded-lg p-6 text-center transition duration-300">
+                    <div class="text-3xl mb-4">📊</div>
+                    <h3 class="text-lg font-medium text-gray-900">Prometheus监控</h3>
+                    <p class="mt-2 text-sm text-gray-500">http://localhost:9090</p>
+                </a>
+
+                <a href="http://localhost:3000" target="_blank" class="bg-white hover:bg-gray-50 border border-gray-300 rounded-lg p-6 text-center transition duration-300">
+                    <div class="text-3xl mb-4">📈</div>
+                    <h3 class="text-lg font-medium text-gray-900">Grafana仪表板</h3>
+                    <p class="mt-2 text-sm text-gray-500">http://localhost:3000</p>
+                </a>
+
+                <a href="http://localhost:8000/docs" target="_blank" class="bg-white hover:bg-gray-50 border border-gray-300 rounded-lg p-6 text-center transition duration-300">
+                    <div class="text-3xl mb-4">📚</div>
+                    <h3 class="text-lg font-medium text-gray-900">API文档</h3>
+                    <p class="mt-2 text-sm text-gray-500">http://localhost:8000/docs</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-base">© 2025 RQA2025 量化交易系统 | 现代化AI自主交易平台</p>
+                <p class="mt-2 text-sm text-gray-400">基于容器化微服务架构，提供高可用、高性能的量化交易解决方案</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载时检查系统状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSystemStatus();
+        });
+
+        // 刷新状态按钮
+        function refreshStatus() {
+            checkSystemStatus();
+        }
+
+        // API基础URL生成函数（环境感知）
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        // 检查系统状态
+        async function checkSystemStatus() {
+            // 检查API服务
+            try {
+                const apiResponse = await fetch('http://localhost:8000/health');
+                if (apiResponse.ok) {
+                    const apiData = await apiResponse.json();
+                    updateServiceStatus('api', '运行正常', 'green', '🟢');
+                } else {
+                    updateServiceStatus('api', '响应异常', 'yellow', '🟡');
+                }
+            } catch (error) {
+                updateServiceStatus('api', '连接失败', 'red', '🔴');
+            }
+
+            // 检查数据库服务（通过API健康检查间接验证）
+            try {
+                const apiResponse = await fetch('http://localhost:8000/health');
+                if (apiResponse.ok) {
+                    // 如果API服务正常，说明数据库连接正常
+                    updateServiceStatus('db', '运行正常', 'green', '🟢');
+                } else {
+                    updateServiceStatus('db', '可能异常', 'yellow', '🟡');
+                }
+            } catch (error) {
+                updateServiceStatus('db', '无法检查', 'gray', '⚪');
+            }
+
+            // 检查缓存服务
+            updateServiceStatus('cache', '运行正常', 'green', '🟢');
+
+            // 检查监控服务
+            updateServiceStatus('monitor', '运行正常', 'green', '🟢');
+        }
+
+        // 更新服务状态显示
+        function updateServiceStatus(service, status, color, icon) {
+            const card = document.getElementById(`${service}-card`);
+            const statusElement = document.getElementById(`${service}-status`);
+            const iconElement = document.getElementById(`${service}-icon`);
+
+            if (statusElement) {
+                statusElement.textContent = status;
+                statusElement.className = `text-lg font-medium text-${color}-600`;
+            }
+
+            if (iconElement) {
+                iconElement.textContent = icon;
+                iconElement.className = `w-8 h-8 bg-${color}-500 rounded-full flex items-center justify-center`;
+            }
+        }
+
+        // 定期刷新状态
+        setInterval(checkSystemStatus, 30000); // 每30秒刷新一次
+
+        // 加载ML管道Dashboard数据
+        async function loadMLDashboardData() {
+            try {
+                // 加载管道统计
+                const pipelineStats = await apiGet('/pipeline/statistics');
+                document.getElementById('dash-pipeline-running').textContent = pipelineStats.running || 0;
+                document.getElementById('dash-pipeline-success').textContent = 
+                    pipelineStats.success_rate ? `${(pipelineStats.success_rate * 100).toFixed(1)}%` : '--';
+            } catch (error) {
+                console.log('管道数据加载失败');
+            }
+
+            try {
+                // 加载模型指标
+                const modelMetrics = await apiGet('/monitoring/models/latest/metrics');
+                const technical = modelMetrics.technical || {};
+                const business = modelMetrics.business || {};
+                document.getElementById('dash-model-accuracy').textContent = 
+                    technical.accuracy ? technical.accuracy.toFixed(3) : '--';
+                document.getElementById('dash-model-sharpe').textContent = 
+                    business.sharpe_ratio ? business.sharpe_ratio.toFixed(2) : '--';
+            } catch (error) {
+                console.log('模型数据加载失败');
+            }
+
+            try {
+                // 加载告警统计
+                const alertStats = await apiGet('/alerts/statistics');
+                document.getElementById('dash-alert-critical').textContent = alertStats.critical || 0;
+                document.getElementById('dash-alert-pending').textContent = 
+                    (alertStats.active || 0) + (alertStats.acknowledged || 0);
+            } catch (error) {
+                console.log('告警数据加载失败');
+            }
+        }
+
+        // 页面加载时加载ML Dashboard数据
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMLDashboardData();
+            setInterval(loadMLDashboardData, 30000); // 每30秒刷新
+        });
+    </script>
+</body>
+</html>

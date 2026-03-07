@@ -1,0 +1,950 @@
+
+----------------------------- live log collection -----------------------------
+2025-12-11 08:41:43 [ WARNING] src.core.integration: 瀵煎叆缁熶竴鎺ュ彛澶辫触: cannot import name 'ILayerComponent' from 'src.core.integration.interfaces' (C:\PythonProject\RQA2025\src\core\integration\interfaces\__init__.py)
+2025-12-11 08:41:57 [ WARNING] src.data: Using fallback DataManagerSingleton implementation
+2025-12-11 08:41:57 [ WARNING] src.data: PerformanceMonitor not available
+2025-12-11 08:41:58 [ WARNING] src.core: 鈿狅笍 浠ヤ笅缁勪欢涓嶅彲鐢? optimization
+
+馃搳 娴嬭瘯鏀堕泦瀹屾垚: 鍙戠幇 1021 涓祴璇?
+
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_error_with_recovery_strategy 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [data_error]: missing value
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_plain_exception_updates_statistics 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [system_error]: bad input
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_existing_mLError_and_resolution_flow 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [model_error]: model failed
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_priority_applies_highest_priority_first 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [data_error]: need strategy
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_default_recovery_strategy_recover_data_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [data_error]: data load failed
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_default_recovery_strategy_recover_inference_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [inference_error]: predict failed
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_resource_recovery_applies_for_non_critical 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [resource_error]: memory high
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_error_returns_existing_error_and_respects_max_attempts 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [model_error]: model issue
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: 鎭㈠绛栫暐鎵ц澶辫触: always_fail, 閿欒: fail
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [model_error]: model issue
+PASSED                                                                   [  0%]
+tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_failure_keeps_error_unresolved 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [data_error]: bad data
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: 鎭㈠绛栫暐鎵ц澶辫触: fail_once, 閿欒: recover boom
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [data_error]: bad data
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: 鎭㈠绛栫暐鎵ц澶辫触: fail_once, 閿欒: recover boom
+PASSED                                                                   [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_condition_prevents_execution 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [model_error]: fail
+PASSED                                                                   [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_export_error_report_includes_active_errors 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [system_error]: still bad
+PASSED                                                                   [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_get_error_statistics_recovery_success_rate PASSED [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_register_helpers_expose_handler 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [system_error]: boom
+PASSED                                                                   [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_get_error_statistics_convenience_function 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [system_error]: another
+PASSED                                                                   [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_ml_error_handler_decorator_handles_exception 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: ML閿欒 [model_error]: bad 123
+PASSED                                                                   [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_model_load_error_includes_model_id PASSED [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_resource_exhaustion_error_sets_context PASSED [  1%]
+tests\unit\ml\core\test_error_handling_unit.py::test_error_history_trim_limits_size PASSED [  2%]
+tests\unit\ml\core\test_error_handling_unit.py::test_error_callbacks_failure_is_logged 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: 閿欒鍥炶皟鎵ц澶辫触: callback boom
+2025-12-11 08:42:18 [   ERROR] model_adapter.default: 鍏ㄥ眬閿欒鍥炶皟鎵ц澶辫触: callback boom
+2025-12-11 08:42:18 [ WARNING] model_adapter.default: ML閿欒 [data_error]: cb
+PASSED                                                                   [  2%]
+tests\unit\ml\core\test_error_handling_unit.py::test_logger_fallback_when_adapter_raises PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_model_training_error_includes_model_type PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_handle_ml_exception_wraps_generic PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_handle_ml_exception_passthrough PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_validate_data_shape_length_mismatch PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_validate_model_exists_missing PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_configuration_error_includes_key PASSED [  2%]
+tests\unit\ml\core\test_exceptions_unit.py::test_resource_exhaustion_error_records_resource PASSED [  3%]
+tests\unit\ml\core\test_exceptions_unit.py::test_validate_data_shape_expected_features PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_predict_synchronous PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_predict_batch_dataframe PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_submit_request PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_get_service_status PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_start_when_already_running_returns_true PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_stop_is_noop_when_service_not_running PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_submit_request_requires_running_service PASSED [  3%]
+tests\unit\ml\core\test_inference_service_simple.py::test_start_initializes_event_loop PASSED [  4%]
+tests\unit\ml\core\test_inference_service_simple.py::test_start_async_executes_in_background PASSED [  4%]
+tests\unit\ml\core\test_inference_service_simple.py::test_predict_requires_running_service PASSED [  4%]
+tests\unit\ml\core\test_inference_service_simple.py::test_submit_request_timeout_falls_back_to_inline_processing PASSED [  4%]
+tests\unit\ml\core\test_inference_service_simple.py::test_process_request_records_failures PASSED [  4%]
+tests\unit\ml\core\test_ml_core.py::TestMLCore::test_ml_core_initialization PASSED [  4%]
+tests\unit\ml\core\test_ml_core.py::TestMLCore::test_apply_default_services PASSED [  4%]
+tests\unit\ml\core\test_ml_core.py::TestMLCore::test_ml_core_repr PASSED [  4%]
+tests\unit\ml\core\test_ml_core_alias_unit.py::test_ml_core_import_success PASSED [  4%]
+tests\unit\ml\core\test_ml_core_alias_unit.py::test_ml_core_import_fallback PASSED [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_module_import_adapter_failure_uses_defaults PASSED [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_prepare_helpers_numpy_paths PASSED [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_predict_with_numpy_input_path PASSED [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_evaluate_model_propagates_errors 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 妯″瀷璇勪及澶辫触: boom
+PASSED                                                                   [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_create_model_xgb_success PASSED [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_delete_model_exception_returns_false 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 鍒犻櫎妯″瀷澶辫触 foo: boom
+PASSED                                                                   [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_save_model_missing_id_returns_false 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 淇濆瓨妯″瀷澶辫触 missing: 妯″瀷 missing 涓嶅瓨鍦?
+PASSED                                                                   [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_create_feature_processor_variants PASSED [  5%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_get_feature_importance_missing_attributes_returns_none PASSED [  6%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_get_feature_importance_exception_returns_none 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 鑾峰彇鐗瑰緛閲嶈鎬уけ璐? bad importance
+PASSED                                                                   [  6%]
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_cross_validate_exception_reraises 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 浜ゅ弶楠岃瘉澶辫触: boom
+PASSED                                                                   [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_calculate_metrics_with_different_shapes 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 璁＄畻璇勪及鎸囨爣澶辫触: Found input variables with inconsistent numbers of samples: [3, 2]
+PASSED                                                                   [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_config_validation_edge_cases PASSED [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_invalid_type 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 鍒涘缓妯″瀷澶辫触 invalid_model_type: 涓嶆敮鎸佺殑妯″瀷绫诲瀷: invalid_model_type
+PASSED                                                                   [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_lstm_placeholder PASSED [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_sklearn_import_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 鍒涘缓妯″瀷澶辫触 linear: No module named 'sklearn'
+PASSED                                                                   [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_xgboost_fallback 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [ WARNING] ml.core.ml_core: XGBoost鏈畨瑁咃紝浣跨敤闅忔満妫灄浣滀负鏇夸唬
+PASSED                                                                   [  6%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_evaluate_model_with_prediction_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 妯″瀷璇勪及澶辫触: Prediction failed
+PASSED                                                                   [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_feature_preprocessing_with_missing_columns 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 鐗瑰緛棰勫鐞嗗け璐? "None of [Index(['missing_col'], dtype='object')] are in the [columns]"
+PASSED                                                                   [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_fallback_on_adapter_failure PASSED [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_force_fallback_env_var PASSED [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_without_cache_flag_triggers_default_services PASSED [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_model_save_load_with_file_operations 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:19 [   ERROR] ml.core.ml_core: 淇濆瓨妯″瀷澶辫触 nonexistent: 妯″瀷 nonexistent 涓嶅瓨鍦?
+PASSED                                                                   [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_predict_with_invalid_model_id PASSED [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_predict_with_pandas_data_processing PASSED [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_preprocess_features_with_non_pandas_data PASSED [  7%]
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_train_model_with_exception_logging 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 妯″瀷璁粌澶辫触: Model creation failed
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_file_not_found 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍔犺浇妯″瀷澶辫触 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-9977\test_load_model_file_not_found0\non_existent_model.pkl: [Errno 2] No such file or directory: 'C:\\Users\\AILeo\\AppData\\Local\\Temp\\pytest-of-AILeo\\pytest-9977\\test_load_model_file_not_found0\\non_existent_model.pkl'
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_joblib_load_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍔犺浇妯″瀷澶辫触 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-9977\test_load_model_joblib_load_fa0\model.pkl: No module named 'nvalid pickle dat'
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_success PASSED [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_import_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? sklearn not available
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_invalid_type 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? 涓嶆敮鎸佺殑澶勭悊鍣ㄧ被鍨? invalid_type
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_exception_during_creation 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? Creation failed
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_not_found 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? 鐗瑰緛澶勭悊鍣?non_existent_processor 涓嶅瓨鍦?
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_fit_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? Fit failed
+PASSED                                                                   [  8%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_success PASSED [  9%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_not_found 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鐗瑰緛杞崲澶辫触: 鐗瑰緛澶勭悊鍣?non_existent_processor 涓嶅瓨鍦?
+PASSED                                                                   [  9%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_transform_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鐗瑰緛杞崲澶辫触: Transform failed
+PASSED                                                                   [  9%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_success PASSED [  9%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_with_dataframe PASSED [  9%]
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_missing_model_id PASSED [  9%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_standard PASSED [  9%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_robust PASSED [  9%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_minmax PASSED [  9%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_invalid_type 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? 涓嶆敮鎸佺殑澶勭悊鍣ㄧ被鍨? invalid_type
+PASSED                                                                   [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_with_config PASSED [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_import_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? sklearn not available
+PASSED                                                                   [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_success PASSED [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_with_numpy_array PASSED [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_not_found 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? 鐗瑰緛澶勭悊鍣?nonexistent_processor 涓嶅瓨鍦?
+PASSED                                                                   [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_exception 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? 鎷熷悎澶辫触
+PASSED                                                                   [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_success PASSED [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_with_numpy_array PASSED [ 10%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_not_found 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鐗瑰緛杞崲澶辫触: 鐗瑰緛澶勭悊鍣?nonexistent_processor 涓嶅瓨鍦?
+PASSED                                                                   [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_without_fit 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鐗瑰緛杞崲澶辫触: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+PASSED                                                                   [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_exception 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:20 [   ERROR] ml.core.ml_core: 鐗瑰緛杞崲澶辫触: 杞崲澶辫触
+PASSED                                                                   [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_importances PASSED [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_coef PASSED [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_names PASSED [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_model_not_found PASSED [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_no_importance_attr PASSED [ 11%]
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_exception 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鑾峰彇鐗瑰緛閲嶈鎬уけ璐? 璁块棶灞炴€уけ璐?
+PASSED                                                                   [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_prepare_features_with_dataframe PASSED [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_prepare_target_returns_numpy_array PASSED [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_save_list_delete_model_workflow PASSED [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_calculate_metrics_returns_expected_keys PASSED [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_feature_processor_registers_processor PASSED [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_random_forest_merges_defaults PASSED [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_xgb_importerror_fallbacks 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [ WARNING] ml.core.ml_core: XGBoost鏈畨瑁咃紝浣跨敤闅忔満妫灄浣滀负鏇夸唬
+PASSED                                                                   [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_simple_neural_network_importerror_fallback 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [ WARNING] ml.core.ml_core: MLPRegressor涓嶅彲鐢紝浣跨敤绾挎€у洖褰掍綔涓烘浛浠?
+PASSED                                                                   [ 12%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_preprocess_features_handles_exception 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鐗瑰緛棰勫鐞嗗け璐? boom
+PASSED                                                                   [ 13%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_calculate_metrics_failure_returns_empty_dict 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 璁＄畻璇勪及鎸囨爣澶辫触: metrics fail
+PASSED                                                                   [ 13%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_save_model_failure_returns_false 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 淇濆瓨妯″瀷澶辫触 model_75b0fa99: dump fail
+PASSED                                                                   [ 13%]
+tests\unit\ml\core\test_ml_core_helpers.py::test_load_model_failure_returns_none 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鍔犺浇妯″瀷澶辫触 missing.pkl: load fail
+PASSED                                                                   [ 13%]
+tests\unit\ml\core\test_ml_core_helpers_additional.py::test_ml_core_fallback_applies_default_config PASSED [ 13%]
+tests\unit\ml\core\test_ml_core_helpers_additional.py::test_train_model_handles_validation_error PASSED [ 13%]
+tests\unit\ml\core\test_ml_core_helpers_additional.py::test_train_model_wraps_exceptions 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 妯″瀷璁粌澶辫触: fit boom
+PASSED                                                                   [ 13%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_predict_requires_existing_model PASSED [ 13%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_predict_logs_and_raises_on_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 妯″瀷棰勬祴澶辫触: boom
+PASSED                                                                   [ 13%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_evaluate_model_returns_metrics PASSED [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_random_forest_merges_defaults PASSED [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_xgb_import_error_fallback 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [ WARNING] ml.core.ml_core: XGBoost鏈畨瑁咃紝浣跨敤闅忔満妫灄浣滀负鏇夸唬
+PASSED                                                                   [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_lstm_uses_simple_network PASSED [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_simple_neural_network_defaults PASSED [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_preprocess_features_missing_columns_returns_original_values 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鐗瑰緛棰勫鐞嗗け璐? "['missing'] not in index"
+PASSED                                                                   [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_feature_processor_invalid_type 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? 涓嶆敮鎸佺殑澶勭悊鍣ㄧ被鍨? unknown
+PASSED                                                                   [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_fit_and_transform_missing_processor_raise 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? 鐗瑰緛澶勭悊鍣?does_not_exist 涓嶅瓨鍦?
+2025-12-11 08:42:49 [   ERROR] ml.core.ml_core: 鐗瑰緛杞崲澶辫触: 鐗瑰緛澶勭悊鍣?does_not_exist 涓嶅瓨鍦?
+PASSED                                                                   [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_get_feature_importance_variants PASSED [ 14%]
+tests\unit\ml\core\test_ml_core_models_additional.py::test_cross_validate_with_numpy_inputs PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_save_load_unit.py::test_save_and_load_model PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_fallback PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_without_model_cache_flag_applies_defaults PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_train_and_predict_linear_model PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_create_model_invalid_type 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鍒涘缓妯″瀷澶辫触 unsupported: 涓嶆敮鎸佺殑妯″瀷绫诲瀷: unsupported
+PASSED                                                                   [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_get_feature_importance_with_importances PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_save_load_and_delete_model PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_cross_validate_returns_metrics PASSED [ 15%]
+tests\unit\ml\core\test_ml_core_unit.py::test_feature_processor_workflow PASSED [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_force_fallback_and_null_adapters PASSED [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_train_model_exception_path 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 妯″瀷璁粌澶辫触: model creation failed
+PASSED                                                                   [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_prepare_features_else_branch PASSED [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_predict_model_not_found PASSED [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_predict_exception_handling 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 妯″瀷棰勬祴澶辫触: prediction failed
+PASSED                                                                   [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_evaluate_model_exception_handling 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 妯″瀷璇勪及澶辫触: prediction failed in evaluate
+PASSED                                                                   [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_create_model_rf_type PASSED [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_create_model_xgb_with_import_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [ WARNING] src.ml.core.ml_core: XGBoost鏈畨瑁咃紝浣跨敤闅忔満妫灄浣滀负鏇夸唬
+PASSED                                                                   [ 16%]
+tests\unit\ml\core\test_ml_core_unit.py::test_create_simple_neural_network_with_import_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [ WARNING] src.ml.core.ml_core: MLPRegressor涓嶅彲鐢紝浣跨敤绾挎€у洖褰掍綔涓烘浛浠?
+PASSED                                                                   [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_preprocess_features_exception_path 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鐗瑰緛棰勫鐞嗗け璐? fillna failed
+PASSED                                                                   [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_calculate_metrics_exception_path 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 璁＄畻璇勪及鎸囨爣澶辫触: No module named 'sklearn.metrics'
+PASSED                                                                   [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_create_feature_processor_exception_path 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鍒涘缓鐗瑰緛澶勭悊鍣ㄥけ璐? No module named 'sklearn.preprocessing'
+PASSED                                                                   [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_fit_feature_processor_exception_paths 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? 鐗瑰緛澶勭悊鍣?nonexistent 涓嶅瓨鍦?
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鎷熷悎鐗瑰緛澶勭悊鍣ㄥけ璐? fit failed
+PASSED                                                                   [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_transform_features_exception_paths 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鐗瑰緛杞崲澶辫触: 鐗瑰緛澶勭悊鍣?nonexistent 涓嶅瓨鍦?
+2025-12-11 08:42:50 [   ERROR] src.ml.core.ml_core: 鐗瑰緛杞崲澶辫触: transform failed
+PASSED                                                                   [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_prepare_target_with_numpy_array PASSED [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_predict_with_numpy_array PASSED [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_evaluate_model_normal_path PASSED [ 17%]
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_with_null_adapters_else_branch PASSED [ 18%]
+tests\unit\ml\core\test_ml_core_unit.py::test_get_feature_importance_branches PASSED [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_start_and_stop_transitions PASSED [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_start_async_uses_sync_start PASSED [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_predict_success_updates_stats PASSED [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_predict_failure_tracks_errors 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] model_adapter.default: 鎺ㄧ悊澶辫触: inference failed
+PASSED                                                                   [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_get_service_info_includes_models_and_stats PASSED [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_model_manager_delegation PASSED [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_start_failure_moves_to_error_state 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] model_adapter.default: 鍚姩 MLService 澶辫触: boom
+PASSED                                                                   [ 18%]
+tests\unit\ml\core\test_ml_service_unit.py::test_predict_requires_running_service PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_stop_without_inference_stop_method PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_start_and_stop_service PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_async_start PASSED      [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_get_service_info PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_predict_delegates_to_inference_service PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_list_models_and_get_model PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_default_model_manager_and_feature_engineering PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_list_models_handles_missing_manager_methods PASSED [ 19%]
+tests\unit\ml\core\test_ml_service_unit.py::test_default_inference_service_requires_predict_configuration 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:50 [   ERROR] model_adapter.default: 鎺ㄧ悊澶辫触: Inference service not configured
+PASSED                                                                   [ 20%]
+tests\unit\ml\core\test_ml_service_unit.py::test_default_inference_service_start_async PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_dashboard_start_and_stop_registers_callback PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_dashboard_updates_stats_and_process_history PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_dashboard_handles_alerts_and_export PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_process_history_trims_to_max PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_alert_history_trimmed_to_limit PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_export_dashboard_data_unsupported_format PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_dashboard_config_and_health_score PASSED [ 20%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_dashboard_health_score_penalizes_recent_alerts PASSED [ 21%]
+tests\unit\ml\core\test_monitoring_dashboard_unit.py::test_global_dashboard_helpers_delegate PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_metrics_record_and_stats PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_monitor_alert_trigger PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_monitor_record_helpers PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_metrics_empty_stats_return_defaults PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_record_resource_usage_handles_failures PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_monitor_start_and_stop_flags PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_trigger_alert_logs_exceptions PASSED [ 21%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_check_alerts_returns_when_no_inference PASSED [ 22%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_record_inference_performance_with_error PASSED [ 22%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_global_record_helpers_use_singleton PASSED [ 22%]
+tests\unit\ml\core\test_performance_monitor_unit.py::test_alert_penalties_trigger_for_thresholds PASSED [ 22%]
+tests\unit\ml\core\test_process_builder.py::test_from_template_populates_steps_and_config PASSED [ 22%]
+tests\unit\ml\core\test_process_builder.py::test_from_template_applies_custom_config PASSED [ 22%]
+tests\unit\ml\core\test_process_builder.py::test_add_and_configure_step PASSED [ 22%]
+tests\unit\ml\core\test_process_builder.py::test_build_and_submit_registers_callbacks PASSED [ 22%]
+tests\unit\ml\core\test_process_builder.py::test_build_without_steps_raises PASSED [ 23%]
+tests\unit\ml\core\test_process_builder_unit.py::test_from_template_populates_steps_and_config PASSED [ 23%]
+tests\unit\ml\core\test_process_builder_unit.py::test_from_template_unknown_raises PASSED [ 23%]
+tests\unit\ml\core\test_process_builder_unit.py::test_build_requires_at_least_one_step PASSED [ 23%]
+tests\unit\ml\core\test_process_builder_unit.py::test_configure_individual_step_and_process PASSED [ 23%]
+tests\unit\ml\core\test_process_builder_unit.py::test_build_and_submit_registers_callbacks PASSED [ 23%]
+tests\unit\ml\core\test_process_builder_unit.py::test_register_ml_step_executors_noop PASSED [ 23%]
+tests\unit\ml\core\test_process_orchestrator_additional.py::test_submit_requires_running PASSED [ 23%]
+tests\unit\ml\core\test_process_orchestrator_additional.py::test_start_and_stop_idempotent 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [ WARNING] model_adapter.default: ML涓氬姟娴佺▼缂栨帓鍣ㄥ凡鍦ㄨ繍琛屼腑
+PASSED                                                                   [ 23%]
+tests\unit\ml\core\test_process_orchestrator_additional.py::test_process_executes_steps_and_updates_stats PASSED [ 24%]
+tests\unit\ml\core\test_process_orchestrator_additional.py::test_process_failure_marks_failed 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: ML涓氬姟娴佺▼姝ラ鎵ц澶辫触: s1, 閿欒: boom
+PASSED                                                                   [ 24%]
+tests\unit\ml\core\test_process_orchestrator_additional.py::test_callbacks_triggered PASSED [ 24%]
+tests\unit\ml\core\test_process_orchestrator_additional.py::test_get_process_status_and_cancel PASSED [ 24%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_process_success_updates_stats PASSED [ 24%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_process_failure_records_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: ML涓氬姟娴佺▼姝ラ鎵ц澶辫触: fail, 閿欒: boom
+PASSED                                                                   [ 24%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_process_steps_detects_dependency_cycle 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: ML涓氬姟娴佺▼瀛樺湪鏃犳硶鎵ц鐨勬楠? test-process
+PASSED                                                                   [ 24%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_submit_process_enqueues_when_running PASSED [ 24%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_stop_noop_when_not_running PASSED [ 24%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_start_warns_when_already_running 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [ WARNING] model_adapter.default: ML涓氬姟娴佺▼缂栨帓鍣ㄥ凡鍦ㄨ繍琛屼腑
+PASSED                                                                   [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_start_initializes_workers_and_resets_event PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_stop_sets_shutdown_flag_and_invokes_executor PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_get_process_status_summary PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_get_process_status_returns_none_when_missing PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_register_default_executors_is_idempotent PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_pause_and_resume_process PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_add_process_callback_registers_and_triggers PASSED [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_trigger_callbacks_logs_exceptions 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: ML涓氬姟娴佺▼鍥炶皟鎵ц澶辫触: on_complete, 閿欒: callback boom
+PASSED                                                                   [ 25%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_process_worker_logs_exception_and_exits 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: 娴佺▼澶勭悊绾跨▼寮傚父: queue boom
+PASSED                                                                   [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_process_worker_executes_active_process PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_step_records_metrics_and_context PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_step_raises_when_executor_missing PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_step_raises_when_validation_fails PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_cancel_process_moves_to_completed PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_cancel_process_returns_false_when_missing PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_get_statistics_reports_runtime PASSED [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_execute_process_handles_unexpected_exception 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [   ERROR] model_adapter.default: ML涓氬姟娴佺▼鎵ц寮傚父: test-process, 閿欒: explode
+PASSED                                                                   [ 26%]
+tests\unit\ml\core\test_process_orchestrator_unit.py::test_global_helper_functions PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_base_executor_validate_and_metrics 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:51 [ WARNING] model_adapter.default: 姝ラ s1 缂哄皯閰嶇疆淇℃伅
+PASSED                                                                   [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_base_executor_handles_dict_context PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_base_executor_dependencies_and_missing_process PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_register_ml_step_executors_registers_all PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_propagates_failure 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 妯″瀷棰勬祴澶辫触: predict failed
+PASSED                                                                   [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_success_updates_metrics PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_batches_large_dataframe PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_loads_model_and_uses_features PASSED [ 27%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_output_format_fallback PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_missing_model_raises PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_prediction_executor_missing_prediction_data_raises PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_deployment_executor_returns_result PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_deployment_executor_loads_model_when_absent PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_deployment_executor_failure_propagates 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 妯″瀷閮ㄧ讲澶辫触: deploy boom
+PASSED                                                                   [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_deployment_executor_missing_model_raises PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_reads_csv PASSED [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_database_not_implemented 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 鏁版嵁鍔犺浇澶辫触: 鏁版嵁搴撴暟鎹姞杞芥殏鏈疄鐜?
+PASSED                                                                   [ 28%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_applies_limit PASSED [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_reads_json PASSED [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_reads_parquet PASSED [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_invalid_format_raises 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 鏁版嵁鍔犺浇澶辫触: 涓嶆敮鎸佺殑鏁版嵁鏍煎紡: xml
+PASSED                                                                   [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_invalid_source_raises 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 鏁版嵁鍔犺浇澶辫触: 涓嶆敮鎸佺殑鏁版嵁婧? api
+PASSED                                                                   [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_validate_checks_required 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 鏁版嵁鍔犺浇姝ラ缂哄皯蹇呴渶瀛楁: data_path
+PASSED                                                                   [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_validate_respects_base 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [ WARNING] model_adapter.default: 姝ラ validate-empty 缂哄皯閰嶇疆淇℃伅
+PASSED                                                                   [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_data_loading_executor_validate_success PASSED [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_feature_engineering_executor_updates_metadata PASSED [ 29%]
+tests\unit\ml\core\test_step_executors_unit.py::test_feature_engineering_executor_requires_raw_data PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_feature_engineering_executor_without_target_sets_none PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_feature_engineering_executor_propagates_errors 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 鐗瑰緛宸ョ▼澶辫触: broken engineer
+PASSED                                                                   [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_training_executor_missing_features_raises PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_training_executor_success PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_training_executor_cross_validation_metrics PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_training_executor_failure_records_error 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 妯″瀷璁粌澶辫触: create failed
+PASSED                                                                   [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_evaluation_executor_success PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_hyperparameter_tuning_executor_records_results PASSED [ 30%]
+tests\unit\ml\core\test_step_executors_unit.py::test_hyperparameter_tuning_executor_requires_data PASSED [ 31%]
+tests\unit\ml\core\test_step_executors_unit.py::test_hyperparameter_tuning_executor_failure_propagates 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 瓒呭弬鏁拌皟浼樺け璐? tune boom
+PASSED                                                                   [ 31%]
+tests\unit\ml\core\test_step_executors_unit.py::test_step_executors_logger_fallback PASSED [ 31%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_evaluation_executor_loads_model_when_missing PASSED [ 31%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_evaluation_executor_missing_test_data_raises PASSED [ 31%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_evaluation_executor_missing_model_raises PASSED [ 31%]
+tests\unit\ml\core\test_step_executors_unit.py::test_model_evaluation_executor_failure_propagates 
+-------------------------------- live log call --------------------------------
+2025-12-11 08:42:52 [   ERROR] model_adapter.default: 妯″瀷璇勪及澶辫触: evaluate boom
+PASSED                                                                   [ 31%]
+tests\unit\ml\deep_learning\test_data_pipeline_unit.py::test_data_pipeline_split_basic PASSED [ 31%]
+tests\unit\ml\deep_learning\test_data_pipeline_unit.py::test_data_pipeline_split_small_dataset PASSED [ 31%]
+tests\unit\ml\deep_learning\test_data_pipeline_unit.py::test_data_pipeline_split_raises_on_empty PASSED [ 32%]
+tests\unit\ml\deep_learning\test_data_preprocessor_unit.py::test_data_preprocessor_dropna PASSED [ 32%]
+tests\unit\ml\deep_learning\test_data_preprocessor_unit.py::test_data_preprocessor_raises_on_empty PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_get_models_adapter PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_get_data_preprocessor PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_get_trainer PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_trainer_train_method PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_get_model_service PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_model_service_save_and_load PASSED [ 32%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerFunctions::test_model_service_load_nonexistent PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestTrainingResult::test_training_result_creation PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestTrainingResult::test_training_result_default_values PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerIntegration::test_full_training_pipeline PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerIntegration::test_configuration_persistence PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerIntegration::test_error_handling PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerIntegration::test_component_isolation PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager.py::TestDeepLearningManagerIntegration::test_resource_management PASSED [ 33%]
+tests\unit\ml\deep_learning\test_deep_learning_manager_unit.py::test_train_model PASSED [ 34%]
+tests\unit\ml\deep_learning\test_deep_learning_manager_unit.py::test_save_model PASSED [ 34%]
+tests\unit\ml\deep_learning\test_deep_learning_manager_unit.py::test_train_with_default_components PASSED [ 34%]
+tests\unit\ml\deep_learning\test_deep_learning_manager_unit.py::test_train_preprocess_failure_raises PASSED [ 34%]
+tests\unit\ml\deep_learning\test_deep_learning_manager_unit.py::test_helper_factory_functions PASSED [ 34%]
+tests\unit\ml\deep_learning\test_deep_learning_models_unit.py::test_deep_learning_model_predict_passthrough PASSED [ 34%]
+tests\unit\ml\deep_learning\test_feature_selector_unit.py::test_feature_selector_selects_numeric_columns PASSED [ 34%]
+tests\unit\ml\deep_learning\test_feature_selector_unit.py::test_feature_selector_handles_small_dataset PASSED [ 34%]
+tests\unit\ml\deep_learning\test_integration_components_unit.py::test_model_service_registration_flow PASSED [ 34%]
+tests\unit\ml\deep_learning\test_integration_components_unit.py::test_model_service_statistics PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_components_unit.py::test_data_pipeline_csv PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_components_unit.py::test_feature_engineering_and_validation SKIPPED [ 35%]
+tests\unit\ml\deep_learning\test_integration_main_unit.py::test_main_success PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_main_unit.py::test_main_failure PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_service_slice.py::test_end_to_end_pipeline_simplified PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_suite_unit.py::test_test_suite_run_all_tests PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_suite_unit.py::test_generate_test_report_creates_file PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_suite_unit.py::test_create_test_financial_data_structure PASSED [ 35%]
+tests\unit\ml\deep_learning\test_integration_tests_business_flow_supplement.py::TestDeepLearningIntegrationSupplement::test_placeholder SKIPPED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_coverage.py::TestDeepLearningIntegrationCoverage::test_data_pipeline_feature_engineering PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_coverage.py::TestDeepLearningIntegrationCoverage::test_data_pipeline_validation PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_coverage.py::TestDeepLearningIntegrationCoverage::test_end_to_end_workflow PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_coverage.py::TestDeepLearningIntegrationCoverage::test_model_service_inference PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_model_training_and_serving_stubbed PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_performance_concurrent_requests PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_performance_large_data_processing PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_data_pipeline_teardown_cleanup PASSED [ 36%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_end_to_end_pipeline_exception_handling PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_model_inference_skip_logging FAILED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_concurrent_requests_exception_handling PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_test_suite_run_all_tests PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_create_test_financial_data PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_generate_test_report PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_main_function_execution PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_csv_data_source_method PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_model_registration_method PASSED [ 37%]
+tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_feature_engineering_skip PASSED [ 38%]
+tests\unit\ml\deep_learning\test_integration_tests_helpers.py::test_create_test_financial_data_generates_expected_columns PASSED [ 38%]
+tests\unit\ml\deep_learning\test_integration_tests_helpers.py::test_generate_test_report_writes_json PASSED [ 38%]
+tests\unit\ml\deep_learning\test_integration_tests_helpers.py::test_test_suite_run_all_tests_with_mocks PASSED [ 38%]
+tests\unit\ml\deep_learning\test_integration_tests_unit.py::test_create_test_financial_data_has_expected_columns PASSED [ 38%]
+tests\unit\ml\deep_learning\test_integration_tests_unit.py::test_generate_test_report_writes_summary PASSED [ 38%]
+tests\unit\ml\deep_learning\test_integration_tests_unit.py::test_test_suite_run_all_tests_returns_isolated_copy PASSED [ 38%]
+tests\unit\ml\deep_learning\test_model_interpreter_unit.py::test_model_interpreter_explain_returns_importance PASSED [ 38%]
+tests\unit\ml\deep_learning\test_model_service_unit.py::test_model_service_save_and_load PASSED [ 38%]
+tests\unit\ml\deep_learning\test_model_service_unit.py::test_model_service_load_missing_raises PASSED [ 39%]
+tests\unit\ml\deep_learning\test_model_service_unit.py::test_model_service_duplicate_save_raises PASSED [ 39%]
+tests\unit\ml\engine\test_classifier_components_unit.py::test_classifier_component_info_and_status PASSED [ 39%]
+tests\unit\ml\engine\test_classifier_components_unit.py::test_classifier_component_process_returns_payload PASSED [ 39%]
+tests\unit\ml\engine\test_classifier_components_unit.py::test_factory_register_and_list PASSED [ 39%]
+tests\unit\ml\engine\test_classifier_components_unit.py::test_factory_enforces_supported_ids PASSED [ 39%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_get_feature_engineer_returns_instance PASSED [ 39%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_feature_engineering_component_requires_pipeline PASSED [ 39%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_feature_engineering_component_processes_pipeline PASSED [ 39%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_model_training_component_success_and_error PASSED [ 40%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_prediction_pipeline_train_and_predict PASSED [ 40%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_feature_engineering_component_runs_pipeline FAILED [ 40%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_model_training_component FAILED [ 40%]
+tests\unit\ml\engine\test_engine_components_unit.py::test_prediction_pipeline FAILED [ 40%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_define_feature_and_pipeline_info PASSED [ 40%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_process_data_with_cache PASSED [ 40%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_create_temporal_features PASSED [ 40%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_custom_transformation_log_transforms_numeric_only PASSED [ 40%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_handle_missing_drop_removes_rows PASSED [ 41%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_unknown_pipeline_raises PASSED [ 41%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_create_temporal_features_without_timestamp PASSED [ 41%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_cache_eviction_when_exceeding_limit PASSED [ 41%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_get_pipeline_info_returns_none_for_missing_pipeline PASSED [ 41%]
+tests\unit\ml\engine\test_feature_engineering_unit.py::test_apply_step_unknown_type_returns_data_unchanged PASSED [ 41%]
+tests\unit\ml\engine\test_inference_components_unit.py::test_component_info_and_status PASSED [ 41%]
+tests\unit\ml\engine\test_inference_components_unit.py::test_component_process_returns_payload PASSED [ 41%]
+tests\unit\ml\engine\test_inference_components_unit.py::test_factory_register_and_list PASSED [ 41%]
+tests\unit\ml\engine\test_inference_components_unit.py::test_factory_enforces_supported_ids PASSED [ 42%]
+tests\unit\ml\engine\test_predictor_components_unit.py::test_predictor_component_info_and_status PASSED [ 42%]
+tests\unit\ml\engine\test_predictor_components_unit.py::test_predictor_component_process_returns_payload PASSED [ 42%]
+tests\unit\ml\engine\test_predictor_components_unit.py::test_factory_register_and_list PASSED [ 42%]
+tests\unit\ml\engine\test_predictor_components_unit.py::test_factory_enforces_supported_ids PASSED [ 42%]
+tests\unit\ml\engine\test_regressor_components_unit.py::test_regressor_component_info_and_status PASSED [ 42%]
+tests\unit\ml\engine\test_regressor_components_unit.py::test_regressor_component_process_returns_payload PASSED [ 42%]
+tests\unit\ml\engine\test_regressor_components_unit.py::test_factory_register_and_list PASSED [ 42%]
+tests\unit\ml\engine\test_regressor_components_unit.py::test_factory_enforces_supported_ids PASSED [ 42%]
+tests\unit\ml\ensemble\test_bagging_components_unit.py::test_bagging_component_info_and_status PASSED [ 43%]
+tests\unit\ml\ensemble\test_bagging_components_unit.py::test_bagging_component_process_returns_payload PASSED [ 43%]
+tests\unit\ml\ensemble\test_bagging_components_unit.py::test_factory_register_and_list PASSED [ 43%]
+tests\unit\ml\ensemble\test_bagging_components_unit.py::test_factory_enforces_supported_ids PASSED [ 43%]
+tests\unit\ml\ensemble\test_boosting_components_unit.py::test_boosting_component_info_and_status PASSED [ 43%]
+tests\unit\ml\ensemble\test_boosting_components_unit.py::test_boosting_component_process_returns_payload PASSED [ 43%]
+tests\unit\ml\ensemble\test_boosting_components_unit.py::test_factory_register_and_list PASSED [ 43%]
+tests\unit\ml\ensemble\test_boosting_components_unit.py::test_factory_enforces_supported_ids PASSED [ 43%]
+tests\unit\ml\ensemble\test_ensemble_components_unit.py::test_ensemble_component_info_and_status PASSED [ 43%]
+tests\unit\ml\ensemble\test_ensemble_components_unit.py::test_ensemble_component_process_returns_payload PASSED [ 44%]
+tests\unit\ml\ensemble\test_ensemble_components_unit.py::test_factory_register_and_list PASSED [ 44%]
+tests\unit\ml\ensemble\test_ensemble_components_unit.py::test_factory_enforces_supported_ids PASSED [ 44%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestEnsembleEnums::test_ensemble_method_enum PASSED [ 44%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestEnsembleEnums::test_weight_update_rule_enum PASSED [ 44%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestEnsembleResult::test_ensemble_result_creation PASSED [ 44%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestEnsembleResult::test_ensemble_result_without_uncertainty PASSED [ 44%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestModelEnsemble::test_model_ensemble_initialization PASSED [ 44%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestModelEnsemble::test_model_ensemble_empty_models PASSED [ 45%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestModelEnsemble::test_model_ensemble_predict_base PASSED [ 45%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestAverageEnsemble::test_average_ensemble_predict PASSED [ 45%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestAverageEnsemble::test_average_ensemble_predict_numpy PASSED [ 45%]
+tests\unit\ml\ensemble\test_model_ensemble.py::TestAverageEnsemble::test_average_ensemble_single_model FAILED [ 45%]馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+
+================================== FAILURES ===================================
+______________________ test_model_inference_skip_logging ______________________
+tests\unit\ml\deep_learning\test_integration_tests_extended.py:244: in test_model_inference_skip_logging
+    service_case.test_model_inference()
+src\ml\deep_learning\core\integration_tests.py:245: in test_model_inference
+    service = ModelService()
+E   TypeError: __init__() missing 1 required positional argument: 'base_dir'
+---------------------------- Captured stdout setup ----------------------------
+鉂?娣卞害瀛︿範妯″潡瀵煎叆澶辫触: cannot import name 'DataBatch' from 'src.ml.deep_learning.core.data_pipeline' (C:\PythonProject\RQA2025\src\ml\deep_learning\core\data_pipeline.py)
+______________ test_feature_engineering_component_runs_pipeline _______________
+tests\unit\ml\engine\test_engine_components_unit.py:103: in test_feature_engineering_component_runs_pipeline
+    result = component.process(data)
+src\ml\engine\engine_components.py:64: in process
+    return self.engineer.process_data(data, self.pipeline_name)
+src\ml\engine\feature_engineering.py:114: in process_data
+    raise ValueError(f"绠￠亾 {pipeline_name} 涓嶅瓨鍦?)
+E   ValueError: 绠￠亾 pipeline 涓嶅瓨鍦?
+________________________ test_model_training_component ________________________
+tests\unit\ml\engine\test_engine_components_unit.py:117: in test_model_training_component
+    assert model_info["model"] == "trained-model"
+E   AssertionError: assert {'weights': 3} == 'trained-model'
+__________________________ test_prediction_pipeline ___________________________
+tests\unit\ml\engine\test_engine_components_unit.py:139: in test_prediction_pipeline
+    assert predictions == [0.1, 0.1]
+E   AssertionError: assert [0.0, 0.0] == [0.1, 0.1]
+E     
+E     At index 0 diff: 0.0 != 0.1
+E     
+E     Full diff:
+E       [
+E     -     0.1,
+E     ?       ^...
+E     
+E     ...Full output truncated (7 lines hidden), use '-vv' to show
+___________ TestAverageEnsemble.test_average_ensemble_single_model ____________
+tests\unit\ml\ensemble\test_model_ensemble.py:154: in test_average_ensemble_single_model
+    assert np.array_equal(result.prediction, np.array([0.8]))
+E   AssertionError: assert False
+E    +  where False = <function array_equal at 0x000001F77F404B70>(array([0.8, 0.6]), array([0.8]))
+E    +    where <function array_equal at 0x000001F77F404B70> = np.array_equal
+E    +    and   array([0.8, 0.6]) = EnsembleResult(prediction=array([0.8, 0.6]), model_weights={'only_model': 1.0}, performance_metrics={}, uncertainty=array([0., 0.])).prediction
+E    +    and   array([0.8]) = <built-in function array>([0.8])
+E    +      where <built-in function array> = np.array
+
+---------- coverage: platform win32, python 3.9.23-final-0 -----------
+Name                                                      Stmts   Miss  Cover   Missing
+---------------------------------------------------------------------------------------
+src\ml\__init__.py                                          119     94    21%   67-140, 151, 155, 164, 168-181, 188-198
+src\ml\core\__init__.py                                       1      0   100%
+src\ml\core\constants.py                                     26      0   100%
+src\ml\core\error_handling.py                               224      1    99%   161
+src\ml\core\exceptions.py                                    48      1    98%   102
+src\ml\core\feature_engineering.py                            2      0   100%
+src\ml\core\inference_service.py                            100      2    98%   19-20
+src\ml\core\integration_tests.py                             58     58     0%   6-174
+src\ml\core\ml_core.py                                      292     13    96%   533-551
+src\ml\core\ml_service.py                                    91      7    92%   85-92, 102, 108
+src\ml\core\model_manager.py                                 16      2    88%   6-7
+src\ml\core\monitoring_dashboard.py                          89      4    96%   105, 109, 113, 121
+src\ml\core\performance_monitor.py                          157     12    92%   268-271, 281-284, 294-297
+src\ml\core\process_builder.py                               85     13    85%   207, 221-223, 237-242, 255-259
+src\ml\core\process_orchestrator.py                         273      0   100%
+src\ml\core\step_executors.py                               313      0   100%
+src\ml\core\unified_ml_interface.py                         105    105     0%   8-747
+src\ml\deep_learning\__init__.py                              4      0   100%
+src\ml\deep_learning\automl_engine.py                        88     42    52%   64, 68-75, 79-83, 88-94, 97-104, 116-119, 128, 133, 137, 146, 151, 162, 178-187
+src\ml\deep_learning\core\__init__.py                         5      0   100%
+src\ml\deep_learning\core\data_pipeline.py                   26      0   100%
+src\ml\deep_learning\core\data_preprocessor.py               16      0   100%
+src\ml\deep_learning\core\deep_learning_manager.py           49      0   100%
+src\ml\deep_learning\core\distributed_trainer.py             16     16     0%   1-31
+src\ml\deep_learning\core\integration_tests.py              284     43    85%   38-41, 150-180, 246-263, 267-286
+src\ml\deep_learning\core\model_service.py                   21      0   100%
+src\ml\deep_learning\data\__init__.py                         0      0   100%
+src\ml\deep_learning\deep_learning_models.py                 10      0   100%
+src\ml\deep_learning\distributed\__init__.py                  2      0   100%
+src\ml\deep_learning\distributed\distributed_trainer.py      74     37    50%   22, 26-33, 37-41, 52-56, 59-60, 82-84, 87-89, 97, 100, 103, 111-112, 117, 125, 130, 145-149, 164-165
+src\ml\deep_learning\feature_selector.py                     41     21    49%   29-33, 37-52, 57-58, 64-65, 71-72
+src\ml\deep_learning\model_interpreter.py                    54     38    30%   21, 26-41, 50, 55-74, 95-103, 117-126, 145-162
+src\ml\deep_learning\models\__init__.py                       0      0   100%
+src\ml\deep_learning\utils\__init__.py                        0      0   100%
+src\ml\engine\__init__.py                                     4      0   100%
+src\ml\engine\classifier_components.py                       36      2    94%   17, 50
+src\ml\engine\engine_components.py                           72      1    99%   98
+src\ml\engine\feature_engineering.py                        106      0   100%
+src\ml\engine\inference_components.py                        36      2    94%   17, 50
+src\ml\engine\predictor_components.py                        36      2    94%   17, 50
+src\ml\engine\regressor_components.py                        36      2    94%   17, 50
+src\ml\ensemble\__init__.py                                   2      0   100%
+src\ml\ensemble\bagging_components.py                        36      2    94%   17, 50
+src\ml\ensemble\boosting_components.py                       36      2    94%   17, 50
+src\ml\ensemble\ensemble_components.py                       36      2    94%   17, 50
+src\ml\ensemble\ensemble_predictor.py                         0      0   100%
+src\ml\ensemble\model_ensemble.py                            85     41    52%   61-63, 70-87, 94-104, 107-110, 115-118, 126-135, 138
+src\ml\ensemble\stacking_components.py                       36     16    56%   17, 20, 28, 35, 45-46, 49-51, 54-58, 61, 64
+src\ml\ensemble\voting_components.py                         36     16    56%   17, 20, 28, 35, 45-46, 49-51, 54-58, 61, 64
+src\ml\feature_engineering.py                                22      0   100%
+src\ml\inference_service.py                                  14      8    43%   14, 16-25
+src\ml\integration\__init__.py                                0      0   100%
+src\ml\integration\enhanced_ml_integration.py                93     61    34%   26-28, 56-61, 65-76, 80-85, 89-92, 96-137, 141-175, 184-188
+src\ml\interfaces\__init__.py                                 0      0   100%
+src\ml\interfaces\interfaces.py                               3      0   100%
+src\ml\model_manager.py                                      38      4    89%   41-44
+src\ml\models\__init__.py                                     2      0   100%
+src\ml\models\ab_testing.py                                  60     37    38%   15, 30, 33-39, 42-46, 49-52, 55-71, 74, 77-79
+src\ml\models\api.py                                         11      3    73%   10, 13, 16
+src\ml\models\architecture_components.py                      0      0   100%
+src\ml\models\automl.py                                      18     10    44%   8, 13-15, 18-24
+src\ml\models\base_model.py                                  40     23    42%   28-35, 40, 49-50, 59, 68-69, 78, 87, 96-97, 106, 150-153, 164-165
+src\ml\models\concrete_models.py                             19      7    63%   13-15, 19-21, 25
+src\ml\models\deep_learning_models.py                        85     54    36%   33, 36-41, 44-47, 50, 57-66, 69-71, 74-84, 87-92, 95-99, 102-105, 113-115
+src\ml\models\definition_components.py                        0      0   100%
+src\ml\models\deployer.py                                     0      0   100%
+src\ml\models\distributed_training.py                        19      8    58%   17-19, 22-26
+src\ml\models\inference\__init__.py                           3      0   100%
+src\ml\models\inference\batch_inference_processor.py         21     13    38%   12-15, 18-25, 32
+src\ml\models\inference\gpu_inference_engine.py              55     33    40%   29-37, 41, 45, 54-65, 69-79
+src\ml\models\inference\inference_cache.py                  105     74    30%   26-28, 33-36, 40-58, 61-68, 71-76, 84-89, 93, 101-109, 112-116, 119-127, 130-137, 140
+src\ml\models\inference\inference_manager.py                 64     48    25%   22, 26-28, 32, 39-48, 51-54, 57-69, 79-86, 90-101, 104-116
+src\ml\models\inference\model_loader.py                      68     40    41%   20-23, 30-31, 35-55, 58, 61, 64-67, 75-78, 81-86, 90-91, 95-96, 100-101
+src\ml\models\model_components.py                            36     16    56%   17, 20, 28, 35, 45-46, 49-51, 54-58, 61, 64
+src\ml\models\model_evaluator.py                             55     35    36%   20, 29-52, 60-65, 74-77, 81-86, 89-90, 93, 96-97, 100-102
+src\ml\models\model_manager.py                               58     29    50%   31, 38, 44-45, 59-60, 67-72, 76-77, 80, 83-84, 87-90, 94-95, 98-103
+src\ml\models\model_metadata_classes.py                      19      6    68%   18-24
+src\ml\models\model_types.py                                  6      1    83%   18
+src\ml\models\model_types_extended.py                        14      4    71%   44, 48, 52, 56
+src\ml\models\network_components.py                          36     16    56%   17, 20, 28, 35, 45-46, 49-51, 54-58, 61, 64
+src\ml\models\predictor.py                                   37     18    51%   24-27, 30-44, 47-52, 55
+src\ml\models\realtime_inference.py                          40     20    50%   28-31, 34, 37-50, 53, 56, 59
+src\ml\models\serving.py                                     60     38    37%   21-23, 26-32, 43-47, 50-61, 64-66, 69-79, 82, 89
+src\ml\models\structure_components.py                        36     16    56%   17, 20, 28, 35, 45-46, 49-51, 54-58, 61, 64
+src\ml\models\trainer.py                                     38     23    39%   19-22, 31-52, 60
+src\ml\models\version_manager.py                             79     51    35%   27-29, 40-57, 60-66, 69, 72-77, 80-81, 84-88, 91-97, 100-101, 104-119, 122-124
+src\ml\tuning\__init__.py                                     2      0   100%
+src\ml\tuning\core.py                                         5      0   100%
+src\ml\tuning\evaluators\__init__.py                          0      0   100%
+src\ml\tuning\evaluators\early_stopping.py                   28     22    21%   17-22, 26-43, 47-49
+src\ml\tuning\grid_components.py                             55     24    56%   15, 18, 52-55, 59, 63, 75-88, 101, 120-124, 129, 134, 142, 153, 158, 163, 168
+src\ml\tuning\hyperparameter_components.py                   58     26    55%   15, 18-30, 64-67, 71, 75, 87-100, 113, 132-136, 141, 146, 154, 166, 170, 174, 178, 182
+src\ml\tuning\optimizer_components.py                        58     26    55%   15, 18-30, 64-67, 71, 75, 87-100, 113, 132-136, 141, 146, 154, 166, 170, 174, 178, 182
+src\ml\tuning\optimizers\__init__.py                          0      0   100%
+src\ml\tuning\optimizers\base.py                             21      0   100%
+src\ml\tuning\optimizers\optuna_tuner.py                     81     70    14%   12-13, 22-66, 75-81, 88-90, 93-159
+src\ml\tuning\search_components.py                           57     25    56%   15, 18, 52-55, 59, 63, 75-88, 101, 120-124, 129, 134, 142, 154, 158, 162, 166, 170
+src\ml\tuning\tuner_components.py                            58     26    55%   15, 18-30, 64-67, 71, 75, 87-100, 113, 132-136, 141, 146, 154, 166, 170, 174, 178, 182
+src\ml\tuning\utils\__init__.py                               0      0   100%
+src\ml\tuning\utils\visualization.py                         37     26    30%   20-29, 36-63
+---------------------------------------------------------------------------------------
+TOTAL                                                      4996   1538    69%
+
+=========================== short test summary info ===========================
+SKIPPED [1] tests\unit\ml\test_inference_service.py:28: legacy 鎺ㄧ悊鏈嶅姟娴嬭瘯榛樿璺宠繃锛岄渶鎵嬪姩鍚敤
+SKIPPED [1] tests\unit\ml\test_inference_service_deep.py:17: legacy 鎺ㄧ悊鏈嶅姟娣卞害鐢ㄤ緥榛樿璺宠繃锛岄渶鎵嬪姩鍚敤
+SKIPPED [1] tests\unit\ml\test_ml_service.py:12: legacy ML 鏈嶅姟娴嬭瘯榛樿璺宠繃锛岄渶鎵嬪姩鍚敤
+SKIPPED [1] tests\unit\ml\test_model_manager.py:28: legacy 妯″瀷绠＄悊鍣ㄦ祴璇曢粯璁よ烦杩囷紝闇€鎵嬪姩鍚敤
+SKIPPED [1] tests\unit\ml\test_model_manager_basic.py:18: legacy 妯″瀷绠＄悊鍣ㄥ熀纭€娴嬭瘯榛樿璺宠繃锛岄渶鎵嬪姩鍚敤
+SKIPPED [1] tests\unit\ml\test_model_manager_deep.py:18: legacy 妯″瀷绠＄悊鍣ㄦ繁搴︽祴璇曢粯璁よ烦杩囷紝闇€鎵嬪姩鍚敤
+SKIPPED [1] tests\unit\ml\deep_learning\test_integration_components_unit.py:148: 娣卞害瀛︿範闆嗘垚娴嬭瘯鏆傛椂璺宠繃锛岀瓑寰呮ā鍧楀畬鍠?
+SKIPPED [1] tests\unit\ml\deep_learning\test_integration_tests_business_flow_supplement.py:15: 娣卞害瀛︿範闆嗘垚娴嬭瘯涓氬姟娴佺▼琛ュ厖鏆傛椂璺宠繃锛岀瓑寰呮ā鍧楀畬鍠?
+FAILED tests\unit\ml\deep_learning\test_integration_tests_extended.py::test_model_inference_skip_logging
+FAILED tests\unit\ml\engine\test_engine_components_unit.py::test_feature_engineering_component_runs_pipeline
+FAILED tests\unit\ml\engine\test_engine_components_unit.py::test_model_training_component
+FAILED tests\unit\ml\engine\test_engine_components_unit.py::test_prediction_pipeline
+FAILED tests\unit\ml\ensemble\test_model_ensemble.py::TestAverageEnsemble::test_average_ensemble_single_model
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+= 5 failed, 398 passed, 8 skipped, 130 deselected, 13 warnings in 78.02s (0:01:18) =

@@ -1,0 +1,7 @@
+- [x] `strategy_optimization_service.py` 中的导入语句使用正确的模块路径
+- [x] 后台线程启动时自动配置 Python 路径
+- [x] `BacktestEngine` 模块能被正确导入
+- [x] `ParameterOptimizer` 模块能被正确导入
+- [x] 策略优化启动时无 `No module named 'backtest_engine'` 错误
+- [x] 参数优化功能正常执行
+- [x] 策略优化器页面各仪表盘正常显示数据

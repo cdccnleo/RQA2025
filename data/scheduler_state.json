@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "saved_at": "2026-02-26T18:54:03.075910",
+  "timezone": "Asia/Shanghai",
+  "jobs": [
+    {
+      "job_id": "871e030c-a1f0-45d2-af90-1a7636347116",
+      "name": "定时训练任务",
+      "description": "每天凌晨2点执行ML训练",
+      "trigger": {
+        "trigger_type": "cron",
+        "cron_expression": "0 2 * * *",
+        "interval_seconds": null,
+        "run_date": null,
+        "event_name": null,
+        "event_filter": null,
+        "timezone": "Asia/Shanghai",
+        "jitter": 0,
+        "max_instances": 1
+      },
+      "pipeline_config": {
+        "name": "ml_pipeline"
+      },
+      "status": "SCHEDULED",
+      "created_at": "2026-02-26T18:54:03.075405",
+      "updated_at": "2026-02-26T18:54:03.075910",
+      "next_run_time": "2026-02-27T02:00:03.075910",
+      "last_run_time": null,
+      "execution_count": 0,
+      "max_executions": null,
+      "execution_history": [],
+      "metadata": {},
+      "enabled": true,
+      "timeout_seconds": 3600,
+      "retry_count": 3,
+      "retry_delay_seconds": 60
+    },
+    {
+      "job_id": "986bccdd-ed05-4dfa-a36c-21c217671ef4",
+      "name": "数据处理任务",
+      "description": "",
+      "trigger": {
+        "trigger_type": "event",
+        "cron_expression": null,
+        "interval_seconds": null,
+        "run_date": null,
+        "event_name": "data_ready",
+        "event_filter": null,
+        "timezone": "Asia/Shanghai",
+        "jitter": 0,
+        "max_instances": 1
+      },
+      "pipeline_config": {
+        "name": "data_pipeline"
+      },
+      "status": "PENDING",
+      "created_at": "2026-02-26T18:54:03.075405",
+      "updated_at": "2026-02-26T18:54:03.075405",
+      "next_run_time": null,
+      "last_run_time": null,
+      "execution_count": 0,
+      "max_executions": null,
+      "execution_history": [],
+      "metadata": {},
+      "enabled": true,
+      "timeout_seconds": 3600,
+      "retry_count": 3,
+      "retry_delay_seconds": 60
+    }
+  ]
+}

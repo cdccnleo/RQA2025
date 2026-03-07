@@ -1,0 +1,43 @@
+{
+  "strategy": "canary",
+  "total_instances": 6,
+  "canary_instances": 1,
+  "rollout_percentage": [10, 25, 50, 75, 100],
+  "health_check_interval": 30,
+  "health_check_timeout": 60,
+  "rollback_threshold": 0.1,
+  "monitoring": {
+    "prometheus_url": "http://localhost:9090",
+    "grafana_url": "http://localhost:3000",
+    "alertmanager_url": "http://localhost:9093"
+  },
+  "docker": {
+    "registry": "localhost:5000",
+    "namespace": "rqa2025",
+    "build_timeout": 600,
+    "push_timeout": 300
+  },
+  "traffic_distribution": {
+    "nginx_upstream": "rqa2025_app",
+    "canary_weight": 10,
+    "stable_weight": 90
+  },
+  "rollback": {
+    "auto_rollback": true,
+    "rollback_timeout": 300,
+    "backup_versions": 3
+  },
+  "notifications": {
+    "slack_webhook": "",
+    "email_recipients": [],
+    "alert_on_failure": true
+  },
+  "metrics": {
+    "response_time_threshold": 1000,
+    "error_rate_threshold": 0.05,
+    "cpu_usage_threshold": 80,
+    "memory_usage_threshold": 80
+  }
+}
+
+

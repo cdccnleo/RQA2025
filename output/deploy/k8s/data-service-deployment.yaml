@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-service
+  namespace: rqa-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: data-service
+  template:
+    metadata:
+      labels:
+        app: data-service
+    spec:
+      containers:
+      - name: data-service
+        image: registry.rqa.com/data-service:prod
+        resources:
+          limits:
+            cpu: "4"
+            memory: 8Gi
+        ports:
+        - containerPort: 8080

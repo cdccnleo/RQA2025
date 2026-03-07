@@ -1,0 +1,129 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2026-api-gateway
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: api-gateway
+spec:
+  selector:
+    app: rqa2026
+    component: api-gateway
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+  type: LoadBalancer
+  sessionAffinity: None
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2026-quantum-engine
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: quantum-engine
+spec:
+  selector:
+    app: rqa2026
+    component: quantum-engine
+  ports:
+  - name: http
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  type: ClusterIP
+  sessionAffinity: None
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2026-ai-engine
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: ai-engine
+spec:
+  selector:
+    app: rqa2026
+    component: ai-engine
+  ports:
+  - name: http
+    port: 8002
+    targetPort: 8002
+    protocol: TCP
+  type: ClusterIP
+  sessionAffinity: None
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2026-bmi-engine
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: bmi-engine
+spec:
+  selector:
+    app: rqa2026
+    component: bmi-engine
+  ports:
+  - name: http
+    port: 8003
+    targetPort: 8003
+    protocol: TCP
+  type: ClusterIP
+  sessionAffinity: None
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2026-service-registry
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: service-registry
+spec:
+  selector:
+    app: rqa2026
+    component: service-registry
+  ports:
+  - name: http
+    port: 8500
+    targetPort: 8500
+    protocol: TCP
+  type: ClusterIP
+  sessionAffinity: None
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2026-config-center
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: config-center
+spec:
+  selector:
+    app: rqa2026
+    component: config-center
+  ports:
+  - name: http
+    port: 8501
+    targetPort: 8501
+    protocol: TCP
+  type: ClusterIP
+  sessionAffinity: None
+
+
+
+

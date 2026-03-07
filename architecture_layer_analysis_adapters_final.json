@@ -1,0 +1,111 @@
+================================================================================
+🎯 AI智能化代码分析报告 - src/adapters
+================================================================================
+
+📊 总体统计
+   📁 文件数量: 7
+   📝 总代码行数: 2499
+   🔄 总复杂度: 537.40
+   📈 平均可维护性: 83.29
+
+🚨 问题统计
+   MEDIUM: 4
+   LOW: 4
+
+   maintainability: 7
+   reliability: 1
+
+📋 文件详情
+   📄 src\adapters\market_adapters.py
+      代码行数: 755
+      🔄 复杂度: 158.00
+      📈 可维护性: 73.00
+      问题数量: 3
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\adapters\professional_data_adapters.py
+      代码行数: 508
+      🔄 复杂度: 125.50
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\adapters\qmt_adapter.py
+      代码行数: 352
+      🔄 复杂度: 70.00
+      📈 可维护性: 83.00
+
+   📄 src\adapters\minqmt.py
+      代码行数: 343
+      🔄 复杂度: 46.00
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\adapters\base_adapter.py
+      代码行数: 318
+      🔄 复杂度: 73.40
+      📈 可维护性: 83.00
+
+   📄 src\adapters\core\exceptions.py
+      代码行数: 166
+      🔄 复杂度: 64.50
+      📈 可维护性: 88.00
+
+   📄 src\adapters\core\constants.py
+      代码行数: 57
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+🔍 详细问题列表
+   📍 [MEDIUM] src\adapters\core\constants.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\adapters\market_adapters.py:522
+      💡 方法过长
+      📝 方法'get_historical_data'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\adapters\market_adapters.py:817
+      💡 方法过长
+      📝 方法'get_historical_data'过长: 58行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\adapters\minqmt.py:326
+      💡 方法过长
+      📝 方法'_generate_mock_price_data'过长: 55行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [LOW] src\adapters\core\constants.py:1
+      💡 过多魔法数字
+      📝 检测到29个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\adapters\market_adapters.py:1
+      💡 过多魔法数字
+      📝 检测到54个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\adapters\minqmt.py:1
+      💡 过多魔法数字
+      📝 检测到32个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\adapters\professional_data_adapters.py:1
+      💡 过多魔法数字
+      📝 检测到12个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+🏗️ 架构建议
+   ⚠️ 系统复杂度较高，建议模块化拆分
+   💡 建议增加异步处理支持
+
+================================================================================

@@ -1,0 +1,42 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # RQA2025 API服务监控
+  - job_name: 'rqa2025-api'
+    static_configs:
+      - targets: 
+        - 'rqa2025-api:8000'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # RQA2025 推理服务监控
+  - job_name: 'rqa2025-inference'
+    static_configs:
+      - targets:
+        - 'rqa2025-inference:8001'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # Redis监控
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['rqa2025-redis-master:6379']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # PostgreSQL数据库监控
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['rqa2025-postgres-master:5432']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Prometheus自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s 

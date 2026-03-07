@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "storage": {
+    "primary_backend": "sqlite",
+    "archive_backend": "parquet",
+    "compression": "lz4",
+    "path": "./monitoring_data_enhanced"
+  },
+  "performance": {
+    "batch_size": 500,
+    "batch_timeout": 2.0,
+    "max_workers": 4,
+    "cache_size": 10000
+  },
+  "lifecycle": {
+    "hot_data_days": 7,
+    "warm_data_days": 30,
+    "cold_data_days": 365,
+    "cleanup_interval_hours": 24
+  },
+  "features": {
+    "compression_enabled": true,
+    "archive_enabled": true,
+    "stream_processing": true,
+    "anomaly_detection": true
+  }
+}

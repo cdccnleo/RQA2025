@@ -1,0 +1,63 @@
+{
+  "dashboard": {
+    "title": "RQA2025_Overview",
+    "description": "RQA2025系统总览仪表板",
+    "tags": [
+      "rqa2025",
+      "trading",
+      "monitoring"
+    ],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "API响应时间",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          }
+        ]
+      },
+      {
+        "title": "错误率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m]) * 100",
+            "legendFormat": "5xx error rate"
+          }
+        ]
+      },
+      {
+        "title": "缓存性能",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "cache_hit_ratio * 100",
+            "legendFormat": "Hit rate %"
+          },
+          {
+            "expr": "rate(cache_misses_total[5m])",
+            "legendFormat": "Miss rate"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "5s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+}

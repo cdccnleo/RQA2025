@@ -1,0 +1,214 @@
+# 历史数据采集数据源配置
+# Historical Data Collection Data Sources Configuration
+
+# 数据源优先级和配置
+data_sources:
+  # 主要数据源：AKShare
+  akshare:
+    enabled: true
+    priority: 1  # 最高优先级
+    description: "AKShare - 中文金融数据接口"
+    config:
+      timeout: 30
+      retry_count: 3
+      retry_delay: 5
+      rate_limit: "60次/分钟"
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      proxy_enabled: false
+      proxy_list: []
+    supported_data_types:
+      - stock
+      - index
+      - fund
+      - bond
+      - futures
+    supported_markets:
+      - cn  # 中国市场
+      - hk  # 香港市场
+    api_endpoints:
+      stock_daily: "stock_zh_a_hist"
+      stock_minute: "stock_zh_a_hist_min_em"
+      index_daily: "stock_zh_index_daily_em"
+
+  # 备选数据源：Yahoo Finance
+  yahoo:
+    enabled: true
+    priority: 2
+    description: "Yahoo Finance - 国际金融数据"
+    config:
+      timeout: 30
+      retry_count: 3
+      retry_delay: 10
+      rate_limit: "100次/分钟"
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      proxy_enabled: false
+      proxy_list: []
+    supported_data_types:
+      - stock
+      - index
+      - etf
+      - crypto
+    supported_markets:
+      - us  # 美国市场
+      - intl  # 国际市场
+    api_endpoints:
+      stock_daily: "yfinance.Ticker.history"
+
+  # 本地备份数据源
+  local_backup:
+    enabled: true
+    priority: 3
+    description: "本地备份数据"
+    config:
+      timeout: 10
+      retry_count: 1
+      retry_delay: 1
+      backup_dir: "./data/backup"
+      file_format: "csv"
+      compression: "gzip"
+    supported_data_types:
+      - stock
+      - index
+      - fund
+      - bond
+      - futures
+    supported_markets:
+      - cn
+      - hk
+      - us
+
+  # 东方财富数据源
+  eastmoney:
+    enabled: false  # 暂时禁用，需要额外配置
+    priority: 4
+    description: "东方财富网数据"
+    config:
+      timeout: 30
+      retry_count: 3
+      retry_delay: 5
+      rate_limit: "30次/分钟"
+    supported_data_types:
+      - stock
+      - index
+      - fund
+    supported_markets:
+      - cn
+
+# 数据采集策略配置
+collection_strategy:
+  # 并发控制
+  concurrency:
+    max_concurrent_batches: 3
+    max_concurrent_symbols: 10
+    max_concurrent_sources: 2
+
+  # 时间控制
+  time_control:
+    trading_hours_only: true  # 只在交易时间采集
+    weekend_collection: false  # 周末不采集
+    holiday_skip: true  # 跳过节假日
+
+  # 质量控制
+  quality_control:
+    min_quality_score: 0.80
+    required_fields_check: true
+    data_validation: true
+    anomaly_detection: true
+
+  # 重试策略
+  retry_strategy:
+    max_retries: 3
+    base_delay: 5
+    max_delay: 300
+    exponential_backoff: true
+
+  # 错误处理
+  error_handling:
+    circuit_breaker_enabled: true
+    circuit_breaker_threshold: 5  # 连续失败次数阈值
+    circuit_breaker_timeout: 300  # 熔断器超时时间（秒）
+
+# 数据存储配置
+storage_config:
+  # TimescaleDB配置
+  timescale:
+    host: "${DB_HOST:localhost}"
+    port: "${DB_PORT:5432}"
+    database: "${DB_NAME:rqa2025_prod}"
+    user: "${DB_USER:rqa2025_admin}"
+    password: "${DB_PASSWORD}"
+    min_connections: 5
+    max_connections: 20
+    command_timeout: 60
+    hypertable_chunk_size: "1 year"
+    compression_policy: "3 months"
+
+  # Redis缓存配置
+  redis:
+    host: "${REDIS_HOST:localhost}"
+    port: "${REDIS_PORT:6379}"
+    password: "${REDIS_PASSWORD}"
+    db: 0
+    cache_ttl: 3600  # 1小时
+    hot_data_cache_ttl: 86400  # 24小时
+
+  # MinIO对象存储配置
+  minio:
+    endpoint: "${MINIO_ENDPOINT:localhost:9000}"
+    access_key: "${MINIO_ACCESS_KEY:minioadmin}"
+    secret_key: "${MINIO_SECRET_KEY:minioadmin}"
+    bucket: "historical-data"
+    secure: false
+
+# 监控配置
+monitoring:
+  # 采集进度监控
+  progress_tracking:
+    enabled: true
+    report_interval: 60  # 每60秒报告一次进度
+    detailed_logging: true
+
+  # 数据质量监控
+  quality_monitoring:
+    enabled: true
+    quality_check_interval: 300  # 每5分钟检查一次质量
+    alert_threshold: 0.70  # 质量低于70%时告警
+
+  # 性能监控
+  performance_monitoring:
+    enabled: true
+    metrics_collection: true
+    slow_query_threshold: 30  # 慢查询阈值（秒）
+
+  # 告警配置
+  alerting:
+    enabled: true
+    alert_channels:
+      - log  # 日志告警
+      - email  # 邮件告警（需要配置）
+      - webhook  # Webhook告警（需要配置）
+    alert_levels:
+      - critical  # 严重错误
+      - error  # 一般错误
+      - warning  # 警告
+      - info  # 信息
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_handler:
+    enabled: true
+    filename: "logs/historical_data_collection.log"
+    max_bytes: 104857600  # 100MB
+    backup_count: 5
+  console_handler:
+    enabled: true
+    level: "INFO"
+
+# 调试配置
+debug:
+  enabled: false
+  mock_data_enabled: false  # 是否使用模拟数据进行测试
+  detailed_error_logging: true
+  performance_profiling: false

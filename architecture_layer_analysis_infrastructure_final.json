@@ -1,0 +1,6461 @@
+================================================================================
+🎯 AI智能化代码分析报告 - src/infrastructure
+================================================================================
+
+📊 总体统计
+   📁 文件数量: 379
+   📝 总代码行数: 104765
+   🔄 总复杂度: 20665.10
+   📈 平均可维护性: 85.62
+
+🚨 问题统计
+   HIGH: 3
+   MEDIUM: 259
+   LOW: 395
+
+   reliability: 79
+   maintainability: 236
+   best_practices: 172
+   performance: 66
+   architecture: 104
+
+📋 文件详情
+   📄 src\infrastructure\cache\core\cache_manager.py
+      代码行数: 1319
+      🔄 复杂度: 265.20
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\components\health_checker.py
+      代码行数: 1150
+      🔄 复杂度: 199.90
+      📈 可维护性: 73.00
+      问题数量: 3
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\cache\core\multi_level_cache.py
+      代码行数: 1140
+      🔄 复杂度: 301.90
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\integration\prometheus_exporter.py
+      代码行数: 1049
+      🔄 复杂度: 10.00
+      📈 可维护性: 85.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\optimization\benchmark_framework.py
+      代码行数: 951
+      🔄 复杂度: 182.70
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\testing\mobile_test_framework.py
+      代码行数: 913
+      🔄 复杂度: 164.50
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\logging\monitors\distributed_monitoring.py
+      代码行数: 885
+      🔄 复杂度: 290.80
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 潜在性能优化点
+
+   📄 src\infrastructure\health\database\database_health_monitor.py
+      代码行数: 860
+      🔄 复杂度: 130.00
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\utils\optimization\ai_optimization_enhanced.py
+      代码行数: 849
+      🔄 复杂度: 171.70
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\core\adapters.py
+      代码行数: 830
+      🔄 复杂度: 189.00
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\cache\strategies\cache_strategy_manager.py
+      代码行数: 794
+      🔄 复杂度: 189.90
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\integration\prometheus_integration.py
+      代码行数: 757
+      🔄 复杂度: 115.50
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\api\api_documentation_enhancer.py
+      代码行数: 739
+      🔄 复杂度: 74.20
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\cache\utils\cache_utils.py
+      代码行数: 739
+      🔄 复杂度: 182.40
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\components\checker_components.py
+      代码行数: 735
+      🔄 复杂度: 99.50
+      📈 可维护性: 73.00
+      问题数量: 3
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\health\monitoring_dashboard.py
+      代码行数: 727
+      🔄 复杂度: 126.50
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\api\api_test_case_generator.py
+      代码行数: 709
+      🔄 复杂度: 31.70
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\logging\monitors\base_monitor.py
+      代码行数: 708
+      🔄 复杂度: 249.00
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\monitoring\performance_monitor.py
+      代码行数: 700
+      🔄 复杂度: 91.00
+      📈 可维护性: 73.00
+      问题数量: 5
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\config_manager_operations.py
+      代码行数: 670
+      🔄 复杂度: 124.50
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\components\monitor_components.py
+      代码行数: 670
+      🔄 复杂度: 94.00
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\utils\unified_query.py
+      代码行数: 670
+      🔄 复杂度: 110.30
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\monitoring\alert_system.py
+      代码行数: 658
+      🔄 复杂度: 120.20
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\components\health_components.py
+      代码行数: 644
+      🔄 复杂度: 89.50
+      📈 可维护性: 73.00
+      问题数量: 3
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\logging\services\alert_rule_engine.py
+      代码行数: 644
+      🔄 复杂度: 151.90
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\core\exceptions.py
+      代码行数: 642
+      🔄 复杂度: 91.00
+      📈 可维护性: 73.00
+      问题数量: 8
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\validators\specialized_validators.py
+      代码行数: 638
+      🔄 复杂度: 91.50
+      📈 可维护性: 73.00
+      问题数量: 8
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\integration\distributed_test_runner.py
+      代码行数: 637
+      🔄 复杂度: 106.10
+      📈 可维护性: 73.00
+      问题数量: 8
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\api\openapi_generator.py
+      代码行数: 632
+      🔄 复杂度: 38.40
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\utils\optimization\smart_cache_optimizer.py
+      代码行数: 632
+      🔄 复杂度: 121.50
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\monitoring\application_monitor_metrics.py
+      代码行数: 600
+      🔄 复杂度: 83.00
+      📈 可维护性: 73.00
+      问题数量: 9
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\core\config_manager_complete.py
+      代码行数: 597
+      🔄 复杂度: 141.90
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\monitoring\application_monitor_monitoring.py
+      代码行数: 590
+      🔄 复杂度: 94.00
+      📈 可维护性: 73.00
+      问题数量: 9
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\utils\optimized_connection_pool.py
+      代码行数: 589
+      🔄 复杂度: 116.30
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\ml\inference_engine.py
+      代码行数: 587
+      🔄 复杂度: 105.20
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\health\monitoring\automation_monitor.py
+      代码行数: 585
+      🔄 复杂度: 102.70
+      📈 可维护性: 73.00
+      问题数量: 5
+         - [MEDIUM] 缺少异步处理
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\tools\infrastructure_index.py
+      代码行数: 575
+      🔄 复杂度: 16.00
+      📈 可维护性: 77.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\api\api_flow_diagram_generator.py
+      代码行数: 567
+      🔄 复杂度: 32.40
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 缺少错误处理
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\components\enhanced_health_checker.py
+      代码行数: 561
+      🔄 复杂度: 77.00
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\monitoring\continuous_monitoring_system.py
+      代码行数: 561
+      🔄 复杂度: 61.10
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\testing\regulatory_tester.py
+      代码行数: 553
+      🔄 复杂度: 65.50
+      📈 可维护性: 73.00
+      问题数量: 8
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\logging\core\unified_logger.py
+      代码行数: 539
+      🔄 复杂度: 163.90
+      📈 可维护性: 73.00
+      问题数量: 3
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\monitoring\application_monitor_config.py
+      代码行数: 538
+      🔄 复杂度: 87.00
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\health_check.py
+      代码行数: 536
+      🔄 复杂度: 59.50
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\core\base.py
+      代码行数: 533
+      🔄 复杂度: 57.50
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\cache\monitoring\performance_monitor.py
+      代码行数: 531
+      🔄 复杂度: 101.50
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\adapters\postgresql_adapter.py
+      代码行数: 528
+      🔄 复杂度: 91.20
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\core\mixins.py
+      代码行数: 520
+      🔄 复杂度: 110.60
+      📈 可维护性: 73.00
+
+   📄 src\infrastructure\logging\services\api_service.py
+      代码行数: 518
+      🔄 复杂度: 133.00
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\monitoring\system_metrics_collector.py
+      代码行数: 514
+      🔄 复杂度: 83.00
+      📈 可维护性: 73.00
+      问题数量: 6
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\cache\distributed\consistency_manager.py
+      代码行数: 509
+      🔄 复杂度: 119.60
+      📈 可维护性: 73.00
+
+   📄 src\infrastructure\health\monitoring\network_monitor.py
+      代码行数: 508
+      🔄 复杂度: 66.00
+      📈 可维护性: 73.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\optimization\async_io_optimizer.py
+      代码行数: 497
+      🔄 复杂度: 90.70
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\health_result.py
+      代码行数: 495
+      🔄 复杂度: 49.50
+      📈 可维护性: 83.00
+      问题数量: 7
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\logging\services\business_service.py
+      代码行数: 494
+      🔄 复杂度: 79.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\version\components\configversionmanager.py
+      代码行数: 489
+      🔄 复杂度: 81.70
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\integration\unified_interface.py
+      代码行数: 489
+      🔄 复杂度: 212.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 缺少日志记录
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\resource\resource_optimization.py
+      代码行数: 487
+      🔄 复杂度: 82.60
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\config\validators\validator_composition.py
+      代码行数: 472
+      🔄 复杂度: 99.00
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\resource\monitoring\health_checker.py
+      代码行数: 470
+      🔄 复杂度: 65.00
+      📈 可维护性: 83.00
+      问题数量: 5
+         - [MEDIUM] 缺少异步处理
+         - [HIGH] 缺少健康检查方法
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\components\alert_components.py
+      代码行数: 467
+      🔄 复杂度: 68.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [HIGH] 缺少健康检查方法
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\utils\utils\advanced_connection_pool.py
+      代码行数: 464
+      🔄 复杂度: 102.10
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\components\probe_components.py
+      代码行数: 463
+      🔄 复杂度: 67.50
+      📈 可维护性: 83.00
+      问题数量: 9
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\components\status_components.py
+      代码行数: 463
+      🔄 复杂度: 67.50
+      📈 可维护性: 83.00
+      问题数量: 8
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\monitoring\application_monitor_core.py
+      代码行数: 463
+      🔄 复杂度: 74.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\cache\core\unified_cache_interface.py
+      代码行数: 462
+      🔄 复杂度: 104.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\utils\utils\memory_object_pool.py
+      代码行数: 461
+      🔄 复杂度: 84.70
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\components\health_checker_factory.py
+      代码行数: 457
+      🔄 复杂度: 72.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\health\testing\automated_test_runner.py
+      代码行数: 456
+      🔄 复杂度: 51.20
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\utils\adapters\redis_adapter.py
+      代码行数: 455
+      🔄 复杂度: 109.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\cache\distributed\distributed_cache_manager.py
+      代码行数: 450
+      🔄 复杂度: 123.60
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\core\app_factory.py
+      代码行数: 449
+      🔄 复杂度: 41.00
+      📈 可维护性: 83.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\validation\health.py
+      代码行数: 448
+      🔄 复杂度: 86.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\health\monitoring\model_monitor_plugin.py
+      代码行数: 440
+      🔄 复杂度: 118.00
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过多魔法数字
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\visual_monitor.py
+      代码行数: 436
+      🔄 复杂度: 67.80
+      📈 可维护性: 83.00
+      问题数量: 9
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\validators\validator_base.py
+      代码行数: 435
+      🔄 复杂度: 94.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\monitoring\health_checker.py
+      代码行数: 431
+      🔄 复杂度: 55.50
+      📈 可维护性: 83.00
+      问题数量: 6
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\web\app.py
+      代码行数: 416
+      🔄 复杂度: 77.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\monitoring\application_monitor.py
+      代码行数: 413
+      🔄 复杂度: 33.00
+      📈 可维护性: 83.00
+      问题数量: 9
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\environment\cloud_multi_cloud.py
+      代码行数: 411
+      🔄 复杂度: 57.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\monitoring\metrics_collectors.py
+      代码行数: 410
+      🔄 复杂度: 57.00
+      📈 可维护性: 83.00
+      问题数量: 7
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\infrastructure\load_balancer.py
+      代码行数: 409
+      🔄 复杂度: 44.00
+      📈 可维护性: 83.00
+      问题数量: 6
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\tools\optimization_strategies.py
+      代码行数: 403
+      🔄 复杂度: 77.60
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\environment\cloud_native_enhanced.py
+      代码行数: 392
+      🔄 复杂度: 57.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\config\storage\types\distributedconfigstorage.py
+      代码行数: 390
+      🔄 复杂度: 70.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\utils\utils\report_generator.py
+      代码行数: 389
+      🔄 复杂度: 42.20
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\validation\final_deployment_check.py
+      代码行数: 386
+      🔄 复杂度: 74.40
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\resource\scheduling\task_scheduler_refactored.py
+      代码行数: 386
+      🔄 复杂度: 123.40
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\utils\adapters\influxdb_adapter.py
+      代码行数: 386
+      🔄 复杂度: 62.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\health_status.py
+      代码行数: 384
+      🔄 复杂度: 33.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\health\fastapi_health_checker.py
+      代码行数: 379
+      🔄 复杂度: 52.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\logging\services\async_log_processor.py
+      代码行数: 378
+      🔄 复杂度: 85.10
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\api\api_documentation_search.py
+      代码行数: 373
+      🔄 复杂度: 91.20
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\health\monitoring\backtest_monitor_plugin.py
+      代码行数: 370
+      🔄 复杂度: 45.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\config\core\config_service.py
+      代码行数: 369
+      🔄 复杂度: 103.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\environment\cloud_enhanced_monitoring.py
+      代码行数: 368
+      🔄 复杂度: 76.40
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\security\security_utils.py
+      代码行数: 368
+      🔄 复杂度: 51.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\adapters\data_api.py
+      代码行数: 367
+      🔄 复杂度: 36.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\error\recovery\recovery.py
+      代码行数: 365
+      🔄 复杂度: 103.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\integration\web_management_interface.py
+      代码行数: 363
+      🔄 复杂度: 35.00
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [MEDIUM] 缺少异步处理
+         - [MEDIUM] 架构接口不一致
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\logging\monitors\slow_query_monitor.py
+      代码行数: 363
+      🔄 复杂度: 62.40
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\logging\core\error_handler.py
+      代码行数: 362
+      🔄 复杂度: 93.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\ops\monitoring_dashboard.py
+      代码行数: 359
+      🔄 复杂度: 69.90
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\utils\performance_config.py
+      代码行数: 357
+      🔄 复杂度: 40.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\health\monitoring\enhanced_monitoring.py
+      代码行数: 356
+      🔄 复杂度: 54.50
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [MEDIUM] 缺少异步处理
+         - [MEDIUM] 架构接口不一致
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\logging\core\monitoring.py
+      代码行数: 356
+      🔄 复杂度: 87.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\logging\services\logger_service.py
+      代码行数: 354
+      🔄 复杂度: 63.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\monitoring\exception_monitoring_alert.py
+      代码行数: 354
+      🔄 复杂度: 80.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\optimization\architecture_refactor.py
+      代码行数: 348
+      🔄 复杂度: 53.00
+      📈 可维护性: 83.00
+      问题数量: 5
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\monitoring\logger_pool_monitor.py
+      代码行数: 346
+      🔄 复杂度: 54.80
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\exceptions\cache_exceptions.py
+      代码行数: 343
+      🔄 复杂度: 68.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\monitoring\disaster_monitor_plugin.py
+      代码行数: 342
+      🔄 复杂度: 54.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\optimization\performance_optimizer.py
+      代码行数: 340
+      🔄 复杂度: 51.90
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\utils\migrator.py
+      代码行数: 340
+      🔄 复杂度: 86.90
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\api\websocket_api.py
+      代码行数: 339
+      🔄 复杂度: 26.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\logging\core\unified_logging_interface.py
+      代码行数: 339
+      🔄 复杂度: 79.50
+      📈 可维护性: 80.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\core\cache_optimizer.py
+      代码行数: 338
+      🔄 复杂度: 50.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 缺少错误处理
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\error\handlers\specialized_error_handler.py
+      代码行数: 337
+      🔄 复杂度: 69.70
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\version.py
+      代码行数: 335
+      🔄 复杂度: 116.60
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\api\data_api.py
+      代码行数: 335
+      🔄 复杂度: 26.00
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\logging\monitors\prometheus_monitor.py
+      代码行数: 332
+      🔄 复杂度: 78.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\health_check_core.py
+      代码行数: 320
+      🔄 复杂度: 57.00
+      📈 可维护性: 83.00
+      问题数量: 6
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\resource\shared_interfaces.py
+      代码行数: 320
+      🔄 复杂度: 140.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\monitoring\production_monitor.py
+      代码行数: 319
+      🔄 复杂度: 46.70
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\monitoring\component_monitor.py
+      代码行数: 318
+      🔄 复杂度: 54.50
+      📈 可维护性: 83.00
+      问题数量: 5
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\resource\config\config_classes.py
+      代码行数: 318
+      🔄 复杂度: 40.00
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\environment\cloud_auto_scaling.py
+      代码行数: 314
+      🔄 复杂度: 75.80
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\loaders\toml_loader.py
+      代码行数: 314
+      🔄 复杂度: 54.40
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\resource\monitoring\performance_monitor.py
+      代码行数: 314
+      🔄 复杂度: 55.00
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [LOW] 潜在性能优化点
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\quota_components.py
+      代码行数: 312
+      🔄 复杂度: 73.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\loaders\database_loader.py
+      代码行数: 310
+      🔄 复杂度: 43.00
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\system_monitor.py
+      代码行数: 307
+      🔄 复杂度: 82.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\common_logger.py
+      代码行数: 305
+      🔄 复杂度: 79.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\utils\enhanced_config_validator.py
+      代码行数: 303
+      🔄 复杂度: 40.90
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 潜在性能优化点
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\core\performance_monitor.py
+      代码行数: 302
+      🔄 复杂度: 70.40
+      📈 可维护性: 83.00
+      问题数量: 6
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\mergers\config_merger.py
+      代码行数: 300
+      🔄 复杂度: 81.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\distributed\distributed_monitoring.py
+      代码行数: 300
+      🔄 复杂度: 60.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\error\exceptions\unified_exceptions.py
+      代码行数: 299
+      🔄 复杂度: 130.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\handlers\infrastructure_error_handler.py
+      代码行数: 297
+      🔄 复杂度: 69.20
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\utils\adapters\sqlite_adapter.py
+      代码行数: 296
+      🔄 复杂度: 42.10
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\cache\interfaces\data_structures.py
+      代码行数: 295
+      🔄 复杂度: 53.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\core\config_manager_v2.py
+      代码行数: 293
+      🔄 复杂度: 62.30
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\services\config_operations_service.py
+      代码行数: 292
+      🔄 复杂度: 58.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\resource\monitoring_alert_system_facade.py
+      代码行数: 292
+      🔄 复杂度: 66.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\config_factory_core.py
+      代码行数: 290
+      🔄 复杂度: 44.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\health\core\interfaces.py
+      代码行数: 289
+      🔄 复杂度: 70.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\utils\utils\disaster_tester.py
+      代码行数: 288
+      🔄 复杂度: 58.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\interfaces\standard_interfaces.py
+      代码行数: 286
+      🔄 复杂度: 141.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\monitoring\monitoring_alert_system_facade.py
+      代码行数: 285
+      🔄 复杂度: 66.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\config_manager_storage.py
+      代码行数: 284
+      🔄 复杂度: 45.30
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\cache\core\cache_configs.py
+      代码行数: 283
+      🔄 复杂度: 59.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\loaders\cloud_loader.py
+      代码行数: 282
+      🔄 复杂度: 44.00
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\core\security_filter.py
+      代码行数: 281
+      🔄 复杂度: 33.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\utils\utils\optimized_components.py
+      代码行数: 281
+      🔄 复杂度: 80.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\unified_config_interface.py
+      代码行数: 278
+      🔄 复杂度: 63.50
+      📈 可维护性: 80.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\logging\standards\loki_standard.py
+      代码行数: 278
+      🔄 复杂度: 57.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\validation\deployment_validator.py
+      代码行数: 277
+      🔄 复杂度: 36.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过多魔法数字
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\logging\monitors\monitor_factory.py
+      代码行数: 272
+      🔄 复杂度: 54.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\resource\monitoring\business_metrics_monitor.py
+      代码行数: 271
+      🔄 复杂度: 57.30
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\utils\optimization\concurrency_controller.py
+      代码行数: 270
+      🔄 复杂度: 45.40
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\resource\monitoring\notification_manager_component.py
+      代码行数: 269
+      🔄 复杂度: 56.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\versioning\data_version_manager.py
+      代码行数: 265
+      🔄 复杂度: 54.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\error\tests\test_policies.py
+      代码行数: 264
+      🔄 复杂度: 63.30
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\distributed\config_center.py
+      代码行数: 262
+      🔄 复杂度: 51.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\tools\schema.py
+      代码行数: 261
+      🔄 复杂度: 79.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 潜在性能优化点
+
+   📄 src\infrastructure\config\security\secure_config.py
+      代码行数: 257
+      🔄 复杂度: 57.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\init_infrastructure.py
+      代码行数: 255
+      🔄 复杂度: 70.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\tools\framework_integrator.py
+      代码行数: 255
+      🔄 复杂度: 61.90
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\logging\standards\standard_manager.py
+      代码行数: 254
+      🔄 复杂度: 10.00
+      📈 可维护性: 92.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\loaders\yaml_loader.py
+      代码行数: 252
+      🔄 复杂度: 45.10
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\cache\distributed\unified_sync.py
+      代码行数: 249
+      🔄 复杂度: 63.00
+      📈 可维护性: 80.00
+
+   📄 src\infrastructure\resource\utils\common_validators.py
+      代码行数: 249
+      🔄 复杂度: 68.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 潜在性能优化点
+
+   📄 src\infrastructure\config\core\strategy_manager.py
+      代码行数: 248
+      🔄 复杂度: 63.30
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\logging\storage\base.py
+      代码行数: 244
+      🔄 复杂度: 76.00
+      📈 可维护性: 80.00
+
+   📄 src\infrastructure\config\validators\validators.py
+      代码行数: 243
+      🔄 复杂度: 30.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\monitoring\behavior_monitor_plugin.py
+      代码行数: 241
+      🔄 复杂度: 47.50
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过长代码行
+         - [MEDIUM] 架构接口不一致
+
+   📄 src\infrastructure\config\core\common_mixins.py
+      代码行数: 240
+      🔄 复杂度: 81.30
+      📈 可维护性: 80.00
+
+   📄 src\infrastructure\config\tools\deployment.py
+      代码行数: 239
+      🔄 复杂度: 30.40
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\core\common_exception_handler.py
+      代码行数: 238
+      🔄 复杂度: 57.50
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\monitoring\storage_monitor.py
+      代码行数: 237
+      🔄 复杂度: 41.10
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\utils\optimization\performance_baseline.py
+      代码行数: 237
+      🔄 复杂度: 63.50
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\monitoring\dashboard_manager.py
+      代码行数: 236
+      🔄 复杂度: 44.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\typed_config.py
+      代码行数: 235
+      🔄 复杂度: 68.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\config\environment\cloud_service_mesh.py
+      代码行数: 235
+      🔄 复杂度: 39.20
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\services\event_service.py
+      代码行数: 234
+      🔄 复杂度: 63.00
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\resource\ui\resource_dashboard.py
+      代码行数: 234
+      🔄 复杂度: 58.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\logging\services\logging_service_components.py
+      代码行数: 231
+      🔄 复杂度: 53.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\common_methods.py
+      代码行数: 230
+      🔄 复杂度: 49.70
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\logging\audit_logger.py
+      代码行数: 230
+      🔄 复杂度: 40.30
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\config\core\strategy_loaders.py
+      代码行数: 229
+      🔄 复杂度: 67.10
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\monitoring\core.py
+      代码行数: 224
+      🔄 复杂度: 33.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\core\interfaces.py
+      代码行数: 224
+      🔄 复杂度: 65.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\monitoring\application_monitor.py
+      代码行数: 219
+      🔄 复杂度: 39.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\services\unified_hot_reload.py
+      代码行数: 218
+      🔄 复杂度: 48.50
+      📈 可维护性: 80.00
+
+   📄 src\infrastructure\utils\utils\helper_components.py
+      代码行数: 217
+      🔄 复杂度: 52.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\handlers\error_handler_factory.py
+      代码行数: 216
+      🔄 复杂度: 57.50
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\utils\utils\common_components.py
+      代码行数: 216
+      🔄 复杂度: 52.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\services\config_storage_service.py
+      代码行数: 214
+      🔄 复杂度: 38.80
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\health\api\api_endpoints.py
+      代码行数: 214
+      🔄 复杂度: 28.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 架构接口不一致
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\utils\utils\tool_components.py
+      代码行数: 213
+      🔄 复杂度: 55.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\utils\config_schema.py
+      代码行数: 210
+      🔄 复杂度: 29.50
+      📈 可维护性: 83.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\core\resource_manager.py
+      代码行数: 208
+      🔄 复杂度: 33.90
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\config_manager_refactored.py
+      代码行数: 204
+      🔄 复杂度: 64.00
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\logging\utils\logger.py
+      代码行数: 204
+      🔄 复杂度: 31.80
+      📈 可维护性: 83.00
+      问题数量: 3
+         - [MEDIUM] 缺少错误处理
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\monitoring\log_backpressure_plugin.py
+      代码行数: 204
+      🔄 复杂度: 51.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\base_component.py
+      代码行数: 202
+      🔄 复杂度: 38.40
+      📈 可维护性: 83.00
+
+   📄 src\infrastructure\utils\core\base_components.py
+      代码行数: 202
+      🔄 复杂度: 52.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\tools\data_utils.py
+      代码行数: 202
+      🔄 复杂度: 37.50
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\interfaces\unified_interface.py
+      代码行数: 201
+      🔄 复杂度: 62.00
+      📈 可维护性: 83.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\error\handlers\error_handler.py
+      代码行数: 199
+      🔄 复杂度: 50.60
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\resource\core\gpu_manager.py
+      代码行数: 198
+      🔄 复杂度: 31.50
+      📈 可维护性: 88.00
+      问题数量: 5
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\adapters\database_adapter.py
+      代码行数: 198
+      🔄 复杂度: 61.70
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\utils\tools\datetime_parser.py
+      代码行数: 198
+      🔄 复杂度: 34.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\test_execution_monitor_component.py
+      代码行数: 196
+      🔄 复杂度: 48.10
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\resource\monitoring\test_execution_monitor_component.py
+      代码行数: 196
+      🔄 复杂度: 48.10
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\utils\utils\util_components.py
+      代码行数: 196
+      🔄 复杂度: 46.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\core\interfaces.py
+      代码行数: 194
+      🔄 复杂度: 81.00
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\utils\tools\market_aware_retry.py
+      代码行数: 194
+      🔄 复杂度: 42.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\core\container.py
+      代码行数: 193
+      🔄 复杂度: 58.00
+      📈 可维护性: 88.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\tools\convert.py
+      代码行数: 193
+      🔄 复杂度: 25.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\config\services\service_registry.py
+      代码行数: 192
+      🔄 复杂度: 41.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\distributed\distributed_lock.py
+      代码行数: 192
+      🔄 复杂度: 35.90
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\standards\standard_formatter.py
+      代码行数: 191
+      🔄 复杂度: 29.00
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\utils\utils\factory_components.py
+      代码行数: 191
+      🔄 复杂度: 45.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\monitoring\disaster_monitor.py
+      代码行数: 188
+      🔄 复杂度: 30.70
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\resource\pool_components.py
+      代码行数: 188
+      🔄 复杂度: 40.50
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\resource_components.py
+      代码行数: 188
+      🔄 复杂度: 46.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\core\config_factory_compat.py
+      代码行数: 187
+      🔄 复杂度: 29.00
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\utils\tools\math_utils.py
+      代码行数: 185
+      🔄 复杂度: 35.50
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\utils\connection_pool.py
+      代码行数: 183
+      🔄 复杂度: 36.20
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\config\security\components\enhancedsecureconfigmanager.py
+      代码行数: 182
+      🔄 复杂度: 53.20
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\resource\alert_manager_component.py
+      代码行数: 182
+      🔄 复杂度: 48.10
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\resource\monitoring\alert_manager_component.py
+      代码行数: 182
+      🔄 复杂度: 48.10
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\business\trading_logger.py
+      代码行数: 178
+      🔄 复杂度: 55.20
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\config\config_exceptions.py
+      代码行数: 177
+      🔄 复杂度: 100.50
+      📈 可维护性: 88.00
+      问题数量: 6
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\logging\handlers\handler_components.py
+      代码行数: 177
+      🔄 复杂度: 41.50
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\monitoring\dashboard_collectors.py
+      代码行数: 174
+      🔄 复杂度: 43.20
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\formatters\formatter_components.py
+      代码行数: 173
+      🔄 复杂度: 40.50
+      📈 可维护性: 85.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\manager\memory_cache_manager.py
+      代码行数: 170
+      🔄 复杂度: 31.80
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\services\base_service.py
+      代码行数: 170
+      🔄 复杂度: 37.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\health\metrics.py
+      代码行数: 167
+      🔄 复杂度: 36.00
+      📈 可维护性: 88.00
+      问题数量: 5
+         - [MEDIUM] 缺少异步处理
+         - [HIGH] 缺少健康检查方法
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\resource\decorators.py
+      代码行数: 167
+      🔄 复杂度: 34.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\logging\core\logger_pool.py
+      代码行数: 166
+      🔄 复杂度: 35.40
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\error\tests\test_exceptions.py
+      代码行数: 165
+      🔄 复杂度: 28.00
+      📈 可维护性: 88.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\error\policies\circuit_breaker.py
+      代码行数: 161
+      🔄 复杂度: 41.80
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\resource\monitoring\monitor_components.py
+      代码行数: 161
+      🔄 复杂度: 39.50
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\core\exceptions.py
+      代码行数: 160
+      🔄 复杂度: 84.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\config\storage\types\fileconfigstorage.py
+      代码行数: 159
+      🔄 复杂度: 38.90
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\config\monitoring\dashboard_alerts.py
+      代码行数: 157
+      🔄 复杂度: 52.90
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\error\tests\test_error_handler.py
+      代码行数: 157
+      🔄 复杂度: 31.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\services\iconfig_service.py
+      代码行数: 156
+      🔄 复杂度: 72.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\interfaces.py
+      代码行数: 154
+      🔄 复杂度: 74.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\formatters\json.py
+      代码行数: 153
+      🔄 复杂度: 31.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\standards\fluentd_standard.py
+      代码行数: 153
+      🔄 复杂度: 29.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\utils\core\error.py
+      代码行数: 153
+      🔄 复杂度: 53.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\base.py
+      代码行数: 152
+      🔄 复杂度: 51.90
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\utils\utils\core\base_components.py
+      代码行数: 150
+      🔄 复杂度: 42.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\advanced\advanced_logger.py
+      代码行数: 149
+      🔄 复杂度: 32.00
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\utils\security\base_security.py
+      代码行数: 149
+      🔄 复杂度: 42.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\resource\api\resource_api.py
+      代码行数: 148
+      🔄 复杂度: 22.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\tools\provider.py
+      代码行数: 147
+      🔄 复杂度: 36.90
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\logging\standards\elk_standard.py
+      代码行数: 147
+      🔄 复杂度: 27.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\logging\standards\splunk_standard.py
+      代码行数: 147
+      🔄 复杂度: 28.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\core\exceptions.py
+      代码行数: 146
+      🔄 复杂度: 71.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\cache\monitoring\business_metrics_plugin.py
+      代码行数: 143
+      🔄 复杂度: 32.30
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\utils\tools\file_utils.py
+      代码行数: 143
+      🔄 复杂度: 19.90
+      📈 可维护性: 92.00
+
+   📄 src\infrastructure\health\ml\inference_engine_async.py
+      代码行数: 141
+      🔄 复杂度: 11.50
+      📈 可维护性: 92.00
+      问题数量: 3
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 过多魔法数字
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\logging\handlers\file.py
+      代码行数: 141
+      🔄 复杂度: 34.90
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\resource\monitoring\unified_monitor_adapter.py
+      代码行数: 141
+      🔄 复杂度: 43.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\health\monitoring\basic_health_checker.py
+      代码行数: 140
+      🔄 复杂度: 40.00
+      📈 可维护性: 88.00
+      问题数量: 2
+         - [MEDIUM] 缺少异步处理
+         - [LOW] 缺少适配器模式
+
+   📄 src\infrastructure\config\services\cache_service.py
+      代码行数: 138
+      🔄 复杂度: 34.00
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\unified_infrastructure.py
+      代码行数: 137
+      🔄 复杂度: 32.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\utils\utils\environment.py
+      代码行数: 136
+      🔄 复杂度: 11.00
+      📈 可维护性: 92.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\tools\paths.py
+      代码行数: 134
+      🔄 复杂度: 34.00
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\monitoring\system_monitor.py
+      代码行数: 134
+      🔄 复杂度: 19.50
+      📈 可维护性: 92.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\services\diff_service.py
+      代码行数: 130
+      🔄 复杂度: 28.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\handlers\remote.py
+      代码行数: 129
+      🔄 复杂度: 29.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\config\monitoring\dashboard_models.py
+      代码行数: 128
+      🔄 复杂度: 26.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\config_storage.py
+      代码行数: 128
+      🔄 复杂度: 10.50
+      📈 可维护性: 95.00
+
+   📄 src\infrastructure\logging\standards\newrelic_standard.py
+      代码行数: 128
+      🔄 复杂度: 24.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\utils\tools\date_utils.py
+      代码行数: 128
+      🔄 复杂度: 23.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\performance_monitor_component.py
+      代码行数: 127
+      🔄 复杂度: 24.30
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\monitoring\performance_monitor_component.py
+      代码行数: 127
+      🔄 复杂度: 24.30
+      📈 可维护性: 85.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\logging\monitors\base.py
+      代码行数: 126
+      🔄 复杂度: 27.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\standards\base_standard.py
+      代码行数: 124
+      🔄 复杂度: 28.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\config\validators\enhanced_validators.py
+      代码行数: 123
+      🔄 复杂度: 35.00
+      📈 可维护性: 85.00
+      问题数量: 3
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\infrastructure\cache\core\cache_components.py
+      代码行数: 120
+      🔄 复杂度: 33.00
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\config\tools\migration.py
+      代码行数: 120
+      🔄 复杂度: 26.00
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\logging\standards\graylog_standard.py
+      代码行数: 118
+      🔄 复杂度: 38.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\logging\standards\datadog_standard.py
+      代码行数: 117
+      🔄 复杂度: 32.50
+      📈 可维护性: 85.00
+
+   📄 src\infrastructure\utils\monitoring\log_compressor_plugin.py
+      代码行数: 117
+      🔄 复杂度: 30.10
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\monitoring\performance_monitor_dashboard.py
+      代码行数: 115
+      🔄 复杂度: 36.00
+      📈 可维护性: 88.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\services\event.py
+      代码行数: 115
+      🔄 复杂度: 41.70
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\logging\handlers\base.py
+      代码行数: 112
+      🔄 复杂度: 28.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\cache\core\cache_factory.py
+      代码行数: 110
+      🔄 复杂度: 23.20
+      📈 可维护性: 88.00
+      问题数量: 2
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\utils\monitoring\market_data_logger.py
+      代码行数: 108
+      🔄 复杂度: 29.00
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\config_event.py
+      代码行数: 106
+      🔄 复杂度: 42.50
+      📈 可维护性: 88.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\cache\utils\dependency.py
+      代码行数: 104
+      🔄 复杂度: 21.00
+      📈 可维护性: 88.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\cache\interfaces\cache_interfaces.py
+      代码行数: 102
+      🔄 复杂度: 18.50
+      📈 可维护性: 92.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\error\policies\retry_policy.py
+      代码行数: 101
+      🔄 复杂度: 23.50
+      📈 可维护性: 88.00
+
+   📄 src\infrastructure\cache\core\optimizer_components.py
+      代码行数: 100
+      🔄 复杂度: 28.50
+      📈 可维护性: 93.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\environment\cloud_native_configs.py
+      代码行数: 99
+      🔄 复杂度: 22.50
+      📈 可维护性: 90.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\loaders\json_loader.py
+      代码行数: 99
+      🔄 复杂度: 15.20
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\config\core\strategy_base.py
+      代码行数: 98
+      🔄 复杂度: 32.00
+      📈 可维护性: 90.00
+
+   📄 src\infrastructure\logging\formatters\structured.py
+      代码行数: 97
+      🔄 复杂度: 21.50
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\config_monitor.py
+      代码行数: 96
+      🔄 复杂度: 21.50
+      📈 可维护性: 93.00
+
+   📄 src\infrastructure\config\security\components\configaccesscontrol.py
+      代码行数: 95
+      🔄 复杂度: 21.90
+      📈 可维护性: 93.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\loaders\env_loader.py
+      代码行数: 94
+      🔄 复杂度: 25.00
+      📈 可维护性: 93.00
+
+   📄 src\infrastructure\config\services\sync_node_manager.py
+      代码行数: 94
+      🔄 复杂度: 30.00
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\utils\core\storage.py
+      代码行数: 94
+      🔄 复杂度: 18.50
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\cache\interfaces\consistency_checker.py
+      代码行数: 92
+      🔄 复杂度: 12.00
+      📈 可维护性: 100.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\logging\core\base_logger.py
+      代码行数: 92
+      🔄 复杂度: 40.20
+      📈 可维护性: 90.00
+
+   📄 src\infrastructure\config\security\enhanced_secure_config.py
+      代码行数: 88
+      🔄 复杂度: 23.50
+      📈 可维护性: 93.00
+
+   📄 src\infrastructure\cache\core\base.py
+      代码行数: 87
+      🔄 复杂度: 17.50
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\logging\core\interfaces.py
+      代码行数: 86
+      🔄 复杂度: 35.00
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\services_init.py
+      代码行数: 85
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\enhanced_logger.py
+      代码行数: 85
+      🔄 复杂度: 17.00
+      📈 可维护性: 100.00
+
+   📄 src\infrastructure\utils\utils\logger.py
+      代码行数: 84
+      🔄 复杂度: 9.00
+      📈 可维护性: 100.00
+
+   📄 src\infrastructure\config\core\config_strategy.py
+      代码行数: 82
+      🔄 复杂度: 32.00
+      📈 可维护性: 93.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过长代码行
+
+   📄 src\infrastructure\config\security\components\configencryptionmanager.py
+      代码行数: 82
+      🔄 复杂度: 16.20
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\utils\tools\file_system.py
+      代码行数: 81
+      🔄 复杂度: 26.90
+      📈 可维护性: 90.00
+
+   📄 src\infrastructure\config\monitoring\performance_predictor.py
+      代码行数: 76
+      🔄 复杂度: 15.50
+      📈 可维护性: 100.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\services\sync_conflict_manager.py
+      代码行数: 75
+      🔄 复杂度: 20.50
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\memoryconfigstorage.py
+      代码行数: 74
+      🔄 复杂度: 26.20
+      📈 可维护性: 90.00
+
+   📄 src\infrastructure\utils\utils\core.py
+      代码行数: 71
+      🔄 复杂度: 19.20
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\logging\formatters\base.py
+      代码行数: 70
+      🔄 复杂度: 20.50
+      📈 可维护性: 90.00
+
+   📄 src\infrastructure\cache\interfaces\base_component_interface.py
+      代码行数: 68
+      🔄 复杂度: 11.50
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\security\components\hotreloadmanager.py
+      代码行数: 68
+      🔄 复杂度: 19.20
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\config\core\config_factory_utils.py
+      代码行数: 66
+      🔄 复杂度: 9.50
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\environment.py
+      代码行数: 65
+      🔄 复杂度: 22.00
+      📈 可维护性: 90.00
+
+   📄 src\infrastructure\core\constants.py
+      代码行数: 65
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\logging\handlers\console.py
+      代码行数: 65
+      🔄 复杂度: 17.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\resource\interfaces.py
+      代码行数: 64
+      🔄 复杂度: 7.00
+      📈 可维护性: 100.00
+
+   📄 src\infrastructure\config\core\priority_manager.py
+      代码行数: 63
+      🔄 复杂度: 23.00
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\iconfigstorage.py
+      代码行数: 63
+      🔄 复杂度: 30.10
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\tools\test_optimizer.py
+      代码行数: 60
+      🔄 复杂度: 20.00
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\base.py
+      代码行数: 60
+      🔄 复杂度: 9.50
+      📈 可维护性: 100.00
+
+   📄 src\infrastructure\logging\advanced\types.py
+      代码行数: 59
+      🔄 复杂度: 12.50
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\resource\alert_dataclasses.py
+      代码行数: 57
+      🔄 复杂度: 8.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\core\imports.py
+      代码行数: 55
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\monitoring\trend_analyzer.py
+      代码行数: 55
+      🔄 复杂度: 11.50
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\security\components\configauditmanager.py
+      代码行数: 55
+      🔄 复杂度: 18.10
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\logging\utils\formatters.py
+      代码行数: 54
+      🔄 复杂度: 8.50
+      📈 可维护性: 100.00
+      问题数量: 2
+         - [MEDIUM] 缺少错误处理
+         - [LOW] 过多魔法数字
+
+   📄 src\infrastructure\config\monitoring\anomaly_detector.py
+      代码行数: 52
+      🔄 复杂度: 12.00
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\core\base_component.py
+      代码行数: 52
+      🔄 复杂度: 13.00
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\simple_config_factory.py
+      代码行数: 50
+      🔄 复杂度: 19.00
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\error\core\base.py
+      代码行数: 48
+      🔄 复杂度: 12.00
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\utils\monitoring\storage_monitor_plugin.py
+      代码行数: 47
+      🔄 复杂度: 12.50
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\config\storage\types\configstorage.py
+      代码行数: 44
+      🔄 复杂度: 15.00
+      📈 可维护性: 97.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\tools\benchmark_framework.py
+      代码行数: 44
+      🔄 复杂度: 9.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\formatters\text.py
+      代码行数: 44
+      🔄 复杂度: 11.50
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\cache\interfaces\global_interfaces.py
+      代码行数: 41
+      🔄 复杂度: 17.50
+      📈 可维护性: 97.00
+
+   📄 src\infrastructure\logging\core\exceptions.py
+      代码行数: 41
+      🔄 复杂度: 24.50
+      📈 可维护性: 90.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\logging\utils\security_filter.py
+      代码行数: 41
+      🔄 复杂度: 9.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\core\factory.py
+      代码行数: 33
+      🔄 复杂度: 6.50
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\scheduling\task_scheduler.py
+      代码行数: 33
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\version\components\configversion.py
+      代码行数: 31
+      🔄 复杂度: 5.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\alert_enums.py
+      代码行数: 31
+      🔄 复杂度: 6.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\base.py
+      代码行数: 24
+      🔄 复杂度: 7.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\version\components\configdiff.py
+      代码行数: 23
+      🔄 复杂度: 3.50
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\monitoring\monitoring_alert_system.py
+      代码行数: 22
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\utils\monitoring\logger.py
+      代码行数: 20
+      🔄 复杂度: 3.00
+      📈 可维护性: 100.00
+
+   📄 src\infrastructure\config\tools\registry.py
+      代码行数: 19
+      🔄 复杂度: 9.00
+      📈 可维护性: 100.00
+
+   📄 src\infrastructure\config\storage\types\storageconfig.py
+      代码行数: 17
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\monitoring_alert_system_new.py
+      代码行数: 17
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\core\config_manager_core.py
+      代码行数: 16
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\configitem.py
+      代码行数: 16
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\resource\api\monitoringservice.py
+      代码行数: 16
+      🔄 复杂度: 8.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\security\components\accessrecord.py
+      代码行数: 15
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\security\components\configauditlog.py
+      代码行数: 15
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\security\components\securityconfig.py
+      代码行数: 14
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\tools\typed_config.py
+      代码行数: 14
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\version\config_version_manager.py
+      代码行数: 14
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\distributedstoragetype.py
+      代码行数: 12
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\core\unified_manager.py
+      代码行数: 10
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\core\unified_manager_new.py
+      代码行数: 10
+      🔄 复杂度: 0.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\consistencylevel.py
+      代码行数: 10
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\storagetype.py
+      代码行数: 10
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+   📄 src\infrastructure\config\storage\types\configscope.py
+      代码行数: 8
+      🔄 复杂度: 2.00
+      📈 可维护性: 100.00
+      问题数量: 1
+         - [MEDIUM] 缺少错误处理
+
+🔍 详细问题列表
+   📍 [HIGH] src\infrastructure\health\components\alert_components.py:1
+      💡 缺少健康检查方法
+      📝 健康检查模块应该包含标准化的健康检查方法
+      💡 添加check_、health_、monitor_或validate_前缀的方法
+
+   📍 [HIGH] src\infrastructure\health\metrics.py:1
+      💡 缺少健康检查方法
+      📝 健康检查模块应该包含标准化的健康检查方法
+      💡 添加check_、health_、monitor_或validate_前缀的方法
+
+   📍 [HIGH] src\infrastructure\resource\monitoring\health_checker.py:1
+      💡 缺少健康检查方法
+      📝 健康检查模块应该包含标准化的健康检查方法
+      💡 添加check_、health_、monitor_或validate_前缀的方法
+
+   📍 [MEDIUM] src\infrastructure\api\api_documentation_enhancer.py:65
+      💡 方法过长
+      📝 方法'_create_common_responses'过长: 132行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_documentation_enhancer.py:198
+      💡 方法过长
+      📝 方法'_create_error_codes'过长: 58行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_documentation_enhancer.py:476
+      💡 方法过长
+      📝 方法'generate_enhanced_documentation'过长: 66行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_documentation_enhancer.py:565
+      💡 方法过长
+      📝 方法'_add_data_endpoints'过长: 88行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_documentation_enhancer.py:654
+      💡 方法过长
+      📝 方法'_add_feature_endpoints'过长: 51行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_documentation_search.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\api\api_flow_diagram_generator.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\api\api_flow_diagram_generator.py:56
+      💡 方法过长
+      📝 方法'create_data_service_flow'过长: 133行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_flow_diagram_generator.py:190
+      💡 方法过长
+      📝 方法'create_trading_flow'过长: 122行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_flow_diagram_generator.py:313
+      💡 方法过长
+      📝 方法'create_feature_engineering_flow'过长: 121行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_test_case_generator.py:66
+      💡 方法过长
+      📝 方法'_load_templates'过长: 81行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_test_case_generator.py:148
+      💡 方法过长
+      📝 方法'create_data_service_test_suite'过长: 204行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_test_case_generator.py:353
+      💡 方法过长
+      📝 方法'create_feature_service_test_suite'过长: 93行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_test_case_generator.py:447
+      💡 方法过长
+      📝 方法'create_trading_service_test_suite'过长: 97行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_test_case_generator.py:545
+      💡 方法过长
+      📝 方法'create_monitoring_service_test_suite'过长: 76行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\api_test_case_generator.py:665
+      💡 方法过长
+      📝 方法'_export_json'过长: 54行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\openapi_generator.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\api\openapi_generator.py:182
+      💡 方法过长
+      📝 方法'_add_data_service_endpoints'过长: 73行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\openapi_generator.py:256
+      💡 方法过长
+      📝 方法'_add_feature_service_endpoints'过长: 58行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\openapi_generator.py:315
+      💡 方法过长
+      📝 方法'_add_trading_service_endpoints'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\api\openapi_generator.py:416
+      💡 方法过长
+      📝 方法'_add_common_schemas'过长: 251行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\cache\core\cache_optimizer.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\cache\core\cache_optimizer.py:264
+      💡 方法过长
+      📝 方法'get_optimization_recommendations'过长: 69行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\cache\core\multi_level_cache.py:779
+      💡 方法过长
+      📝 方法'__init__'过长: 60行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\cache\core\multi_level_cache.py:915
+      💡 方法过长
+      📝 方法'_convert_dict_config'过长: 51行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\cache\core\unified_cache_interface.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\cache\interfaces\base_component_interface.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\cache\interfaces\cache_interfaces.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\cache\interfaces\consistency_checker.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\cache\manager\memory_cache_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\cache\monitoring\performance_monitor.py:55
+      💡 方法过长
+      📝 方法'detect_anomaly'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\cache\utils\config_schema.py:86
+      💡 方法过长
+      📝 方法'__init__'过长: 55行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\cache\utils\dependency.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\config_event.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\common_exception_handler.py:71
+      💡 方法过长
+      📝 方法'handle_exceptions'过长: 99行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\common_exception_handler.py:103
+      💡 方法过长
+      📝 方法'decorator'过长: 66行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\common_exception_handler.py:105
+      💡 方法过长
+      📝 方法'wrapper'过长: 62行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\common_logger.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_factory_core.py:129
+      💡 方法过长
+      📝 方法'create_manager'过长: 57行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_factory_utils.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_complete.py:58
+      💡 方法过长
+      📝 方法'set'过长: 83行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_complete.py:364
+      💡 方法过长
+      📝 方法'validate_config'过长: 62行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_core.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_operations.py:26
+      💡 方法过长
+      📝 方法'validate_config'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_operations.py:80
+      💡 方法过长
+      📝 方法'_validate_with_rules'过长: 83行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_operations.py:301
+      💡 方法过长
+      📝 方法'get'过长: 52行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_manager_operations.py:354
+      💡 方法过长
+      📝 方法'set'过长: 94行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\config_strategy.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\factory.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\imports.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\priority_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\typed_config.py:53
+      💡 方法过长
+      📝 方法'_convert_value'过长: 62行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\core\unified_config_interface.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\unified_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\core\unified_manager_new.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\environment\cloud_native_configs.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\environment\cloud_native_enhanced.py:407
+      💡 方法过长
+      📝 方法'create_enhanced_cloud_platform'过长: 55行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\environment\cloud_native_enhanced.py:267
+      💡 方法过长
+      📝 方法'_create_kubernetes_hpa'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\interfaces\unified_interface.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\loaders\cloud_loader.py:243
+      💡 方法过长
+      📝 方法'_load_config_data'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\loaders\database_loader.py:245
+      💡 方法过长
+      📝 方法'_load_config_data'过长: 97行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\monitoring\anomaly_detector.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\monitoring\dashboard_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\monitoring\dashboard_models.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\monitoring\performance_monitor_dashboard.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\monitoring\performance_predictor.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\monitoring\trend_analyzer.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\security\components\accessrecord.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\security\components\configaccesscontrol.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\security\components\configauditlog.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\security\components\securityconfig.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\services\diff_service.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\services\event_service.py:62
+      💡 方法过长
+      📝 方法'publish'过长: 71行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\services\sync_conflict_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\services\sync_node_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\simple_config_factory.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\configitem.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\configscope.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\configstorage.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\consistencylevel.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\distributedconfigstorage.py:126
+      💡 方法过长
+      📝 方法'get'过长: 63行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\distributedconfigstorage.py:190
+      💡 方法过长
+      📝 方法'set'过长: 70行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\distributedconfigstorage.py:270
+      💡 方法过长
+      📝 方法'delete'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\distributedconfigstorage.py:372
+      💡 方法过长
+      📝 方法'list_keys'过长: 73行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\distributedstoragetype.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\iconfigstorage.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\storageconfig.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\storage\types\storagetype.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\tools\benchmark_framework.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\tools\infrastructure_index.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\tools\optimization_strategies.py:81
+      💡 方法过长
+      📝 方法'optimize'过长: 52行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\tools\test_optimizer.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\tools\typed_config.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\validators\enhanced_validators.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\validators\enhanced_validators.py:90
+      💡 方法过长
+      📝 方法'create_standard_validators'过长: 72行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\specialized_validators.py:52
+      💡 方法过长
+      📝 方法'_validate_custom'过长: 117行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\specialized_validators.py:269
+      💡 方法过长
+      📝 方法'_validate_custom'过长: 63行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\specialized_validators.py:396
+      💡 方法过长
+      📝 方法'_validate_custom'过长: 76行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\specialized_validators.py:621
+      💡 方法过长
+      📝 方法'_validate_ssl_config'过长: 86行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\validator_base.py:200
+      💡 方法过长
+      📝 方法'_validate_by_type'过长: 57行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\validator_base.py:339
+      💡 方法过长
+      📝 方法'validate'过长: 117行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\validators\validator_composition.py:88
+      💡 方法过长
+      📝 方法'validate'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\version\components\configdiff.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\version\components\configversion.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\config\version\components\configversionmanager.py:244
+      💡 方法过长
+      📝 方法'rollback_to_version'过长: 62行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\config\version\config_version_manager.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\core\constants.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\error\core\base.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\error\core\interfaces.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\error\core\performance_monitor.py:193
+      💡 方法过长
+      📝 方法'_check_alerts'过长: 58行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\error\core\security_filter.py:57
+      💡 方法过长
+      📝 方法'_setup_default_rules'过长: 129行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\error\exceptions\unified_exceptions.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\error\handlers\infrastructure_error_handler.py:130
+      💡 方法过长
+      📝 方法'handle_error'过长: 71行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\error\handlers\specialized_error_handler.py:139
+      💡 方法过长
+      📝 方法'handle_error'过长: 71行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\error\tests\test_error_handler.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\error\tests\test_exceptions.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\health\api\api_endpoints.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\api\data_api.py:46
+      💡 方法过长
+      📝 方法'get_data'过长: 61行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\api\data_api.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\api\websocket_api.py:209
+      💡 方法过长
+      📝 方法'check_websocket_health'过长: 55行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\api\websocket_api.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\components\alert_components.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\components\checker_components.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\components\health_checker.py:1158
+      💡 方法过长
+      📝 方法'_execute_check_with_retry'过长: 52行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\components\health_components.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\components\monitor_components.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\components\probe_components.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\components\status_components.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\core\adapters.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\core\app_factory.py:47
+      💡 方法过长
+      📝 方法'_setup_global_exception_handlers'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\core\app_factory.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\core\base.py:360
+      💡 方法过长
+      📝 方法'check_base_component'过长: 51行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\core\base.py:177
+      💡 方法过长
+      📝 方法'perform_health_check_async'过长: 54行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\core\exceptions.py:673
+      💡 方法过长
+      📝 方法'check_health_async'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\core\exceptions.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\database\database_health_monitor.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\fastapi_health_checker.py:271
+      💡 方法过长
+      📝 方法'include_in_app'过长: 173行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\health_check.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\health_check_core.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\health_check_core.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\health_result.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\health_result.py:77
+      💡 方法过长
+      📝 方法'_validate_data'过长: 79行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\health_result.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\health_status.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\health_status.py:188
+      💡 方法过长
+      📝 方法'check_conversion_operations'过长: 52行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\health_status.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\infrastructure\load_balancer.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\infrastructure\load_balancer.py:218
+      💡 方法过长
+      📝 方法'check_endpoint_management'过长: 61行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\infrastructure\load_balancer.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\integration\distributed_test_runner.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\integration\distributed_test_runner.py:452
+      💡 方法过长
+      📝 方法'check_class_definitions'过长: 55行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\integration\distributed_test_runner.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\integration\prometheus_exporter.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\integration\prometheus_integration.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\integration\prometheus_integration.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\integration\unified_interface.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\integration\unified_interface.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\integration\web_management_interface.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\integration\web_management_interface.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\metrics.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\metrics.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\ml\inference_engine.py:204
+      💡 方法过长
+      📝 方法'_process_model_batch'过长: 67行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\ml\inference_engine.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\ml\inference_engine_async.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_config.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_config.py:279
+      💡 方法过长
+      📝 方法'check_dataclass_definitions'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_config.py:380
+      💡 方法过长
+      📝 方法'check_configuration_system'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_config.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_core.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_core.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_metrics.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_metrics.py:241
+      💡 方法过长
+      📝 方法'get_function_summary'过长: 60行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_metrics.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_monitoring.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_monitoring.py:401
+      💡 方法过长
+      📝 方法'check_decorator_system'过长: 55行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\application_monitor_monitoring.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\automation_monitor.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\automation_monitor.py:61
+      💡 方法过长
+      📝 方法'__init__'过长: 51行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\automation_monitor.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\backtest_monitor_plugin.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\backtest_monitor_plugin.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\basic_health_checker.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\behavior_monitor_plugin.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\behavior_monitor_plugin.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\disaster_monitor_plugin.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\disaster_monitor_plugin.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\enhanced_monitoring.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\enhanced_monitoring.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\health_checker.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\health_checker.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\metrics_collectors.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\metrics_collectors.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\model_monitor_plugin.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\network_monitor.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\performance_monitor.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\performance_monitor.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\system_metrics_collector.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring\system_metrics_collector.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring_dashboard.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\monitoring_dashboard.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\testing\automated_test_runner.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\testing\automated_test_runner.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\testing\mobile_test_framework.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\testing\mobile_test_framework.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\testing\regulatory_tester.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\testing\regulatory_tester.py:496
+      💡 方法过长
+      📝 方法'monitor_regulatory_compliance'过长: 66行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\testing\regulatory_tester.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\validation\deployment_validator.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\validation\deployment_validator.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\validation\final_deployment_check.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\health\validation\final_deployment_check.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\health\validation\health.py:69
+      💡 方法过长
+      📝 方法'_validate_data'过长: 62行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\validation\health.py:184
+      💡 方法过长
+      📝 方法'_validate_data'过长: 78行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\health\validation\health.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\interfaces.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\interfaces\standard_interfaces.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\core\base_component.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\core\exceptions.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\core\interfaces.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\core\unified_logging_interface.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\formatters\structured.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\services\api_service.py:102
+      💡 方法过长
+      📝 方法'validate_request'过长: 51行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\logging\services\api_service.py:552
+      💡 方法过长
+      📝 方法'route_request'过长: 58行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\logging\standards\standard_formatter.py:127
+      💡 方法过长
+      📝 方法'create_standard_entry'过长: 63行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\logging\utils\formatters.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\utils\logger.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\logging\utils\logger.py:44
+      💡 方法过长
+      📝 方法'configure_logging'过长: 52行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\logging\utils\security_filter.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\monitoring\alert_system.py:262
+      💡 方法过长
+      📝 方法'send_notification'过长: 51行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\alert_system.py:597
+      💡 方法过长
+      📝 方法'create_default_rules'过长: 74行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\alert_system.py:760
+      💡 方法过长
+      📝 方法'create_rule_from_template'过长: 56行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\component_monitor.py:338
+      💡 方法过长
+      📝 方法'main'过长: 56行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\continuous_monitoring_system.py:641
+      💡 方法过长
+      📝 方法'main'过长: 70行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\continuous_monitoring_system.py:330
+      💡 方法过长
+      📝 方法'_analyze_and_alert'过长: 75行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\continuous_monitoring_system.py:407
+      💡 方法过长
+      📝 方法'_generate_optimization_suggestions'过长: 60行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\disaster_monitor.py:80
+      💡 方法过长
+      📝 方法'check_system_health'过长: 69行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\monitoring\production_monitor.py:98
+      💡 方法过长
+      📝 方法'_collect_system_metrics'过长: 62行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\optimization\architecture_refactor.py:108
+      💡 方法过长
+      📝 方法'create_refactor_plan'过长: 82行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\resource\alert_dataclasses.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\alert_enums.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\api\monitoringservice.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\api\resource_api.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\base.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\monitoring\business_metrics_monitor.py:138
+      💡 方法过长
+      📝 方法'record_metric'过长: 67行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\resource\monitoring\health_checker.py:1
+      💡 缺少异步处理
+      📝 健康检查系统应该使用异步处理以提高并发性能
+      💡 考虑使用async/await模式处理健康检查
+
+   📍 [MEDIUM] src\infrastructure\resource\monitoring\health_checker.py:1
+      💡 架构接口不一致
+      📝 基础设施层组件应该使用统一的接口
+      💡 继承或实现UnifiedInterface或相应的接口类
+
+   📍 [MEDIUM] src\infrastructure\resource\monitoring\monitoring_alert_system.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\monitoring\performance_monitor.py:264
+      💡 方法过长
+      📝 方法'get_statistics'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\resource\monitoring_alert_system_new.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\resource\resource_optimization.py:181
+      💡 方法过长
+      📝 方法'analyze_threads'过长: 56行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\resource\resource_optimization.py:278
+      💡 方法过长
+      📝 方法'generate_optimization_report'过长: 52行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\resource\scheduling\task_scheduler.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\services_init.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\unified_infrastructure.py:1
+      💡 缺少错误处理
+      📝 代码缺少必要的错误处理机制
+      💡 添加try-except块处理异常情况
+
+   📍 [MEDIUM] src\infrastructure\version.py:196
+      💡 方法过长
+      📝 方法'compare'过长: 76行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\visual_monitor.py:418
+      💡 方法过长
+      📝 方法'generate_html_report'过长: 124行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\infrastructure\visual_monitor.py:55
+      💡 方法过长
+      📝 方法'get'过长: 85行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [LOW] src\infrastructure\api\api_documentation_enhancer.py:1
+      💡 潜在性能优化点
+      📝 检测到18个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\api\api_documentation_enhancer.py:1
+      💡 过多魔法数字
+      📝 检测到62个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\api\api_documentation_search.py:1
+      💡 潜在性能优化点
+      📝 检测到15个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\api\api_flow_diagram_generator.py:1
+      💡 潜在性能优化点
+      📝 检测到17个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\api\api_flow_diagram_generator.py:1
+      💡 过多魔法数字
+      📝 检测到78个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\api\api_test_case_generator.py:1
+      💡 过多魔法数字
+      📝 检测到53个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\api\openapi_generator.py:91
+      💡 过长代码行
+      📝 代码行长度超过120字符: 130
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "operationId": endpoint.operation_id or f"{endpoint.method.lower()}_{endpoint.path.replace('/', '_').strip('_')}",
+      ```
+
+   📍 [LOW] src\infrastructure\api\openapi_generator.py:1
+      💡 过多魔法数字
+      📝 检测到16个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\core\cache_configs.py:1
+      💡 过多魔法数字
+      📝 检测到25个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\core\cache_factory.py:85
+      💡 过长代码行
+      📝 代码行长度超过120字符: 136
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def create_cache_manager(cls, cache_type: str = 'memory', config: Optional[Dict[str, Any]] = None, **kwargs) -> UnifiedCacheManager:
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\cache_factory.py:124
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def get_cache_service(cls, service_name: str = 'default', config: Optional[Dict[str, Any]] = None) -> UnifiedCacheManager:
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\cache_manager.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\cache\core\cache_manager.py:41
+      💡 过长代码行
+      📝 代码行长度超过120字符: 154
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      from .cache_configs import CacheConfig, CacheLevel, BasicCacheConfig, MultiLevelCacheConfig, AdvancedCacheConfig, SmartCacheConfig, DistributedCacheConfig
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\cache_manager.py:109
+      💡 过长代码行
+      📝 代码行长度超过120字符: 146
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      level_str = self.config.multi_level.level.value if hasattr(self.config.multi_level.level, 'value') else str(self.config.multi_level.level)
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\cache_manager.py:441
+      💡 过长代码行
+      📝 代码行长度超过120字符: 146
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      if not (hasattr(self, '_redis_client') and self._redis_client and self.config.multi_level.level in [CacheLevel.REDIS, CacheLevel.HYBRID]):
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\cache_manager.py:1491
+      💡 过长代码行
+      📝 代码行长度超过120字符: 152
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'level': self.config.multi_level.level.value if hasattr(self.config.multi_level.level, 'value') else str(self.config.multi_level.level),
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\cache_manager.py:1
+      💡 过多魔法数字
+      📝 检测到33个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\core\cache_optimizer.py:1
+      💡 潜在性能优化点
+      📝 检测到15个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\cache\core\cache_optimizer.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\core\multi_level_cache.py:812
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'L1': {'type': 'memory', 'max_size': self._ml_config.l1_config.capacity, 'ttl': self._ml_config.l1_config.ttl},
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\multi_level_cache.py:813
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'L2': {'type': 'redis', 'max_size': self._ml_config.l2_config.capacity, 'ttl': self._ml_config.l2_config.ttl},
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\multi_level_cache.py:814
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'L3': {'type': 'disk', 'max_size': self._ml_config.l3_config.capacity, 'ttl': self._ml_config.l3_config.ttl},
+      ```
+
+   📍 [LOW] src\infrastructure\cache\core\multi_level_cache.py:1
+      💡 过多魔法数字
+      📝 检测到38个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\core\optimizer_components.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\distributed\distributed_cache_manager.py:1
+      💡 过多魔法数字
+      📝 检测到11个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\interfaces\consistency_checker.py:105
+      💡 过长代码行
+      📝 代码行长度超过120字符: 247
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      if not (method.startswith(('get_cache_', 'set_cache_', 'delete_cache_', 'has_cache_', 'clear_all_cache', 'get_cache_size', 'get_cache_stats', 'initialize_component', 'get_component_status', 'shutdown_component', 'health_check')) or
+      ```
+
+   📍 [LOW] src\infrastructure\cache\monitoring\performance_monitor.py:1
+      💡 潜在性能优化点
+      📝 检测到16个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\cache\monitoring\performance_monitor.py:101
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'severity': 'high' if any(z > 3.0 for z in [hit_rate_zscore if 'hit_rate_anomaly' in anomaly_details else 0,
+      ```
+
+   📍 [LOW] src\infrastructure\cache\monitoring\performance_monitor.py:102
+      💡 过长代码行
+      📝 代码行长度超过120字符: 134
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      response_time_zscore if 'response_time_anomaly' in anomaly_details else 0]) else 'medium'
+      ```
+
+   📍 [LOW] src\infrastructure\cache\monitoring\performance_monitor.py:335
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      alerts.append(f"响应时间过高: {metrics.response_time:.1f}ms (阈值: {self.alert_thresholds['response_time_high']}ms)")
+      ```
+
+   📍 [LOW] src\infrastructure\cache\monitoring\performance_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到40个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\strategies\cache_strategy_manager.py:1
+      💡 过多魔法数字
+      📝 检测到25个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\utils\cache_utils.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\cache\utils\cache_utils.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\utils\config_schema.py:1
+      💡 过多魔法数字
+      📝 检测到24个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\cache\utils\dependency.py:118
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      errors[f'database.{config_key.split(".")[-1]}'] = f"{config_key} is required when database is enabled"
+      ```
+
+   📍 [LOW] src\infrastructure\cache\utils\performance_config.py:1
+      💡 过多魔法数字
+      📝 检测到37个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\config_exceptions.py:76
+      💡 过长代码行
+      📝 代码行长度超过120字符: 162
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def __init__(self, message: str, expected_type: Optional[str] = None, actual_type: Optional[str] = None, config_key: Optional[str] = None, value: Any = None):
+      ```
+
+   📍 [LOW] src\infrastructure\config\config_exceptions.py:81
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      super().__init__(message, config_key, {'expected_type': expected_type, 'actual_type': actual_type, 'value': value})
+      ```
+
+   📍 [LOW] src\infrastructure\config\config_exceptions.py:90
+      💡 过长代码行
+      📝 代码行长度超过120字符: 162
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def __init__(self, message: str, config_key: Optional[str] = None, expected_type: Optional[str] = None, actual_type: Optional[str] = None, value: Any = None):
+      ```
+
+   📍 [LOW] src\infrastructure\config\config_exceptions.py:96
+      💡 过长代码行
+      📝 代码行长度超过120字符: 132
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      super().__init__(full_message, config_key, {'expected_type': expected_type, 'actual_type': actual_type, 'value': value})
+      ```
+
+   📍 [LOW] src\infrastructure\config\config_exceptions.py:99
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      super().__init__(message, config_key, {'expected_type': expected_type, 'actual_type': actual_type, 'value': value})
+      ```
+
+   📍 [LOW] src\infrastructure\config\config_exceptions.py:197
+      💡 过长代码行
+      📝 代码行长度超过120字符: 137
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def __init__(self, message: str, quota_type: Optional[str] = None, current_usage: Optional[int] = None, limit: Optional[int] = None):
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_factory_core.py:354
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      other_items = {k: v for k, v in value.items() if k not in ['config_file', 'name', '_instance_name']}
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_manager_complete.py:72
+      💡 过长代码行
+      📝 代码行长度超过120字符: 135
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      if '<' in key or '>' in key or ';' in key or ' ' in key or '/' in key or '\\' in key or ':' in key or '@' in key or '#' in key:
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_manager_complete.py:604
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def add_source(self, source: ConfigSource, config: Dict[str, Any], priority: ConfigPriority = ConfigPriority.NORMAL) -> bool:
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_manager_operations.py:126
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      logger.error(f"Config key '{key}' value '{value}' length {len(value)} is below minimum {min_length}")
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_manager_operations.py:131
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      logger.error(f"Config key '{key}' value '{value}' length {len(value)} is above maximum {max_length}")
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_manager_operations.py:381
+      💡 过长代码行
+      📝 代码行长度超过120字符: 139
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      if '<' in key or '>' in key or ';' in key or ' ' in key or '/' in key or '\\' in key or ':' in key or '@' in key or '#' in key:
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_service.py:324
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      logger.info(f"Registered config validator: {validator.name if hasattr(validator, 'name') else str(validator)}")
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\config_strategy.py:30
+      💡 过长代码行
+      📝 代码行长度超过120字符: 160
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'StrategyManager', 'get_strategy_manager', 'reset_strategy_manager', 'load_config_with_strategy', 'validate_config_with_strategy', 'register_config_loader',
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\strategy_loaders.py:57
+      💡 过长代码行
+      📝 代码行长度超过120字符: 128
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return LoadResult(success=True, data=data, source=source, metadata={"loader": "JSONConfigLoader", "source": source})
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\strategy_loaders.py:59
+      💡 过长代码行
+      📝 代码行长度超过120字符: 132
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return LoadResult(success=False, error=str(e), source=source, metadata={"loader": "JSONConfigLoader", "source": source})
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\strategy_manager.py:159
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def load_config(self, source: str = "", preferred_strategies: Optional[List[str]] = None) -> Optional[Dict[str, Any]]:
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\strategy_manager.py:271
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def validate_config_with_strategy(config: Dict[str, Any], strategy_names: Optional[List[str]] = None) -> 'ValidationResult':
+      ```
+
+   📍 [LOW] src\infrastructure\config\core\unified_config_interface.py:145
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def add_source(self, source: ConfigSource, config: Dict[str, Any], priority: ConfigPriority = ConfigPriority.NORMAL) -> bool:
+      ```
+
+   📍 [LOW] src\infrastructure\config\environment\cloud_auto_scaling.py:259
+      💡 过长代码行
+      📝 代码行长度超过120字符: 131
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "last_scale_time": datetime.fromtimestamp(self._last_scale_time).isoformat() if self._last_scale_time > 0 else None
+      ```
+
+   📍 [LOW] src\infrastructure\config\environment\cloud_auto_scaling.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\environment\cloud_enhanced_monitoring.py:1
+      💡 过多魔法数字
+      📝 检测到14个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\environment\cloud_multi_cloud.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\environment\cloud_native_configs.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\loaders\cloud_loader.py:43
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      raise ValueError(f"Unsupported cloud provider: {provider}. Supported: {list(self.SUPPORTED_PROVIDERS.keys())}")
+      ```
+
+   📍 [LOW] src\infrastructure\config\loaders\cloud_loader.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\loaders\database_loader.py:46
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      raise ValueError(f"Unsupported database type: {db_type}. Supported: {list(self.SUPPORTED_DATABASES.keys())}")
+      ```
+
+   📍 [LOW] src\infrastructure\config\loaders\database_loader.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\monitoring\core.py:53
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def record_operation(self, operation: str, duration: float, success: bool = True, metadata: Optional[Dict[str, Any]] = None):
+      ```
+
+   📍 [LOW] src\infrastructure\config\monitoring\core.py:1
+      💡 过多魔法数字
+      📝 检测到72个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\monitoring\dashboard_manager.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\monitoring\performance_monitor_dashboard.py:47
+      💡 过长代码行
+      📝 代码行长度超过120字符: 134
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def record_operation(self, operation_type: str, duration: float, success: bool = True, metadata: Optional[Dict[str, Any]] = None):
+      ```
+
+   📍 [LOW] src\infrastructure\config\monitoring\performance_predictor.py:1
+      💡 过多魔法数字
+      📝 检测到9个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\security\components\configencryptionmanager.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\services\event_service.py:84
+      💡 过长代码行
+      📝 代码行长度超过120字符: 135
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      elif self._version_manager is not None and hasattr(self._version_manager, '_versions') and self._version_manager._versions:
+      ```
+
+   📍 [LOW] src\infrastructure\config\tools\framework_integrator.py:1
+      💡 过多魔法数字
+      📝 检测到11个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\tools\optimization_strategies.py:1
+      💡 潜在性能优化点
+      📝 检测到22个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\config\tools\optimization_strategies.py:1
+      💡 过多魔法数字
+      📝 检测到15个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\tools\schema.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\config\utils\enhanced_config_validator.py:1
+      💡 潜在性能优化点
+      📝 检测到13个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\config\utils\enhanced_config_validator.py:1
+      💡 过多魔法数字
+      📝 检测到12个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\validators\enhanced_validators.py:128
+      💡 过长代码行
+      📝 代码行长度超过120字符: 137
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      result.add_error(f"Configuration key '{key}' should be of type {expected_type.__name__}, got {type(value).__name__}")
+      ```
+
+   📍 [LOW] src\infrastructure\config\validators\specialized_validators.py:1
+      💡 潜在性能优化点
+      📝 检测到34个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\config\validators\specialized_validators.py:149
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      if start_time and end_time and self._is_valid_time_format(start_time) and self._is_valid_time_format(end_time):
+      ```
+
+   📍 [LOW] src\infrastructure\config\validators\specialized_validators.py:454
+      💡 过长代码行
+      📝 代码行长度超过120字符: 149
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      max_size = logging_config.get('file', {}).get('max_size') if isinstance(logging_config.get('file'), dict) else logging_config.get('max_size')
+      ```
+
+   📍 [LOW] src\infrastructure\config\validators\specialized_validators.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\validators\validator_base.py:210
+      💡 过长代码行
+      📝 代码行长度超过120字符: 144
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return ValidationResult(is_valid=False, errors=[f"字段 '{self.field}' 类型错误，期望 {type_names} 之一，实际 {type(value).__name__}"],
+      ```
+
+   📍 [LOW] src\infrastructure\config\validators\validator_base.py:216
+      💡 过长代码行
+      📝 代码行长度超过120字符: 149
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return ValidationResult(is_valid=False, errors=[f"字段 '{self.field}' 类型错误，期望 {expected_type.__name__}，实际 {type(value).__name__}"],
+      ```
+
+   📍 [LOW] src\infrastructure\config\validators\validator_composition.py:138
+      💡 过长代码行
+      📝 代码行长度超过120字符: 138
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'severity': failed_result.severity.value if hasattr(failed_result.severity, 'value') else str(failed_result.severity),
+      ```
+
+   📍 [LOW] src\infrastructure\config\version\components\configversionmanager.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\config\web\app.py:1
+      💡 过多魔法数字
+      📝 检测到30个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\core\constants.py:1
+      💡 过多魔法数字
+      📝 检测到38个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\error\core\container.py:180
+      💡 过长代码行
+      📝 代码行长度超过120字符: 143
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      raise KeyError(f"Cannot resolve dependency {param.annotation.__name__} for {descriptor.service_type.__name__}")
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\container.py:184
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      raise ValueError(f"Parameter {name} in {descriptor.service_type.__name__} has no type annotation")
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\performance_monitor.py:1
+      💡 潜在性能优化点
+      📝 检测到11个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\error\core\performance_monitor.py:126
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def record_request(self, handler_name: str, response_time: float, success: bool, error_type: Optional[str] = None) -> None:
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\performance_monitor.py:161
+      💡 过长代码行
+      📝 代码行长度超过120字符: 139
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def record_handler_performance(self, handler_name: str, response_time: float, success: bool, error_type: Optional[str] = None) -> None:
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\performance_monitor.py:362
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def record_handler_performance(handler_name: str, response_time: float, success: bool, error_type: Optional[str] = None) -> None:
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\performance_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到15个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\error\core\security_filter.py:101
+      💡 过长代码行
+      📝 代码行长度超过120字符: 134
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      r'\b([a-zA-Z]*[aA][pP][iI][_-]?[kK][eE][yY]|[sS][eE][cC][rR][eE][tT][_-]?[kK][eE][yY])[\'"]?\s*[:=]\s*[\'"]?([^\s\'\"]+)',
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\security_filter.py:309
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'pattern': rule.pattern.pattern[:50] + '...' if len(rule.pattern.pattern) > 50 else rule.pattern.pattern
+      ```
+
+   📍 [LOW] src\infrastructure\error\core\security_filter.py:1
+      💡 过多魔法数字
+      📝 检测到11个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\error\exceptions\unified_exceptions.py:1
+      💡 过多魔法数字
+      📝 检测到57个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\error\handlers\specialized_error_handler.py:296
+      💡 过长代码行
+      📝 代码行长度超过120字符: 134
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def _execute_retry(self, retry_config: RetryConfig, error: Exception, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+      ```
+
+   📍 [LOW] src\infrastructure\error\recovery\recovery.py:446
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def initiate_disaster_recovery(self, recovery_type: str, error: Exception, context: Optional[Dict[str, Any]] = None) -> bool:
+      ```
+
+   📍 [LOW] src\infrastructure\error\recovery\recovery.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\error\tests\test_exceptions.py:1
+      💡 过多魔法数字
+      📝 检测到29个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\api\api_endpoints.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\api\data_api.py:1
+      💡 过多魔法数字
+      📝 检测到22个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\api\data_api.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\api\websocket_api.py:1
+      💡 过多魔法数字
+      📝 检测到18个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\api\websocket_api.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\alert_components.py:1
+      💡 过多魔法数字
+      📝 检测到17个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\alert_components.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\checker_components.py:1
+      💡 过多魔法数字
+      📝 检测到39个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\checker_components.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\enhanced_health_checker.py:200
+      💡 过长代码行
+      📝 代码行长度超过120字符: 132
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "connectivity": results[CONNECTIVITY_INDEX] if not isinstance(results[CONNECTIVITY_INDEX], Exception) else None,
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\enhanced_health_checker.py:201
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "performance": results[PERFORMANCE_INDEX] if not isinstance(results[PERFORMANCE_INDEX], Exception) else None,
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\enhanced_health_checker.py:202
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "resources": results[RESOURCES_INDEX] if not isinstance(results[RESOURCES_INDEX], Exception) else None,
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\enhanced_health_checker.py:203
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "errors": results[ERROR_PATTERNS_INDEX] if not isinstance(results[ERROR_PATTERNS_INDEX], Exception) else None
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\enhanced_health_checker.py:1
+      💡 过多魔法数字
+      📝 检测到13个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\enhanced_health_checker.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\health_checker.py:1
+      💡 过多魔法数字
+      📝 检测到33个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\health_checker.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\health_checker_factory.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\health_components.py:1
+      💡 过多魔法数字
+      📝 检测到28个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\health_components.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\monitor_components.py:628
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "database_monitors": any(id >= 15 and id <= 21 for id in factory_info.get("supported_monitor_ids", [])),
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\monitor_components.py:629
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "network_monitors": any(id >= 27 and id <= 33 for id in factory_info.get("supported_monitor_ids", [])),
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\monitor_components.py:630
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "performance_monitors": any(id >= 39 and id <= 45 for id in factory_info.get("supported_monitor_ids", []))
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\monitor_components.py:1
+      💡 过多魔法数字
+      📝 检测到32个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\monitor_components.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:368
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      existing_methods = [method for method in dir(IProbeComponent) if not method.startswith('_') and method != 'get_probe_id']
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:370
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      methods_complete = all(method in existing_methods for method in required_methods[:-1])  # 排除get_probe_id，因为它没有在dir()中显示
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:398
+      💡 过长代码行
+      📝 代码行长度超过120字符: 131
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      is_subclass = issubclass(ProbeComponent, IProbeComponent) if component_exists and 'IProbeComponent' in globals() else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:441
+      💡 过长代码行
+      📝 代码行长度超过120字符: 138
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      is_subclass = issubclass(ProbeComponentFactory, ComponentFactory) if factory_exists and 'ComponentFactory' in globals() else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:481
+      💡 过长代码行
+      📝 代码行长度超过120字符: 211
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "component_types": ["IProbeComponent", "ProbeComponent", "ProbeComponentFactory"] if 'IProbeComponent' in globals() and 'ProbeComponent' in globals() and 'ProbeComponentFactory' in globals() else [],
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:513
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "component_instantiation_working": health_check["checks"]["component_implementation"]["instantiation_works"]
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\probe_components.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:380
+      💡 过长代码行
+      📝 代码行长度超过120字符: 131
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      existing_methods = [method for method in dir(IStatusComponent) if not method.startswith('_') and method != 'get_status_id']
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:410
+      💡 过长代码行
+      📝 代码行长度超过120字符: 134
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      is_subclass = issubclass(StatusComponent, IStatusComponent) if component_exists and 'IStatusComponent' in globals() else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:453
+      💡 过长代码行
+      📝 代码行长度超过120字符: 139
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      is_subclass = issubclass(StatusComponentFactory, ComponentFactory) if factory_exists and 'ComponentFactory' in globals() else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:493
+      💡 过长代码行
+      📝 代码行长度超过120字符: 217
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "component_types": ["IStatusComponent", "StatusComponent", "StatusComponentFactory"] if 'IStatusComponent' in globals() and 'StatusComponent' in globals() and 'StatusComponentFactory' in globals() else [],
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:525
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "component_instantiation_working": health_check["checks"]["component_implementation"]["instantiation_works"]
+      ```
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\components\status_components.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\core\app_factory.py:271
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "exception_handlers_setup": health_check["checks"]["exception_handlers"]["exception_handlers_configured"],
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\app_factory.py:302
+      💡 过长代码行
+      📝 代码行长度超过120字符: 137
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "app_creation_success_rate": 1.0 if health_check["checks"]["application_creation"]["application_creation_test"] else 0.0,
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\app_factory.py:303
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "exception_handlers_configured": health_check["checks"]["exception_handlers"]["exception_handlers_configured"]
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\app_factory.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\core\base.py:214
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "component_health": results[0] if not isinstance(results[0], Exception) else {"error": str(results[0])},
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\base.py:215
+      💡 过长代码行
+      📝 代码行长度超过120字符: 128
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "configuration_health": results[1] if not isinstance(results[1], Exception) else {"error": str(results[1])},
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\base.py:216
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "performance_health": results[2] if not isinstance(results[2], Exception) else {"error": str(results[2])}
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\base.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\core\exceptions.py:529
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "inheritance_structure_valid": health_check["checks"]["inheritance_structure"]["all_inheritances_correct"],
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\exceptions.py:709
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "exception_classes": results[0] if not isinstance(results[0], Exception) else {"error": str(results[0])},
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\exceptions.py:710
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "inheritance_structure": results[1] if not isinstance(results[1], Exception) else {"error": str(results[1])},
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\exceptions.py:738
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      component_count = await loop.run_in_executor(None, lambda: len([name for name in globals() if name.endswith('Error')]))
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\exceptions.py:739
+      💡 过长代码行
+      📝 代码行长度超过120字符: 217
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      function_count = await loop.run_in_executor(None, lambda: len([name for name in globals() if name.startswith(('handle_', 'safe_', 'check_', 'health_', 'monitor_', 'validate_')) and callable(globals()[name])]))
+      ```
+
+   📍 [LOW] src\infrastructure\health\core\exceptions.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\database\database_health_monitor.py:1
+      💡 潜在性能优化点
+      📝 检测到28个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\health\database\database_health_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到26个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\database\database_health_monitor.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\fastapi_health_checker.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\health_check.py:198
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_check_time).total_seconds() if self._last_check_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check.py:202
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "routes": [str(route.path) for route in self.router.routes] if hasattr(self.router, 'routes') else []
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check.py:206
+      💡 过长代码行
+      📝 代码行长度超过120字符: 156
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "check_frequency": self._check_count / max(1, (datetime.now() - (self._last_check_time or datetime.now())).total_seconds() / 60)  # 次/分钟
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check.py:389
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      existing_routes = [str(route.path) for route in self.router.routes] if hasattr(self.router, 'routes') else []
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check.py:614
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      has_system_health_method = hasattr(self, '_get_system_health') and callable(getattr(self, '_get_system_health'))
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\health_check_core.py:348
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_check_time).total_seconds() if self._last_check_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check_core.py:360
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "history_utilization": len(self.check_history) / self.max_history_size if self.max_history_size > 0 else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check_core.py:363
+      💡 过长代码行
+      📝 代码行长度超过120字符: 150
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "checks_per_minute": self._check_count / max(1, (datetime.now() - (self._last_check_time or datetime.now())).total_seconds() / 60)
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_check_core.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\health_result.py:502
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      health_status_has_from_string = hasattr(HealthStatus, 'from_string') and callable(getattr(HealthStatus, 'from_string'))
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_result.py:509
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "valid": check_type_exists and health_status_exists and check_type_has_from_string and health_status_has_from_string,
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_result.py:538
+      💡 过长代码行
+      📝 代码行长度超过120字符: 151
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      existing_methods = [method for method in dir(HealthCheckResult) if not method.startswith('_') or method in ['__post_init__', '_validate_data']]
+      ```
+
+   📍 [LOW] src\infrastructure\health\health_result.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\health_status.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\infrastructure\load_balancer.py:329
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "endpoint_operations_working": health_check["checks"]["endpoint_management"]["endpoint_management_works"]
+      ```
+
+   📍 [LOW] src\infrastructure\health\infrastructure\load_balancer.py:415
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      all_instantiable = all(test["success"] for test in instantiation_tests.values()) if instantiation_tests else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\infrastructure\load_balancer.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\integration\distributed_test_runner.py:492
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      instantiation_tests[cls_name] = {"success": True, "note": "May be abstract or require parameters"}
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\distributed_test_runner.py:563
+      💡 过长代码行
+      📝 代码行长度超过120字符: 167
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "enums_defined": len([name for name in globals() if name.endswith('Enum') or isinstance(globals().get(name), type) and issubclass(globals()[name], Enum)]),
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\distributed_test_runner.py:582
+      💡 过长代码行
+      📝 代码行长度超过120字符: 181
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      enums_defined = len([name for name in globals() if name.endswith('Enum') or (name in globals() and isinstance(globals()[name], type) and issubclass(globals()[name], Enum))])
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\distributed_test_runner.py:671
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return {"valid": False, "error": f"Missing enums: {[enum for enum in required_enums if enum not in globals()]}"}
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\distributed_test_runner.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_exporter.py:965
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "grafana_dashboard_available": hasattr(self, '_grafana_dashboard') and self._grafana_dashboard is not None
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_exporter.py:1024
+      💡 过长代码行
+      📝 代码行长度超过120字符: 128
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_export_time).total_seconds() if self._last_export_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_exporter.py:1028
+      💡 过长代码行
+      📝 代码行长度超过120字符: 134
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "collectors_count": len(self.registry._collector_to_names) if hasattr(self.registry, '_collector_to_names') else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_exporter.py:1031
+      💡 过长代码行
+      📝 代码行长度超过120字符: 153
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "exports_per_hour": self._export_count / max(1, (datetime.now() - (self._last_export_time or datetime.now())).total_seconds() / 3600)
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_exporter.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_integration.py:662
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "healthy": integration_class_exists and methods_complete and (not PROMETHEUS_AVAILABLE or instantiation_works),
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_integration.py:842
+      💡 过长代码行
+      📝 代码行长度超过120字符: 146
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      all_imports_successful = client_available and all(import_tests.values()) if import_tests and not "import_error" in import_tests else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_integration.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\integration\prometheus_integration.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\integration\unified_interface.py:1
+      💡 缺少日志记录
+      📝 健康检查系统应该有适当的日志记录
+      💡 添加关键操作的日志记录
+
+   📍 [LOW] src\infrastructure\health\integration\unified_interface.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\integration\web_management_interface.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\metrics.py:136
+      💡 过长代码行
+      📝 代码行长度超过120字符: 132
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_collection_time).total_seconds() if self._last_collection_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\metrics.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\ml\inference_engine.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\ml\inference_engine.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\ml\inference_engine_async.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\ml\inference_engine_async.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:202
+      💡 过长代码行
+      📝 代码行长度超过120字符: 131
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return {"healthy": False, "error": f"Missing mixin classes: {[cls for cls in mixin_classes if cls not in globals()]} "}
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:206
+      💡 过长代码行
+      📝 代码行长度超过120字符: 137
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      expected_in_mro = [ApplicationMonitor, ApplicationMonitorCore, ApplicationMonitorMonitoringMixin, ApplicationMonitorMetricsMixin]
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:325
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "inheritance_structure_valid": health_check["checks"]["mixin_integration"]["inheritance_structure_correct"],
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:361
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "inheritance_structure_valid": health_check["checks"]["mixin_integration"]["inheritance_structure_correct"],
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:399
+      💡 过长代码行
+      📝 代码行长度超过120字符: 174
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      required_classes = ['ApplicationMonitor', 'ApplicationMonitorCore', 'ApplicationMonitorMonitoringMixin', 'ApplicationMonitorMetricsMixin', 'ApplicationMonitorConfig']
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:442
+      💡 过长代码行
+      📝 代码行长度超过120字符: 138
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      expected_classes = [ApplicationMonitor, ApplicationMonitorCore, ApplicationMonitorMonitoringMixin, ApplicationMonitorMetricsMixin]
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_config.py:491
+      💡 过长代码行
+      📝 代码行长度超过120字符: 165
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "convenience_functions_working": health_check["checks"]["configuration_system"]["config_tests"].get("convenience_function", {}).get("success", False)
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_config.py:520
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "dataclasses_defined": len([name for name in globals() if name[0].isupper() and name.endswith('Config')]),
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_config.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_core.py:1
+      💡 潜在性能优化点
+      📝 检测到17个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_core.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_metrics.py:1
+      💡 潜在性能优化点
+      📝 检测到17个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_metrics.py:560
+      💡 过长代码行
+      📝 代码行长度超过120字符: 138
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'metrics_count': len(self.metrics_data) if hasattr(self, 'metrics_data') and hasattr(self.metrics_data, '__len__') else 0,
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_metrics.py:597
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'config_keys': list(self.config.keys()) if hasattr(self, 'config') and isinstance(self.config, dict) else []
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_metrics.py:677
+      💡 过长代码行
+      📝 代码行长度超过120字符: 142
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'metrics_count': len(self.metrics_data) if hasattr(self, 'metrics_data') and hasattr(self.metrics_data, '__len__') else 0,
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_metrics.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_metrics.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_monitoring.py:474
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      prometheus_methods_exist = all(hasattr(ApplicationMonitorMonitoringMixin, method) for method in prometheus_methods)
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_monitoring.py:478
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      data_limit_methods_exist = all(hasattr(ApplicationMonitorMonitoringMixin, method) for method in data_limit_methods)
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_monitoring.py:481
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "healthy": methods_exist and influxdb_methods_exist and prometheus_methods_exist and data_limit_methods_exist,
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_monitoring.py:508
+      💡 过长代码行
+      📝 代码行长度超过120字符: 137
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "monitoring_methods_count": len([method for method in dir(ApplicationMonitorMonitoringMixin) if not method.startswith('_')]),
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_monitoring.py:709
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      integration_methods_exist = all(hasattr(ApplicationMonitorMonitoringMixin, method) for method in integration_methods)
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\application_monitor_monitoring.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\automation_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到30个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\automation_monitor.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\backtest_monitor_plugin.py:332
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return {"healthy": False, "timestamp": datetime.now().isoformat(), "service": "backtest_monitor_plugin", "error": str(e)}
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\backtest_monitor_plugin.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\basic_health_checker.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\behavior_monitor_plugin.py:191
+      💡 过长代码行
+      📝 代码行长度超过120字符: 129
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return {"healthy": False, "timestamp": datetime.now().isoformat(), "service": "behavior_monitor_plugin", "error": str(e)}
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\behavior_monitor_plugin.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\disaster_monitor_plugin.py:317
+      💡 过长代码行
+      📝 代码行长度超过120字符: 137
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return {"healthy": False, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"), "service": "disaster_monitor_plugin", "error": str(e)}
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\disaster_monitor_plugin.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\enhanced_monitoring.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\health_checker.py:387
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_check_time).total_seconds() if self._last_check_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\health_checker.py:395
+      💡 过长代码行
+      📝 代码行长度超过120字符: 150
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "checks_per_hour": self._check_count / max(1, (datetime.now() - (self._last_check_time or datetime.now())).total_seconds() / 3600)
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\health_checker.py:1
+      💡 过多魔法数字
+      📝 检测到17个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\health_checker.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\metrics_collectors.py:297
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "last_collection_time": self._last_collection_time.isoformat() if self._last_collection_time else None,
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\metrics_collectors.py:298
+      💡 过长代码行
+      📝 代码行长度超过120字符: 136
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_collection_time).total_seconds() if self._last_collection_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\metrics_collectors.py:305
+      💡 过长代码行
+      📝 代码行长度超过120字符: 165
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "collections_per_hour": self._collection_count / max(1, (datetime.now() - (self._last_collection_time or datetime.now())).total_seconds() / 3600)
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\metrics_collectors.py:377
+      💡 过长代码行
+      📝 代码行长度超过120字符: 160
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      collector_classes = ['CPUCollector', 'MemoryCollector', 'DiskCollector', 'NetworkCollector', 'GPUCollector', 'SystemInfoCollector', 'MetricsAggregator']
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\metrics_collectors.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\model_monitor_plugin.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\model_monitor_plugin.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\network_monitor.py:423
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "uptime_seconds": (datetime.now() - self._last_check_time).total_seconds() if self._last_check_time else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\network_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\network_monitor.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\performance_monitor.py:1
+      💡 潜在性能优化点
+      📝 检测到21个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\health\monitoring\performance_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\performance_monitor.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring\system_metrics_collector.py:1
+      💡 潜在性能优化点
+      📝 检测到14个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\health\monitoring\system_metrics_collector.py:268
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      thread_alive = (self.collector_thread and self.collector_thread.is_alive()) if self.collector_thread else False
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring\system_metrics_collector.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring\system_metrics_collector.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\monitoring_dashboard.py:1
+      💡 潜在性能优化点
+      📝 检测到15个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\health\monitoring_dashboard.py:359
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      if len(timestamps) > 1 and not all(timestamps[i] <= timestamps[i+1] for i in range(len(timestamps)-1)):
+      ```
+
+   📍 [LOW] src\infrastructure\health\monitoring_dashboard.py:1
+      💡 过多魔法数字
+      📝 检测到40个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\monitoring_dashboard.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\testing\automated_test_runner.py:1
+      💡 过多魔法数字
+      📝 检测到21个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\testing\automated_test_runner.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\testing\mobile_test_framework.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\testing\mobile_test_framework.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\testing\regulatory_tester.py:339
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      callable_methods = [method for method in test_methods if hasattr(self, method) and callable(getattr(self, method))]
+      ```
+
+   📍 [LOW] src\infrastructure\health\testing\regulatory_tester.py:530
+      💡 过长代码行
+      📝 代码行长度超过120字符: 149
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      all_test_names = ["test_t1_restriction", "test_price_limit", "test_star_market_rules", "test_circuit_breaker", "test_compliance_reports"]
+      ```
+
+   📍 [LOW] src\infrastructure\health\testing\regulatory_tester.py:650
+      💡 过长代码行
+      📝 代码行长度超过120字符: 165
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      success_rate = test_results["passed"] / (test_results["passed"] + test_results["failed"]) if (test_results["passed"] + test_results["failed"]) > 0 else 0
+      ```
+
+   📍 [LOW] src\infrastructure\health\testing\regulatory_tester.py:1
+      💡 过多魔法数字
+      📝 检测到29个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\testing\regulatory_tester.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\validation\deployment_validator.py:1
+      💡 过多魔法数字
+      📝 检测到14个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\validation\deployment_validator.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\validation\final_deployment_check.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\health\validation\final_deployment_check.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\health\validation\health.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\logging\core\error_handler.py:371
+      💡 过长代码行
+      📝 代码行长度超过120字符: 147
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def _create_error_info(self, error: Exception, error_type: ErrorType, severity: ErrorSeverity, context: Optional[Dict[str, Any]]) -> ErrorInfo:
+      ```
+
+   📍 [LOW] src\infrastructure\logging\core\monitoring.py:1
+      💡 过多魔法数字
+      📝 检测到17个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\core\unified_logger.py:87
+      💡 过长代码行
+      📝 代码行长度超过120字符: 126
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [ERROR] [FORMATTER] 格式化失败: {str(e)} - 原始消息: {record.getMessage()}"
+      ```
+
+   📍 [LOW] src\infrastructure\logging\core\unified_logger.py:130
+      💡 过长代码行
+      📝 代码行长度超过120字符: 167
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      return f'{{"timestamp": {time.time()}, "level": "ERROR", "component": "FORMATTER", "message": "JSON格式化失败: {str(e)}", "original": "{record.getMessage()}"}}'
+      ```
+
+   📍 [LOW] src\infrastructure\logging\core\unified_logger.py:1
+      💡 过多魔法数字
+      📝 检测到14个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\core\unified_logging_interface.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\formatters\formatter_components.py:134
+      💡 过长代码行
+      📝 代码行长度超过120字符: 124
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      raise ValueError(f"不支持的formatter ID: {formatter_id}。支持的ID: {FormatterComponentFactory.SUPPORTED_FORMATTER_IDS}")
+      ```
+
+   📍 [LOW] src\infrastructure\logging\formatters\formatter_components.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\handlers\base.py:1
+      💡 过多魔法数字
+      📝 检测到17个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\handlers\console.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\handlers\handler_components.py:1
+      💡 过多魔法数字
+      📝 检测到22个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\monitors\base_monitor.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\logging\monitors\base_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到9个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\monitors\distributed_monitoring.py:1
+      💡 潜在性能优化点
+      📝 检测到25个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\logging\services\alert_rule_engine.py:1
+      💡 过多魔法数字
+      📝 检测到13个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\services\api_service.py:1
+      💡 潜在性能优化点
+      📝 检测到13个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\logging\services\api_service.py:1
+      💡 过多魔法数字
+      📝 检测到15个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\services\async_log_processor.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\services\base_service.py:164
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'description': getattr(self, '__doc__', '').strip().split('\n')[0] if getattr(self, '__doc__', None) else '',
+      ```
+
+   📍 [LOW] src\infrastructure\logging\services\logger_service.py:133
+      💡 过长代码行
+      📝 代码行长度超过120字符: 130
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'log_dir': config.get('log_dir', self.config.get('log_dir', 'logs')) if config else self.config.get('log_dir', 'logs')
+      ```
+
+   📍 [LOW] src\infrastructure\logging\services\logging_service_components.py:1
+      💡 过多魔法数字
+      📝 检测到23个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\standards\splunk_standard.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\standards\standard_manager.py:1
+      💡 过多魔法数字
+      📝 检测到14个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\utils\formatters.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\logging\utils\logger.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\alert_system.py:1
+      💡 过多魔法数字
+      📝 检测到15个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\application_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\component_monitor.py:126
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      metrics.average_creation_time = sum(self.creation_times[component_type]) / len(self.creation_times[component_type])
+      ```
+
+   📍 [LOW] src\infrastructure\monitoring\component_monitor.py:200
+      💡 过长代码行
+      📝 代码行长度超过120字符: 133
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      f"组件 {component_type} 创建时间过慢: {metrics.average_creation_time:.0f}ms (阈值: {self.alert_thresholds['creation_time']}ms)"
+      ```
+
+   📍 [LOW] src\infrastructure\monitoring\component_monitor.py:209
+      💡 过长代码行
+      📝 代码行长度超过120字符: 136
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      f"组件 {component_type} 并发使用过高: {self.active_instances[component_type]} (阈值: {self.alert_thresholds['concurrent_usage']})"
+      ```
+
+   📍 [LOW] src\infrastructure\monitoring\component_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到13个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\continuous_monitoring_system.py:1
+      💡 过多魔法数字
+      📝 检测到36个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\exception_monitoring_alert.py:1
+      💡 过多魔法数字
+      📝 检测到18个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\logger_pool_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\production_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到33个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\monitoring\system_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到9个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\ops\monitoring_dashboard.py:1
+      💡 潜在性能优化点
+      📝 检测到14个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\ops\monitoring_dashboard.py:1
+      💡 过多魔法数字
+      📝 检测到21个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\optimization\architecture_refactor.py:258
+      💡 过长代码行
+      📝 代码行长度超过120字符: 133
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      ('from .common.core.base_components import', 'from infrastructure.utils.common.core.base_components import'),
+      ```
+
+   📍 [LOW] src\infrastructure\optimization\architecture_refactor.py:259
+      💡 过长代码行
+      📝 代码行长度超过120字符: 153
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      ('from infrastructure.utils.common.core.base_components import', 'from infrastructure.utils.common.core.base_components import'),
+      ```
+
+   📍 [LOW] src\infrastructure\optimization\architecture_refactor.py:260
+      💡 过长代码行
+      📝 代码行长度超过120字符: 153
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      ('from infrastructure.utils.common.core.base_components import', 'from infrastructure.utils.common.core.base_components import'),
+      ```
+
+   📍 [LOW] src\infrastructure\optimization\architecture_refactor.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\optimization\performance_optimizer.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\optimization\performance_optimizer.py:141
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      improvement = ((before_metrics.response_time - after_metrics.response_time) / before_metrics.response_time) * 100
+      ```
+
+   📍 [LOW] src\infrastructure\optimization\performance_optimizer.py:450
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      total_improvement = sum(r.improvement_percentage for r in optimization_results if r.improvement_percentage > 0)
+      ```
+
+   📍 [LOW] src\infrastructure\optimization\performance_optimizer.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\config\config_classes.py:190
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      monitoring: Dict[str, Any] = field(default_factory=lambda: {"enabled": True, "metrics": ["response_time", "error_rate"]})
+      ```
+
+   📍 [LOW] src\infrastructure\resource\config\config_classes.py:1
+      💡 过多魔法数字
+      📝 检测到38个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\core\gpu_manager.py:60
+      💡 过长代码行
+      📝 代码行长度超过120字符: 139
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      result = subprocess.run(['nvidia-smi', '--query-gpu=name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu',
+      ```
+
+   📍 [LOW] src\infrastructure\resource\core\gpu_manager.py:123
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'avg_utilization': sum(gpu['utilization_percent'] for gpu in gpu_info) / len(gpu_info) if gpu_info else 0.0
+      ```
+
+   📍 [LOW] src\infrastructure\resource\core\gpu_manager.py:145
+      💡 过长代码行
+      📝 代码行长度超过120字符: 139
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'memory_utilization_percent': (gpu['memory_used_mb'] / gpu['memory_total_mb'] * 100) if gpu['memory_total_mb'] > 0 else 0.0
+      ```
+
+   📍 [LOW] src\infrastructure\resource\core\gpu_manager.py:216
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      'overall_health': 'healthy' if not issues else 'warning' if len(issues) < len(usage['gpus']) else 'critical',
+      ```
+
+   📍 [LOW] src\infrastructure\resource\core\gpu_manager.py:1
+      💡 过多魔法数字
+      📝 检测到11个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\core\resource_manager.py:1
+      💡 过多魔法数字
+      📝 检测到9个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\monitoring\health_checker.py:1
+      💡 过多魔法数字
+      📝 检测到13个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\monitoring\health_checker.py:1
+      💡 缺少适配器模式
+      📝 基础设施层应该使用适配器模式实现集成
+      💡 考虑实现相应的适配器类
+
+   📍 [LOW] src\infrastructure\resource\monitoring\monitor_components.py:1
+      💡 过多魔法数字
+      📝 检测到18个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\monitoring\monitoring_alert_system_facade.py:1
+      💡 过多魔法数字
+      📝 检测到14个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\monitoring\notification_manager_component.py:303
+      💡 过长代码行
+      📝 代码行长度超过120字符: 260
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      "content": f"""## 🚨 测试监控告警\n\n**告警级别:** {alert.alert_level.value.upper()}\n**告警类型:** {alert.alert_type.value}\n**告警消息:** {alert.message}\n**触发时间:** {alert.timestamp}\n\n**详细信息:**\n{json.dumps(alert.details, indent=2, ensure_ascii=False)}"""
+      ```
+
+   📍 [LOW] src\infrastructure\resource\monitoring\performance_monitor.py:1
+      💡 潜在性能优化点
+      📝 检测到13个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\resource\monitoring\performance_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到12个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\monitoring\performance_monitor_component.py:1
+      💡 过多魔法数字
+      📝 检测到12个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\monitoring_alert_system_facade.py:1
+      💡 过多魔法数字
+      📝 检测到14个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\performance_monitor_component.py:1
+      💡 过多魔法数字
+      📝 检测到12个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\pool_components.py:1
+      💡 过多魔法数字
+      📝 检测到30个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\quota_components.py:1
+      💡 过多魔法数字
+      📝 检测到61个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\resource_components.py:1
+      💡 过多魔法数字
+      📝 检测到18个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\resource_optimization.py:14
+      💡 过长代码行
+      📝 代码行长度超过120字符: 131
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      from .config.config_classes import OptimizationConfig, ResourceAnalysisConfig, OptimizationReportConfig, ResourceOptimizationConfig
+      ```
+
+   📍 [LOW] src\infrastructure\resource\resource_optimization.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\system_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到9个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\ui\resource_dashboard.py:225
+      💡 过长代码行
+      📝 代码行长度超过120字符: 146
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      html.Span(f"[{alert.get('level', 'info').upper()}] ", style={'color': self._get_alert_color(alert.get('level', 'info'))}),
+      ```
+
+   📍 [LOW] src\infrastructure\resource\ui\resource_dashboard.py:1
+      💡 过多魔法数字
+      📝 检测到9个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\resource\utils\common_validators.py:1
+      💡 潜在性能优化点
+      📝 检测到23个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\adapters\postgresql_adapter.py:1
+      💡 过多魔法数字
+      📝 检测到6个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\core\base_components.py:1
+      💡 过多魔法数字
+      📝 检测到29个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\monitoring\log_backpressure_plugin.py:1
+      💡 过多魔法数字
+      📝 检测到16个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\monitoring\log_compressor_plugin.py:1
+      💡 过多魔法数字
+      📝 检测到25个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\monitoring\market_data_logger.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\optimization\ai_optimization_enhanced.py:1
+      💡 潜在性能优化点
+      📝 检测到18个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\optimization\ai_optimization_enhanced.py:1
+      💡 过多魔法数字
+      📝 检测到32个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\optimization\async_io_optimizer.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\optimization\async_io_optimizer.py:1
+      💡 过多魔法数字
+      📝 检测到11个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\optimization\benchmark_framework.py:1
+      💡 潜在性能优化点
+      📝 检测到27个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\optimization\benchmark_framework.py:1
+      💡 过多魔法数字
+      📝 检测到20个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\optimization\performance_baseline.py:98
+      💡 过长代码行
+      📝 代码行长度超过120字符: 122
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      change_percentage = ((current_execution_time - self.baseline_execution_time) / self.baseline_execution_time) * 100
+      ```
+
+   📍 [LOW] src\infrastructure\utils\optimization\performance_baseline.py:241
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def compare_performance_with_baseline(self, test_name: str, current_execution_time: float) -> Optional[Dict[str, Any]]:
+      ```
+
+   📍 [LOW] src\infrastructure\utils\optimization\performance_baseline.py:263
+      💡 过长代码行
+      📝 代码行长度超过120字符: 152
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def update_baseline_stats(self, test_name: str, execution_time: float, operations_per_second: float, memory_usage: float, cpu_usage: float) -> None:
+      ```
+
+   📍 [LOW] src\infrastructure\utils\optimization\smart_cache_optimizer.py:1
+      💡 潜在性能优化点
+      📝 检测到11个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\optimization\smart_cache_optimizer.py:1
+      💡 过多魔法数字
+      📝 检测到41个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\security\security_utils.py:1
+      💡 潜在性能优化点
+      📝 检测到11个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\security\security_utils.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\tools\data_utils.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\tools\date_utils.py:1
+      💡 过多魔法数字
+      📝 检测到25个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\tools\datetime_parser.py:1
+      💡 过多魔法数字
+      📝 检测到28个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\tools\market_aware_retry.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\tools\math_utils.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\advanced_connection_pool.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\utils\advanced_connection_pool.py:1
+      💡 过多魔法数字
+      📝 检测到12个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\common_components.py:1
+      💡 过多魔法数字
+      📝 检测到29个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\core.py:1
+      💡 过多魔法数字
+      📝 检测到19个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\disaster_tester.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\environment.py:1
+      💡 过多魔法数字
+      📝 检测到7个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\factory_components.py:1
+      💡 过多魔法数字
+      📝 检测到27个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\helper_components.py:1
+      💡 过多魔法数字
+      📝 检测到27个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\memory_object_pool.py:1
+      💡 过多魔法数字
+      📝 检测到34个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\optimized_components.py:1
+      💡 过多魔法数字
+      📝 检测到11个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\optimized_connection_pool.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\tool_components.py:1
+      💡 过多魔法数字
+      📝 检测到33个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\unified_query.py:1
+      💡 潜在性能优化点
+      📝 检测到12个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\infrastructure\utils\utils\unified_query.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\utils\utils\util_components.py:1
+      💡 过多魔法数字
+      📝 检测到27个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\infrastructure\versioning\data_version_manager.py:152
+      💡 过长代码行
+      📝 代码行长度超过120字符: 179
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      data_shape=getattr(data_model.data, 'shape', (0,)) if hasattr(data_model.data, 'shape') else (len(data_model.data) if hasattr(data_model.data, '__len__') else 0,),
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:487
+      💡 过长代码行
+      📝 代码行长度超过120字符: 145
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      <p>最后更新时间: <span class="timestamp">{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(dashboard['last_updated']))}</span></p>
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:510
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      <td class="status-{service_data.get('health', 'UNKNOWN')}">{service_data.get('health', 'UNKNOWN')}</td>
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:511
+      💡 过长代码行
+      📝 代码行长度超过120字符: 142
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      <td class="breaker-{service_data.get('breaker_state', 'UNKNOWN')}">{service_data.get('breaker_state', 'UNKNOWN')}</td>
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:513
+      💡 过长代码行
+      📝 代码行长度超过120字符: 140
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      <td class="timestamp">{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(service_data.get('last_updated', 0)))}</td>
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:566
+      💡 过长代码行
+      📝 代码行长度超过120字符: 121
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      metrics.append(f'service_circuit_breaker{{service="{service_name}"}} {breaker_value} {int(time.time())}')
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:570
+      💡 过长代码行
+      📝 代码行长度超过120字符: 127
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      metrics.append(f'service_degradation_level{{service="{service_name}"}} {degradation_level} {int(time.time())}')
+      ```
+
+   📍 [LOW] src\infrastructure\visual_monitor.py:1
+      💡 过多魔法数字
+      📝 检测到10个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+🏗️ 架构建议
+   ⚠️ 系统复杂度较高，建议模块化拆分
+   💡 建议增加异步处理支持
+
+================================================================================

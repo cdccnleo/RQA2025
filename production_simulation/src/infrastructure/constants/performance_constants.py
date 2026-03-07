@@ -1,0 +1,72 @@
+"""
+性能相关常量定义
+"""
+
+
+class PerformanceConstants:
+    """性能基准和优化相关常量"""
+    
+    # GC配置
+    GC_THRESHOLD_0 = 700
+    GC_THRESHOLD_1 = 10
+    GC_THRESHOLD_2 = 10
+    
+    # 性能基准（毫秒）
+    BENCHMARK_EXCELLENT = 10
+    BENCHMARK_GOOD = 50
+    BENCHMARK_ACCEPTABLE = 100
+    BENCHMARK_SLOW = 500
+    BENCHMARK_VERY_SLOW = 1000
+    
+    # 并发限制
+    MAX_CONCURRENT_REQUESTS = 1000
+    MAX_CONCURRENT_CONNECTIONS = 500
+    MAX_CONCURRENT_THREADS = 100
+    
+    # 批处理性能
+    OPTIMAL_BATCH_SIZE = 100
+    MAX_BATCH_SIZE = 1000
+    MIN_BATCH_SIZE = 10
+    
+    # 缓存性能
+    TARGET_CACHE_HIT_RATE = 80.0  # %
+    MIN_ACCEPTABLE_HIT_RATE = 60.0  # %
+    
+    # 数据库性能
+    DB_QUERY_TIMEOUT = 30  # 秒
+    DB_SLOW_QUERY_THRESHOLD = 1000  # ms
+    DB_CONNECTION_POOL_SIZE = 20
+    
+    # 网络性能
+    NETWORK_BANDWIDTH_WARNING = 80  # % of max
+    NETWORK_BANDWIDTH_CRITICAL = 90  # % of max
+    
+    # 内存性能
+    MEMORY_ALLOCATION_LIMIT = 512 * 1024 * 1024  # 512MB
+    MEMORY_GC_TRIGGER = 256 * 1024 * 1024  # 256MB
+    
+    # 延迟目标（毫秒）
+    LATENCY_P50 = 50
+    LATENCY_P90 = 100
+    LATENCY_P95 = 200
+    LATENCY_P99 = 500
+    
+    # 吞吐量目标（请求/秒）
+    THROUGHPUT_LOW = 100
+    THROUGHPUT_MEDIUM = 500
+    THROUGHPUT_HIGH = 1000
+    THROUGHPUT_VERY_HIGH = 5000
+    
+    # 资源限制
+    MAX_MEMORY_PER_PROCESS = 2 * 1024 * 1024 * 1024  # 2GB
+    MAX_CPU_CORES = 16
+    MAX_OPEN_FILES = 10000
+    
+    # 优化目标
+    CODE_COVERAGE_TARGET = 85.0  # %
+    DUPLICATE_CODE_THRESHOLD = 5.0  # %
+    COMPLEXITY_THRESHOLD = 15  # McCabe复杂度
+    MAX_FUNCTION_LENGTH = 50  # 行
+    MAX_CLASS_LENGTH = 300  # 行
+    MAX_PARAMETERS = 5  # 个
+

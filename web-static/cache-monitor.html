@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 缓存系统监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="common/websocket_manager.js"></script>
+    <script src="common/ui_components.js"></script>
+    <script src="common/toast.js"></script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .cache-level {
+            border-left: 4px solid;
+        }
+        .cache-level.l1 { border-color: #3b82f6; }
+        .cache-level.l2 { border-color: #10b981; }
+        .cache-level.l3 { border-color: #f59e0b; }
+        .cache-level.l4 { border-color: #8b5cf6; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">缓存系统监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-memory text-blue-600 mr-3"></i>
+                缓存系统监控
+            </h1>
+            <p class="text-gray-600">多级缓存状态、命中率统计和性能分析</p>
+        </div>
+
+        <!-- Cache Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bullseye text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">总命中率</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="overall-hit-rate">--%</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-database text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">缓存条目</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="cache-entries">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-hdd text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">缓存容量</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="cache-size">--</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-tachometer-alt text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均响应时间</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-response-time">-- ms</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Level Cache Status -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 cache-level l1 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">L1 内存缓存</h3>
+                    <i class="fas fa-microchip text-blue-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">命中率</span>
+                        <span class="font-semibold" id="l1-hit-rate">--%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">条目数</span>
+                        <span class="font-semibold" id="l1-entries">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">响应时间</span>
+                        <span class="font-semibold" id="l1-response">-- ns</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 cache-level l2 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">L2 Redis缓存</h3>
+                    <i class="fas fa-server text-green-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">命中率</span>
+                        <span class="font-semibold" id="l2-hit-rate">--%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">条目数</span>
+                        <span class="font-semibold" id="l2-entries">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">响应时间</span>
+                        <span class="font-semibold" id="l2-response">-- μs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 cache-level l3 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">L3 磁盘缓存</h3>
+                    <i class="fas fa-hdd text-yellow-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">命中率</span>
+                        <span class="font-semibold" id="l3-hit-rate">--%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">条目数</span>
+                        <span class="font-semibold" id="l3-entries">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">响应时间</span>
+                        <span class="font-semibold" id="l3-response">-- ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 cache-level l4 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">L4 数据湖</h3>
+                    <i class="fas fa-water text-purple-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">命中率</span>
+                        <span class="font-semibold" id="l4-hit-rate">--%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">数据集</span>
+                        <span class="font-semibold" id="l4-datasets">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">响应时间</span>
+                        <span class="font-semibold" id="l4-response">-- s</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">命中率趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="hitRateChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">响应时间趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="responseTimeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache Statistics Table -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">缓存统计详情</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">缓存级别</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">命中数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">未命中数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">命中率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">平均响应时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">容量使用率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cacheStatsBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Cache Operations -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">缓存操作</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="clearCache('l1')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                        <i class="fas fa-trash mr-2"></i>清空L1缓存
+                    </button>
+                    <button onclick="warmupCache()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                        <i class="fas fa-fire mr-2"></i>预热缓存
+                    </button>
+                    <button onclick="exportCacheStats()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                        <i class="fas fa-download mr-2"></i>导出统计
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let hitRateChart, responseTimeChart;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadCacheData() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/cache/stats'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                updateCacheStats(data);
+                updateCacheCharts(data);
+            } catch (error) {
+                console.error('加载缓存数据失败:', error);
+            }
+        }
+
+        function updateCacheStats(data) {
+            const stats = data.stats || {};
+            const levels = data.levels || {};
+
+            // 总体统计
+            document.getElementById('overall-hit-rate').textContent = 
+                stats.overall_hit_rate ? (stats.overall_hit_rate * 100).toFixed(2) + '%' : '--%';
+            document.getElementById('cache-entries').textContent = stats.total_entries || 0;
+            document.getElementById('cache-size').textContent = formatBytes(stats.total_size || 0);
+            document.getElementById('avg-response-time').textContent = 
+                stats.avg_response_time ? stats.avg_response_time.toFixed(2) + ' ms' : '-- ms';
+
+            // L1缓存
+            const l1 = levels.l1 || {};
+            document.getElementById('l1-hit-rate').textContent = 
+                l1.hit_rate ? (l1.hit_rate * 100).toFixed(2) + '%' : '--%';
+            document.getElementById('l1-entries').textContent = l1.entries || 0;
+            document.getElementById('l1-response').textContent = 
+                l1.avg_response_time ? l1.avg_response_time.toFixed(2) + ' ns' : '-- ns';
+
+            // L2缓存
+            const l2 = levels.l2 || {};
+            document.getElementById('l2-hit-rate').textContent = 
+                l2.hit_rate ? (l2.hit_rate * 100).toFixed(2) + '%' : '--%';
+            document.getElementById('l2-entries').textContent = l2.entries || 0;
+            document.getElementById('l2-response').textContent = 
+                l2.avg_response_time ? l2.avg_response_time.toFixed(2) + ' μs' : '-- μs';
+
+            // L3缓存
+            const l3 = levels.l3 || {};
+            document.getElementById('l3-hit-rate').textContent = 
+                l3.hit_rate ? (l3.hit_rate * 100).toFixed(2) + '%' : '--%';
+            document.getElementById('l3-entries').textContent = l3.entries || 0;
+            document.getElementById('l3-response').textContent = 
+                l3.avg_response_time ? l3.avg_response_time.toFixed(2) + ' ms' : '-- ms';
+
+            // L4缓存
+            const l4 = levels.l4 || {};
+            document.getElementById('l4-hit-rate').textContent = 
+                l4.hit_rate ? (l4.hit_rate * 100).toFixed(2) + '%' : '--%';
+            document.getElementById('l4-datasets').textContent = l4.datasets || 0;
+            document.getElementById('l4-response').textContent = 
+                l4.avg_response_time ? l4.avg_response_time.toFixed(2) + ' s' : '-- s';
+
+            // 更新统计表
+            renderCacheStatsTable(levels);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function renderCacheStatsTable(levels) {
+            const tbody = document.getElementById('cacheStatsBody');
+            
+            const levelData = [
+                { name: 'L1 内存缓存', key: 'l1', ...(levels.l1 || {}) },
+                { name: 'L2 Redis缓存', key: 'l2', ...(levels.l2 || {}) },
+                { name: 'L3 磁盘缓存', key: 'l3', ...(levels.l3 || {}) },
+                { name: 'L4 数据湖', key: 'l4', ...(levels.l4 || {}) }
+            ];
+
+            tbody.innerHTML = levelData.map(level => {
+                const hitRate = level.hit_rate || 0;
+                const missCount = level.miss_count || 0;
+                const hitCount = level.hit_count || 0;
+                const total = hitCount + missCount;
+                const usageRate = level.usage_rate || 0;
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                            ${level.name}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${hitCount.toLocaleString()}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${missCount.toLocaleString()}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: ${hitRate * 100}%"></div>
+                                </div>
+                                <span class="text-sm font-medium">${(hitRate * 100).toFixed(2)}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${level.avg_response_time ? level.avg_response_time.toFixed(2) + ' ms' : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${usageRate * 100}%"></div>
+                                </div>
+                                <span class="text-sm font-medium">${(usageRate * 100).toFixed(1)}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="clearCache('${level.key}')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateCacheCharts(data) {
+            const history = data.history || {};
+            const hitRateHistory = history.hit_rate || [];
+            const responseTimeHistory = history.response_time || [];
+
+            // 命中率趋势
+            if (hitRateChart && hitRateHistory.length > 0) {
+                const labels = hitRateHistory.map((_, i) => {
+                    const date = new Date();
+                    date.setMinutes(date.getMinutes() - (hitRateHistory.length - i));
+                    return date.toLocaleTimeString();
+                });
+                
+                hitRateChart.data.labels = labels;
+                hitRateChart.data.datasets[0].data = hitRateHistory.map(h => h.value || 0);
+                hitRateChart.update();
+            }
+
+            // 响应时间趋势
+            if (responseTimeChart && responseTimeHistory.length > 0) {
+                const labels = responseTimeHistory.map((_, i) => {
+                    const date = new Date();
+                    date.setMinutes(date.getMinutes() - (responseTimeHistory.length - i));
+                    return date.toLocaleTimeString();
+                });
+                
+                responseTimeChart.data.labels = labels;
+                responseTimeChart.data.datasets[0].data = responseTimeHistory.map(r => r.value || 0);
+                responseTimeChart.update();
+            }
+        }
+
+        async function clearCache(level) {
+            if (!confirm(`确定要清空${level.toUpperCase()}缓存吗？`)) return;
+            
+            try {
+                const response = await fetch(getApiBaseUrl(`/data/cache/clear/${level}`), {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    showSuccess('缓存已清空');
+                    await loadCacheData();
+                } else {
+                    showError('清空失败');
+                }
+            } catch (error) {
+                console.error('清空缓存失败:', error);
+                showError('清空失败: ' + error.message);
+            }
+        }
+
+        async function warmupCache() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/cache/warmup'), {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    showSuccess('缓存预热任务已启动');
+                } else {
+                    showError('预热失败');
+                }
+            } catch (error) {
+                console.error('预热缓存失败:', error);
+                showError('预热失败: ' + error.message);
+            }
+        }
+
+        function exportCacheStats() {
+            showInfo('导出统计功能开发中');
+        }
+
+        function refreshData() {
+            loadCacheData();
+        }
+
+        function initCharts() {
+            const hitRateCtx = document.getElementById('hitRateChart').getContext('2d');
+            hitRateChart = new Chart(hitRateCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '命中率',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1,
+                            ticks: {
+                                callback: function(value) {
+                                    return (value * 100).toFixed(0) + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+            responseTimeChart = new Chart(responseTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '响应时间 (ms)',
+                        data: [],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        // WebSocket连接管理
+        let wsDataCache = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadCacheData();
+            // 优先使用WebSocket实时更新，失败则使用轮询
+            try {
+                if (typeof connectDataCacheWebSocket === 'function') {
+                    wsDataCache = connectDataCacheWebSocket(
+                        (data) => {
+                            if (data.metrics) {
+                                updateCacheCharts({ history: data.history, metrics: data.metrics });
+                            }
+                        },
+                        () => {
+                            loadCacheData();
+                        }
+                    );
+                } else {
+                    setInterval(loadCacheData, 15000); // 每15秒刷新
+                }
+            } catch (error) {
+                console.warn('WebSocket连接失败，使用轮询模式:', error);
+                setInterval(loadCacheData, 15000); // 每15秒刷新
+            }
+        });
+    </script>
+</body>
+</html>
+

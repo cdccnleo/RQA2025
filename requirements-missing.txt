@@ -1,0 +1,197 @@
+# RQA2025 缺失依赖库补全包
+# 专门解决测试中发现的依赖缺失问题
+
+# ===========================================
+# 主要缺失依赖 (从测试错误中发现)
+# ===========================================
+
+# AWS SDK - 解决boto3缺失问题
+boto3==1.34.34
+botocore==1.34.34
+
+# Google Cloud SDK - 解决google.cloud缺失问题
+google-cloud-storage==2.14.0
+google-cloud-secret-manager==2.17.0
+google-cloud-pubsub==2.19.0
+google-auth==2.25.0
+
+# MySQL驱动 - 解决pymysql缺失问题
+pymysql==1.1.0
+
+# PostgreSQL驱动 - 解决psycopg2缺失问题
+psycopg2-binary==2.9.9
+
+# 时序数据库 - 解决influxdb缺失问题
+influxdb-client==1.40.0
+
+# Elasticsearch - 解决elasticsearch缺失问题
+elasticsearch==8.11.1
+
+# Kafka增强客户端 - 解决confluent-kafka缺失问题
+confluent-kafka==2.3.0
+
+# MinIO对象存储 - 解决minio缺失问题
+minio==7.2.0
+
+# Azure SDK - 补充Azure云服务支持
+azure-storage-blob==12.19.0
+azure-identity==1.15.0
+
+# ===========================================
+# 金融量化增强库
+# ===========================================
+
+# 技术分析库
+ta-lib==0.4.28
+
+# Yahoo Finance数据获取
+yfinance==0.2.18
+
+# 加密货币交易接口
+ccxt==4.1.64
+
+# 量化金融库
+quantlib==1.33
+
+# ===========================================
+# 数据科学增强库
+# ===========================================
+
+# 统计建模
+statsmodels==0.14.1
+
+# 时间序列预测
+prophet==1.1.5
+
+# 异常检测
+pyod==1.1.2
+
+# 特征工程
+featuretools==1.28.0
+
+# ===========================================
+# 机器学习增强库
+# ===========================================
+
+# 模型解释
+shap==0.44.1
+lime==0.2.0.1
+
+# 超参数优化
+optuna==3.4.0
+
+# ONNX支持
+onnx==1.15.0
+onnxruntime==1.16.3
+
+# ===========================================
+# 可视化和Web界面
+# ===========================================
+
+# 数据可视化
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.17.0
+
+# Web应用框架
+streamlit==1.29.0
+dash==2.14.0
+dash-bootstrap-components==1.5.0
+
+# ===========================================
+# 容器化和部署
+# ===========================================
+
+# Kubernetes Python客户端
+kubernetes==28.1.0
+
+# Docker Python SDK
+docker==6.1.3
+
+# ===========================================
+# 性能分析和调试
+# ===========================================
+
+# 内存分析
+memory-profiler==0.61.0
+
+# 代码性能分析
+line-profiler==4.1.2
+
+# ===========================================
+# 安全增强库
+# ===========================================
+
+# 安全扫描
+bandit==1.7.6
+
+# 依赖安全检查
+safety==2.3.5
+
+# ===========================================
+# 开发工具增强
+# ===========================================
+
+# 代码格式化
+isort==5.13.2
+
+# 类型检查增强
+mypy==1.7.1
+
+# 测试增强
+pytest-mock==3.12.0
+pytest-xdist==3.5.0
+
+# 调试工具
+ipdb==0.13.13
+pdbpp==0.10.3
+
+# Jupyter支持
+jupyter==1.0.0
+notebook==7.0.6
+
+# ===========================================
+# 分布式计算
+# ===========================================
+
+# Dask分布式计算
+dask==2023.12.1
+distributed==2023.12.1
+
+# Ray分布式计算
+ray==2.8.1
+
+# ===========================================
+# 文档和API
+# ===========================================
+
+# Sphinx文档
+sphinx==7.2.6
+
+# MkDocs文档
+mkdocs==1.5.3
+mkdocs-material==9.4.8
+
+# ===========================================
+# 安装说明
+# ===========================================
+#
+# 1. 安装所有缺失依赖：
+#    pip install -r requirements-missing.txt
+#
+# 2. 或者只安装核心缺失依赖：
+#    pip install boto3 pymysql influxdb-client elasticsearch confluent-kafka minio
+#
+# 3. 云服务相关依赖（按需安装）：
+#    # AWS
+#    pip install boto3 botocore
+#
+#    # Google Cloud
+#    pip install google-cloud-storage google-cloud-secret-manager google-auth
+#
+#    # Azure
+#    pip install azure-storage-blob azure-identity
+#
+# 4. 验证安装：
+#    python -c "import boto3, pymysql, influxdb_client; print('所有依赖安装成功！')"
+

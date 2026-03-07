@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "name": "RQA2025架构一致性检查配置",
+  "description": "定义架构一致性检查的规则和配置",
+
+  "check_rules": {
+    "business_flow": {
+      "name": "业务流程一致性检查",
+      "description": "检查业务流程描述在文档中的一致性",
+      "pattern": "数据采集 → 特征工程 → 模型预测 → 策略决策 → 风控检查 → 交易执行 → 监控反馈",
+      "min_occurrences": 2,
+      "severity": "high"
+    },
+
+    "layer_structure": {
+      "name": "架构层次结构检查",
+      "description": "检查架构层次定义的一致性",
+      "core_layers": [
+        "核心服务层",
+        "基础设施层",
+        "数据采集层",
+        "API网关层",
+        "特征处理层",
+        "模型推理层",
+        "策略决策层",
+        "风控合规层",
+        "交易执行层",
+        "监控反馈层"
+      ],
+      "min_coverage": 0.8,
+      "severity": "high"
+    },
+
+    "event_types": {
+      "name": "事件类型一致性检查",
+      "description": "检查事件类型与架构层次的对应关系",
+      "required_groups": [
+        "核心服务层",
+        "基础设施层",
+        "数据采集层",
+        "API网关层",
+        "特征处理层",
+        "模型推理层",
+        "策略决策层",
+        "风控合规层",
+        "交易执行层",
+        "监控反馈层"
+      ],
+      "min_coverage": 0.8,
+      "severity": "medium"
+    },
+
+    "naming_convention": {
+      "name": "命名规范检查",
+      "description": "检查命名是否符合架构规范",
+      "rules": {
+        "layer_suffix": "层",
+        "event_suffix": "事件",
+        "service_suffix": "服务"
+      },
+      "severity": "low"
+    }
+  },
+
+  "check_schedule": {
+    "daily": [
+      "event_types",
+      "naming_convention"
+    ],
+    "weekly": [
+      "business_flow",
+      "layer_structure"
+    ],
+    "monthly": [
+      "dependency_consistency"
+    ]
+  },
+
+  "notification": {
+    "email": {
+      "enabled": true,
+      "recipients": ["architecture@company.com", "devops@company.com"],
+      "high_severity_only": true
+    },
+    "slack": {
+      "enabled": false,
+      "channel": "#architecture-checks",
+      "webhook_url": ""
+    }
+  },
+
+  "reporting": {
+    "output_format": "json",
+    "report_path": "reports/architecture_consistency/",
+    "history_days": 30
+  },
+
+  "metadata": {
+    "created": "2025-01-27",
+    "updated": "2025-01-27",
+    "author": "架构组",
+    "contact": "architecture@company.com"
+  }
+}

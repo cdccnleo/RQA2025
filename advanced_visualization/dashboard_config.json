@@ -1,0 +1,387 @@
+{
+  "created_at": "2025-12-03T17:15:16.755014",
+  "dashboards": {
+    "system": {
+      "title": "RQA2026 系统监控仪表板",
+      "created_at": "2025-12-03T17:15:16.755014",
+      "panels": [
+        {
+          "id": "system_status",
+          "title": "系统状态概览",
+          "type": "status_cards",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          },
+          "data": {
+            "cpu_usage": 35.2,
+            "memory_usage": 62.8,
+            "disk_usage": 34.1,
+            "services_online": 4
+          },
+          "visualization": "cards"
+        },
+        {
+          "id": "performance_metrics",
+          "title": "性能指标监控",
+          "type": "chart",
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 8,
+            "height": 4
+          },
+          "data": {
+            "labels": [
+              "fusion_engine",
+              "quantum_engine",
+              "ai_engine",
+              "bci_engine",
+              "web_interface"
+            ],
+            "datasets": [
+              {
+                "label": "平均响应时间 (ms)",
+                "data": [
+                  45.0,
+                  82.0,
+                  156.0,
+                  28.0,
+                  118.0
+                ],
+                "borderColor": "#3498db",
+                "backgroundColor": "#3498db20",
+                "yAxisID": "y"
+              },
+              {
+                "label": "成功率 (%)",
+                "data": [
+                  98.0,
+                  95.0,
+                  92.0,
+                  99.0,
+                  97.0
+                ],
+                "borderColor": "#e74c3c",
+                "backgroundColor": "#e74c3c20",
+                "yAxisID": "y1"
+              }
+            ]
+          },
+          "visualization": "line_chart",
+          "options": {
+            "scales": {
+              "y": {
+                "title": {
+                  "display": true,
+                  "text": "响应时间 (ms)"
+                }
+              },
+              "y1": {
+                "position": "right",
+                "title": {
+                  "display": true,
+                  "text": "成功率 (%)"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "engine_status",
+          "title": "引擎状态网络",
+          "type": "network",
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 4,
+            "height": 4
+          },
+          "data": {
+            "nodes": [
+              {
+                "id": "fusion_engine",
+                "name": "Fusion Engine",
+                "group": "engine",
+                "status": "healthy",
+                "size": 20
+              },
+              {
+                "id": "quantum_engine",
+                "name": "Quantum Engine",
+                "group": "engine",
+                "status": "healthy",
+                "size": 20
+              },
+              {
+                "id": "ai_engine",
+                "name": "Ai Engine",
+                "group": "engine",
+                "status": "unhealthy",
+                "size": 20
+              },
+              {
+                "id": "bci_engine",
+                "name": "Bci Engine",
+                "group": "engine",
+                "status": "healthy",
+                "size": 20
+              },
+              {
+                "id": "web_interface",
+                "name": "Web Interface",
+                "group": "engine",
+                "status": "healthy",
+                "size": 20
+              }
+            ],
+            "links": [
+              {
+                "source": "fusion_engine",
+                "target": "quantum_engine",
+                "value": 1
+              },
+              {
+                "source": "fusion_engine",
+                "target": "ai_engine",
+                "value": 1
+              },
+              {
+                "source": "fusion_engine",
+                "target": "bci_engine",
+                "value": 1
+              },
+              {
+                "source": "web_interface",
+                "target": "fusion_engine",
+                "value": 1
+              }
+            ]
+          },
+          "visualization": "force_directed_graph"
+        },
+        {
+          "id": "alerts_overview",
+          "title": "告警统计",
+          "type": "chart",
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 3
+          },
+          "data": {
+            "labels": [
+              "warning",
+              "critical"
+            ],
+            "datasets": [
+              {
+                "label": "告警数量",
+                "data": [
+                  1,
+                  1
+                ],
+                "backgroundColor": [
+                  "#e74c3c",
+                  "#c0392b"
+                ]
+              }
+            ]
+          },
+          "visualization": "doughnut_chart"
+        }
+      ],
+      "layout": "grid",
+      "theme": "default"
+    },
+    "business_intelligence": {
+      "title": "商业智能分析仪表板",
+      "created_at": "2025-12-03T17:15:16.755014",
+      "panels": [
+        {
+          "id": "kpi_metrics",
+          "title": "关键绩效指标",
+          "type": "kpi_cards",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          },
+          "data": {
+            "system_performance": {
+              "value": 98.5,
+              "target": 99.0,
+              "status": "near_target"
+            },
+            "data_quality": {
+              "value": 95.2,
+              "target": 96.0,
+              "status": "approaching_target"
+            },
+            "risk_coverage": {
+              "value": 87.3,
+              "target": 90.0,
+              "status": "below_target"
+            },
+            "user_satisfaction": {
+              "value": 4.7,
+              "target": 4.8,
+              "status": "at_target"
+            }
+          },
+          "visualization": "metric_cards"
+        },
+        {
+          "id": "trend_analysis",
+          "title": "趋势分析与洞察",
+          "type": "insights",
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 8,
+            "height": 4
+          },
+          "data": {
+            "trend_prediction": [
+              {
+                "type": "trend_prediction",
+                "insight": "市场波动性呈上升趋势"
+              }
+            ],
+            "anomaly_alert": [
+              {
+                "type": "anomaly_alert",
+                "insight": "检测到异常交易模式"
+              }
+            ]
+          },
+          "visualization": "insight_cards"
+        },
+        {
+          "id": "forecast_analysis",
+          "title": "预测分析",
+          "type": "forecast",
+          "position": {
+            "x": 8,
+            "y": 2,
+            "width": 4,
+            "height": 4
+          },
+          "data": [
+            {
+              "name": "market_volatility",
+              "forecast": [
+                0.18,
+                0.19,
+                0.21
+              ]
+            },
+            {
+              "name": "portfolio_returns",
+              "forecast": [
+                0.025,
+                0.028,
+                0.031
+              ]
+            }
+          ],
+          "visualization": "forecast_chart"
+        }
+      ],
+      "layout": "grid",
+      "theme": "cool"
+    },
+    "analytics": {
+      "title": "高级分析仪表板",
+      "created_at": "2025-12-03T17:15:16.755014",
+      "panels": [
+        {
+          "id": "data_quality",
+          "title": "数据质量评估",
+          "type": "radar",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 4
+          },
+          "data": {
+            "market_data": {
+              "completeness": 0.95,
+              "accuracy": 0.8999999999999999,
+              "consistency": 0.88,
+              "timeliness": 0.92
+            },
+            "portfolio_data": {
+              "completeness": 0.95,
+              "accuracy": 0.8999999999999999,
+              "consistency": 0.88,
+              "timeliness": 0.92
+            }
+          },
+          "visualization": "radar_chart"
+        },
+        {
+          "id": "correlation_analysis",
+          "title": "数据相关性分析",
+          "type": "heatmap",
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 4
+          },
+          "data": {
+            "matrix": [
+              [
+                1.0,
+                0.65
+              ],
+              [
+                0.65,
+                1.0
+              ]
+            ],
+            "labels": [
+              "market",
+              "portfolio"
+            ]
+          },
+          "visualization": "heatmap"
+        },
+        {
+          "id": "anomaly_detection",
+          "title": "异常检测结果",
+          "type": "anomaly_chart",
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 12,
+            "height": 3
+          },
+          "data": {
+            "market_data": {
+              "detected": 3,
+              "rate": 0.02,
+              "threshold": 0
+            },
+            "portfolio_data": {
+              "detected": 1,
+              "rate": 0.005,
+              "threshold": 0
+            }
+          },
+          "visualization": "bar_chart"
+        }
+      ],
+      "layout": "grid",
+      "theme": "nature"
+    }
+  },
+  "realtime_enabled": true,
+  "update_interval": 5
+}

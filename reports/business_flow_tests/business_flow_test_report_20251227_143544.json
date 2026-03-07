@@ -1,0 +1,597 @@
+{
+  "report_title": "RQA2025业务流程测试报告",
+  "generation_time": "2025-12-27T14:35:44.640964",
+  "test_configuration": {
+    "test_framework": "BusinessProcessTestCase",
+    "concurrent_execution": false,
+    "performance_monitoring": true,
+    "detailed_logging": true,
+    "report_generation": true
+  },
+  "overall_summary": {
+    "total_flows_tested": 3,
+    "passed_flows": 3,
+    "failed_flows": 0,
+    "error_flows": 0,
+    "overall_success_rate": 1.0,
+    "total_execution_time": 0.008999109268188477,
+    "average_execution_time": 0.0029997030893961587,
+    "test_status": "PASSED"
+  },
+  "flow_details": {
+    "strategy_development": {
+      "flow_name": "量化策略开发流程",
+      "status": "passed",
+      "execution_time": 0.004000186920166016,
+      "success_rate": 1.0,
+      "steps_completed": 8,
+      "total_steps": 8,
+      "step_results": [
+        {
+          "step_name": "策略构思阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "strategy_id": "test_strategy_001",
+            "strategy_name": "Test Strategy",
+            "parameters_validated": true
+          }
+        },
+        {
+          "step_name": "数据收集阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "data_points": 365,
+            "symbol": "AAPL",
+            "date_range": "2023-01-01 00:00:00 to 2023-12-31 00:00:00",
+            "data_quality": "passed"
+          }
+        },
+        {
+          "step_name": "特征工程阶段",
+          "status": "passed",
+          "execution_time": 0.003000020980834961,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "features_count": 7,
+            "data_points": 365,
+            "feature_names": [
+              "returns",
+              "sma_20",
+              "rsi",
+              "macd",
+              "macd_signal",
+              "bb_upper",
+              "bb_lower"
+            ],
+            "quality_check": "passed"
+          }
+        },
+        {
+          "step_name": "模型训练阶段",
+          "status": "passed",
+          "execution_time": 0.0010001659393310547,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "model_type": "momentum",
+            "training_samples": 365,
+            "accuracy": 0.4410958904109589,
+            "model_trained": true
+          }
+        },
+        {
+          "step_name": "策略回测阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "backtest_period": "2023-01-01 00:00:00 to 2023-12-31 00:00:00",
+            "total_return": "15.00%",
+            "sharpe_ratio": 1.8,
+            "max_drawdown": "8.00%",
+            "win_rate": "65.00%"
+          }
+        },
+        {
+          "step_name": "性能评估阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "evaluation_report": {
+              "strategy_name": "Test Strategy",
+              "evaluation_date": "2025-12-27T14:35:44.639964",
+              "performance_score": "excellent",
+              "recommendation": "deploy",
+              "risk_metrics": {
+                "sharpe_ratio_check": true,
+                "drawdown_check": true,
+                "return_check": true,
+                "overall_risk_score": "low"
+              }
+            },
+            "risk_assessment": {
+              "sharpe_ratio_check": true,
+              "drawdown_check": true,
+              "return_check": true,
+              "overall_risk_score": "low"
+            },
+            "performance_score": "excellent",
+            "deployment_recommended": true
+          }
+        },
+        {
+          "step_name": "策略部署阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "deployment_id": "deploy_test_strategy_001_20251227_143544",
+            "environment": "production",
+            "checks_passed": 4,
+            "total_checks": 4
+          }
+        },
+        {
+          "step_name": "监控优化阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "monitoring_configured": true,
+            "alerts_count": 0,
+            "optimization_scheduled": true,
+            "current_metrics": {
+              "sharpe_ratio": 1.8,
+              "drawdown": 0.08,
+              "cpu_usage": 45,
+              "memory_usage": 60,
+              "latency": 150
+            }
+          }
+        }
+      ],
+      "performance_summary": {
+        "total_execution_time": 0.004000186920166016,
+        "average_step_time": 0.000500023365020752,
+        "success_rate": 1.0,
+        "error_count": 0
+      }
+    },
+    "trading_execution": {
+      "flow_name": "交易执行流程",
+      "status": "passed",
+      "execution_time": 0.0,
+      "success_rate": 1.0,
+      "steps_completed": 8,
+      "total_steps": 8,
+      "step_results": [
+        {
+          "step_name": "市场监控阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "data_quality": "high",
+            "latency_ms": 1.0,
+            "data_fields": 11,
+            "monitoring_active": true
+          }
+        },
+        {
+          "step_name": "信号生成阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "total_signals": 3,
+            "valid_signals": 3,
+            "strong_signals": 1,
+            "signal_quality": "high"
+          }
+        },
+        {
+          "step_name": "风险检查阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "approved_signals": 1,
+            "rejected_signals": 2,
+            "approval_rate": 0.3333333333333333,
+            "average_risk_score": 0.1157878021906799
+          }
+        },
+        {
+          "step_name": "订单生成阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "orders_created": 1,
+            "total_quantity": 100,
+            "order_types": [
+              "market"
+            ],
+            "orders_validated": true
+          }
+        },
+        {
+          "step_name": "智能路由阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "orders_routed": 1,
+            "average_latency_ms": 1.3819874441957491,
+            "total_routing_cost": 1.0,
+            "venues_used": 1,
+            "optimization_applied": true
+          }
+        },
+        {
+          "step_name": "订单执行阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "orders_executed": 1,
+            "total_filled": 100,
+            "fill_rate": 1.0,
+            "total_volume": 15026.070587592409,
+            "average_execution_time_ms": 48.3849772517675
+          }
+        },
+        {
+          "step_name": "结果反馈阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "feedback_summary": {
+              "total_results": 1,
+              "successful_executions": 1,
+              "failed_executions": 0,
+              "notifications_sent": 1,
+              "feedback_channels": [
+                "email",
+                "websocket",
+                "database"
+              ]
+            },
+            "notifications_sent": 1,
+            "channels_used": [
+              "email",
+              "websocket",
+              "database"
+            ],
+            "feedback_complete": true
+          }
+        },
+        {
+          "step_name": "持仓管理阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "positions_updated": 1,
+            "total_portfolio_value": 212565.0,
+            "position_count": 2,
+            "risk_exposure": 0.5295556653259003,
+            "portfolio_rebalanced": true
+          }
+        }
+      ],
+      "performance_summary": {
+        "total_execution_time": 0.0,
+        "average_step_time": 0.0,
+        "success_rate": 1.0,
+        "error_count": 0
+      }
+    },
+    "risk_control": {
+      "flow_name": "风险控制流程",
+      "status": "passed",
+      "execution_time": 0.0,
+      "success_rate": 1.0,
+      "steps_completed": 6,
+      "total_steps": 6,
+      "step_results": [
+        {
+          "step_name": "实时监测阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "metrics_collected": 8,
+            "monitoring_timestamp": "2025-12-27T14:35:44.640964",
+            "data_quality": "high",
+            "alerts_triggered": 0
+          }
+        },
+        {
+          "step_name": "风险评估阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "assessments_completed": 5,
+            "risk_distribution": {
+              "low": 3,
+              "medium": 1,
+              "high": 0,
+              "critical": 1
+            },
+            "overall_risk_score": 0.2813493237415544,
+            "max_risk_level": "critical",
+            "assessment_timestamp": "2025-12-27T14:35:44.640964"
+          }
+        },
+        {
+          "step_name": "风险拦截阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "interception_summary": {
+              "total_assessments": 5,
+              "actions_taken": 1,
+              "interceptions": 1,
+              "mitigations": 0,
+              "effectiveness_score": 0.2
+            },
+            "actions_detail": [
+              {
+                "action_type": "interception",
+                "risk_type": "operational_risk",
+                "risk_level": "critical",
+                "action_taken": "position_reduction",
+                "reduction_percentage": 0.2,
+                "reason": "high_operational_risk_detected",
+                "timestamp": "2025-12-27T14:35:44.640964"
+              }
+            ],
+            "risk_mitigated": true,
+            "timestamp": "2025-12-27T14:35:44.640964"
+          }
+        },
+        {
+          "step_name": "合规检查阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "compliance_summary": {
+              "total_checks": 6,
+              "compliant_checks": 4,
+              "violations_found": 2,
+              "compliance_rate": 0.6666666666666666,
+              "critical_violations": 0
+            },
+            "checks_detail": [
+              {
+                "rule_name": "max_single_stock",
+                "compliant": false,
+                "severity": "high",
+                "checked_at": "2025-12-27T14:35:44.640964",
+                "violation_details": "Rule max_single_stock violated"
+              },
+              {
+                "rule_name": "max_sector_exposure",
+                "compliant": true,
+                "severity": "medium",
+                "checked_at": "2025-12-27T14:35:44.640964",
+                "violation_details": null
+              },
+              {
+                "rule_name": "daily_trade_limit",
+                "compliant": false,
+                "severity": "high",
+                "checked_at": "2025-12-27T14:35:44.640964",
+                "violation_details": "Rule daily_trade_limit violated"
+              },
+              {
+                "rule_name": "concentration_limit",
+                "compliant": true,
+                "severity": "critical",
+                "checked_at": "2025-12-27T14:35:44.640964",
+                "violation_details": null
+              },
+              {
+                "rule_name": "capital_adequacy",
+                "compliant": true,
+                "severity": "critical",
+                "checked_at": "2025-12-27T14:35:44.640964",
+                "violation_details": null
+              },
+              {
+                "rule_name": "reporting_frequency",
+                "compliant": true,
+                "severity": "medium",
+                "checked_at": "2025-12-27T14:35:44.640964",
+                "violation_details": null
+              }
+            ],
+            "overall_compliant": false,
+            "audit_timestamp": "2025-12-27T14:35:44.640964"
+          }
+        },
+        {
+          "step_name": "风险报告阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "report_summary": {
+              "total_reports": 3,
+              "report_types": [
+                "daily_risk_summary",
+                "compliance_report",
+                "intervention_log"
+              ],
+              "total_sections": 9,
+              "distribution_ready": true,
+              "archived": true
+            },
+            "reports_detail": [
+              {
+                "report_type": "daily_risk_summary",
+                "title": "Daily Risk Summary Report",
+                "sections": 4,
+                "data_sources": [
+                  "monitoring_data",
+                  "assessments",
+                  "interceptions",
+                  "compliance"
+                ],
+                "generated_at": "2025-12-27T14:35:44.640964",
+                "valid_until": "2025-12-28T14:35:44.640964"
+              },
+              {
+                "report_type": "compliance_report",
+                "title": "Compliance Report Report",
+                "sections": 3,
+                "data_sources": [
+                  "monitoring_data",
+                  "assessments",
+                  "interceptions",
+                  "compliance"
+                ],
+                "generated_at": "2025-12-27T14:35:44.640964",
+                "valid_until": "2025-12-28T14:35:44.640964"
+              },
+              {
+                "report_type": "intervention_log",
+                "title": "Intervention Log Report",
+                "sections": 2,
+                "data_sources": [
+                  "monitoring_data",
+                  "assessments",
+                  "interceptions",
+                  "compliance"
+                ],
+                "generated_at": "2025-12-27T14:35:44.640964",
+                "valid_until": "2025-12-28T14:35:44.640964"
+              }
+            ],
+            "generation_timestamp": "2025-12-27T14:35:44.640964",
+            "ready_for_distribution": true
+          }
+        },
+        {
+          "step_name": "告警通知阶段",
+          "status": "passed",
+          "execution_time": 0.0,
+          "error_message": null,
+          "output_data": {
+            "status": "success",
+            "notification_summary": {
+              "total_alerts": 3,
+              "alert_types": [
+                "high_risk_detected",
+                "interceptions_triggered",
+                "compliance_violations"
+              ],
+              "channels_used": [
+                "sms",
+                "email",
+                "dashboard",
+                "phone"
+              ],
+              "urgency_levels": [
+                "high",
+                "medium",
+                "critical"
+              ],
+              "delivery_confirmed": true
+            },
+            "alerts_detail": [
+              {
+                "alert_type": "high_risk_detected",
+                "title": "高风险检测告警",
+                "message": "检测到投资组合存在高风险因素",
+                "urgency": "high",
+                "channels": [
+                  "email",
+                  "sms",
+                  "dashboard"
+                ],
+                "recipients": [
+                  "risk_manager@company.com",
+                  "compliance_officer@company.com"
+                ],
+                "sent_at": "2025-12-27T14:35:44.640964",
+                "delivery_status": "delivered"
+              },
+              {
+                "alert_type": "interceptions_triggered",
+                "title": "风险拦截执行告警",
+                "message": "系统已执行风险拦截措施",
+                "urgency": "medium",
+                "channels": [
+                  "email",
+                  "dashboard"
+                ],
+                "recipients": [
+                  "risk_manager@company.com",
+                  "compliance_officer@company.com"
+                ],
+                "sent_at": "2025-12-27T14:35:44.640964",
+                "delivery_status": "delivered"
+              },
+              {
+                "alert_type": "compliance_violations",
+                "title": "合规违规告警",
+                "message": "检测到合规性违规",
+                "urgency": "critical",
+                "channels": [
+                  "email",
+                  "sms",
+                  "phone"
+                ],
+                "recipients": [
+                  "risk_manager@company.com",
+                  "compliance_officer@company.com"
+                ],
+                "sent_at": "2025-12-27T14:35:44.640964",
+                "delivery_status": "delivered"
+              }
+            ],
+            "timestamp": "2025-12-27T14:35:44.640964",
+            "stakeholders_notified": true
+          }
+        }
+      ],
+      "performance_summary": {
+        "total_execution_time": 0.0,
+        "average_step_time": 0.0,
+        "success_rate": 1.0,
+        "error_count": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+groups:
+- name: rqa_alerts
+  rules:
+  - alert: HighErrorRate
+    annotations:
+      description: '错误率超过5% (阈值: 5.0)'
+      summary: 错误率超过5%
+    expr: error_rate > 5
+    for: 2m
+    labels:
+      service: rqa
+      severity: critical

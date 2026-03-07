@@ -1,0 +1,50 @@
+
+no tests ran in 0.20s
+
+
+=== STDERR ===
+
+Traceback (most recent call last):
+  File "C:\Users\AILeo\miniconda3\lib\runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\AILeo\miniconda3\lib\runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\pytest\__main__.py", line 9, in <module>
+    raise SystemExit(pytest.console_main())
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\config\__init__.py", line 201, in console_main
+    code = main()
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\config\__init__.py", line 175, in main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\main.py", line 336, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\main.py", line 331, in wrap_session
+    config._ensure_unconfigure()
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\config\__init__.py", line 1131, in _ensure_unconfigure
+    self._cleanup_stack.close()
+  File "C:\Users\AILeo\miniconda3\lib\contextlib.py", line 540, in close
+    self.__exit__(None, None, None)
+  File "C:\Users\AILeo\miniconda3\lib\contextlib.py", line 532, in __exit__
+    raise exc_details[1]
+  File "C:\Users\AILeo\miniconda3\lib\contextlib.py", line 517, in __exit__
+    if cb(*exc_details):
+  File "C:\Users\AILeo\miniconda3\lib\contextlib.py", line 405, in _exit_wrapper
+    callback(*args, **kwds)
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\capture.py", line 778, in stop_global_capturing
+    self._global_capturing.pop_outerr_to_orig()
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\capture.py", line 659, in pop_outerr_to_orig
+    out, err = self.readouterr()
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\capture.py", line 706, in readouterr
+    out = self.out.snap() if self.out else ""
+  File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\capture.py", line 592, in snap
+    res = self.tmpfile.read()
+  File "C:\Users\AILeo\miniconda3\lib\codecs.py", line 322, in decode
+    (result, consumed) = self._buffer_decode(data, self.errors, final)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x94 in position 1: invalid start byte

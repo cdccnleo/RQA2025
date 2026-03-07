@@ -1,0 +1,145 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+16 workers [4 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows 
+[gw0] [ 25%] FAILED tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows 
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_least_connections_prefers_lower_active_tasks_node 
+[gw0] [ 50%] FAILED tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_least_connections_prefers_lower_active_tasks_node 
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_weighted_round_robin_prefers_higher_weight_node 
+[gw0] [ 75%] FAILED tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_weighted_round_robin_prefers_higher_weight_node 
+
+================================== FAILURES ===================================
+___ test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows ____
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:42: in test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows
+    r1, r2 = _run(run_two())
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:8: in _run
+    return loop.run_until_complete(coro)
+C:\Users\AILeo\miniconda3\lib\asyncio\base_events.py:647: in run_until_complete
+    return future.result()
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:38: in run_two
+    r1 = await loader.load_data_distributed("s1", {})
+src\data\distributed\distributed_data_loader.py:170: in load_data_distributed
+    result = await self._execute_task(task_id)
+src\data\distributed\distributed_data_loader.py:261: in _execute_task
+    result = SimpleDataModel(
+tests\conftest.py:66: in __init__
+    super().__init__(data=data, **kwargs)
+tests\conftest.py:61: in __init__
+    self.data = data or {}
+C:\Users\AILeo\miniconda3\lib\site-packages\pandas\core\generic.py:1577: in __nonzero__
+    raise ValueError(
+E   ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+---------------------------- Captured stderr call -----------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task 1848c911-ec60-4912-8e03-832bed1c6aa5 for data source s1
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task 1848c911-ec60-4912-8e03-832bed1c6aa5
+INFO:src.data.distributed.distributed_data_loader:Assigned task 1848c911-ec60-4912-8e03-832bed1c6aa5 to node n1
+ERROR:src.data.distributed.distributed_data_loader:Task 1848c911-ec60-4912-8e03-832bed1c6aa5 failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+------------------------------ Captured log call ------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 1848c911-ec60-4912-8e03-832bed1c6aa5 for data source s1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task 1848c911-ec60-4912-8e03-832bed1c6aa5
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 1848c911-ec60-4912-8e03-832bed1c6aa5 to node n1
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task 1848c911-ec60-4912-8e03-832bed1c6aa5 failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+___________ test_least_connections_prefers_lower_active_tasks_node ____________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:58: in test_least_connections_prefers_lower_active_tasks_node
+    _run(run_one())
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:8: in _run
+    return loop.run_until_complete(coro)
+C:\Users\AILeo\miniconda3\lib\asyncio\base_events.py:647: in run_until_complete
+    return future.result()
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:57: in run_one
+    return await loader.load_data_distributed("s", {})
+src\data\distributed\distributed_data_loader.py:170: in load_data_distributed
+    result = await self._execute_task(task_id)
+src\data\distributed\distributed_data_loader.py:261: in _execute_task
+    result = SimpleDataModel(
+tests\conftest.py:66: in __init__
+    super().__init__(data=data, **kwargs)
+tests\conftest.py:61: in __init__
+    self.data = data or {}
+C:\Users\AILeo\miniconda3\lib\site-packages\pandas\core\generic.py:1577: in __nonzero__
+    raise ValueError(
+E   ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+---------------------------- Captured stderr call -----------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788 for data source s
+INFO:src.data.distributed.distributed_data_loader:Selected node n2 for task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788
+INFO:src.data.distributed.distributed_data_loader:Assigned task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788 to node n2
+ERROR:src.data.distributed.distributed_data_loader:Task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788 failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+------------------------------ Captured log call ------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788 for data source s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n2 for task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788 to node n2
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task 14ed24e1-2c61-4cde-a1ba-6cc1228b5788 failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+-------------------------- Captured stderr teardown ---------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+____________ test_weighted_round_robin_prefers_higher_weight_node _____________
+[gw0] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:73: in test_weighted_round_robin_prefers_higher_weight_node
+    _run(run_one())
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:8: in _run
+    return loop.run_until_complete(coro)
+C:\Users\AILeo\miniconda3\lib\asyncio\base_events.py:647: in run_until_complete
+    return future.result()
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:72: in run_one
+    return await loader.load_data_distributed("s", {})
+src\data\distributed\distributed_data_loader.py:170: in load_data_distributed
+    result = await self._execute_task(task_id)
+src\data\distributed\distributed_data_loader.py:261: in _execute_task
+    result = SimpleDataModel(
+tests\conftest.py:66: in __init__
+    super().__init__(data=data, **kwargs)
+tests\conftest.py:61: in __init__
+    self.data = data or {}
+C:\Users\AILeo\miniconda3\lib\site-packages\pandas\core\generic.py:1577: in __nonzero__
+    raise ValueError(
+E   ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+---------------------------- Captured stderr call -----------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task c0971da7-cad3-4e1d-9040-081ddf344042 for data source s
+INFO:src.data.distributed.distributed_data_loader:Selected node n2 for task c0971da7-cad3-4e1d-9040-081ddf344042
+INFO:src.data.distributed.distributed_data_loader:Assigned task c0971da7-cad3-4e1d-9040-081ddf344042 to node n2
+ERROR:src.data.distributed.distributed_data_loader:Task c0971da7-cad3-4e1d-9040-081ddf344042 failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+------------------------------ Captured log call ------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task c0971da7-cad3-4e1d-9040-081ddf344042 for data source s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n2 for task c0971da7-cad3-4e1d-9040-081ddf344042
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task c0971da7-cad3-4e1d-9040-081ddf344042 to node n2
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task c0971da7-cad3-4e1d-9040-081ddf344042 failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+-------------------------- Captured stderr teardown ---------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+=========================== short test summary info ===========================
+FAILED tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows
+FAILED tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_least_connections_prefers_lower_active_tasks_node
+FAILED tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_weighted_round_robin_prefers_higher_weight_node
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 3 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!! xdist.dsession.Interrupted: stopping after 3 failures !!!!!!!!!!!!
+======================== 3 failed in 67.92s (0:01:07) =========================

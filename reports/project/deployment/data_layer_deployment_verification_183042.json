@@ -1,0 +1,102 @@
+{
+  "verification_info": {
+    "timestamp": "2025-07-31T06:12:22.501191",
+    "overall_status": "warning",
+    "verification_duration": 13.49010944366455
+  },
+  "performance_metrics": {
+    "performance_score": 0.425,
+    "quality_score": 0.9179999999999999,
+    "error_count": 0
+  },
+  "issues": {
+    "warnings": [
+      "stock_data 加载时间过长: 13.27s",
+      "memory_cache 响应时间过长: 13.269s",
+      "redis_cache 响应时间过长: 0.016s",
+      "监控端点不可达: http://localhost:9090/api/v1/targets - HTTPConnectionPool(host='localhost', port=9090): Max retries exceeded with url: /api/v1/targets (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001591A240580>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+      "监控端点不可达: http://localhost:3000/api/health - HTTPConnectionPool(host='localhost', port=3000): Max retries exceeded with url: /api/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001591A24D550>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+      "监控端点不可达: http://localhost:8080/metrics - HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001591A28B910>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))"
+    ],
+    "recommendations": [
+      "建议优化数据加载性能，考虑增加缓存层",
+      "建议关注警告信息，及时处理潜在问题"
+    ]
+  },
+  "detailed_results": [
+    {
+      "status": "warning",
+      "metrics": {
+        "stock_data_load_time": 13.268811702728271,
+        "news_data_load_time": 0.11040973663330078,
+        "financial_data_load_time": 0.1096198558807373,
+        "total_load_time": 13.48884129524231
+      },
+      "issues": [
+        "stock_data 加载时间过长: 13.27s"
+      ]
+    },
+    {
+      "status": "warning",
+      "metrics": {
+        "memory_cache_response_time": 13.268811702728271,
+        "disk_cache_response_time": 0.015999794006347656,
+        "redis_cache_response_time": 0.016000747680664062,
+        "cache_hit_rate": 0.85
+      },
+      "issues": [
+        "memory_cache 响应时间过长: 13.269s",
+        "redis_cache 响应时间过长: 0.016s"
+      ]
+    },
+    {
+      "status": "passed",
+      "metrics": {
+        "overall_quality_score": 0.9179999999999999,
+        "completeness": 0.95,
+        "accuracy": 0.92,
+        "consistency": 0.88,
+        "timeliness": 0.9,
+        "validity": 0.94
+      },
+      "issues": []
+    },
+    {
+      "status": "passed",
+      "metrics": {
+        "error_rate": 0.005,
+        "total_requests": 1000,
+        "error_count": 5,
+        "error_types": {
+          "network_error": 2,
+          "data_validation_error": 2,
+          "cache_error": 1
+        }
+      },
+      "issues": []
+    },
+    {
+      "status": "passed",
+      "metrics": {
+        "cpu_usage": 6.0,
+        "memory_usage": 26.7,
+        "disk_usage": 70.2,
+        "memory_available": 46.36106491088867
+      },
+      "issues": []
+    },
+    {
+      "status": "warning",
+      "metrics": {
+        "http://localhost:9090/api/v1/targets_status": "unreachable",
+        "http://localhost:3000/api/health_status": "unreachable",
+        "http://localhost:8080/metrics_status": "unreachable"
+      },
+      "issues": [
+        "监控端点不可达: http://localhost:9090/api/v1/targets - HTTPConnectionPool(host='localhost', port=9090): Max retries exceeded with url: /api/v1/targets (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001591A240580>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+        "监控端点不可达: http://localhost:3000/api/health - HTTPConnectionPool(host='localhost', port=3000): Max retries exceeded with url: /api/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001591A24D550>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+        "监控端点不可达: http://localhost:8080/metrics - HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /metrics (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001591A28B910>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))"
+      ]
+    }
+  ]
+}

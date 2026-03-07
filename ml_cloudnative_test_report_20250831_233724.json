@@ -1,0 +1,305 @@
+{
+  "test_summary": {
+    "total_tests": 11,
+    "passed_tests": 11,
+    "failed_tests": 0,
+    "error_tests": 0,
+    "success_rate": 1.0,
+    "total_duration": 21.284788,
+    "start_time": "2025-08-31T23:37:03.596351",
+    "end_time": "2025-08-31T23:37:24.881139"
+  },
+  "test_results": {
+    "test_ml_dependencies": {
+      "status": "PASSED",
+      "duration": 0.0,
+      "details": {
+        "dependencies": {
+          "numpy": {
+            "status": "OK",
+            "version": "unknown"
+          },
+          "torch": {
+            "status": "OK",
+            "version": "unknown"
+          },
+          "sklearn": {
+            "status": "OK",
+            "version": "unknown"
+          },
+          "pandas": {
+            "status": "OK",
+            "version": "unknown"
+          },
+          "matplotlib": {
+            "status": "OK",
+            "version": "unknown"
+          },
+          "flask": {
+            "status": "OK",
+            "version": "unknown"
+          },
+          "psutil": {
+            "status": "OK",
+            "version": "unknown"
+          }
+        },
+        "all_ok": true
+      }
+    },
+    "test_deep_learning_predictor": {
+      "status": "PASSED",
+      "duration": 3.9984829425811768,
+      "details": {
+        "lstm_training": true,
+        "prediction": true,
+        "autoencoder_training": true,
+        "anomaly_detection": true,
+        "model_info": {
+          "lstm_models": [
+            "test_cpu_usage"
+          ],
+          "autoencoder_models": [
+            "test_cpu_usage"
+          ],
+          "device": "cuda",
+          "model_dir": "models",
+          "training_params": {
+            "lstm": {
+              "seq_length": 24,
+              "batch_size": 32,
+              "epochs": 100,
+              "learning_rate": 0.001,
+              "hidden_size": 64,
+              "num_layers": 2,
+              "dropout": 0.2
+            },
+            "autoencoder": {
+              "batch_size": 32,
+              "epochs": 50,
+              "learning_rate": 0.001,
+              "hidden_size": 64,
+              "latent_size": 32
+            }
+          }
+        }
+      }
+    },
+    "test_performance_analyzer_ml_integration": {
+      "status": "PASSED",
+      "duration": 8.764673471450806,
+      "details": {
+        "ml_enabled": true,
+        "ml_status": {
+          "prediction_enabled": true,
+          "anomaly_detection_enabled": true,
+          "trained_models": {},
+          "predictor_info": {
+            "lstm_models": [
+              "test_cpu_usage"
+            ],
+            "autoencoder_models": [
+              "test_cpu_usage"
+            ],
+            "device": "cuda",
+            "model_dir": "models",
+            "training_params": {
+              "lstm": {
+                "seq_length": 24,
+                "batch_size": 32,
+                "epochs": 100,
+                "learning_rate": 0.001,
+                "hidden_size": 64,
+                "num_layers": 2,
+                "dropout": 0.2
+              },
+              "autoencoder": {
+                "batch_size": 32,
+                "epochs": 50,
+                "learning_rate": 0.001,
+                "hidden_size": 64,
+                "latent_size": 32
+              }
+            }
+          }
+        },
+        "data_points": 0
+      }
+    },
+    "test_alert_analyzer_ml_integration": {
+      "status": "PASSED",
+      "duration": 0.0013780593872070312,
+      "details": {
+        "ml_enabled": true,
+        "ml_status": {
+          "ml_enabled": true,
+          "trained_models": {},
+          "predictor_info": {
+            "lstm_models": [
+              "test_cpu_usage"
+            ],
+            "autoencoder_models": [
+              "test_cpu_usage"
+            ],
+            "device": "cuda",
+            "model_dir": "models",
+            "training_params": {
+              "lstm": {
+                "seq_length": 24,
+                "batch_size": 32,
+                "epochs": 100,
+                "learning_rate": 0.001,
+                "hidden_size": 64,
+                "num_layers": 2,
+                "dropout": 0.2
+              },
+              "autoencoder": {
+                "batch_size": 32,
+                "epochs": 50,
+                "learning_rate": 0.001,
+                "hidden_size": 64,
+                "latent_size": 32
+              }
+            }
+          },
+          "total_history_metrics": 10,
+          "total_alerts": 0
+        },
+        "metrics_count": 10
+      }
+    },
+    "test_service_communication": {
+      "status": "PASSED",
+      "duration": 0.0010020732879638672,
+      "details": {
+        "services_registered": 1,
+        "service_healthy": false,
+        "communicator_status": {
+          "initialized": false,
+          "services": {
+            "test-service": {
+              "endpoint": "http://localhost:5001",
+              "healthy": false
+            }
+          },
+          "message_handlers": []
+        }
+      }
+    },
+    "test_service_discovery": {
+      "status": "PASSED",
+      "duration": 4.085405588150024,
+      "details": {
+        "service_registered": true,
+        "service_discovered": true,
+        "discovery_status": {
+          "discovery_server": "http://localhost:8761",
+          "local_services": {
+            "64cef71e-825b-44bc-ac51-3dee7257dd17": {
+              "service_name": "test-discovery-service",
+              "endpoint": "192.168.31.147:5002",
+              "status": "UP"
+            }
+          },
+          "load_balancer_stats": {
+            "test-discovery-service": {
+              "total_instances": 1,
+              "up_instances": 1,
+              "down_instances": 0
+            }
+          },
+          "heartbeat_running": false
+        }
+      }
+    },
+    "test_api_gateway": {
+      "status": "PASSED",
+      "duration": 0.0032243728637695312,
+      "details": {
+        "routes_registered": 1,
+        "gateway_status": {
+          "host": "0.0.0.0",
+          "port": 8080,
+          "routes": 1,
+          "services": 2,
+          "metrics": {
+            "total_requests": 0,
+            "successful_requests": 0,
+            "failed_requests": 0,
+            "success_rate": 0.0,
+            "avg_response_time": 0.0,
+            "active_connections": 0,
+            "rate_limited_requests": 0,
+            "auth_failures": 0
+          }
+        }
+      }
+    },
+    "test_docker_build": {
+      "status": "PASSED",
+      "duration": 0.33017969131469727,
+      "details": {
+        "dockerfile_exists": true,
+        "docker_available": true
+      }
+    },
+    "test_kubernetes_manifests": {
+      "status": "PASSED",
+      "duration": 0.0,
+      "details": {
+        "k8s_dir_exists": true,
+        "files_status": {
+          "namespace.yaml": true,
+          "configmap.yaml": true,
+          "secret.yaml": true,
+          "pvc.yaml": true,
+          "alert-intelligence-deployment.yaml": true,
+          "trading-monitor-deployment.yaml": true,
+          "performance-analyzer-deployment.yaml": true,
+          "ingress.yaml": true,
+          "hpa.yaml": true
+        },
+        "all_required_files_exist": true
+      }
+    },
+    "test_helm_chart": {
+      "status": "PASSED",
+      "duration": 0.0009989738464355469,
+      "details": {
+        "helm_dir_exists": true,
+        "chart_file_exists": true,
+        "values_file_exists": true,
+        "templates_dir_exists": true,
+        "template_files_status": {
+          "_helpers.tpl": true,
+          "service.yaml": true,
+          "deployment.yaml": true,
+          "configmap.yaml": true,
+          "pvc.yaml": true,
+          "hpa.yaml": true,
+          "ingress.yaml": true,
+          "tests/test-connection.yaml": true
+        },
+        "all_templates_exist": true
+      }
+    },
+    "test_end_to_end_integration": {
+      "status": "PASSED",
+      "duration": 4.093453645706177,
+      "details": {
+        "service_registered": true,
+        "service_discovered": true,
+        "routes_registered": 2,
+        "components_initialized": true
+      }
+    }
+  },
+  "recommendations": [
+    "所有测试通过，系统运行正常"
+  ],
+  "system_info": {
+    "python_version": "3.9.23 (main, Jun  5 2025, 13:25:08) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "win32",
+    "working_directory": "C:\\PythonProject\\RQA2025"
+  }
+}

@@ -1,0 +1,22 @@
+log_aggregation:
+  elasticsearch:
+    hosts:
+    - elasticsearch:9200
+    index_pattern: rqa-logs-*
+  kibana:
+    url: http://kibana:5601
+log_parsers:
+- fields:
+  - timestamp
+  - level
+  - service
+  - message
+  name: application_logs
+  pattern: '(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \[(\w+)\] (\w+): (.+)'
+- fields:
+  - error_message
+  name: error_logs
+  pattern: 'ERROR: (.+)'
+retention:
+  days: 30
+  max_size: 10GB

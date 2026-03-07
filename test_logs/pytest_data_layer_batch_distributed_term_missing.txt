@@ -1,0 +1,80 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\distributed\test_cluster_manager.py::test_register_and_unregister_updates_resources PASSED [  1%]
+tests\unit\data\distributed\test_cluster_manager.py::test_update_status_and_get_status_summary PASSED [  2%]
+tests\unit\data\distributed\test_cluster_manager.py::test_cluster_stats_handles_zero_nodes PASSED [  3%]
+tests\unit\data\distributed\test_ddl_ai2_monitoring_failure.py::test_monitor_thread_exits_quickly_when_no_nodes_and_shutdown_is_fast PASSED [  5%]
+tests\unit\data\distributed\test_ddl_ai2_monitoring_failure.py::test_handle_task_failure_releases_node_counter_and_not_negative 
+-------------------------------- live log call --------------------------------
+2025-11-17 01:26:13 [   ERROR] src.data.distributed.distributed_data_loader: Task 1209e3d6-b965-4cb4-a6b1-67dc207d9fd1 failed: df-boom-2
+PASSED                                                                   [  6%]
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows PASSED [  7%]
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_least_connections_prefers_lower_active_tasks_node PASSED [  9%]
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_weighted_round_robin_prefers_higher_weight_node PASSED [ 10%]
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py::test_update_stats_average_and_throughput_changes_after_multiple_tasks PASSED [ 11%]
+tests\unit\data\distributed\test_ddl_ai_basic.py::test_basic_success_flow_updates_stats_and_task_states PASSED [ 12%]
+tests\unit\data\distributed\test_ddl_ai_basic.py::test_health_check_marks_offline_on_heartbeat_timeout 
+-------------------------------- live log call --------------------------------
+2025-11-17 01:26:21 [ WARNING] src.data.distributed.distributed_data_loader: Node n1 heartbeat timeout
+PASSED                                                                   [ 14%]
+tests\unit\data\distributed\test_ddl_ai_concurrency.py::test_two_concurrent_tasks_distributed_to_two_nodes_and_counters_released PASSED [ 15%]
+tests\unit\data\distributed\test_ddl_ai_errors.py::test_select_node_raises_when_no_available_nodes PASSED [ 16%]
+tests\unit\data\distributed\test_ddl_ai_errors.py::test_execute_task_failure_path_updates_stats 
+-------------------------------- live log call --------------------------------
+2025-11-17 01:26:23 [   ERROR] src.data.distributed.distributed_data_loader: Task d0df0e3c-c32f-49de-a9a7-b97dffb807a5 failed: df-boom
+PASSED                                                                   [ 18%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_create_task_registers_in_queue PASSED [ 19%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_register_node_updates_stats PASSED [ 20%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_get_cluster_status_reflects_nodes_and_tasks PASSED [ 22%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_load_data_distributed_completes_with_stubs PASSED [ 23%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_handle_task_failure_marks_task 
+-------------------------------- live log call --------------------------------
+2025-11-17 01:26:23 [   ERROR] src.data.distributed.distributed_data_loader: Task a86367fd-a858-4d80-9eb3-5058b1b7410a failed: boom
+PASSED                                                                   [ 24%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_select_node_round_robin PASSED [ 25%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_select_node_without_available_nodes_raises PASSED [ 27%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_assign_task_updates_node_state PASSED [ 28%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_execute_task_success_updates_stats PASSED [ 29%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_execute_task_failure_triggers_handler PASSED [ 31%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_update_stats_computes_average_and_throughput PASSED [ 32%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_check_node_health_marks_offline 
+-------------------------------- live log call --------------------------------
+2025-11-17 01:26:23 [ WARNING] src.data.distributed.distributed_data_loader: Node stale heartbeat timeout
+PASSED                                                                   [ 33%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_update_monitoring_stats_counts_active_nodes PASSED [ 35%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_start_monitoring_thread_invokes_checks PASSED [ 36%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_shutdown_joins_monitor_thread PASSED [ 37%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_load_balancer_strategies PASSED [ 38%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_load_balancer_stats_tracking PASSED [ 40%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_loader_init_handles_logger_failure PASSED [ 41%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_loader_del_swallows_shutdown_error PASSED [ 42%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_create_distributed_data_loader_factory PASSED [ 44%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_convenience_load_data_function PASSED [ 45%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_monitoring_thread_handles_internal_exception PASSED [ 46%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_check_node_health_no_nodes PASSED [ 48%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_check_node_health_handles_logger_warning_failure PASSED [ 49%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_shutdown_handles_join_and_logger_errors PASSED [ 50%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_load_balancer_select_node_handles_no_nodes PASSED [ 51%]
+tests\unit\data\distributed\test_distributed_data_loader.py::test_load_balancer_get_stats_without_updates PASSED [ 53%]
+tests\unit\data\distributed\test_distributed_data_loader_edges.py::test_select_node_no_available_raises PASSED [ 54%]
+tests\unit\data\distributed\test_distributed_data_loader_edges.py::test_end_to_end_load_with_fast_sleep PASSED [ 55%]
+tests\unit\data\distributed\test_distributed_data_loader_edges.py::test_handle_task_failure_and_stats 
+-------------------------------- live log call --------------------------------
+2025-11-17 01:26:24 [   ERROR] src.data.distributed.distributed_data_loader: Task 01d17203-bbc0-4c8e-af99-55c176b26c92 failed: boom
+PASSED                                                                   [ 57%]
+tests\unit\data\distributed\test_distributed_data_loader_edges.py::test_load_balancer_strategies_selection PASSED [ 58%]
+tests\unit\data\distributed\test_distributed_data_loader_edges.py::test_monitor_thread_exits_without_nodes PASSED [ 59%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_select_node_fallback_to_registered_when_no_online PASSED [ 61%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_select_node_fallback_to_first_registered PASSED [ 62%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_select_node_raises_when_no_nodes_at_all PASSED [ 63%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_assign_task_updates_node_status_to_online FAILED [ 64%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_assign_task_updates_active_nodes_count PASSED [ 66%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_assign_task_handles_exception_gracefully PASSED [ 67%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_active_nodes_count_consistency PASSED [ 68%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_fallback_node_selection_with_full_capacity PASSED [ 70%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_multiple_tasks_fallback_to_same_node PASSED [ 71%]
+tests\unit\data\distributed\test_distributed_data_loader_fallback_edges.py::test_active_nodes_count_with_mixed_status_changes FAILED [ 72%]
+tests\unit\data\distributed\test_distributed_loader_and_sharding_unit.py::test_distributed_loader_round_robin_and_execution PASSED [ 74%]
+tests\unit\data\distributed\test_distributed_loader_and_sharding_unit.py::test_sharding_manager_hash_range_time PASSED [ 75%]
+tests\unit\data\distributed\test_load_balancer.py::test_round_robin_selection_cycles_through_nodes PASSED [ 76%]

@@ -1,0 +1,252 @@
+# RQA2025 生产环境配置文件
+# Production Configuration for RQA2025
+
+# 应用配置
+application:
+  name: "RQA2025 数据采集平台"
+  version: "2.0.0"
+  environment: "production"
+  debug: false
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  timeout: 30
+  cors_origins:
+    - "http://localhost:3000"  # Grafana
+    - "http://localhost:80"    # Nginx
+    - "https://yourdomain.com" # 生产域名
+
+# 数据库配置
+database:
+  type: "postgresql"
+  host: "postgres"
+  port: 5432
+  database: "rqa2025_prod"
+  user: "rqa2025_admin"
+  password: "${DB_PASSWORD}"
+  pool_size: 20
+  max_overflow: 30
+  connection_timeout: 30
+
+# TimescaleDB配置
+timescale:
+  enable_hypertables: true
+  chunk_size_days: 7
+  compression_policy_days: 30
+  retention_policy_days: 3650  # 10年
+  max_background_workers: 8
+  license: "apache2"
+  enable_compression: true
+  compression_segmentby: "symbol"
+  compression_orderby: "date DESC"
+
+# Redis配置
+redis:
+  host: "redis"
+  port: 6379
+  password: "${REDIS_PASSWORD}"
+  db: 0
+  max_connections: 50
+  socket_timeout: 5
+  socket_connect_timeout: 5
+
+# MinIO配置
+minio:
+  endpoint: "minio:9000"
+  access_key: "minioadmin"
+  secret_key: "minioadmin"
+  secure: false
+  region: "us-east-1"
+  default_bucket: "rqa2025-data"
+  backup_bucket: "rqa2025-backups"
+  temp_bucket: "rqa2025-temp"
+  max_file_size_mb: 100
+  chunk_size_mb: 8
+  retention_days: 365
+  cache_enabled: true
+  cache_ttl_seconds: 3600
+
+# 数据采集配置
+data_collection:
+  # 历史数据采集服务
+  historical_service:
+    max_concurrent_batches: 3
+    quality_threshold: 0.85
+    adapters:
+      akshare:
+        priority: 1
+        rate_limit: 60
+        timeout: 30
+        retry_count: 3
+      yahoo:
+        priority: 2
+        rate_limit: 30
+        timeout: 60
+        retry_count: 5
+      local_backup:
+        backup_dir: "/app/data/backup"
+
+  # 工作流配置
+  workflow:
+    max_concurrent_workflows: 1
+    default_quality_threshold: 0.85
+    enable_progress_tracking: true
+    notification_enabled: true
+
+  # 补全调度器配置
+  complement_scheduler:
+    enabled: true
+    check_interval_seconds: 300  # 5分钟检查一次
+    max_concurrent_complements: 2
+
+  # 批次处理器配置
+  batch_processor:
+    default_batch_size_days: 30
+    min_batch_size_days: 1
+    max_batch_size_days: 365
+    max_concurrent_batches: 5
+
+# 性能优化配置
+performance:
+  max_concurrent_downloads: 10
+  max_concurrent_parsing: 5
+  batch_size: 1000
+  cache_ttl_seconds: 3600
+  memory_limit_mb: 1024
+  cpu_limit_percent: 80.0
+  network_timeout_seconds: 30
+  retry_attempts: 3
+
+# 分布式调度配置
+distributed_scheduler:
+  node_id: "node_001"
+  host: "app"
+  port: 8000
+  max_concurrent_tasks: 5
+  capabilities: ["stock", "index", "fund", "bond", "futures"]
+  redis_config:
+    host: "redis"
+    port: 6379
+    password: "${REDIS_PASSWORD}"
+
+# AI驱动优化配置
+ai_optimizer:
+  enabled: true
+  model_dir: "/app/models"
+  retraining_interval_hours: 24
+  feature_count: 13
+  redis_config:
+    host: "redis"
+    port: 6379
+    password: "${REDIS_PASSWORD}"
+
+# 实时数据处理配置
+realtime_processor:
+  enabled: true
+  max_queue_size: 10000
+  batch_size: 100
+  update_interval_seconds: 1.0
+  buffer_timeout_seconds: 5.0
+  retry_attempts: 3
+
+# 监控配置
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    push_gateway_url: "http://prometheus:9090"
+    job_name: "rqa2025-data-collection"
+    interval_seconds: 15
+
+  grafana:
+    enabled: true
+    url: "http://grafana:3000"
+    api_key: "${GRAFANA_API_KEY}"
+    dashboard_refresh_interval: 30
+
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file_path: "/app/logs/rqa2025.log"
+    max_file_size: "100 MB"
+    backup_count: 5
+
+# 安全配置
+security:
+  jwt_secret: "${JWT_SECRET}"
+  api_key_required: true
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 100
+    burst_limit: 200
+
+  encryption:
+    enabled: true
+    key: "${ENCRYPTION_KEY}"
+    algorithm: "AES256"
+
+# 备份配置
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  retention_days: 30
+  compression: true
+  encryption: true
+  destinations:
+    - type: "minio"
+      bucket: "rqa2025-backups"
+    - type: "local"
+      path: "/app/backups"
+
+# 通知配置
+notifications:
+  enabled: true
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    username: "${EMAIL_USER}"
+    password: "${EMAIL_PASSWORD}"
+    recipients: ["admin@rqa2025.com"]
+
+  webhook:
+    enabled: false
+    url: "${WEBHOOK_URL}"
+    headers:
+      Authorization: "Bearer ${WEBHOOK_TOKEN}"
+
+# 外部服务集成
+external_services:
+  # 数据源API密钥
+  akshare:
+    enabled: true
+    api_key: "${AKSHARE_API_KEY}"
+
+  yahoo:
+    enabled: true
+    api_key: "${YAHOO_API_KEY}"
+
+  tushare:
+    enabled: true
+    token: "${TUSHARE_TOKEN}"
+
+  # 监控服务
+  sentry:
+    enabled: false
+    dsn: "${SENTRY_DSN}"
+
+  # 日志服务
+  elasticsearch:
+    enabled: false
+    hosts: ["elasticsearch:9200"]
+    index_prefix: "rqa2025-"
+
+# 调试配置（生产环境应设为false）
+debug:
+  enabled: false
+  log_sql_queries: false
+  profile_enabled: false
+  memory_profiling: false

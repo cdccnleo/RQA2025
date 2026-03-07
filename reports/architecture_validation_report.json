@@ -1,0 +1,1585 @@
+{
+  "metrics": {
+    "total_files": 1254,
+    "total_lines": 299647,
+    "total_classes": 3379,
+    "total_functions": 15734,
+    "total_modules": 25,
+    "average_complexity": 238.95295055821373,
+    "test_coverage": 0.0,
+    "coupling_score": 0.0,
+    "cohesion_score": 0.0,
+    "maintainability_index": 0.0
+  },
+  "layers": {
+    "core": {
+      "layer_name": "核心服务层",
+      "component_count": 19,
+      "total_lines": 11598,
+      "complexity_score": 696.8421052631579,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "infrastructure",
+        "core"
+      ],
+      "issues": []
+    },
+    "infrastructure": {
+      "layer_name": "基础设施层",
+      "component_count": 635,
+      "total_lines": 135324,
+      "complexity_score": 247.4236220472441,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "trading",
+        "infrastructure",
+        "data",
+        "adapters",
+        "utils"
+      ],
+      "issues": []
+    },
+    "data": {
+      "layer_name": "数据采集层",
+      "component_count": 188,
+      "total_lines": 40407,
+      "complexity_score": 254.37765957446808,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "infrastructure",
+        "utils",
+        "data",
+        "engine"
+      ],
+      "issues": []
+    },
+    "gateway": {
+      "layer_name": "API网关层",
+      "component_count": 2,
+      "total_lines": 317,
+      "complexity_score": 173.5,
+      "test_coverage": 0.0,
+      "dependencies": [],
+      "issues": []
+    },
+    "features": {
+      "layer_name": "特征处理层",
+      "component_count": 94,
+      "total_lines": 26475,
+      "complexity_score": 340.3723404255319,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "features",
+        "infrastructure",
+        "engine",
+        "acceleration",
+        "utils"
+      ],
+      "issues": []
+    },
+    "ml": {
+      "layer_name": "模型推理层",
+      "component_count": 3,
+      "total_lines": 182,
+      "complexity_score": 63.333333333333336,
+      "test_coverage": 0.0,
+      "dependencies": [],
+      "issues": []
+    },
+    "backtest": {
+      "layer_name": "策略决策层",
+      "component_count": 24,
+      "total_lines": 10178,
+      "complexity_score": 492.4166666666667,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "trading",
+        "backtest",
+        "infrastructure",
+        "utils"
+      ],
+      "issues": []
+    },
+    "trading": {
+      "layer_name": "交易执行层",
+      "component_count": 114,
+      "total_lines": 32592,
+      "complexity_score": 338.29824561403507,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "trading",
+        "features",
+        "infrastructure",
+        "engine",
+        "data",
+        "models",
+        "acceleration",
+        "utils",
+        "core"
+      ],
+      "issues": []
+    },
+    "risk": {
+      "layer_name": "风控合规层",
+      "component_count": 9,
+      "total_lines": 3244,
+      "complexity_score": 441.55555555555554,
+      "test_coverage": 0.0,
+      "dependencies": [],
+      "issues": []
+    },
+    "engine": {
+      "layer_name": "监控反馈层",
+      "component_count": 64,
+      "total_lines": 17609,
+      "complexity_score": 323.140625,
+      "test_coverage": 0.0,
+      "dependencies": [
+        "infrastructure",
+        "engine",
+        "data",
+        "acceleration",
+        "utils"
+      ],
+      "issues": []
+    }
+  },
+  "dependencies": {
+    "total_modules": 22,
+    "total_dependencies": 38,
+    "circular_dependencies": [
+      [
+        "trading",
+        "features",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "features",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "features",
+        "engine",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "engine",
+        "data",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "engine",
+        "data",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "features",
+        "engine",
+        "acceleration",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "engine",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "features",
+        "acceleration",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "features",
+        "utils",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "features",
+        "utils",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "engine",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "engine",
+        "data",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "engine",
+        "data",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "engine",
+        "acceleration",
+        "features",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "engine",
+        "acceleration",
+        "features",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "engine",
+        "acceleration",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "engine",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "engine",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "data",
+        "engine",
+        "acceleration",
+        "features",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "engine",
+        "acceleration",
+        "features",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "engine",
+        "acceleration",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "data",
+        "engine",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "utils",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "models",
+        "utils",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "data",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "data",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "acceleration",
+        "features",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "acceleration",
+        "features",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "acceleration",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "models",
+        "engine",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "features",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "features",
+        "engine",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "features",
+        "engine",
+        "data",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "features",
+        "engine",
+        "data",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "features",
+        "engine",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "features",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "acceleration",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "utils",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "utils",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "utils",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "core",
+        "infrastructure"
+      ],
+      [
+        "trading",
+        "core",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "trading",
+        "core",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "features",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "features",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "features",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "features",
+        "acceleration"
+      ],
+      [
+        "features",
+        "utils",
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "features",
+        "utils",
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration"
+      ],
+      [
+        "infrastructure",
+        "data"
+      ],
+      [
+        "infrastructure",
+        "data",
+        "utils"
+      ],
+      [
+        "infrastructure",
+        "data",
+        "engine"
+      ],
+      [
+        "infrastructure",
+        "data",
+        "engine",
+        "acceleration",
+        "utils"
+      ],
+      [
+        "infrastructure",
+        "data",
+        "engine",
+        "utils"
+      ],
+      [
+        "infrastructure",
+        "adapters"
+      ],
+      [
+        "infrastructure",
+        "adapters",
+        "data"
+      ],
+      [
+        "infrastructure",
+        "adapters",
+        "data",
+        "utils"
+      ],
+      [
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine"
+      ],
+      [
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "acceleration",
+        "utils"
+      ],
+      [
+        "infrastructure",
+        "adapters",
+        "data",
+        "engine",
+        "utils"
+      ],
+      [
+        "infrastructure",
+        "utils"
+      ],
+      [
+        "data",
+        "engine"
+      ]
+    ],
+    "centrality": {
+      "acceleration": 0.2857142857142857,
+      "trading": 0.5238095238095237,
+      "features": 0.2857142857142857,
+      "utils": 0.42857142857142855,
+      "adapters": 0.14285714285714285,
+      "infrastructure": 0.6190476190476191,
+      "data": 0.38095238095238093,
+      "analysis": 0.0,
+      "backtest": 0.14285714285714285,
+      "core": 0.14285714285714285,
+      "engine": 0.38095238095238093,
+      "deployment": 0.0,
+      "ensemble": 0.0,
+      "gateway": 0.0,
+      "integration": 0.047619047619047616,
+      "ml": 0.0,
+      "models": 0.14285714285714285,
+      "monitoring": 0.0,
+      "risk": 0.0,
+      "services": 0.09523809523809523,
+      "tuning": 0.0,
+      "__pycache__": 0.0
+    },
+    "strongly_connected_components": [
+      [
+        "trading",
+        "features",
+        "infrastructure",
+        "engine",
+        "data",
+        "adapters",
+        "models",
+        "acceleration",
+        "utils",
+        "core"
+      ],
+      [
+        "analysis"
+      ],
+      [
+        "backtest"
+      ],
+      [
+        "deployment"
+      ],
+      [
+        "ensemble"
+      ],
+      [
+        "gateway"
+      ],
+      [
+        "integration"
+      ],
+      [
+        "ml"
+      ],
+      [
+        "monitoring"
+      ],
+      [
+        "risk"
+      ],
+      [
+        "services"
+      ],
+      [
+        "tuning"
+      ],
+      [
+        "__pycache__"
+      ]
+    ]
+  },
+  "patterns": {
+    "design_patterns": [
+      "工厂模式 (Factory Pattern)",
+      "观察者模式 (Observer Pattern)",
+      "策略模式 (Strategy Pattern)"
+    ],
+    "architectural_patterns": [
+      "分层架构 (Layered Architecture)",
+      "事件驱动架构 (Event-Driven Architecture)"
+    ],
+    "anti_patterns": [
+      "上帝类 (God Class)",
+      "圈复杂度过高 (High Cyclomatic Complexity)"
+    ]
+  },
+  "quality": {
+    "complexity_analysis": {
+      "average_complexity": 238.95295055821373,
+      "max_complexity": 696.8421052631579,
+      "complexity_distribution": "中等到高"
+    },
+    "coupling_analysis": {
+      "coupling_score": 1.7272727272727273,
+      "coupling_level": "中"
+    },
+    "cohesion_analysis": {
+      "cohesion_score": 4.656407221071323,
+      "cohesion_level": "中"
+    },
+    "test_quality": {
+      "test_files_count": 1821,
+      "test_to_code_ratio": 1.4521531100478469,
+      "test_quality": "良好"
+    }
+  },
+  "issues": [
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> infrastructure",
+      "location": "模块: trading, features, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: trading, features, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: trading, features, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> engine -> infrastructure",
+      "location": "模块: trading, features, engine, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> engine -> data -> infrastructure",
+      "location": "模块: trading, features, engine, data, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> engine -> data -> utils -> infrastructure",
+      "location": "模块: trading, features, engine, data, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> engine -> acceleration",
+      "location": "模块: trading, features, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> engine -> acceleration -> utils -> infrastructure",
+      "location": "模块: trading, features, engine, acceleration, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> engine -> utils -> infrastructure",
+      "location": "模块: trading, features, engine, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> acceleration",
+      "location": "模块: trading, features, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> acceleration -> utils -> infrastructure",
+      "location": "模块: trading, features, acceleration, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> utils -> infrastructure",
+      "location": "模块: trading, features, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> utils -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: trading, features, utils, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> features -> utils -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: trading, features, utils, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> infrastructure",
+      "location": "模块: trading, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: trading, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: trading, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> infrastructure",
+      "location": "模块: trading, engine, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> data -> infrastructure",
+      "location": "模块: trading, engine, data, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> data -> utils -> infrastructure",
+      "location": "模块: trading, engine, data, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> acceleration",
+      "location": "模块: trading, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> acceleration -> features -> infrastructure",
+      "location": "模块: trading, engine, acceleration, features, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> acceleration -> features -> utils -> infrastructure",
+      "location": "模块: trading, engine, acceleration, features, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> acceleration -> utils -> infrastructure",
+      "location": "模块: trading, engine, acceleration, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> engine -> utils -> infrastructure",
+      "location": "模块: trading, engine, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> infrastructure",
+      "location": "模块: trading, data, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> utils -> infrastructure",
+      "location": "模块: trading, data, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> engine -> infrastructure",
+      "location": "模块: trading, data, engine, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> engine -> acceleration",
+      "location": "模块: trading, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> engine -> acceleration -> features -> infrastructure",
+      "location": "模块: trading, data, engine, acceleration, features, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> engine -> acceleration -> features -> utils -> infrastructure",
+      "location": "模块: trading, data, engine, acceleration, features, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> engine -> acceleration -> utils -> infrastructure",
+      "location": "模块: trading, data, engine, acceleration, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> data -> engine -> utils -> infrastructure",
+      "location": "模块: trading, data, engine, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> utils -> infrastructure",
+      "location": "模块: trading, models, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> utils -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: trading, models, utils, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> utils -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: trading, models, utils, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> infrastructure",
+      "location": "模块: trading, models, engine, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> data -> infrastructure",
+      "location": "模块: trading, models, engine, data, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> data -> utils -> infrastructure",
+      "location": "模块: trading, models, engine, data, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> acceleration",
+      "location": "模块: trading, models, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> acceleration -> features -> infrastructure",
+      "location": "模块: trading, models, engine, acceleration, features, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> acceleration -> features -> utils -> infrastructure",
+      "location": "模块: trading, models, engine, acceleration, features, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> acceleration -> utils -> infrastructure",
+      "location": "模块: trading, models, engine, acceleration, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> models -> engine -> utils -> infrastructure",
+      "location": "模块: trading, models, engine, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration",
+      "location": "模块: trading, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> features -> infrastructure",
+      "location": "模块: trading, acceleration, features, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> features -> engine -> infrastructure",
+      "location": "模块: trading, acceleration, features, engine, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> features -> engine -> data -> infrastructure",
+      "location": "模块: trading, acceleration, features, engine, data, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> features -> engine -> data -> utils -> infrastructure",
+      "location": "模块: trading, acceleration, features, engine, data, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> features -> engine -> utils -> infrastructure",
+      "location": "模块: trading, acceleration, features, engine, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> features -> utils -> infrastructure",
+      "location": "模块: trading, acceleration, features, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> acceleration -> utils -> infrastructure",
+      "location": "模块: trading, acceleration, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> utils -> infrastructure",
+      "location": "模块: trading, utils, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> utils -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: trading, utils, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> utils -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: trading, utils, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> core -> infrastructure",
+      "location": "模块: trading, core, infrastructure",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> core -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: trading, core, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: trading -> core -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: trading, core, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: features -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: features, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: features -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: features, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: features -> engine -> acceleration",
+      "location": "模块: features, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: features -> acceleration",
+      "location": "模块: features, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: features -> utils -> infrastructure -> data -> engine -> acceleration",
+      "location": "模块: features, utils, infrastructure, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: features -> utils -> infrastructure -> adapters -> data -> engine -> acceleration",
+      "location": "模块: features, utils, infrastructure, adapters, data, engine, acceleration",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> data",
+      "location": "模块: infrastructure, data",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> data -> utils",
+      "location": "模块: infrastructure, data, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> data -> engine",
+      "location": "模块: infrastructure, data, engine",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> data -> engine -> acceleration -> utils",
+      "location": "模块: infrastructure, data, engine, acceleration, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> data -> engine -> utils",
+      "location": "模块: infrastructure, data, engine, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> adapters",
+      "location": "模块: infrastructure, adapters",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> adapters -> data",
+      "location": "模块: infrastructure, adapters, data",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> adapters -> data -> utils",
+      "location": "模块: infrastructure, adapters, data, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> adapters -> data -> engine",
+      "location": "模块: infrastructure, adapters, data, engine",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> adapters -> data -> engine -> acceleration -> utils",
+      "location": "模块: infrastructure, adapters, data, engine, acceleration, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> adapters -> data -> engine -> utils",
+      "location": "模块: infrastructure, adapters, data, engine, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: infrastructure -> utils",
+      "location": "模块: infrastructure, utils",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "high",
+      "category": "dependencies",
+      "description": "检测到循环依赖: data -> engine",
+      "location": "模块: data, engine",
+      "suggestion": "重构依赖关系，消除循环依赖",
+      "confidence": 0.9
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 核心服务层",
+      "location": "层次: core",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 基础设施层",
+      "location": "层次: infrastructure",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 数据采集层",
+      "location": "层次: data",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: API网关层",
+      "location": "层次: gateway",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 特征处理层",
+      "location": "层次: features",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 模型推理层",
+      "location": "层次: ml",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 策略决策层",
+      "location": "层次: backtest",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 交易执行层",
+      "location": "层次: trading",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 风控合规层",
+      "location": "层次: risk",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "层次复杂度过高: 监控反馈层",
+      "location": "层次: engine",
+      "suggestion": "拆分复杂组件，降低单个组件的复杂度",
+      "confidence": 0.8
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 核心服务层",
+      "location": "层次: core",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 基础设施层",
+      "location": "层次: infrastructure",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 数据采集层",
+      "location": "层次: data",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: API网关层",
+      "location": "层次: gateway",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 特征处理层",
+      "location": "层次: features",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 模型推理层",
+      "location": "层次: ml",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 策略决策层",
+      "location": "层次: backtest",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 交易执行层",
+      "location": "层次: trading",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 风控合规层",
+      "location": "层次: risk",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    },
+    {
+      "severity": "medium",
+      "category": "quality",
+      "description": "测试覆盖率不足: 监控反馈层",
+      "location": "层次: engine",
+      "suggestion": "增加单元测试，提高测试覆盖率",
+      "confidence": 0.7
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "quality",
+      "title": "提高代码可维护性",
+      "description": "当前可维护性指数偏低，建议重构复杂代码",
+      "actions": [
+        "拆分大函数",
+        "减少类复杂度",
+        "改进命名"
+      ]
+    },
+    {
+      "priority": "high",
+      "category": "structure",
+      "title": "解决循环依赖",
+      "description": "检测到循环依赖，影响系统稳定性",
+      "actions": [
+        "重构依赖关系",
+        "引入接口层",
+        "使用依赖注入"
+      ]
+    }
+  ]
+}

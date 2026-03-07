@@ -1,0 +1,20 @@
+{
+    "database": {
+        "type": "postgresql",
+        "image": "postgres:13",
+        "port": 5432,
+        "user": "test",
+        "password": "test",
+        "dbname": "test_db",
+        "data_volume": "/tmp/test_db_data"
+    },
+    "redis": {
+        "image": "redis:6",
+        "port": 6379
+    },
+    "enable_fpga": false,
+    "fpga": {
+        "image": "fpga-emulator:latest",
+        "port": 5000
+    }
+} 

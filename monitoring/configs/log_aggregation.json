@@ -1,0 +1,49 @@
+[
+  {
+    "source_type": "application",
+    "log_path": "/var/log/rqa2025/app.log",
+    "format": "json",
+    "filters": [
+      "level:ERROR OR level:CRITICAL",
+      "response_time:>5000",
+      "error_code:5*"
+    ],
+    "retention_days": 90,
+    "alerting_patterns": [
+      "Exception|Error|FATAL",
+      "timeout|TimeoutError",
+      "connection refused|ConnectionError"
+    ]
+  },
+  {
+    "source_type": "system",
+    "log_path": "/var/log/syslog",
+    "format": "syslog",
+    "filters": [
+      "rqa2025",
+      "CRITICAL|ERROR",
+      "OOM|Out of memory"
+    ],
+    "retention_days": 30,
+    "alerting_patterns": [
+      "kernel.*panic",
+      "OOM killer",
+      "systemd.*failed"
+    ]
+  },
+  {
+    "source_type": "access",
+    "log_path": "/var/log/rqa2025/access.log",
+    "format": "combined",
+    "filters": [
+      "status:>=500",
+      "response_time:>10000"
+    ],
+    "retention_days": 60,
+    "alerting_patterns": [
+      "status:5\\d{2}",
+      "POST.*500",
+      "GET.*502"
+    ]
+  }
+]

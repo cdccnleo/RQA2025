@@ -1,0 +1,80 @@
+{
+    "enhanced_logging": {
+        "sampling": {
+            "default_rate": 0.3,
+            "critical_business_types": [
+                "order",
+                "trade", 
+                "risk",
+                "account"
+            ],
+            "level_rates": {
+                "DEBUG": 0.1,
+                "INFO": 0.5,
+                "WARNING": 1.0,
+                "ERROR": 1.0,
+                "CRITICAL": 1.0
+            },
+            "trading_hours_rate": 1.0,
+            "dynamic_adjustment": {
+                "enabled": true,
+                "min_rate": 0.1,
+                "max_rate": 1.0,
+                "load_threshold": 0.7
+            }
+        },
+        "business_logging": {
+            "critical_business_types": [
+                "order",
+                "trade",
+                "risk", 
+                "account"
+            ],
+            "business_log_rate": 1.0,
+            "debug_log_rate": 0.1,
+            "system_log_rate": 0.5,
+            "enable_correlation": true,
+            "correlation_timeout": 3600,
+            "enable_trace": true,
+            "trace_depth": 10,
+            "trace_timeout": 1800
+        },
+        "correlation_query": {
+            "max_query_history": 1000,
+            "query_timeout": 300,
+            "enable_indexing": true,
+            "index_cleanup_interval": 3600
+        },
+        "handlers": {
+            "console": {
+                "enabled": true,
+                "level": "INFO",
+                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            },
+            "file": {
+                "enabled": true,
+                "level": "DEBUG",
+                "filename": "logs/enhanced.log",
+                "max_size": "10MB",
+                "backup_count": 5,
+                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            },
+            "json": {
+                "enabled": true,
+                "level": "INFO",
+                "filename": "logs/enhanced.json",
+                "max_size": "10MB",
+                "backup_count": 5
+            }
+        },
+        "monitoring": {
+            "enabled": true,
+            "metrics_interval": 60,
+            "alert_thresholds": {
+                "sampling_rate_drop": 0.5,
+                "critical_log_missing": 10,
+                "correlation_failure": 5
+            }
+        }
+    }
+} 

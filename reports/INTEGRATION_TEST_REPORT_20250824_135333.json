@@ -1,0 +1,93 @@
+{
+  "integration_test_summary": {
+    "start_time": "2025-08-24T13:53:33.493970",
+    "end_time": "2025-08-24T13:53:33.495970",
+    "duration_seconds": 0.002,
+    "total_tests": 7,
+    "passed_tests": 0,
+    "partial_tests": 3,
+    "failed_tests": 2,
+    "success_rate": 0.0,
+    "overall_status": "partial"
+  },
+  "test_results": [
+    {
+      "test_name": "infrastructure_integration",
+      "status": "partial",
+      "message": "基础设施层集成测试完成，成功率: 0.0% (0/0组件)",
+      "details": {
+        "components_available": 0,
+        "components_tested": 0,
+        "success_rate": 0.0
+      }
+    },
+    {
+      "test_name": "Core Services Integration",
+      "status": "failed",
+      "error": "No module named 'src.core': No module named 'src.core'",
+      "components_tested": 0,
+      "components_available": 0,
+      "success_rate": 0.0
+    },
+    {
+      "test_name": "test_core_services_integration",
+      "status": "error",
+      "message": "测试执行异常: 'message'",
+      "details": {}
+    },
+    {
+      "test_name": "Data Layer Integration",
+      "status": "failed",
+      "error": "No module named 'src.data': No module named 'src.data'",
+      "components_tested": 0,
+      "components_available": 0,
+      "success_rate": 0.0
+    },
+    {
+      "test_name": "test_data_layer_integration",
+      "status": "error",
+      "message": "测试执行异常: 'message'",
+      "details": {}
+    },
+    {
+      "test_name": "business_flow_integration",
+      "status": "partial",
+      "message": "业务流程集成测试完成，集成率: 25.0% (1/4组件)",
+      "details": {
+        "integration_status": {
+          "infrastructure_ready": false,
+          "core_services_ready": false,
+          "data_layer_ready": false,
+          "business_logic_ready": true
+        },
+        "ready_components": 1,
+        "total_components": 4,
+        "integration_rate": 25.0
+      }
+    },
+    {
+      "test_name": "error_handling_integration",
+      "status": "partial",
+      "message": "错误处理集成测试完成，成功率: 0.0% (0/3测试)",
+      "details": {
+        "error_tests": [
+          [
+            "infrastructure_error_handling",
+            false
+          ],
+          [
+            "core_error_handling",
+            false
+          ],
+          [
+            "data_error_handling",
+            false
+          ]
+        ],
+        "successful_tests": 0,
+        "total_tests": 3,
+        "success_rate": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+exporters:
+  prometheus:
+    enabled: true
+    endpoint: localhost:9090
+metrics:
+  collectors:
+  - data_load_time
+  - cache_hit_rate
+  - error_rate
+  - cpu_usage
+  - memory_usage
+  - disk_usage
+  enabled: true
+  path: /metrics
+  port: 8080

@@ -1,0 +1,477 @@
+# 云原生部署配置
+# 支持容器化部署、自动扩缩容、服务网格和蓝绿部署
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa-config
+  namespace: rqa-system
+data:
+  # 数据库配置
+  database_url: "postgresql://rqa_user:rqa_password@rqa-db:5432/rqa_db"
+  redis_url: "redis://rqa-redis:6379"
+  
+  # 服务配置
+  api_service_port: "8001"
+  business_service_port: "8002"
+  model_service_port: "8003"
+  trading_service_port: "8004"
+  cache_service_port: "8005"
+  validation_service_port: "8006"
+  
+  # 监控配置
+  prometheus_url: "http://prometheus:9090"
+  grafana_url: "http://grafana:3000"
+  jaeger_url: "http://jaeger:16686"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa-api-service
+  namespace: rqa-system
+  labels:
+    app: rqa-api-service
+    version: v1.0.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa-api-service
+  template:
+    metadata:
+      labels:
+        app: rqa-api-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: api-service
+        image: rqa/api-service:latest
+        ports:
+        - containerPort: 8001
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa-config
+              key: database_url
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa-config
+              key: redis_url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa-business-service
+  namespace: rqa-system
+  labels:
+    app: rqa-business-service
+    version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa-business-service
+  template:
+    metadata:
+      labels:
+        app: rqa-business-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: business-service
+        image: rqa/business-service:latest
+        ports:
+        - containerPort: 8002
+        env:
+        - name: API_SERVICE_URL
+          value: "http://rqa-api-service:8001"
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa-config
+              key: database_url
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8002
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa-model-service
+  namespace: rqa-system
+  labels:
+    app: rqa-model-service
+    version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa-model-service
+  template:
+    metadata:
+      labels:
+        app: rqa-model-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: model-service
+        image: rqa/model-service:latest
+        ports:
+        - containerPort: 8003
+        env:
+        - name: MODEL_STORAGE_PATH
+          value: "/models"
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa-config
+              key: database_url
+        volumeMounts:
+        - name: model-storage
+          mountPath: /models
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8003
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: rqa-model-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa-trading-service
+  namespace: rqa-system
+  labels:
+    app: rqa-trading-service
+    version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa-trading-service
+  template:
+    metadata:
+      labels:
+        app: rqa-trading-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: trading-service
+        image: rqa/trading-service:latest
+        ports:
+        - containerPort: 8004
+        env:
+        - name: BUSINESS_SERVICE_URL
+          value: "http://rqa-business-service:8002"
+        - name: MODEL_SERVICE_URL
+          value: "http://rqa-model-service:8003"
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa-config
+              key: database_url
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8004
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa-api-service
+  namespace: rqa-system
+spec:
+  selector:
+    app: rqa-api-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8001
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa-business-service
+  namespace: rqa-system
+spec:
+  selector:
+    app: rqa-business-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8002
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa-model-service
+  namespace: rqa-system
+spec:
+  selector:
+    app: rqa-model-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8003
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa-trading-service
+  namespace: rqa-system
+spec:
+  selector:
+    app: rqa-trading-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8004
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa-ingress
+  namespace: rqa-system
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - api.rqa.com
+    secretName: rqa-tls
+  rules:
+  - host: api.rqa.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa-api-service
+            port:
+              number: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rqa-api-service-hpa
+  namespace: rqa-system
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rqa-api-service
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rqa-business-service-hpa
+  namespace: rqa-system
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rqa-business-service
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa-model-pvc
+  namespace: rqa-system
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast
+
+---
+# 蓝绿部署配置
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rqa-api-service-rollout
+  namespace: rqa-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa-api-service
+  template:
+    metadata:
+      labels:
+        app: rqa-api-service
+    spec:
+      containers:
+      - name: api-service
+        image: rqa/api-service:latest
+        ports:
+        - containerPort: 8001
+  strategy:
+    blueGreen:
+      activeService: rqa-api-service-active
+      previewService: rqa-api-service-preview
+      autoPromotionEnabled: false
+      scaleDownDelaySeconds: 30
+      prePromotionAnalysis:
+        templates:
+        - templateName: success-rate
+        args:
+        - name: service-name
+          value: rqa-api-service-preview
+      postPromotionAnalysis:
+        templates:
+        - templateName: success-rate
+        args:
+        - name: service-name
+          value: rqa-api-service-active
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa-api-service-active
+  namespace: rqa-system
+spec:
+  selector:
+    app: rqa-api-service
+    version: v1.0.0
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8001
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa-api-service-preview
+  namespace: rqa-system
+spec:
+  selector:
+    app: rqa-api-service
+    version: v1.1.0
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8001
+  type: ClusterIP 

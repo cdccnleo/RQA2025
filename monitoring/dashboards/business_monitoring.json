@@ -1,0 +1,77 @@
+{
+  "name": "business_monitoring",
+  "description": "业务指标监控仪表板",
+  "panels": [
+    {
+      "title": "交易量趋势",
+      "type": "graph",
+      "metrics": [
+        "trading_volume_per_minute"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "市场数据延迟",
+      "type": "graph",
+      "metrics": [
+        "market_data_latency"
+      ],
+      "layout": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "订单执行成功率",
+      "type": "gauge",
+      "metrics": [
+        "order_execution_success_rate"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      }
+    },
+    {
+      "title": "投资组合价值变化",
+      "type": "graph",
+      "metrics": [
+        "portfolio_value_change"
+      ],
+      "layout": {
+        "x": 4,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      }
+    },
+    {
+      "title": "风险暴露水平",
+      "type": "gauge",
+      "metrics": [
+        "risk_exposure_level"
+      ],
+      "layout": {
+        "x": 8,
+        "y": 4,
+        "w": 4,
+        "h": 4
+      }
+    }
+  ],
+  "refresh_interval": "1m",
+  "tags": [
+    "business",
+    "trading",
+    "risk"
+  ]
+}

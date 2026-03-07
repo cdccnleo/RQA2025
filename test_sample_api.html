@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据样本API测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>数据样本API测试</h1>
+
+    <div class="test-section">
+        <h2>API连接测试</h2>
+        <button onclick="testHealth()">测试后端连接</button>
+        <button onclick="testDataSources()">测试数据源列表</button>
+        <button onclick="testSampleAPI()">测试数据样本API</button>
+        <div id="connection-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>数据源列表</h2>
+        <div id="sources-list">未加载</div>
+    </div>
+
+    <div class="test-section">
+        <h2>数据样本测试</h2>
+        <select id="source-select">
+            <option value="">选择数据源...</option>
+        </select>
+        <button onclick="testSampleForSource()">获取数据样本</button>
+        <div id="sample-result"></div>
+    </div>
+
+    <script>
+        // 测试后端连接
+        async function testHealth() {
+            const resultDiv = document.getElementById('connection-result');
+            try {
+                const response = await fetch('/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className = 'test-section success';
+                    resultDiv.innerHTML = '<h3>✅ 后端连接成功</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            } catch (error) {
+                resultDiv.className = 'test-section error';
+                resultDiv.innerHTML = '<h3>❌ 连接失败</h3><p>' + error.message + '</p>';
+            }
+        }
+
+        // 测试数据源列表
+        async function testDataSources() {
+            const resultDiv = document.getElementById('sources-list');
+            try {
+                const response = await fetch('/api/v1/data/sources');
+                if (response.ok) {
+                    const data = await response.json();
+                    const sources = data.data_sources || [];
+
+                    resultDiv.innerHTML = '<h3>✅ 数据源列表 (' + sources.length + ' 个)</h3>';
+                    const select = document.getElementById('source-select');
+                    select.innerHTML = '<option value="">选择数据源...</option>';
+
+                    sources.forEach(source => {
+                        const option = document.createElement('option');
+                        option.value = source.id;
+                        option.textContent = source.name + ' (' + source.id + ')';
+                        select.appendChild(option);
+
+                        const div = document.createElement('div');
+                        div.innerHTML = '<strong>' + source.name + '</strong> (ID: ' + source.id + ', 类型: ' + source.type + ', 状态: ' + (source.enabled ? '启用' : '禁用') + ')';
+                        resultDiv.appendChild(div);
+                    });
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<h3>❌ 获取失败</h3><p>' + error.message + '</p>';
+            }
+        }
+
+        // 测试数据样本API
+        async function testSampleAPI() {
+            const resultDiv = document.getElementById('sample-result');
+            resultDiv.innerHTML = '<h3>🔄 正在测试...</h3>';
+
+            try {
+                // 使用正确的API路径
+                const response = await fetch('/api/v1/data/sources/sinafinance/sample');
+                resultDiv.className = 'test-section';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className += ' success';
+                    resultDiv.innerHTML = '<h3>✅ 数据样本API成功</h3>' +
+                        '<p><strong>数据源:</strong> ' + data.source_name + ' (' + data.source_id + ')</p>' +
+                        '<p><strong>状态:</strong> ' + (data.enabled ? '启用' : '禁用') + '</p>' +
+                        '<p><strong>样本数据:</strong></p>' +
+                        '<pre>' + JSON.stringify(data.sample, null, 2) + '</pre>' +
+                        '<p><strong>完整响应:</strong></p>' +
+                        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    resultDiv.className += ' error';
+                    resultDiv.innerHTML = '<h3>❌ API调用失败</h3>' +
+                        '<p>状态码: ' + response.status + '</p>' +
+                        '<p>状态文本: ' + response.statusText + '</p>';
+
+                    try {
+                        const errorText = await response.text();
+                        resultDiv.innerHTML += '<p><strong>错误详情:</strong></p><pre>' + errorText + '</pre>';
+                    } catch (e) {
+                        resultDiv.innerHTML += '<p>无法读取错误详情</p>';
+                    }
+                }
+            } catch (error) {
+                resultDiv.className = 'test-section error';
+                resultDiv.innerHTML = '<h3>❌ 网络错误</h3><p>' + error.message + '</p>';
+            }
+        }
+
+        // 测试特定数据源的样本
+        async function testSampleForSource() {
+            const select = document.getElementById('source-select');
+            const sourceId = select.value;
+
+            if (!sourceId) {
+                alert('请先选择数据源');
+                return;
+            }
+
+            const resultDiv = document.getElementById('sample-result');
+            resultDiv.innerHTML = '<h3>🔄 正在获取数据样本...</h3>';
+
+            try {
+                const response = await fetch('/api/v1/data/sources/' + sourceId + '/sample');
+                resultDiv.className = 'test-section';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className += ' success';
+                    resultDiv.innerHTML = '<h3>✅ 数据样本获取成功</h3>' +
+                        '<p><strong>数据源:</strong> ' + data.source_name + ' (' + data.source_id + ')</p>' +
+                        '<p><strong>类型:</strong> ' + data.source_type + '</p>' +
+                        '<p><strong>状态:</strong> ' + (data.enabled ? '启用' : '禁用') + '</p>' +
+                        '<p><strong>样本数据:</strong></p>' +
+                        '<pre>' + JSON.stringify(data.sample, null, 2) + '</pre>';
+                } else {
+                    resultDiv.className += ' error';
+                    resultDiv.innerHTML = '<h3>❌ 获取失败</h3>' +
+                        '<p>状态码: ' + response.status + '</p>' +
+                        '<p>可能原因: 数据源不存在或已禁用</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'test-section error';
+                resultDiv.innerHTML = '<h3>❌ 网络错误</h3><p>' + error.message + '</p>';
+            }
+        }
+
+        // 页面加载时自动测试连接
+        window.onload = function() {
+            testHealth();
+            testDataSources();
+        };
+    </script>
+</body>
+</html>

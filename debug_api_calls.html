@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API调用调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; max-height: 300px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>API调用调试工具</h1>
+
+    <div class="debug-section info">
+        <h2>环境信息</h2>
+        <div id="env-info">正在加载...</div>
+    </div>
+
+    <div class="debug-section">
+        <h2>API路径测试</h2>
+        <button onclick="testMetricsAPI()">测试指标API</button>
+        <button onclick="testSampleAPI()">测试样本API</button>
+        <button onclick="testAllAPIs()">测试所有API</button>
+        <div id="api-test-results"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>网络请求详情</h2>
+        <div id="network-details">点击测试按钮开始</div>
+    </div>
+
+    <script>
+        // 环境信息
+        function loadEnvInfo() {
+            const info = document.getElementById('env-info');
+            info.innerHTML = `
+                <table>
+                    <tr><th>属性</th><th>值</th></tr>
+                    <tr><td>协议 (protocol)</td><td>${window.location.protocol}</td></tr>
+                    <tr><td>主机名 (hostname)</td><td>${window.location.hostname}</td></tr>
+                    <tr><td>端口 (port)</td><td>${window.location.port}</td></tr>
+                    <tr><td>路径名 (pathname)</td><td>${window.location.pathname}</td></tr>
+                    <tr><td>完整URL</td><td>${window.location.href}</td></tr>
+                    <tr><td>来源 (origin)</td><td>${window.location.origin}</td></tr>
+                </table>
+            `;
+        }
+
+        // getApiBaseUrl函数 (与主页面相同)
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        // 测试指标API
+        async function testMetricsAPI() {
+            const resultsDiv = document.getElementById('api-test-results');
+            const networkDiv = document.getElementById('network-details');
+
+            resultsDiv.innerHTML = '<h3>🔄 正在测试指标API...</h3>';
+            networkDiv.innerHTML = '<h3>📡 网络请求详情</h3>';
+
+            try {
+                const url = getApiBaseUrl('/data-sources/metrics');
+                networkDiv.innerHTML += `<p><strong>请求URL:</strong> ${url}</p>`;
+                networkDiv.innerHTML += `<p><strong>请求方法:</strong> GET</p>`;
+                networkDiv.innerHTML += `<p><strong>预期状态:</strong> 200 OK</p>`;
+
+                const startTime = Date.now();
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate'
+                    }
+                });
+                const endTime = Date.now();
+
+                networkDiv.innerHTML += `<p><strong>响应状态:</strong> ${response.status} ${response.statusText}</p>`;
+                networkDiv.innerHTML += `<p><strong>响应时间:</strong> ${endTime - startTime}ms</p>`;
+                networkDiv.innerHTML += `<p><strong>Content-Type:</strong> ${response.headers.get('content-type')}</p>`;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.className = 'debug-section success';
+                    resultsDiv.innerHTML = `
+                        <h3>✅ 指标API测试成功</h3>
+                        <p><strong>URL:</strong> ${url}</p>
+                        <p><strong>状态:</strong> ${response.status}</p>
+                        <p><strong>数据类型:</strong> ${typeof data}</p>
+                        <p><strong>字段数量:</strong> ${Object.keys(data).length}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    resultsDiv.className = 'debug-section error';
+                    resultsDiv.innerHTML = `
+                        <h3>❌ 指标API测试失败</h3>
+                        <p><strong>URL:</strong> ${url}</p>
+                        <p><strong>状态:</strong> ${response.status}</p>
+                        <pre>${errorText}</pre>
+                    `;
+                }
+
+            } catch (error) {
+                resultsDiv.className = 'debug-section error';
+                resultsDiv.innerHTML = `
+                    <h3>❌ 网络错误</h3>
+                    <p><strong>错误信息:</strong> ${error.message}</p>
+                `;
+                networkDiv.innerHTML += `<p><strong>错误:</strong> ${error.message}</p>`;
+            }
+        }
+
+        // 测试样本API
+        async function testSampleAPI() {
+            const resultsDiv = document.getElementById('api-test-results');
+            const networkDiv = document.getElementById('network-details');
+
+            resultsDiv.innerHTML = '<h3>🔄 正在测试样本API...</h3>';
+            networkDiv.innerHTML = '<h3>📡 网络请求详情</h3>';
+
+            try {
+                const url = getApiBaseUrl('/data/sources/sinafinance/sample');
+                networkDiv.innerHTML += `<p><strong>请求URL:</strong> ${url}</p>`;
+                networkDiv.innerHTML += `<p><strong>请求方法:</strong> GET</p>`;
+                networkDiv.innerHTML += `<p><strong>预期状态:</strong> 200 OK</p>`;
+
+                const startTime = Date.now();
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate'
+                    }
+                });
+                const endTime = Date.now();
+
+                networkDiv.innerHTML += `<p><strong>响应状态:</strong> ${response.status} ${response.statusText}</p>`;
+                networkDiv.innerHTML += `<p><strong>响应时间:</strong> ${endTime - startTime}ms</p>`;
+                networkDiv.innerHTML += `<p><strong>Content-Type:</strong> ${response.headers.get('content-type')}</p>`;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.className = 'debug-section success';
+                    resultsDiv.innerHTML = `
+                        <h3>✅ 样本API测试成功</h3>
+                        <p><strong>URL:</strong> ${url}</p>
+                        <p><strong>状态:</strong> ${response.status}</p>
+                        <p><strong>数据源:</strong> ${data.source_name} (${data.source_id})</p>
+                        <p><strong>状态:</strong> ${data.enabled ? '启用' : '禁用'}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    resultsDiv.className = 'debug-section error';
+                    resultsDiv.innerHTML = `
+                        <h3>❌ 样本API测试失败</h3>
+                        <p><strong>URL:</strong> ${url}</p>
+                        <p><strong>状态:</strong> ${response.status}</p>
+                        <pre>${errorText}</pre>
+                    `;
+                }
+
+            } catch (error) {
+                resultsDiv.className = 'debug-section error';
+                resultsDiv.innerHTML = `
+                    <h3>❌ 网络错误</h3>
+                    <p><strong>错误信息:</strong> ${error.message}</p>
+                `;
+                networkDiv.innerHTML += `<p><strong>错误:</strong> ${error.message}</p>`;
+            }
+        }
+
+        // 测试所有API
+        async function testAllAPIs() {
+            await testMetricsAPI();
+            setTimeout(() => testSampleAPI(), 1000);
+        }
+
+        // 页面加载时显示环境信息
+        window.onload = function() {
+            loadEnvInfo();
+        };
+    </script>
+</body>
+</html>

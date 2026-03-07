@@ -1,0 +1,73 @@
+{
+  "immediate_fixes": [
+    {
+      "issue": "API集成路径问题",
+      "solution": "修复sys.path.insert路径，确保能正确导入API模块",
+      "affected_files": [
+        "tests/integration/api/test_features_api.py",
+        "tests/integration/api/test_data_api.py"
+      ],
+      "priority": "高"
+    },
+    {
+      "issue": "Mock对象配置错误",
+      "solution": "修正Mock对象的属性设置和方法调用",
+      "affected_files": [
+        "tests/integration/test_api_integration_fix.py"
+      ],
+      "priority": "高"
+    },
+    {
+      "issue": "交易引擎构造函数参数",
+      "solution": "检查TradingEngine构造函数，修正参数传递",
+      "affected_files": [
+        "tests/integration/trading/test_trading_end_to_end.py"
+      ],
+      "priority": "高"
+    },
+    {
+      "issue": "订单执行引擎API不匹配",
+      "solution": "对齐测试代码与实际ExecutionEngine API",
+      "affected_files": [
+        "tests/unit/trading/test_execution_engine.py"
+      ],
+      "priority": "高"
+    }
+  ],
+  "medium_term_fixes": [
+    {
+      "issue": "策略系统集成配置",
+      "solution": "完善策略工厂和信号生成器的配置",
+      "affected_files": [
+        "tests/integration/test_strategy_system_integration.py"
+      ],
+      "priority": "中"
+    },
+    {
+      "issue": "流处理层事件配置",
+      "solution": "修正EventProcessor和StreamingEvent的配置",
+      "affected_files": [
+        "tests/unit/streaming/test_event_processor.py"
+      ],
+      "priority": "中"
+    }
+  ],
+  "long_term_improvements": [
+    {
+      "issue": "性能测试框架",
+      "solution": "建立完整的性能基准测试框架",
+      "affected_files": [
+        "tests/integration/test_performance_baseline.py"
+      ],
+      "priority": "低"
+    },
+    {
+      "issue": "稳定性测试环境",
+      "solution": "完善稳定性测试的资源管理和监控",
+      "affected_files": [
+        "tests/integration/test_stability.py"
+      ],
+      "priority": "低"
+    }
+  ]
+}

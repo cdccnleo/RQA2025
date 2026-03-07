@@ -1,0 +1,72 @@
+services:
+  alertmanager:
+    command:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    - --storage.path=/alertmanager
+    image: prom/alertmanager:latest
+    ports:
+    - 9093:9093
+    restart: unless-stopped
+    volumes:
+    - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+  grafana:
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    image: grafana/grafana:latest
+    ports:
+    - 3000:3000
+    restart: unless-stopped
+    volumes:
+    - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    - grafana_data:/var/lib/grafana
+  node-exporter:
+    command:
+    - --path.procfs=/host/proc
+    - --path.rootfs=/rootfs
+    - --path.sysfs=/host/sys
+    - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    image: prom/node-exporter:latest
+    ports:
+    - 9100:9100
+    restart: unless-stopped
+    volumes:
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/rootfs:ro
+  postgres-exporter:
+    environment:
+      DATA_SOURCE_NAME: postgresql://rqa_user:password@postgres:5432/rqa2025?sslmode=disable
+    image: wrouesnel/postgres_exporter:latest
+    ports:
+    - 9187:9187
+    restart: unless-stopped
+  prometheus:
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.console.libraries=/etc/prometheus/console_libraries
+    - --web.console.templates=/etc/prometheus/consoles
+    - --storage.tsdb.retention.time=200h
+    - --web.enable-lifecycle
+    image: prom/prometheus:latest
+    ports:
+    - 9090:9090
+    restart: unless-stopped
+    volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    - prometheus_data:/prometheus
+  redis-exporter:
+    environment:
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ''
+    image: oliver006/redis_exporter:latest
+    ports:
+    - 9121:9121
+    restart: unless-stopped
+version: '3.8'
+volumes:
+  grafana_data: {}
+  prometheus_data: {}

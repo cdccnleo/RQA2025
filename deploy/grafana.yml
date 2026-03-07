@@ -1,0 +1,18 @@
+# RQA2025 Grafana配置
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+  - name: PostgreSQL
+    type: postgres
+    url: postgres:5432
+    database: rqa2025
+    user: rqa2025
+    secureJsonData:
+      password: secure_password

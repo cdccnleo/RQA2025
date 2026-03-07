@@ -1,0 +1,33 @@
+{
+  "security": {
+    "encryption": {
+      "algorithm": "AES-256-GCM",
+      "key_rotation_days": 90
+    },
+    "firewall": {
+      "allowed_ports": [
+        80,
+        443,
+        8080,
+        9090,
+        3000
+      ],
+      "rate_limiting": {
+        "max_requests_per_minute": 1000,
+        "block_duration_minutes": 15
+      }
+    },
+    "ssl": {
+      "min_version": "TLSv1.2",
+      "cipher_suites": [
+        "ECDHE-RSA-AES256-GCM-SHA384",
+        "ECDHE-RSA-AES128-GCM-SHA256"
+      ]
+    },
+    "audit": {
+      "enabled": true,
+      "log_security_events": true,
+      "log_file": "/var/log/rqa2025/security.log"
+    }
+  }
+}

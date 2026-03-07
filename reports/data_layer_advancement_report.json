@@ -1,0 +1,4700 @@
+{
+  "report_metadata": {
+    "title": "RQA2025 数据层目标推进报告",
+    "version": "1.0",
+    "generated_at": "2025-08-07T05:20:45.165428",
+    "phase": "第一阶段：性能优化与稳定性提升"
+  },
+  "executive_summary": {
+    "overall_performance_score": 45.438868901375784,
+    "memory_optimization_improvement": 0.0,
+    "key_achievements": [
+      "内存使用优化完成",
+      "分块处理机制实现",
+      "流式处理框架搭建",
+      "并行加载策略优化"
+    ]
+  },
+  "detailed_results": {
+    "timestamp": "2025-08-07T05:20:41.237070",
+    "memory_baseline": {
+      "rss_mb": 280.90625,
+      "vms_mb": 1710.51953125,
+      "percent": 0.43392353781157406,
+      "timestamp": "2025-08-07T05:20:41.246756"
+    },
+    "optimization_results": {
+      "before_optimization": {
+        "rss_mb": 281.41796875,
+        "vms_mb": 1711.03125,
+        "percent": 0.43471400370674196,
+        "timestamp": "2025-08-07T05:20:41.248765"
+      },
+      "optimization_steps": [
+        {
+          "step": "force_garbage_collection",
+          "memory_after": {
+            "rss_mb": 281.41796875,
+            "vms_mb": 1711.03125,
+            "percent": 0.43471400370674196,
+            "timestamp": "2025-08-07T05:20:41.475572"
+          }
+        },
+        {
+          "step": "optimize_data_structures",
+          "memory_after": {
+            "rss_mb": 281.41796875,
+            "vms_mb": 1711.03125,
+            "percent": 0.43471400370674196,
+            "timestamp": "2025-08-07T05:20:41.479571"
+          }
+        }
+      ],
+      "after_optimization": {
+        "rss_mb": 281.41796875,
+        "vms_mb": 1711.03125,
+        "percent": 0.43471400370674196,
+        "timestamp": "2025-08-07T05:20:41.479571"
+      },
+      "improvement_percentage": 0.0
+    },
+    "chunked_processing_test": {
+      "data_source": "test_source",
+      "chunk_size": 10000,
+      "total_chunks": 100,
+      "processed_chunks": 100,
+      "failed_chunks": 0,
+      "processing_time": 3.239762306213379,
+      "memory_usage": [
+        {
+          "chunk_index": 0,
+          "memory_mb": 395.125,
+          "timestamp": "2025-08-07T05:20:41.926242"
+        },
+        {
+          "chunk_index": 1,
+          "memory_mb": 395.5390625,
+          "timestamp": "2025-08-07T05:20:42.120844"
+        },
+        {
+          "chunk_index": 2,
+          "memory_mb": 395.5390625,
+          "timestamp": "2025-08-07T05:20:42.124121"
+        },
+        {
+          "chunk_index": 3,
+          "memory_mb": 395.61328125,
+          "timestamp": "2025-08-07T05:20:42.131269"
+        },
+        {
+          "chunk_index": 4,
+          "memory_mb": 395.61328125,
+          "timestamp": "2025-08-07T05:20:42.140275"
+        },
+        {
+          "chunk_index": 5,
+          "memory_mb": 395.6875,
+          "timestamp": "2025-08-07T05:20:42.146269"
+        },
+        {
+          "chunk_index": 6,
+          "memory_mb": 395.6875,
+          "timestamp": "2025-08-07T05:20:42.150836"
+        },
+        {
+          "chunk_index": 7,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.155829"
+        },
+        {
+          "chunk_index": 8,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.163074"
+        },
+        {
+          "chunk_index": 9,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.166419"
+        },
+        {
+          "chunk_index": 10,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.175342"
+        },
+        {
+          "chunk_index": 11,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.415128"
+        },
+        {
+          "chunk_index": 12,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.421561"
+        },
+        {
+          "chunk_index": 13,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.429584"
+        },
+        {
+          "chunk_index": 14,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.432580"
+        },
+        {
+          "chunk_index": 15,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.440580"
+        },
+        {
+          "chunk_index": 16,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.446583"
+        },
+        {
+          "chunk_index": 17,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.448579"
+        },
+        {
+          "chunk_index": 18,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.455584"
+        },
+        {
+          "chunk_index": 19,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.462389"
+        },
+        {
+          "chunk_index": 20,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.465625"
+        },
+        {
+          "chunk_index": 21,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.692978"
+        },
+        {
+          "chunk_index": 22,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.698296"
+        },
+        {
+          "chunk_index": 23,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.702685"
+        },
+        {
+          "chunk_index": 24,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.707110"
+        },
+        {
+          "chunk_index": 25,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.712642"
+        },
+        {
+          "chunk_index": 26,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.714880"
+        },
+        {
+          "chunk_index": 27,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.721145"
+        },
+        {
+          "chunk_index": 28,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.726903"
+        },
+        {
+          "chunk_index": 29,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.732016"
+        },
+        {
+          "chunk_index": 30,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.739371"
+        },
+        {
+          "chunk_index": 31,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.980453"
+        },
+        {
+          "chunk_index": 32,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.983456"
+        },
+        {
+          "chunk_index": 33,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.991814"
+        },
+        {
+          "chunk_index": 34,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:42.999357"
+        },
+        {
+          "chunk_index": 35,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.003738"
+        },
+        {
+          "chunk_index": 36,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.012730"
+        },
+        {
+          "chunk_index": 37,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.015728"
+        },
+        {
+          "chunk_index": 38,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.021735"
+        },
+        {
+          "chunk_index": 39,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.026738"
+        },
+        {
+          "chunk_index": 40,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.032729"
+        },
+        {
+          "chunk_index": 41,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.278499"
+        },
+        {
+          "chunk_index": 42,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.281498"
+        },
+        {
+          "chunk_index": 43,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.284652"
+        },
+        {
+          "chunk_index": 44,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.290928"
+        },
+        {
+          "chunk_index": 45,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.299274"
+        },
+        {
+          "chunk_index": 46,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.303487"
+        },
+        {
+          "chunk_index": 47,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.311754"
+        },
+        {
+          "chunk_index": 48,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.315201"
+        },
+        {
+          "chunk_index": 49,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.317625"
+        },
+        {
+          "chunk_index": 50,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.324601"
+        },
+        {
+          "chunk_index": 51,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.589554"
+        },
+        {
+          "chunk_index": 52,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.599554"
+        },
+        {
+          "chunk_index": 53,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.604845"
+        },
+        {
+          "chunk_index": 54,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.609835"
+        },
+        {
+          "chunk_index": 55,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.616216"
+        },
+        {
+          "chunk_index": 56,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.621469"
+        },
+        {
+          "chunk_index": 57,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.629468"
+        },
+        {
+          "chunk_index": 58,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.635034"
+        },
+        {
+          "chunk_index": 59,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.643499"
+        },
+        {
+          "chunk_index": 60,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.647498"
+        },
+        {
+          "chunk_index": 61,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.890770"
+        },
+        {
+          "chunk_index": 62,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.899771"
+        },
+        {
+          "chunk_index": 63,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.906823"
+        },
+        {
+          "chunk_index": 64,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.912064"
+        },
+        {
+          "chunk_index": 65,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.915278"
+        },
+        {
+          "chunk_index": 66,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.918279"
+        },
+        {
+          "chunk_index": 67,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.926291"
+        },
+        {
+          "chunk_index": 68,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.935282"
+        },
+        {
+          "chunk_index": 69,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.942553"
+        },
+        {
+          "chunk_index": 70,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:43.946955"
+        },
+        {
+          "chunk_index": 71,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.165404"
+        },
+        {
+          "chunk_index": 72,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.173403"
+        },
+        {
+          "chunk_index": 73,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.179398"
+        },
+        {
+          "chunk_index": 74,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.182395"
+        },
+        {
+          "chunk_index": 75,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.188411"
+        },
+        {
+          "chunk_index": 76,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.197443"
+        },
+        {
+          "chunk_index": 77,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.202828"
+        },
+        {
+          "chunk_index": 78,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.209996"
+        },
+        {
+          "chunk_index": 79,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.212427"
+        },
+        {
+          "chunk_index": 80,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.214428"
+        },
+        {
+          "chunk_index": 81,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.447771"
+        },
+        {
+          "chunk_index": 82,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.450769"
+        },
+        {
+          "chunk_index": 83,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.456589"
+        },
+        {
+          "chunk_index": 84,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.461629"
+        },
+        {
+          "chunk_index": 85,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.468707"
+        },
+        {
+          "chunk_index": 86,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.473728"
+        },
+        {
+          "chunk_index": 87,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.479044"
+        },
+        {
+          "chunk_index": 88,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.481041"
+        },
+        {
+          "chunk_index": 89,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.483041"
+        },
+        {
+          "chunk_index": 90,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.485044"
+        },
+        {
+          "chunk_index": 91,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.685577"
+        },
+        {
+          "chunk_index": 92,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.693791"
+        },
+        {
+          "chunk_index": 93,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.700790"
+        },
+        {
+          "chunk_index": 94,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.704031"
+        },
+        {
+          "chunk_index": 95,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.711031"
+        },
+        {
+          "chunk_index": 96,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.713032"
+        },
+        {
+          "chunk_index": 97,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.716032"
+        },
+        {
+          "chunk_index": 98,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.718045"
+        },
+        {
+          "chunk_index": 99,
+          "memory_mb": 395.7265625,
+          "timestamp": "2025-08-07T05:20:44.720332"
+        }
+      ]
+    },
+    "streaming_processing_test": {
+      "stream_config": {
+        "message_count": 1000,
+        "batch_size": 100
+      },
+      "processed_messages": 1000,
+      "processing_time": 0.05534029006958008,
+      "latency_metrics": [
+        {
+          "message_id": 0,
+          "latency_ms": 52.33001708984375
+        },
+        {
+          "message_id": 1,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 2,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 3,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 4,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 5,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 6,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 7,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 8,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 9,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 10,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 11,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 12,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 13,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 14,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 15,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 16,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 17,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 18,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 19,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 20,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 21,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 22,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 23,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 24,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 25,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 26,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 27,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 28,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 29,
+          "latency_ms": 51.329612731933594
+        },
+        {
+          "message_id": 30,
+          "latency_ms": 52.32977867126465
+        },
+        {
+          "message_id": 31,
+          "latency_ms": 52.32977867126465
+        },
+        {
+          "message_id": 32,
+          "latency_ms": 52.32977867126465
+        },
+        {
+          "message_id": 33,
+          "latency_ms": 52.32977867126465
+        },
+        {
+          "message_id": 34,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 35,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 36,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 37,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 38,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 39,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 40,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 41,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 42,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 43,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 44,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 45,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 46,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 47,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 48,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 49,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 50,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 51,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 52,
+          "latency_ms": 51.32746696472168
+        },
+        {
+          "message_id": 53,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 54,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 55,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 56,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 57,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 58,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 59,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 60,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 61,
+          "latency_ms": 50.313472747802734
+        },
+        {
+          "message_id": 62,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 63,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 64,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 65,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 66,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 67,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 68,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 69,
+          "latency_ms": 49.31807518005371
+        },
+        {
+          "message_id": 70,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 71,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 72,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 73,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 74,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 75,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 76,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 77,
+          "latency_ms": 48.32029342651367
+        },
+        {
+          "message_id": 78,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 79,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 80,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 81,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 82,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 83,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 84,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 85,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 86,
+          "latency_ms": 47.32012748718262
+        },
+        {
+          "message_id": 87,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 88,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 89,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 90,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 91,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 92,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 93,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 94,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 95,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 96,
+          "latency_ms": 46.31972312927246
+        },
+        {
+          "message_id": 97,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 98,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 99,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 100,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 101,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 102,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 103,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 104,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 105,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 106,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 107,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 108,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 109,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 110,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 111,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 112,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 113,
+          "latency_ms": 45.32170295715332
+        },
+        {
+          "message_id": 114,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 115,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 116,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 117,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 118,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 119,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 120,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 121,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 122,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 123,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 124,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 125,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 126,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 127,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 128,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 129,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 130,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 131,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 132,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 133,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 134,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 135,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 136,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 137,
+          "latency_ms": 44.325828552246094
+        },
+        {
+          "message_id": 138,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 139,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 140,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 141,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 142,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 143,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 144,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 145,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 146,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 147,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 148,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 149,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 150,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 151,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 152,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 153,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 154,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 155,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 156,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 157,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 158,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 159,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 160,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 161,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 162,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 163,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 164,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 165,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 166,
+          "latency_ms": 43.32756996154785
+        },
+        {
+          "message_id": 167,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 168,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 169,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 170,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 171,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 172,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 173,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 174,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 175,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 176,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 177,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 178,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 179,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 180,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 181,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 182,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 183,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 184,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 185,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 186,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 187,
+          "latency_ms": 42.327880859375
+        },
+        {
+          "message_id": 188,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 189,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 190,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 191,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 192,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 193,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 194,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 195,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 196,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 197,
+          "latency_ms": 41.31627082824707
+        },
+        {
+          "message_id": 198,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 199,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 200,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 201,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 202,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 203,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 204,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 205,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 206,
+          "latency_ms": 40.31944274902344
+        },
+        {
+          "message_id": 207,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 208,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 209,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 210,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 211,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 212,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 213,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 214,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 215,
+          "latency_ms": 39.31999206542969
+        },
+        {
+          "message_id": 216,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 217,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 218,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 219,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 220,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 221,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 222,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 223,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 224,
+          "latency_ms": 38.31982612609863
+        },
+        {
+          "message_id": 225,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 226,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 227,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 228,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 229,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 230,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 231,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 232,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 233,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 234,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 235,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 236,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 237,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 238,
+          "latency_ms": 37.3225212097168
+        },
+        {
+          "message_id": 239,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 240,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 241,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 242,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 243,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 244,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 245,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 246,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 247,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 248,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 249,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 250,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 251,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 252,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 253,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 254,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 255,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 256,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 257,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 258,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 259,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 260,
+          "latency_ms": 36.32640838623047
+        },
+        {
+          "message_id": 261,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 262,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 263,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 264,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 265,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 266,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 267,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 268,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 269,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 270,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 271,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 272,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 273,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 274,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 275,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 276,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 277,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 278,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 279,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 280,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 281,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 282,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 283,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 284,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 285,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 286,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 287,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 288,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 289,
+          "latency_ms": 35.327911376953125
+        },
+        {
+          "message_id": 290,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 291,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 292,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 293,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 294,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 295,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 296,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 297,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 298,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 299,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 300,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 301,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 302,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 303,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 304,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 305,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 306,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 307,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 308,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 309,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 310,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 311,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 312,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 313,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 314,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 315,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 316,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 317,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 318,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 319,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 320,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 321,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 322,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 323,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 324,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 325,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 326,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 327,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 328,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 329,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 330,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 331,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 332,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 333,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 334,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 335,
+          "latency_ms": 34.32297706604004
+        },
+        {
+          "message_id": 336,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 337,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 338,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 339,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 340,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 341,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 342,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 343,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 344,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 345,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 346,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 347,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 348,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 349,
+          "latency_ms": 32.93013572692871
+        },
+        {
+          "message_id": 350,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 351,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 352,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 353,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 354,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 355,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 356,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 357,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 358,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 359,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 360,
+          "latency_ms": 31.80384635925293
+        },
+        {
+          "message_id": 361,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 362,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 363,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 364,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 365,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 366,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 367,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 368,
+          "latency_ms": 30.55405616760254
+        },
+        {
+          "message_id": 369,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 370,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 371,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 372,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 373,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 374,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 375,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 376,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 377,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 378,
+          "latency_ms": 29.556751251220703
+        },
+        {
+          "message_id": 379,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 380,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 381,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 382,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 383,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 384,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 385,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 386,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 387,
+          "latency_ms": 28.51247787475586
+        },
+        {
+          "message_id": 388,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 389,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 390,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 391,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 392,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 393,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 394,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 395,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 396,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 397,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 398,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 399,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 400,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 401,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 402,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 403,
+          "latency_ms": 27.5118350982666
+        },
+        {
+          "message_id": 404,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 405,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 406,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 407,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 408,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 409,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 410,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 411,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 412,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 413,
+          "latency_ms": 26.520967483520508
+        },
+        {
+          "message_id": 414,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 415,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 416,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 417,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 418,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 419,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 420,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 421,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 422,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 423,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 424,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 425,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 426,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 427,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 428,
+          "latency_ms": 26.095867156982422
+        },
+        {
+          "message_id": 429,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 430,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 431,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 432,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 433,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 434,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 435,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 436,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 437,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 438,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 439,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 440,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 441,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 442,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 443,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 444,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 445,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 446,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 447,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 448,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 449,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 450,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 451,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 452,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 453,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 454,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 455,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 456,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 457,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 458,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 459,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 460,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 461,
+          "latency_ms": 25.58135986328125
+        },
+        {
+          "message_id": 462,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 463,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 464,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 465,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 466,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 467,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 468,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 469,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 470,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 471,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 472,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 473,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 474,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 475,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 476,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 477,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 478,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 479,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 480,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 481,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 482,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 483,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 484,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 485,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 486,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 487,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 488,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 489,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 490,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 491,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 492,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 493,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 494,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 495,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 496,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 497,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 498,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 499,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 500,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 501,
+          "latency_ms": 24.569988250732422
+        },
+        {
+          "message_id": 502,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 503,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 504,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 505,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 506,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 507,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 508,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 509,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 510,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 511,
+          "latency_ms": 23.55480194091797
+        },
+        {
+          "message_id": 512,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 513,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 514,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 515,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 516,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 517,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 518,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 519,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 520,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 521,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 522,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 523,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 524,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 525,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 526,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 527,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 528,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 529,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 530,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 531,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 532,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 533,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 534,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 535,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 536,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 537,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 538,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 539,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 540,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 541,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 542,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 543,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 544,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 545,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 546,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 547,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 548,
+          "latency_ms": 24.55878257751465
+        },
+        {
+          "message_id": 549,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 550,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 551,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 552,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 553,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 554,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 555,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 556,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 557,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 558,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 559,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 560,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 561,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 562,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 563,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 564,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 565,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 566,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 567,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 568,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 569,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 570,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 571,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 572,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 573,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 574,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 575,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 576,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 577,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 578,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 579,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 580,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 581,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 582,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 583,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 584,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 585,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 586,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 587,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 588,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 589,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 590,
+          "latency_ms": 23.400068283081055
+        },
+        {
+          "message_id": 591,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 592,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 593,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 594,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 595,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 596,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 597,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 598,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 599,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 600,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 601,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 602,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 603,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 604,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 605,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 606,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 607,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 608,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 609,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 610,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 611,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 612,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 613,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 614,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 615,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 616,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 617,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 618,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 619,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 620,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 621,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 622,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 623,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 624,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 625,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 626,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 627,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 628,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 629,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 630,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 631,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 632,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 633,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 634,
+          "latency_ms": 22.39847183227539
+        },
+        {
+          "message_id": 635,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 636,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 637,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 638,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 639,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 640,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 641,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 642,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 643,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 644,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 645,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 646,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 647,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 648,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 649,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 650,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 651,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 652,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 653,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 654,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 655,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 656,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 657,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 658,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 659,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 660,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 661,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 662,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 663,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 664,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 665,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 666,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 667,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 668,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 669,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 670,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 671,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 672,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 673,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 674,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 675,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 676,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 677,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 678,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 679,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 680,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 681,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 682,
+          "latency_ms": 21.399259567260742
+        },
+        {
+          "message_id": 683,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 684,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 685,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 686,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 687,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 688,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 689,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 690,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 691,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 692,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 693,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 694,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 695,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 696,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 697,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 698,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 699,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 700,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 701,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 702,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 703,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 704,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 705,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 706,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 707,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 708,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 709,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 710,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 711,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 712,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 713,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 714,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 715,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 716,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 717,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 718,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 719,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 720,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 721,
+          "latency_ms": 20.397424697875977
+        },
+        {
+          "message_id": 722,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 723,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 724,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 725,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 726,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 727,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 728,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 729,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 730,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 731,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 732,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 733,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 734,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 735,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 736,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 737,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 738,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 739,
+          "latency_ms": 19.394397735595703
+        },
+        {
+          "message_id": 740,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 741,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 742,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 743,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 744,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 745,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 746,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 747,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 748,
+          "latency_ms": 18.3868408203125
+        },
+        {
+          "message_id": 749,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 750,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 751,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 752,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 753,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 754,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 755,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 756,
+          "latency_ms": 17.388582229614258
+        },
+        {
+          "message_id": 757,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 758,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 759,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 760,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 761,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 762,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 763,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 764,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 765,
+          "latency_ms": 16.386985778808594
+        },
+        {
+          "message_id": 766,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 767,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 768,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 769,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 770,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 771,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 772,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 773,
+          "latency_ms": 15.385627746582031
+        },
+        {
+          "message_id": 774,
+          "latency_ms": 14.388084411621094
+        },
+        {
+          "message_id": 775,
+          "latency_ms": 14.388084411621094
+        },
+        {
+          "message_id": 776,
+          "latency_ms": 14.388084411621094
+        },
+        {
+          "message_id": 777,
+          "latency_ms": 14.388084411621094
+        },
+        {
+          "message_id": 778,
+          "latency_ms": 15.394210815429688
+        },
+        {
+          "message_id": 779,
+          "latency_ms": 15.394210815429688
+        },
+        {
+          "message_id": 780,
+          "latency_ms": 15.394210815429688
+        },
+        {
+          "message_id": 781,
+          "latency_ms": 15.394210815429688
+        },
+        {
+          "message_id": 782,
+          "latency_ms": 15.394210815429688
+        },
+        {
+          "message_id": 783,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 784,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 785,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 786,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 787,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 788,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 789,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 790,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 791,
+          "latency_ms": 14.388799667358398
+        },
+        {
+          "message_id": 792,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 793,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 794,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 795,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 796,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 797,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 798,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 799,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 800,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 801,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 802,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 803,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 804,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 805,
+          "latency_ms": 13.397216796875
+        },
+        {
+          "message_id": 806,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 807,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 808,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 809,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 810,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 811,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 812,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 813,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 814,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 815,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 816,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 817,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 818,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 819,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 820,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 821,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 822,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 823,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 824,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 825,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 826,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 827,
+          "latency_ms": 12.397289276123047
+        },
+        {
+          "message_id": 828,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 829,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 830,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 831,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 832,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 833,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 834,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 835,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 836,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 837,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 838,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 839,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 840,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 841,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 842,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 843,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 844,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 845,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 846,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 847,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 848,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 849,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 850,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 851,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 852,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 853,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 854,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 855,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 856,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 857,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 858,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 859,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 860,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 861,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 862,
+          "latency_ms": 11.404037475585938
+        },
+        {
+          "message_id": 863,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 864,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 865,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 866,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 867,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 868,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 869,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 870,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 871,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 872,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 873,
+          "latency_ms": 10.005950927734375
+        },
+        {
+          "message_id": 874,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 875,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 876,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 877,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 878,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 879,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 880,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 881,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 882,
+          "latency_ms": 8.999824523925781
+        },
+        {
+          "message_id": 883,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 884,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 885,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 886,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 887,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 888,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 889,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 890,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 891,
+          "latency_ms": 7.999181747436523
+        },
+        {
+          "message_id": 892,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 893,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 894,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 895,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 896,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 897,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 898,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 899,
+          "latency_ms": 6.9980621337890625
+        },
+        {
+          "message_id": 900,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 901,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 902,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 903,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 904,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 905,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 906,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 907,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 908,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 909,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 910,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 911,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 912,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 913,
+          "latency_ms": 5.983114242553711
+        },
+        {
+          "message_id": 914,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 915,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 916,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 917,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 918,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 919,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 920,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 921,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 922,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 923,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 924,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 925,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 926,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 927,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 928,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 929,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 930,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 931,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 932,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 933,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 934,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 935,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 936,
+          "latency_ms": 5.005121231079102
+        },
+        {
+          "message_id": 937,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 938,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 939,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 940,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 941,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 942,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 943,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 944,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 945,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 946,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 947,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 948,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 949,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 950,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 951,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 952,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 953,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 954,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 955,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 956,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 957,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 958,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 959,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 960,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 961,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 962,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 963,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 964,
+          "latency_ms": 4.00996208190918
+        },
+        {
+          "message_id": 965,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 966,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 967,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 968,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 969,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 970,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 971,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 972,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 973,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 974,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 975,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 976,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 977,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 978,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 979,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 980,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 981,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 982,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 983,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 984,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 985,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 986,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 987,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 988,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 989,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 990,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 991,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 992,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 993,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 994,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 995,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 996,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 997,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 998,
+          "latency_ms": 3.010272979736328
+        },
+        {
+          "message_id": 999,
+          "latency_ms": 3.010272979736328
+        }
+      ],
+      "throughput_metrics": [
+        {
+          "message_id": 0,
+          "throughput_msg_per_sec": 0.0
+        },
+        {
+          "message_id": 100,
+          "throughput_msg_per_sec": 1875.1107594229334
+        },
+        {
+          "message_id": 200,
+          "throughput_msg_per_sec": 3750.2215188458667
+        },
+        {
+          "message_id": 300,
+          "throughput_msg_per_sec": 5625.3322782688
+        },
+        {
+          "message_id": 400,
+          "throughput_msg_per_sec": 7500.4430376917335
+        },
+        {
+          "message_id": 500,
+          "throughput_msg_per_sec": 9375.553797114666
+        },
+        {
+          "message_id": 600,
+          "throughput_msg_per_sec": 11042.776027451358
+        },
+        {
+          "message_id": 700,
+          "throughput_msg_per_sec": 12883.238698693252
+        },
+        {
+          "message_id": 800,
+          "throughput_msg_per_sec": 14456.013855260777
+        },
+        {
+          "message_id": 900,
+          "throughput_msg_per_sec": 16263.015587168375
+        }
+      ]
+    },
+    "parallel_loading_test": {
+      "total_tasks": 10,
+      "completed_tasks": 10,
+      "failed_tasks": 0,
+      "processing_time": 0.33818840980529785,
+      "memory_usage": [
+        {
+          "task_id": "task_0",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:44.940401"
+        },
+        {
+          "task_id": "task_1",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:44.940401"
+        },
+        {
+          "task_id": "task_2",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:44.940401"
+        },
+        {
+          "task_id": "task_3",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:44.940401"
+        },
+        {
+          "task_id": "task_4",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:45.049932"
+        },
+        {
+          "task_id": "task_5",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:45.049932"
+        },
+        {
+          "task_id": "task_6",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:45.049932"
+        },
+        {
+          "task_id": "task_7",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:45.049932"
+        },
+        {
+          "task_id": "task_8",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:45.159431"
+        },
+        {
+          "task_id": "task_9",
+          "memory_mb": 284.8359375,
+          "timestamp": "2025-08-07T05:20:45.160439"
+        }
+      ],
+      "performance_metrics": {
+        "tasks_per_second": 29.569316126940038,
+        "success_rate": 100.0,
+        "average_memory_usage": 284.8359375
+      }
+    },
+    "overall_performance_score": 45.438868901375784
+  },
+  "recommendations": [
+    "继续监控内存使用情况",
+    "优化大数据集处理策略",
+    "完善错误处理机制",
+    "建立性能监控体系"
+  ],
+  "next_steps": [
+    "实施分布式架构升级",
+    "实现实时数据流处理",
+    "构建智能数据管理框架",
+    "建立数据血缘追踪系统"
+  ]
+}

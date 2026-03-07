@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="45" time="72.091" timestamp="2025-11-16T17:31:10.139512+08:00" hostname="AIPC"><testcase classname="unit.data.version_control.test_version_manager_real" name="test_version_manager_initialization" time="0.650"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_version_manager_initializ0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_version_manager_initializ0\versions
+INFO:__name__:Current version: None
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_load_metadata_recovers_from_corruption" time="0.689"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    __name__:version_manager.py:176 Failed to load version metadata: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_load_metadata_recovers_fr0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:__name__:Failed to load version metadata: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_load_metadata_recovers_fr0\versions
+INFO:__name__:Current version: None
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager" name="test_create_version" time="0.717"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmpi0herom2\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmpi0herom2\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_create_version" time="0.298"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_create_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_create_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_history_and_lineage_corruption" time="0.044"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    __name__:version_manager.py:200 Failed to load version history: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+ERROR    __name__:version_manager.py:220 Failed to load version lineage: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_history_and_lineage_corru0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:__name__:Failed to load version history: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+ERROR:__name__:Failed to load version lineage: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_history_and_lineage_corru0\versions
+INFO:__name__:Current version: None
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager" name="test_get_version" time="0.066"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmp9d15qz4d\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmp9d15qz4d\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Loaded version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_get_version_returns_none_when_file_missing" time="0.102"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_get_version_returns_none_0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_get_version_returns_none_0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager" name="test_list_versions" time="0.075"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmp36ff7kgq\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmp36ff7kgq\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_list_versions_filters_by_branch_and_limit" time="0.064"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_list_versions_filters_by_0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_list_versions_filters_by_0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager" name="test_delete_version" time="0.084"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmpy_kcyaw7\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+INFO     __name__:version_manager.py:639 Deleted version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmpy_kcyaw7\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+INFO:__name__:Deleted version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_delete_version_updates_lineage" time="0.069"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_delete_version_updates_li0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+INFO     __name__:version_manager.py:639 Deleted version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_delete_version_updates_li0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+INFO:__name__:Deleted version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_get_version" time="0.271"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Loaded version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager" name="test_rollback" time="0.091"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmpstfrmw83\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_3
+INFO     __name__:version_manager.py:674 Rolled back to version v_20251116_173217_1, new version: v_20251116_173217_3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmpstfrmw83\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+INFO:__name__:Loaded version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_3
+INFO:__name__:Rolled back to version v_20251116_173217_1, new version: v_20251116_173217_3
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_delete_current_version_raises" time="0.042"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_delete_current_version_ra0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_delete_current_version_ra0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_get_lineage_returns_ancestors" time="0.061"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_get_lineage_returns_ances0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_get_lineage_returns_ances0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager" name="test_compare_versions" time="0.123"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmp7969ea4y\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173217_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173217_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173217_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\tmp7969ea4y\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173217_1
+INFO:__name__:Created new version: v_20251116_173217_2
+INFO:__name__:Loaded version: v_20251116_173217_1
+INFO:__name__:Loaded version: v_20251116_173217_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_export_version_missing_file_returns_false" time="0.037"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_export_version_missing_fi0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:694 Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_export_version_missing_fi0\versions\not_exists.parquet does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_export_version_missing_fi0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_export_version_missing_fi0\versions\not_exists.parquet does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_import_version_missing_file_returns_none" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_missing_fi0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:719 Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_missing_fi0\missing.parquet does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_missing_fi0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_missing_fi0\missing.parquet does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_list_versions" time="0.091"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_list_versions0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_list_versions0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_import_version_success_creates_new_entry" time="0.067"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_success_cr0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:750 Imported version v_20251116_173218_1 from C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_success_cr0\external.parquet
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_success_cr0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Imported version v_20251116_173218_1 from C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_import_version_success_cr0\external.parquet
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_update_metadata_unknown_version_returns_false" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_update_metadata_unknown_v0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:768 Version unknown does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_update_metadata_unknown_v0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Version unknown does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_get_current_version" time="0.053"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_current_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_current_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_compare_versions_missing_target_raises" time="0.046"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_compare_versions_missing_0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173218_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_compare_versions_missing_0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Loaded version: v_20251116_173218_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_set_current_version" time="0.065"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_set_current_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_set_current_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_data_version_manager_edge_cases" name="test_rollback_to_missing_version_returns_none" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_rollback_to_missing_versi0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:656 Version missing does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw1\test_rollback_to_missing_versi0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Version missing does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_delete_version" time="0.101"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_delete_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_2
+INFO     __name__:version_manager.py:639 Deleted version: v_20251116_173218_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_delete_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_2
+INFO:__name__:Deleted version: v_20251116_173218_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_get_version_history" time="0.088"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version_history0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version_history0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_get_version_lineage" time="0.080"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version_lineage0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version_lineage0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_compare_versions" time="0.116"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173218_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173218_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_2
+INFO:__name__:Loaded version: v_20251116_173218_1
+INFO:__name__:Loaded version: v_20251116_173218_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_get_version_metadata" time="0.035"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version_metadata0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_version_metadata0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_rollback_to_version" time="0.093"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_rollback_to_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173218_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_3
+INFO     __name__:version_manager.py:674 Rolled back to version v_20251116_173218_1, new version: v_20251116_173218_3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_rollback_to_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_2
+INFO:__name__:Loaded version: v_20251116_173218_1
+INFO:__name__:Created new version: v_20251116_173218_3
+INFO:__name__:Rolled back to version v_20251116_173218_1, new version: v_20251116_173218_3
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_rollback_to_nonexistent_version" time="0.040"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_rollback_to_nonexistent_v0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+ERROR    __name__:version_manager.py:656 Version nonexistent_version does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_rollback_to_nonexistent_v0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+ERROR:__name__:Version nonexistent_version does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_export_version" time="0.044"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173218_1
+INFO     __name__:version_manager.py:700 Exported version v_20251116_173218_1 to C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_version0\exported_version.parquet
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173218_1
+INFO:__name__:Exported version v_20251116_173218_1 to C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_version0\exported_version.parquet
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_export_nonexistent_version" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_nonexistent_versio0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:694 Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_nonexistent_versio0\versions\nonexistent.parquet does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_nonexistent_versio0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_nonexistent_versio0\versions\nonexistent.parquet does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_import_version" time="0.068"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_version0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+INFO     __name__:version_manager.py:750 Imported version v_20251116_173219_1 from C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_version0\import_data.parquet
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_version0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+INFO:__name__:Imported version v_20251116_173219_1 from C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_version0\import_data.parquet
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_import_nonexistent_file" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_nonexistent_file0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:719 Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_nonexistent_file0\nonexistent.parquet does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_nonexistent_file0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_nonexistent_file0\nonexistent.parquet does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_get_lineage" time="0.065"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_lineage0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_get_lineage0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+INFO:__name__:Created new version: v_20251116_173219_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_update_metadata" time="0.049"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_update_metadata0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+INFO     __name__:version_manager.py:783 Updated metadata for version v_20251116_173219_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_update_metadata0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+INFO:__name__:Updated metadata for version v_20251116_173219_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_update_metadata_nonexistent_version" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_update_metadata_nonexiste0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:768 Version nonexistent does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_update_metadata_nonexiste0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Version nonexistent does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_compare_versions_detailed" time="0.094"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions_detailed0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173219_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173219_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions_detailed0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+INFO:__name__:Created new version: v_20251116_173219_2
+INFO:__name__:Loaded version: v_20251116_173219_1
+INFO:__name__:Loaded version: v_20251116_173219_2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_compare_versions_nonexistent" time="0.055"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions_nonexist0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173219_1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions_nonexist0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+INFO:__name__:Loaded version: v_20251116_173219_1
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_export_version_failure" time="0.037"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_version_failure0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+ERROR    __name__:version_manager.py:703 Failed to export version v_20251116_173219_1: copy failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_export_version_failure0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+ERROR:__name__:Failed to export version v_20251116_173219_1: copy failed
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_import_version_failure" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_version_failure0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:753 Failed to import version: read parquet failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_import_version_failure0\versions
+INFO:__name__:Current version: None
+ERROR:__name__:Failed to import version: read parquet failed
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_update_metadata_save_failure" time="0.037"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_update_metadata_save_fail0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+ERROR    __name__:version_manager.py:786 Failed to update metadata for version v_20251116_173219_1: save metadata failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_update_metadata_save_fail0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+ERROR:__name__:Failed to update metadata for version v_20251116_173219_1: save metadata failed
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_real" name="test_compare_versions_no_common_columns" time="0.083"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions_no_commo0\versions
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_173219_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173219_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_173219_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3793\popen-gw0\test_compare_versions_no_commo0\versions
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_173219_1
+INFO:__name__:Created new version: v_20251116_173219_2
+INFO:__name__:Loaded version: v_20251116_173219_1
+INFO:__name__:Loaded version: v_20251116_173219_2
+
+</system-err></testcase></testsuite></testsuites>

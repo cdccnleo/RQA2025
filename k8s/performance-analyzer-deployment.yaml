@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: performance-analyzer-service
+  namespace: rqa2025-monitoring
+  labels:
+    app: rqa2025
+    component: performance-analyzer
+    version: v1.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: performance-analyzer
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: performance-analyzer
+        version: v1.0.0
+    spec:
+      containers:
+      - name: performance-analyzer
+        image: rqa2025/monitoring-light:latest
+        ports:
+        - containerPort: 8001
+          name: http
+          protocol: TCP
+        env:
+        - name: COLLECTION_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: COLLECTION_INTERVAL
+        - name: HISTORY_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: HISTORY_SIZE
+        - name: ANOMALY_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: ANOMALY_THRESHOLD
+        - name: PREDICTION_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: PREDICTION_ENABLED
+        - name: ANOMALY_DETECTION_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: ANOMALY_DETECTION_ENABLED
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: rqa2025-config
+              key: LOG_LEVEL
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: data-volume
+          mountPath: /app/data
+      volumes:
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-data-pvc
+      restartPolicy: Always
+      imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: performance-analyzer-service
+  namespace: rqa2025-monitoring
+  labels:
+    app: rqa2025
+    component: performance-analyzer
+spec:
+  selector:
+    app: rqa2025
+    component: performance-analyzer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8001
+    protocol: TCP
+  type: ClusterIP
+
+---
+# 性能分析器专用API服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: performance-analyzer-api
+  namespace: rqa2025-monitoring
+  labels:
+    app: rqa2025
+    component: performance-analyzer
+    type: api
+spec:
+  selector:
+    app: rqa2025
+    component: performance-analyzer
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8001
+    protocol: TCP
+  type: ClusterIP

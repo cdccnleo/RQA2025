@@ -1,0 +1,52 @@
+{
+  "rollback_strategy": "immediate_rollback",
+  "backup_strategy": "pre_deployment_backup",
+  "rollback_steps": [
+    {
+      "step": 1,
+      "description": "停止当前服务",
+      "command": "sudo systemctl stop rqa2025",
+      "timeout": 30,
+      "verification": "sudo systemctl is-active rqa2025"
+    },
+    {
+      "step": 2,
+      "description": "备份当前版本",
+      "command": "sudo cp -r /opt/rqa2025 /opt/rqa2025_backup_$(date +%Y%m%d_%H%M%S)",
+      "timeout": 60,
+      "verification": "ls -la /opt/rqa2025_backup_* | tail -1"
+    },
+    {
+      "step": 3,
+      "description": "恢复上一版本",
+      "command": "sudo rm -rf /opt/rqa2025 && sudo mv /opt/rqa2025_previous /opt/rqa2025",
+      "timeout": 120,
+      "verification": "ls -la /opt/rqa2025"
+    },
+    {
+      "step": 4,
+      "description": "重启服务",
+      "command": "sudo systemctl start rqa2025",
+      "timeout": 60,
+      "verification": "curl -f http://localhost:8000/health"
+    }
+  ],
+  "rollback_triggers": [
+    "部署后5分钟内服务不可用",
+    "错误率超过10%",
+    "响应时间超过5秒",
+    "内存使用率超过95%"
+  ],
+  "success_criteria": [
+    "服务成功启动",
+    "健康检查通过",
+    "基本功能验证通过",
+    "监控指标正常"
+  ],
+  "contact_procedures": [
+    "立即通知技术团队",
+    "启动应急响应流程",
+    "通知业务负责人",
+    "准备状态报告"
+  ]
+}

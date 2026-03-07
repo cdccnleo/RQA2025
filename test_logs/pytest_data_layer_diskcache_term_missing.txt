@@ -1,0 +1,194 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\cache\test_disk_cache_io_edges.py::test_get_entry_deletes_too_large_file 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:09:58 [ WARNING] disk_cache: Cache file too large: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3997\test_get_entry_deletes_too_lar0\b637b17af08aced8850c18cccde915da.cache
+PASSED                                                                   [ 33%]
+tests\unit\data\cache\test_disk_cache_io_edges.py::test_get_entry_corrupted_pickle_is_deleted 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:09:59 [   ERROR] disk_cache: Failed to deserialize cache entry: invalid load key, 'n'.
+2025-11-17 00:09:59 [ WARNING] disk_cache: Deleting corrupted cache file for key: k2
+PASSED                                                                   [ 66%]
+tests\unit\data\cache\test_disk_cache_io_edges.py::test_get_entry_read_ioerror_graceful 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:10:00 [   ERROR] disk_cache: Failed to read cache file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3997\test_get_entry_read_ioerror_gr0\f7ab469d1dc79166fc874dadcc0dd854.cache: perm denied
+PASSED                                                                   [100%]
+
+------------------------------ coverage ------------------------------
+Name                                                                            Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------------------------------------------
+src\data\__init__.py                                                              186    108    42%   21-24, 33-36, 50-53, 57, 62-87, 102-144, 148, 152-162, 167-176, 180-189, 193, 209, 218-219, 230-231, 236, 240, 252-253, 257-258, 262-263, 267, 271, 275, 279, 295-297, 332-336, 341, 346-349, 354, 359, 370-371
+src\data\adapters\__init__.py                                                      51     51     0%   11-108
+src\data\adapters\adapter_components.py                                            73     73     0%   1-194
+src\data\adapters\adapter_registry.py                                             121    121     0%   6-212
+src\data\adapters\base.py                                                         102    102     0%   6-182
+src\data\adapters\china\__init__.py                                                20     20     0%   14-85
+src\data\adapters\client_components.py                                             70     70     0%   1-190
+src\data\adapters\connector_components.py                                          70     70     0%   1-190
+src\data\adapters\db_client.py                                                     57     57     0%   6-126
+src\data\adapters\macro\__init__.py                                                19     19     0%   6-51
+src\data\adapters\market_data_adapter.py                                           91     91     0%   6-214
+src\data\adapters\miniqmt\__init__.py                                               2      2     0%   1-2
+src\data\adapters\miniqmt\adapter.py                                              256    256     0%   1-443
+src\data\adapters\miniqmt\connection_pool.py                                      203    203     0%   9-368
+src\data\adapters\miniqmt\local_cache.py                                          231    231     0%   9-451
+src\data\adapters\miniqmt\miniqmt_data_adapter.py                                  68     68     0%   1-119
+src\data\adapters\miniqmt\miniqmt_trade_adapter.py                                 80     80     0%   1-140
+src\data\adapters\miniqmt\rate_limiter.py                                         182    182     0%   9-358
+src\data\adapters\news\__init__.py                                                 27     27     0%   6-63
+src\data\adapters\provider_components.py                                           72     72     0%   1-190
+src\data\adapters\source_components.py                                             70     70     0%   1-190
+src\data\alignment\__init__.py                                                      2      2     0%   4-6
+src\data\alignment\data_aligner.py                                                226    226     0%   5-602
+src\data\api\__init__.py                                                           32     32     0%   7-90
+src\data\cache\buffer_components.py                                                70     70     0%   1-190
+src\data\cache\cache_components.py                                                 70     70     0%   1-190
+src\data\cache\cache_manager.py                                                   382    266    30%   21-24, 64, 106-111, 115-117, 121-122, 126, 138-146, 173, 177, 181, 189, 198-199, 204, 208, 212-213, 255, 264-302, 306-326, 330-333, 338-361, 365-378, 382-383, 387-406, 410-430, 434-457, 461-493, 497-516, 520-539, 543-554, 558, 562-578, 582-585, 589-605, 609-612, 616, 620-644, 652-667
+src\data\cache\data_cache.py                                                       50     50     0%   6-204
+src\data\cache\disk_cache.py                                                      281    147    48%   26, 68-71, 73-75, 77-81, 124, 132-133, 159-160, 174-176, 180-182, 199-200, 228-244, 256-257, 271-278, 291-307, 326-330, 342-354, 363-371, 380-389, 393-404, 413-428, 437-459, 464, 476-482, 493-509, 512-515, 519-522
+src\data\cache\enhanced_cache_manager.py                                          284    284     0%   7-554
+src\data\cache\lfu_strategy.py                                                     16     10    38%   14, 19, 24-33
+src\data\cache\multi_level_cache.py                                               265    265     0%   5-488
+src\data\cache\redis_cache_adapter.py                                             254    254     0%   10-553
+src\data\cache\repository_components.py                                            70     70     0%   1-190
+src\data\cache\smart_cache_optimizer.py                                           208    208     0%   9-486
+src\data\cache\smart_data_cache.py                                                252    252     0%   9-449
+src\data\cache\store_components.py                                                 70     70     0%   1-191
+src\data\china\__init__.py                                                          7      7     0%   63-74
+src\data\china\adapter.py                                                         101    101     0%   10-272
+src\data\china\adapters.py                                                          2      2     0%   13-16
+src\data\china\adapters\__init__.py                                                55     55     0%   10-205
+src\data\china\cache_policy.py                                                     10     10     0%   4-35
+src\data\china\china_data_adapter.py                                                6      6     0%   5-15
+src\data\china\level2.py                                                           43     43     0%   6-126
+src\data\china\market.py                                                           31     31     0%   6-88
+src\data\china\market_data.py                                                      37     37     0%   8-79
+src\data\china\special.py                                                          24     24     0%   6-73
+src\data\china\stock.py                                                            32     32     0%   12-114
+src\data\compliance\compliance_checker.py                                         154    118    23%   36, 48, 61, 66-88, 93-108, 121-151, 154-159, 162-182, 185-195, 198-216, 219-231, 235-239, 243-251
+src\data\compliance\data_compliance_manager.py                                     85     85     0%   1-204
+src\data\compliance\data_policy_manager.py                                         58     46    21%   12, 16-44, 48-51, 55-67, 71, 75-85, 89-93, 97
+src\data\compliance\privacy_protector.py                                           42     42     0%   1-72
+src\data\core\base_adapter.py                                                      31     31     0%   5-98
+src\data\core\base_loader.py                                                      180    180     0%   5-441
+src\data\core\constants.py                                                         39     39     0%   9-71
+src\data\core\data_loader.py                                                      128    128     0%   6-326
+src\data\core\data_manager.py                                                     651    651     0%   4-1517
+src\data\core\data_model.py                                                       130    102    22%   22-30, 34, 38-39, 44-50, 54-60, 64-66, 70-78, 82-87, 91-95, 99, 102-121, 124-125, 128, 132-142, 145, 148-158, 169-175, 178-185, 197-213
+src\data\core\exceptions.py                                                       110    110     0%   9-265
+src\data\core\models.py                                                           265    265     0%   7-489
+src\data\core\registry.py                                                          43     43     0%   5-134
+src\data\core\service_discovery_manager.py                                        235    235     0%   13-650
+src\data\core\unified_data_loader_interface.py                                    134    134     0%   8-531
+src\data\data_manager.py                                                          141     97    31%   79, 82-84, 87, 90-92, 95, 98, 101, 112, 115, 130-147, 158-169, 172-181, 187, 193-239, 242-243, 256-263, 266, 269, 272, 275, 288-294, 297-298, 301-302
+src\data\decoders\level2_decoder.py                                                74     74     0%   3-146
+src\data\distributed\__init__.py                                                    6      5    17%   14-19
+src\data\distributed\cluster_manager.py                                            70     70     0%   1-164
+src\data\distributed\distributed_data_loader.py                                   315    303     4%   26-589
+src\data\distributed\load_balancer.py                                              98     98     0%   1-194
+src\data\distributed\multiprocess_loader.py                                        22     22     0%   1-47
+src\data\distributed\sharding_manager.py                                          101    101     0%   1-233
+src\data\edge\edge_node.py                                                        295    295     0%   6-535
+src\data\export\data_exporter.py                                                  204    204     0%   5-466
+src\data\governance\enterprise_governance.py                                      217    217     0%   5-485
+src\data\infrastructure_integration_manager.py                                     63     63     0%   12-131
+src\data\integration\enhanced_data_integration_modules\__init__.py                  6      6     0%   7-35
+src\data\integration\enhanced_data_integration_modules\cache_utils.py              35     35     0%   7-147
+src\data\integration\enhanced_data_integration_modules\components.py               79     79     0%   7-147
+src\data\integration\enhanced_data_integration_modules\config.py                   20     20     0%   7-67
+src\data\integration\enhanced_data_integration_modules\configuration.py           110    110     0%   1-401
+src\data\integration\enhanced_data_integration_modules\integration_manager.py     432    432     0%   7-1174
+src\data\integration\enhanced_data_integration_modules\performance_utils.py        50     50     0%   7-150
+src\data\integration\enhanced_integration_manager.py                              411    309    25%   11-19, 84-89, 93-95, 99-107, 111-112, 116-117, 121-135, 144-147, 151-153, 157-160, 164-170, 174-180, 184-187, 191-192, 201-204, 208-209, 213-242, 246-255, 260, 265, 270, 274-276, 285-287, 291-298, 302-307, 317-318, 322-323, 329-330, 334, 338-339, 343-344, 349, 353, 357-358, 362-363, 367-368, 372-373, 377-378, 382, 397-419, 423-431, 435-445, 463-500, 505-529, 542-548, 552-556, 560-562, 566-568, 572-574, 579-643, 651-688, 697, 701-710, 714-776
+src\data\interfaces\ICacheBackend.py                                               13     13     0%   1-59
+src\data\interfaces\api.py                                                        146    146     0%   9-320
+src\data\interfaces\data_interfaces.py                                            118      3    97%   38, 59-60
+src\data\interfaces\interfaces.py                                                  41     41     0%   8-107
+src\data\interfaces\loader.py                                                      37     10    73%   43-44, 49, 59, 63, 102-118
+src\data\interfaces\standard_interfaces.py                                         64      7    89%   50, 55, 60, 65, 107-109
+src\data\lake\__init__.py                                                           4      4     0%   1-5
+src\data\lake\data_lake_manager.py                                                348    348     0%   2-573
+src\data\lake\metadata.py                                                          55     55     0%   4-87
+src\data\lake\metadata_manager.py                                                 188    188     0%   2-314
+src\data\lake\partition_manager.py                                                153    153     0%   1-258
+src\data\loader\__init__.py                                                         2      2     0%   7-17
+src\data\loader\base_loader.py                                                      3      3     0%   12-23
+src\data\loader\batch_loader.py                                                    44     44     0%   3-100
+src\data\loader\bond_loader.py                                                    320    320     0%   1-712
+src\data\loader\collector_components.py                                            73     73     0%   1-199
+src\data\loader\commodity_loader.py                                                79     79     0%   7-134
+src\data\loader\commodity_loader_fixed.py                                          42     42     0%   7-66
+src\data\loader\crypto_loader.py                                                  402    402     0%   13-875
+src\data\loader\enhanced_data_loader.py                                            52     52     0%   8-121
+src\data\loader\fetcher_components.py                                              74     74     0%   1-202
+src\data\loader\financial_loader.py                                                82     82     0%   8-164
+src\data\loader\forex_loader.py                                                   164    164     0%   7-339
+src\data\loader\importer_components.py                                             74     74     0%   1-203
+src\data\loader\index_loader.py                                                   368    368     0%   2-666
+src\data\loader\infrastructure\__init__.py                                          8      8     0%   6-24
+src\data\loader\loader_components.py                                               74     74     0%   1-203
+src\data\loader\macro_loader.py                                                   352    352     0%   12-789
+src\data\loader\news_loader.py                                                     36     36     0%   8-102
+src\data\loader\options_loader.py                                                 258    258     0%   28-624
+src\data\loader\parallel_loader.py                                                157    157     0%   5-404
+src\data\loader\reader_components.py                                               74     74     0%   1-202
+src\data\loader\stock_loader.py                                                   708    708     0%   2-1256
+src\data\ml\__init__.py                                                             2      2     0%   1-3
+src\data\ml\quality_assessor.py                                                   161    161     0%   1-291
+src\data\monitoring\dashboard.py                                                  133    133     0%   9-338
+src\data\monitoring\data_alert_rules.py                                           341    341     0%   13-929
+src\data\monitoring\grafana_dashboard.py                                          186    186     0%   13-814
+src\data\monitoring\metrics_components.py                                          72     72     0%   1-196
+src\data\monitoring\monitor_components.py                                          73     73     0%   1-200
+src\data\monitoring\observer_components.py                                         73     73     0%   1-199
+src\data\monitoring\performance_monitor.py                                        162    110    32%   76-97, 101-106, 110-114, 126-136, 140, 144, 148, 152, 156, 169-174, 189-192, 205-210, 225-229, 241-243, 257-260, 264-279, 284-292, 296-307, 311-326, 330-332, 347-401, 410-427
+src\data\monitoring\quality_monitor.py                                            173    126    27%   43-48, 51-58, 61-75, 78-88, 91-93, 96-97, 100, 104, 119-123, 127, 131, 138-142, 146-221, 225, 229, 233, 240-243, 247-258, 262-271
+src\data\monitoring\tracker_components.py                                          73     73     0%   1-200
+src\data\monitoring\watcher_components.py                                          73     73     0%   1-199
+src\data\preload\preloader.py                                                      95     95     0%   5-138
+src\data\processing\__init__.py                                                     3      3     0%   1-4
+src\data\processing\cleaner_components.py                                          72     72     0%   1-196
+src\data\processing\data_processor.py                                             176    176     0%   7-431
+src\data\processing\filter_components.py                                           71     71     0%   1-193
+src\data\processing\performance_optimizer.py                                      237    237     0%   14-539
+src\data\processing\processor_components.py                                        71     71     0%   1-192
+src\data\processing\transformer_components.py                                      72     72     0%   1-196
+src\data\processing\unified_processor.py                                          132    132     0%   5-364
+src\data\quality\advanced_quality_monitor.py                                      387    295    24%   51, 144-175, 179-198, 213-259, 274-326, 341-399, 410-475, 490-524, 537-545, 549-558, 562-579, 583-600, 605-652, 658-684, 688-738, 748-770, 782-821, 826-836, 843-844, 849-874
+src\data\quality\assurance_components.py                                           77     77     0%   1-212
+src\data\quality\data_quality_monitor.py                                          447    345    23%   72-73, 76-81, 84-87, 90, 113-114, 118, 127-129, 133-167, 186-187, 191-233, 252-254, 258-316, 332-335, 339-401, 425-457, 461-470, 474-477, 481-482, 495-622, 626-635, 639-640, 644-651, 655-663, 667-668, 672-681, 685-696, 700-716, 720-735, 739, 752, 757, 761-764, 771-774, 781-788, 802-805, 809-813, 817-827, 834-840, 844-860, 870-891, 894-903, 907-909
+src\data\quality\enhanced_quality_monitor.py                                      291    291     0%   7-659
+src\data\quality\enhanced_quality_monitor_v2.py                                   410    410     0%   16-791
+src\data\quality\monitor.py                                                        53     32    40%   24-29, 34-41, 45-74, 78, 87-99, 103-110, 114
+src\data\quality\monitor_components.py                                             78     78     0%   1-214
+src\data\quality\quality_components.py                                             95     95     0%   1-247
+src\data\quality\unified_quality_monitor.py                                       577    577     0%   1-1157
+src\data\quality\unified_quality_monitor_interface.py                             137    137     0%   8-548
+src\data\quality\validator.py                                                     129     94    27%   34-35, 59-63, 71-125, 130-132, 137, 143-148, 156-163, 166-174, 177-187, 190-192, 195-204, 207-215, 219-228
+src\data\quality\validator_components.py                                           78     78     0%   1-214
+src\data\quantum\quantum_circuit.py                                               482    482     0%   6-872
+src\data\repair\data_repairer.py                                                  234    173    26%   18-25, 36-38, 126-144, 157-222, 241-279, 283-318, 322-344, 348-355, 359-371, 375-390, 395-404, 408-432, 436-445, 449, 453-459, 468
+src\data\sources\data_source_manager.py                                            86     86     0%   7-172
+src\data\sources\intelligent_source_manager.py                                    232    232     0%   9-482
+src\data\sync\backup_recovery.py                                                  232    232     0%   9-467
+src\data\sync\multi_market_sync.py                                                221    221     0%   5-495
+src\data\transformers\__init__.py                                                   2      2     0%   3-13
+src\data\transformers\data_transformer.py                                         193    193     0%   3-374
+src\data\validation\assertion_components.py                                        70     70     0%   1-190
+src\data\validation\checker_components.py                                          71     71     0%   1-194
+src\data\validation\china_stock_validator.py                                       32     26    19%   13-15, 19-62
+src\data\validation\tester_components.py                                           71     71     0%   1-194
+src\data\validation\validator.py                                                  262    262     0%   5-523
+src\data\validation\validator_components.py                                        71     71     0%   1-193
+src\data\validation\verifier_components.py                                         71     71     0%   1-194
+src\data\version_control\__init__.py                                                4      4     0%   1-9
+src\data\version_control\version_manager.py                                       402    402     0%   5-879
+-------------------------------------------------------------------------------------------------------------
+TOTAL                                                                           22555  21340     5%
+
+25 files skipped due to complete coverage.
+Coverage XML written to file test_logs\coverage-data-layer-diskcache.xml
+
+
+============================== 3 passed in 9.44s ==============================

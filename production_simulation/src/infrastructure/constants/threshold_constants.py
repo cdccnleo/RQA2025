@@ -1,0 +1,64 @@
+"""
+阈值相关常量定义
+"""
+
+
+class ThresholdConstants:
+    """系统阈值常量"""
+    
+    # CPU使用率阈值 (%)
+    CPU_USAGE_INFO = 50.0
+    CPU_USAGE_WARNING = 70.0
+    CPU_USAGE_CRITICAL = 80.0
+    CPU_USAGE_EMERGENCY = 90.0
+    
+    # 内存使用率阈值 (%)
+    MEMORY_USAGE_INFO = 60.0
+    MEMORY_USAGE_WARNING = 75.0
+    MEMORY_USAGE_CRITICAL = 85.0
+    MEMORY_USAGE_EMERGENCY = 90.0
+    
+    # 磁盘使用率阈值 (%)
+    DISK_USAGE_INFO = 70.0
+    DISK_USAGE_WARNING = 80.0
+    DISK_USAGE_CRITICAL = 90.0
+    DISK_USAGE_EMERGENCY = 95.0
+    
+    # 网络阈值
+    NETWORK_LATENCY_WARNING = 100  # ms
+    NETWORK_LATENCY_CRITICAL = 500  # ms
+    NETWORK_PACKET_LOSS_WARNING = 1.0  # %
+    NETWORK_PACKET_LOSS_CRITICAL = 5.0  # %
+    
+    # 数据库连接池阈值
+    DB_POOL_WARNING = 80  # %
+    DB_POOL_CRITICAL = 90  # %
+    
+    # 缓存命中率阈值
+    CACHE_HIT_RATE_WARNING = 60.0  # %
+    CACHE_HIT_RATE_CRITICAL = 40.0  # %
+    
+    # 响应时间阈值 (ms)
+    RESPONSE_TIME_FAST = 100
+    RESPONSE_TIME_NORMAL = 500
+    RESPONSE_TIME_SLOW = 1000
+    RESPONSE_TIME_CRITICAL = 3000
+    
+    # 错误率阈值 (%)
+    ERROR_RATE_INFO = 0.1
+    ERROR_RATE_WARNING = 1.0
+    ERROR_RATE_CRITICAL = 5.0
+    ERROR_RATE_EMERGENCY = 10.0
+    
+    # 健康评分阈值
+    HEALTH_SCORE_EXCELLENT = 90
+    HEALTH_SCORE_GOOD = 80
+    HEALTH_SCORE_WARNING = 60
+    HEALTH_SCORE_CRITICAL = 40
+    
+    # 健康评分扣减
+    HEALTH_DEDUCTION_MINOR = 10
+    HEALTH_DEDUCTION_MEDIUM = 15
+    HEALTH_DEDUCTION_MAJOR = 20
+    HEALTH_DEDUCTION_CRITICAL = 25
+

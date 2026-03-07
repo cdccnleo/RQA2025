@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端仪表盘调试</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>前端仪表盘数据源调试</h1>
+
+    <div id="debug-output"></div>
+
+    <script>
+        async function debugDashboard() {
+            const output = document.getElementById('debug-output');
+
+            function log(message) {
+                console.log(message);
+                output.innerHTML += '<div>' + message + '</div>';
+            }
+
+            log('🔍 开始前端仪表盘调试');
+
+            try {
+                // 1. 检查数据源表格是否存在
+                const table = document.querySelector('#data-sources-table');
+                if (!table) {
+                    log('❌ 找不到数据源表格 #data-sources-table');
+                    return;
+                }
+                log('✅ 找到数据源表格');
+
+                // 2. 检查表格行
+                const tbody = table.querySelector('tbody');
+                if (!tbody) {
+                    log('❌ 找不到表格tbody');
+                    return;
+                }
+
+                const allRows = tbody.querySelectorAll('tr');
+                log(`📊 表格总行数: ${allRows.length}`);
+
+                // 3. 检查启用数据源行
+                const enabledRows = tbody.querySelectorAll('tr.enabled-source');
+                log(`🟢 启用数据源行数: ${enabledRows.length}`);
+
+                // 4. 检查禁用数据源行
+                const disabledRows = tbody.querySelectorAll('tr.disabled-source');
+                log(`🔴 禁用数据源行数: ${disabledRows.length}`);
+
+                // 5. 检查每个启用行的详细信息
+                enabledRows.forEach((row, index) => {
+                    const testButton = row.querySelector('button[onclick*="testConnection"]');
+                    if (testButton) {
+                        const onclickAttr = testButton.getAttribute('onclick');
+                        const match = onclickAttr.match(/'([^']+)'/);
+                        if (match) {
+                            const sourceId = match[1];
+                            log(`   ${index + 1}. 找到数据源ID: ${sourceId}`);
+                        } else {
+                            log(`   ${index + 1}. 无法解析数据源ID`);
+                        }
+                    } else {
+                        log(`   ${index + 1}. 找不到测试按钮`);
+                    }
+                });
+
+                // 6. 检查API数据
+                log('🌐 检查API数据...');
+                const response = await fetch('/api/v1/data-sources/metrics');
+                if (response.ok) {
+                    const metrics = await response.json();
+                    const latencySources = Object.keys(metrics.latency_data || {});
+                    log(`🔌 API返回延迟数据源: ${latencySources.length} 个`);
+                    latencySources.forEach(id => {
+                        log(`   • ${id}`);
+                    });
+                } else {
+                    log(`❌ API请求失败: ${response.status}`);
+                }
+
+            } catch (error) {
+                log(`❌ 调试出错: ${error.message}`);
+            }
+        }
+
+        // 如果页面已经加载了数据源表格
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', debugDashboard);
+        } else {
+            // 如果页面已经加载完成，延迟执行等待数据源加载
+            setTimeout(debugDashboard, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-app
+  namespace: rqa2025
+  labels:
+    app: rqa2025
+    version: v1.0.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa2025
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        version: v1.0.0
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENV
+          value: "production"
+        - name: DB_HOST
+          value: "postgres-service"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: "rqa2025"
+        - name: DB_USER
+          value: "rqa_user"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rqa2025-secrets
+              key: db-password
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rqa2025-secrets
+              key: redis-password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      imagePullSecrets:
+      - name: rqa2025-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-service
+  namespace: rqa2025
+spec:
+  selector:
+    app: rqa2025
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa2025-ingress
+  namespace: rqa2025
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+  - host: rqa2025.your_domain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - rqa2025.your_domain.com
+    secretName: rqa2025-tls-secret
+
+

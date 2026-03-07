@@ -1,0 +1,293 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-engine-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-engine
+    version: v1.0.0
+    environment: production
+    cloud-native: "true"
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rqa2025-engine
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: rqa2025-engine
+        environment: production
+        version: v1.0.0
+        cloud-native: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: engine-service
+        image: rqa2025-engine:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: CLOUD_NATIVE_ENABLED
+          value: "true"
+        - name: CONFIG_PATH
+          value: "/app/config/engine-config.yaml"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: cache-volume
+          mountPath: /app/cache
+      volumes:
+      - name: config-volume
+        configMap:
+          name: rqa2025-engine-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-cache-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-infrastructure-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-infrastructure
+    version: v1.0.0
+    environment: production
+    cloud-native: "true"
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rqa2025-infrastructure
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: rqa2025-infrastructure
+        environment: production
+        version: v1.0.0
+        cloud-native: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: infrastructure-service
+        image: rqa2025-infrastructure:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8002
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: CLOUD_NATIVE_ENABLED
+          value: "true"
+        - name: CONFIG_PATH
+          value: "/app/config/infrastructure-config.yaml"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8002
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: cache-volume
+          mountPath: /app/cache
+      volumes:
+      - name: config-volume
+        configMap:
+          name: rqa2025-infrastructure-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-cache-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-business-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-business
+    version: v1.0.0
+    environment: production
+    cloud-native: "true"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rqa2025-business
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: rqa2025-business
+        environment: production
+        version: v1.0.0
+        cloud-native: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8003"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: business-service
+        image: rqa2025-business:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8003
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: CLOUD_NATIVE_ENABLED
+          value: "true"
+        - name: CONFIG_PATH
+          value: "/app/config/business-config.yaml"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8003
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: cache-volume
+          mountPath: /app/cache
+        - name: data-volume
+          mountPath: /app/data
+        - name: models-volume
+          mountPath: /app/models
+      volumes:
+      - name: config-volume
+        configMap:
+          name: rqa2025-business-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-logs-pvc
+      - name: cache-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-cache-pvc
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-data-pvc
+      - name: models-volume
+        persistentVolumeClaim:
+          claimName: rqa2025-models-pvc 

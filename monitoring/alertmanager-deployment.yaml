@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  alertmanager.yml: |
+    global:
+      smtp_smarthost: 'smtp.example.com:587'
+      smtp_from: 'alerts@rqa2025.example.com'
+
+    route:
+      group_by: ['alertname', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'rqa2025-team'
+
+    receivers:
+      - name: 'rqa2025-team'
+        email_configs:
+          - to: 'team@rqa2025.example.com'
+            subject: '🚨 ALERT: {{ .GroupLabels.alertname }}'
+            body: |
+              🚨 **ALERT**
+
+              **Alert:** {{ .GroupLabels.alertname }}
+              **Service:** {{ .GroupLabels.service }}
+              **Severity:** {{ .CommonLabels.severity }}
+              **Description:** {{ .CommonAnnotations.description }}
+
+              **Time:** {{ .StartsAt }}
+        slack_configs:
+          - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+            channel: '#alerts'
+            title: '🚨 ALERT: {{ .GroupLabels.alertname }}'
+            text: |
+              *Alert:* {{ .GroupLabels.alertname }}
+              *Service:* {{ .GroupLabels.service }}
+              *Severity:* {{ .CommonLabels.severity }}
+              *Description:* {{ .CommonAnnotations.description }}
+              *Time:* {{ .StartsAt }}
+
+    inhibit_rules:
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'service']
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager:v0.24.0
+        ports:
+        - containerPort: 9093
+        volumeMounts:
+        - name: config
+          mountPath: /etc/alertmanager
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      volumes:
+      - name: config
+        configMap:
+          name: alertmanager-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  selector:
+    app: alertmanager
+  ports:
+  - port: 9093
+    targetPort: 9093
+
+
+
+

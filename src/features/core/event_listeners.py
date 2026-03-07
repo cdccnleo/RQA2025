@@ -1,0 +1,211 @@
+import logging
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+事件监听器
+
+提供事件监听功能，用于监听数据采集完成事件并自动触发特征提取任务。
+"""
+
+import time
+from typing import Dict, Any
+
+
+logger = logging.getLogger(__name__)
+
+
+class FeatureEventListeners:
+    """
+    特征层事件监听器
+    """
+
+    def __init__(self):
+        """
+        初始化事件监听器
+        """
+        self.event_bus = None
+        self.scheduler = None
+
+    def initialize(self, event_bus, scheduler):
+        """
+        初始化事件监听器
+
+        Args:
+            event_bus: 事件总线实例
+            scheduler: 任务调度器实例
+        """
+        self.event_bus = event_bus
+        self.scheduler = scheduler
+
+        # 注册事件监听器
+        self._register_event_listeners()
+        logger.info("特征层事件监听器已初始化")
+
+    def _register_event_listeners(self):
+        """
+        注册事件监听器
+        """
+        if not self.event_bus:
+            logger.warning("事件总线未初始化，无法注册监听器")
+            return
+
+        # 导入事件类型
+        try:
+            from src.core.event_bus.types import EventType
+        except Exception as e:
+            logger.error(f"导入事件类型失败: {e}")
+            return
+
+        # 注册数据采集完成事件监听器
+        try:
+            def handle_data_collection_completed(event):
+                self._handle_data_collection_completed(event)
+
+            # 优先使用DATA_COLLECTION_COMPLETED事件，如果不存在则使用DATA_COLLECTED
+            if hasattr(EventType, 'DATA_COLLECTION_COMPLETED'):
+                self.event_bus.subscribe(
+                    EventType.DATA_COLLECTION_COMPLETED,
+                    handle_data_collection_completed
+                )
+                logger.info("已注册数据采集完成事件监听器")
+            else:
+                # 使用现有的DATA_COLLECTED事件
+                self.event_bus.subscribe(
+                    EventType.DATA_COLLECTED,
+                    handle_data_collection_completed
+                )
+                logger.info("已注册数据采集完成事件监听器（使用DATA_COLLECTED事件）")
+        except Exception as e:
+            logger.error(f"注册数据采集完成事件监听器失败: {e}")
+
+        # 注册数据采集开始事件监听器
+        try:
+            def handle_data_collection_started(event):
+                self._handle_data_collection_started(event)
+
+            self.event_bus.subscribe(
+                EventType.DATA_COLLECTION_STARTED,
+                handle_data_collection_started
+            )
+            logger.info("已注册数据采集开始事件监听器")
+        except Exception as e:
+            logger.error(f"注册数据采集开始事件监听器失败: {e}")
+
+    def _handle_data_collection_completed(self, event):
+        """
+        处理数据采集完成事件
+
+        Args:
+            event: 事件对象
+        """
+        try:
+            data = event.data if hasattr(event, 'data') else event
+            source_id = data.get("source_id")
+            source_config = data.get("source_config")
+
+            logger.info(f"收到数据采集完成事件，数据源: {source_id}")
+
+            # 自动创建特征提取任务
+            self._create_feature_task(source_id, source_config)
+
+        except Exception as e:
+            logger.error(f"处理数据采集完成事件失败: {e}")
+
+    def _handle_data_collection_started(self, event):
+        """
+        处理数据采集开始事件
+
+        Args:
+            event: 事件对象
+        """
+        try:
+            data = event.data if hasattr(event, 'data') else event
+            source_id = data.get("source_id")
+
+            logger.info(f"收到数据采集开始事件，数据源: {source_id}")
+
+        except Exception as e:
+            logger.error(f"处理数据采集开始事件失败: {e}")
+
+    def _create_feature_task(self, source_id: str, source_config: Dict[str, Any]):
+        """
+        创建特征提取任务
+
+        Args:
+            source_id: 数据源ID
+            source_config: 数据源配置
+        """
+        try:
+            # 构建任务配置
+            task_config = {
+                "data_source": source_id,
+                "source_config": source_config,
+                "collection_time": time.time()
+            }
+
+            # 确定任务类型
+            task_type = "技术指标"  # 默认任务类型
+
+            # 根据数据源类型确定任务类型
+            if source_config:
+                data_type = source_config.get("data_type", "")
+                if "sentiment" in data_type.lower():
+                    task_type = "情感特征"
+                elif "statistical" in data_type.lower():
+                    task_type = "统计特征"
+
+            logger.info(f"为数据源 {source_id} 创建特征提取任务，类型: {task_type}")
+
+            # 提交任务到调度器
+            if self.scheduler:
+                task_id = self.scheduler.submit_task(
+                    task_type=task_type,
+                    data=task_config,
+                    metadata={
+                        "source_id": source_id,
+                        "source_config": source_config,
+                        "created_from_event": True
+                    }
+                )
+                logger.info(f"特征提取任务已创建，任务ID: {task_id}")
+            else:
+                # 如果调度器未初始化，使用服务层创建任务
+                try:
+                    from src.gateway.web.feature_engineering_service import create_feature_task
+                    task = create_feature_task(task_type, task_config)
+                    logger.info(f"通过服务层创建特征提取任务，任务ID: {task.get('task_id')}")
+                except Exception as e:
+                    logger.error(f"通过服务层创建特征提取任务失败: {e}")
+
+        except Exception as e:
+            logger.error(f"创建特征提取任务失败: {e}")
+
+
+# 全局事件监听器实例
+_feature_event_listeners = None
+
+
+def get_feature_event_listeners() -> FeatureEventListeners:
+    """
+    获取全局事件监听器实例
+
+    Returns:
+        FeatureEventListeners实例
+    """
+    global _feature_event_listeners
+    if _feature_event_listeners is None:
+        _feature_event_listeners = FeatureEventListeners()
+    return _feature_event_listeners
+
+
+def initialize_event_listeners(event_bus, scheduler):
+    """
+    初始化事件监听器
+
+    Args:
+        event_bus: 事件总线实例
+        scheduler: 任务调度器实例
+    """
+    listeners = get_feature_event_listeners()
+    listeners.initialize(event_bus, scheduler)
+    return listeners

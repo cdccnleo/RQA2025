@@ -1,0 +1,147 @@
+{
+  "tests": {
+    "tests/unit/infrastructure/test_unified_hot_reload.py": {
+      "success": false,
+      "exit_code": 1,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x00000182EBA43910>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 21 items\n\ntests/unit/infrastructure/test_unified_hot_reload.py::TestUnifiedConfigHotReload::test_initialization PASSED [  4%]\ntests/unit/infrastructure/test_unified_hot_reload.py::TestUnifiedConfigHotReload::test_start_stop_watching FAILED [  9%]\n\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n========================= 1 failed, 1 passed in 1.55s =========================\n",
+      "stderr": "--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 207, in stop_watching\n    self._watched_files.clear()\nAttributeError: 'UnifiedConfigHotReload' object has no attribute '_watched_files'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1086, in emit\n    stream.write(msg + self.terminator)\nValueError: I/O operation on closed file.\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 258, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 221, in cleanup\n    self.stop_watching()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 214, in stop_watching\n    logger.error(f\"停止监控失败: {e}\")\nMessage: \"停止监控失败: 'UnifiedConfigHotReload' object has no attribute '_watched_files'\"\nArguments: ()\n--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 207, in stop_watching\n    self._watched_files.clear()\nAttributeError: 'UnifiedConfigHotReload' object has no attribute '_watched_files'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 73, in emit\n    if self.shouldRollover(record):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 192, in shouldRollover\n    self.stream = self._open()\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1175, in _open\n    return open(self.baseFilename, self.mode, encoding=self.encoding,\nNameError: name 'open' is not defined\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 258, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 221, in cleanup\n    self.stop_watching()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 214, in stop_watching\n    logger.error(f\"停止监控失败: {e}\")\nMessage: \"停止监控失败: 'UnifiedConfigHotReload' object has no attribute '_watched_files'\"\nArguments: ()\n--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1086, in emit\n    stream.write(msg + self.terminator)\nValueError: I/O operation on closed file.\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 258, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 251, in cleanup\n    logger.info(\"配置热加载资源已清理\")\nMessage: '配置热加载资源已清理'\nArguments: ()\n--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 73, in emit\n    if self.shouldRollover(record):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 192, in shouldRollover\n    self.stream = self._open()\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1175, in _open\n    return open(self.baseFilename, self.mode, encoding=self.encoding,\nNameError: name 'open' is not defined\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 258, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\config\\unified_hot_reload.py\", line 251, in cleanup\n    logger.info(\"配置热加载资源已清理\")\nMessage: '配置热加载资源已清理'\nArguments: ()\n",
+      "duration": 5.037598609924316,
+      "initial_memory_mb": 18.35546875,
+      "final_memory_mb": 18.7421875,
+      "max_memory_mb": 18.5546875,
+      "memory_growth_mb": 0.38671875,
+      "test_path": "tests/unit/infrastructure/test_unified_hot_reload.py"
+    },
+    "tests/unit/infrastructure/test_deployment_validator.py": {
+      "success": false,
+      "exit_code": 1,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x0000028AFF1E3940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 15 items\n\ntests/unit/infrastructure/test_deployment_validator.py::TestDeploymentValidator::test_import PASSED [  6%]\ntests/unit/infrastructure/test_deployment_validator.py::TestDeploymentValidator::test_basic_functionality FAILED [ 13%]\n\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n=================== 1 failed, 1 passed, 2 warnings in 1.49s ===================\n",
+      "stderr": "--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1086, in emit\n    stream.write(msg + self.terminator)\nValueError: I/O operation on closed file.\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 133, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 82, in cleanup\n    self.stop()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 76, in stop\n    logger.info(\"部署验证测试已停止\")\nMessage: '部署验证测试已停止'\nArguments: ()\n--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 73, in emit\n    if self.shouldRollover(record):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 192, in shouldRollover\n    self.stream = self._open()\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1175, in _open\n    return open(self.baseFilename, self.mode, encoding=self.encoding,\nNameError: name 'open' is not defined\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 133, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 82, in cleanup\n    self.stop()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 76, in stop\n    logger.info(\"部署验证测试已停止\")\nMessage: '部署验证测试已停止'\nArguments: ()\n--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1086, in emit\n    stream.write(msg + self.terminator)\nValueError: I/O operation on closed file.\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 133, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 126, in cleanup\n    logger.info(\"部署验证器资源已清理\")\nMessage: '部署验证器资源已清理'\nArguments: ()\n--- Logging error ---\nTraceback (most recent call last):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 73, in emit\n    if self.shouldRollover(record):\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\handlers.py\", line 192, in shouldRollover\n    self.stream = self._open()\n  File \"C:\\Users\\AILeo\\miniconda3\\lib\\logging\\__init__.py\", line 1175, in _open\n    return open(self.baseFilename, self.mode, encoding=self.encoding,\nNameError: name 'open' is not defined\nCall stack:\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 133, in __del__\n    self.cleanup()\n  File \"C:\\PythonProject\\RQA2025\\src\\infrastructure\\deployment_validator.py\", line 126, in cleanup\n    logger.info(\"部署验证器资源已清理\")\nMessage: '部署验证器资源已清理'\nArguments: ()\n",
+      "duration": 5.046222448348999,
+      "initial_memory_mb": 18.71875,
+      "final_memory_mb": 18.8046875,
+      "max_memory_mb": 18.78515625,
+      "memory_growth_mb": 0.0859375,
+      "test_path": "tests/unit/infrastructure/test_deployment_validator.py"
+    },
+    "tests/unit/infrastructure/monitoring/test_automation_monitor.py": {
+      "success": false,
+      "exit_code": 1,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x0000027FE2203940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 18 items\n\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_init PASSED [  5%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_register_service PASSED [ 11%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_add_alert_rule PASSED [ 16%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_register_automation_task PASSED [ 22%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_get_service_health PASSED [ 27%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_get_all_services_health PASSED [ 33%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_get_alert_rules PASSED [ 38%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_get_automation_tasks PASSED [ 44%]\ntests/unit/infrastructure/monitoring/test_automation_monitor.py::TestAutomationMonitor::test_send_to_alertmanager ",
+      "stderr": "",
+      "duration": 63.201292991638184,
+      "initial_memory_mb": 18.78515625,
+      "final_memory_mb": 9.26171875,
+      "max_memory_mb": 18.828125,
+      "memory_growth_mb": -9.5234375,
+      "test_path": "tests/unit/infrastructure/monitoring/test_automation_monitor.py"
+    },
+    "tests/unit/infrastructure/monitoring/test_monitoring.py": {
+      "success": true,
+      "exit_code": 0,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x000002D87EBB3940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 5 items\n\ntests/unit/infrastructure/monitoring/test_monitoring.py::TestApplicationMonitor::test_metric_recording PASSED [ 20%]\ntests/unit/infrastructure/monitoring/test_monitoring.py::TestApplicationMonitor::test_context_manager PASSED [ 40%]\ntests/unit/infrastructure/monitoring/test_monitoring.py::TestApplicationMonitor::test_health_check PASSED [ 60%]\ntests/unit/infrastructure/monitoring/test_monitoring.py::TestApplicationMonitor::test_alert_trigger PASSED [ 80%]\ntests/unit/infrastructure/monitoring/test_monitoring.py::TestApplicationMonitor::test_custom_tags PASSED [100%]\n\n============================== 5 passed in 1.90s ==============================\n",
+      "stderr": "",
+      "duration": 5.051037788391113,
+      "initial_memory_mb": 13.23828125,
+      "final_memory_mb": 13.859375,
+      "max_memory_mb": 13.8359375,
+      "memory_growth_mb": 0.62109375,
+      "test_path": "tests/unit/infrastructure/monitoring/test_monitoring.py"
+    },
+    "tests/unit/infrastructure/cache/test_enhanced_cache_manager.py": {
+      "success": true,
+      "exit_code": 0,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x000001F96CAA3940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 21 items\n\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_clear PASSED [  4%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_delete PASSED [  9%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_error_handling_safe PASSED [ 14%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_exists PASSED [ 19%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_health_check PASSED [ 23%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_init PASSED [ 28%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_list_keys PASSED [ 33%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_metrics_update PASSED [ 38%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_multi_level_cache PASSED [ 42%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_set_and_get_basic PASSED [ 47%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_set_and_get_with_ttl PASSED [ 52%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManager::test_stats PASSED [ 57%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManagerGlobalFunctions::test_delete_cache PASSED [ 61%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManagerGlobalFunctions::test_get_cache PASSED [ 66%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManagerGlobalFunctions::test_get_cache_stats PASSED [ 71%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManagerGlobalFunctions::test_get_enhanced_cache_manager_singleton PASSED [ 76%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestEnhancedCacheManagerGlobalFunctions::test_set_cache PASSED [ 80%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestCacheConfig::test_cache_config_custom PASSED [ 85%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestCacheConfig::test_cache_config_defaults PASSED [ 90%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestCacheLevel::test_cache_level_values PASSED [ 95%]\ntests/unit/infrastructure/cache/test_enhanced_cache_manager.py::TestCacheMetrics::test_cache_metrics_defaults PASSED [100%]\n\n============================= 21 passed in 1.47s ==============================\n",
+      "stderr": "",
+      "duration": 4.045262813568115,
+      "initial_memory_mb": 13.84375,
+      "final_memory_mb": 13.8828125,
+      "max_memory_mb": 13.86328125,
+      "memory_growth_mb": 0.0390625,
+      "test_path": "tests/unit/infrastructure/cache/test_enhanced_cache_manager.py"
+    },
+    "tests/unit/infrastructure/cache/test_memory_cache_manager.py": {
+      "success": false,
+      "error": "测试文件不存在: tests/unit/infrastructure/cache/test_memory_cache_manager.py",
+      "test_path": "tests/unit/infrastructure/cache/test_memory_cache_manager.py"
+    },
+    "tests/unit/infrastructure/security/test_enhanced_security_manager.py": {
+      "success": false,
+      "exit_code": 1,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x0000024F7FA23940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 35 items\n\ntests/unit/infrastructure/security/test_enhanced_security_manager.py::TestEnhancedSecurityManager::test_initialization ",
+      "stderr": "",
+      "duration": 63.41296172142029,
+      "initial_memory_mb": 13.875,
+      "final_memory_mb": 8.0390625,
+      "max_memory_mb": 13.89453125,
+      "memory_growth_mb": -5.8359375,
+      "test_path": "tests/unit/infrastructure/security/test_enhanced_security_manager.py"
+    },
+    "tests/unit/infrastructure/security/test_auth_manager.py": {
+      "success": false,
+      "error": "测试文件不存在: tests/unit/infrastructure/security/test_auth_manager.py",
+      "test_path": "tests/unit/infrastructure/security/test_auth_manager.py"
+    },
+    "tests/unit/infrastructure/health/test_enhanced_health_checker.py": {
+      "success": false,
+      "error": "测试文件不存在: tests/unit/infrastructure/health/test_enhanced_health_checker.py",
+      "test_path": "tests/unit/infrastructure/health/test_enhanced_health_checker.py"
+    },
+    "tests/unit/infrastructure/health/test_health_checker.py": {
+      "success": true,
+      "exit_code": 0,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x0000011DD88A3940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 25 items\n\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthStatus::test_health_status_creation PASSED [  4%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_health_checker_initialization PASSED [  8%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_start_and_stop PASSED [ 12%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_get_status PASSED [ 16%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_is_healthy PASSED [ 20%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_check_database PASSED [ 24%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_check_redis PASSED [ 28%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_check_trading_engine PASSED [ 32%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_check_risk_system PASSED [ 36%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_check_data_service PASSED [ 40%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_get_health_report PASSED [ 44%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_register_custom_check PASSED [ 48%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_trigger_manual_check PASSED [ 52%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_trigger_manual_check_unknown_service PASSED [ 56%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthChecker::test_perform_checks_exception_handling PASSED [ 60%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheck::test_health_check_initialization PASSED [ 64%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheck::test_add_dependency_check PASSED [ 68%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheck::test_health_endpoint PASSED [ 72%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheck::test_health_endpoint_with_exception PASSED [ 76%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheck::test_ready_endpoint PASSED [ 80%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheck::test_get_system_health PASSED [ 84%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheckerIntegration::test_health_checker_lifecycle PASSED [ 88%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheckerIntegration::test_health_checker_thread_safety PASSED [ 92%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheckErrorHandling::test_health_checker_with_invalid_config PASSED [ 96%]\ntests/unit/infrastructure/health/test_health_checker.py::TestHealthCheckErrorHandling::test_health_checker_with_missing_services PASSED [100%]\n\n============================= 25 passed in 10.14s =============================\n",
+      "stderr": "",
+      "duration": 13.12822937965393,
+      "initial_memory_mb": 10.37109375,
+      "final_memory_mb": 10.94140625,
+      "max_memory_mb": 10.91015625,
+      "memory_growth_mb": 0.5703125,
+      "test_path": "tests/unit/infrastructure/health/test_health_checker.py"
+    },
+    "tests/unit/infrastructure/test_coverage_improvement.py": {
+      "success": false,
+      "exit_code": 1,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x0000016535823940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 60 items\n\ntests/unit/infrastructure/test_coverage_improvement.py::TestCoverageImprovement::test_auto_recovery_coverage PASSED [  1%]\ntests/unit/infrastructure/test_coverage_improvement.py::TestCoverageImprovement::test_circuit_breaker_coverage FAILED [  3%]\n\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n========================= 1 failed, 1 passed in 0.50s =========================\n",
+      "stderr": "",
+      "duration": 4.036108493804932,
+      "initial_memory_mb": 10.921875,
+      "final_memory_mb": 10.94140625,
+      "max_memory_mb": 10.921875,
+      "memory_growth_mb": 0.01953125,
+      "test_path": "tests/unit/infrastructure/test_coverage_improvement.py"
+    },
+    "tests/unit/infrastructure/test_lock.py": {
+      "success": true,
+      "exit_code": 0,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x00000283EB893940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 14 items\n\ntests/unit/infrastructure/test_lock.py::TestLock::test_import PASSED     [  7%]\ntests/unit/infrastructure/test_lock.py::TestLock::test_basic_functionality PASSED [ 14%]\ntests/unit/infrastructure/test_lock.py::TestLock::test_error_handling PASSED [ 21%]\ntests/unit/infrastructure/test_lock.py::TestLock::test_configuration PASSED [ 28%]\ntests/unit/infrastructure/test_lock.py::test_acquire_and_release PASSED  [ 35%]\ntests/unit/infrastructure/test_lock.py::test_acquire_timeout PASSED      [ 42%]\ntests/unit/infrastructure/test_lock.py::test_release_unacquired PASSED   [ 50%]\ntests/unit/infrastructure/test_lock.py::test_get_lock_stats_empty PASSED [ 57%]\ntests/unit/infrastructure/test_lock.py::test_singleton PASSED            [ 64%]\ntests/unit/infrastructure/test_lock.py::test_multiple_locks PASSED       [ 71%]\ntests/unit/infrastructure/test_lock.py::test_acquire_invalid PASSED      [ 78%]\ntests/unit/infrastructure/test_lock.py::test_concurrent_acquire PASSED   [ 85%]\ntests/unit/infrastructure/test_lock.py::test_lock_manager_acquire_release PASSED [ 92%]\ntests/unit/infrastructure/test_lock.py::test_get_default_lock_manager PASSED [100%]\n\n============================= 14 passed in 0.63s ==============================\n",
+      "stderr": "",
+      "duration": 4.052567958831787,
+      "initial_memory_mb": 10.921875,
+      "final_memory_mb": 10.95703125,
+      "max_memory_mb": 10.92578125,
+      "memory_growth_mb": 0.03515625,
+      "test_path": "tests/unit/infrastructure/test_lock.py"
+    },
+    "tests/unit/infrastructure/test_service_launcher.py": {
+      "success": false,
+      "exit_code": 1,
+      "stdout": "[pytest_sessionstart] sklearn type: <class 'module'>, __spec__: ModuleSpec(name='sklearn', loader=<_frozen_importlib_external.SourceFileLoader object at 0x0000022EB1693940>, origin='C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn\\\\__init__.py', submodule_search_locations=['C:\\\\Users\\\\AILeo\\\\miniconda3\\\\lib\\\\site-packages\\\\sklearn']), __file__: C:\\Users\\AILeo\\miniconda3\\lib\\site-packages\\sklearn\\__init__.py\n============================= test session starts =============================\ncollecting ... collected 18 items\n\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncher::test_initialization SKIPPED [  5%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncher::test_basic_functionality SKIPPED [ 11%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncher::test_error_handling SKIPPED [ 16%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncher::test_performance SKIPPED [ 22%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncherAdvanced::test_start_service_dependency_not_running PASSED [ 27%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncherAdvanced::test_start_service_already_running PASSED [ 33%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncherAdvanced::test_start_service_unknown PASSED [ 38%]\ntests/unit/infrastructure/test_service_launcher.py::TestServiceLauncherAdvanced::test_start_service_subprocess_exception FAILED [ 44%]\n\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n=================== 1 failed, 3 passed, 4 skipped in 1.08s ====================\n",
+      "stderr": "",
+      "duration": 4.044287204742432,
+      "initial_memory_mb": 10.94140625,
+      "final_memory_mb": 10.9609375,
+      "max_memory_mb": 10.9609375,
+      "memory_growth_mb": 0.01953125,
+      "test_path": "tests/unit/infrastructure/test_service_launcher.py"
+    }
+  },
+  "summary": {
+    "total_tests": 13,
+    "successful_tests": 4,
+    "failed_tests": 9,
+    "total_memory_growth_mb": -13.58203125,
+    "max_memory_used_mb": 18.828125,
+    "total_duration": 171.0555694103241
+  }
+}

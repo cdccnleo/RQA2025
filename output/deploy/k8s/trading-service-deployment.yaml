@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trading-service
+  namespace: rqa-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trading-service
+  template:
+    metadata:
+      labels:
+        app: trading-service
+    spec:
+      containers:
+      - name: trading-service
+        image: registry.rqa.com/trading-service:prod
+        resources:
+          limits:
+            cpu: "4"
+            memory: 8Gi
+        ports:
+        - containerPort: 8080

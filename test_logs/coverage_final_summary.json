@@ -1,0 +1,39 @@
+{
+  "report_date": "2025-11-04",
+  "fix_applied": "trading_adapter.py BaseBusinessAdapter import",
+  "overall_coverage": 33.0,
+  "modules": [
+    {"name": "constants", "coverage": 100, "status": "优秀", "tests_passed": 36},
+    {"name": "error", "coverage": 91, "status": "优秀", "tests_passed": 624},
+    {"name": "core", "coverage": 89, "status": "良好", "tests_passed": 164},
+    {"name": "interfaces", "coverage": 89, "status": "良好", "tests_passed": 19},
+    {"name": "ops", "coverage": 72, "status": "及格", "tests_passed": 68},
+    {"name": "optimization", "coverage": 71, "status": "及格", "tests_passed": 78},
+    {"name": "resource", "coverage": 52, "status": "不及格", "tests_passed": 341},
+    {"name": "api", "coverage": 42, "status": "不及格", "tests_passed": 13},
+    {"name": "cache", "coverage": 37, "status": "不及格", "tests_passed": 53},
+    {"name": "logging", "coverage": 31, "status": "不及格", "tests_passed": 1},
+    {"name": "config", "coverage": 30, "status": "严重不足", "tests_passed": 105},
+    {"name": "utils", "coverage": 29, "status": "严重不足", "tests_passed": 0},
+    {"name": "security", "coverage": 27, "status": "严重不足", "tests_passed": 5},
+    {"name": "distributed", "coverage": 26, "status": "严重不足", "tests_passed": 0},
+    {"name": "monitoring", "coverage": 26, "status": "严重不足", "tests_passed": 2},
+    {"name": "versioning", "coverage": 25, "status": "严重不足", "tests_passed": 3},
+    {"name": "health", "coverage": 18, "status": "严重不足", "tests_passed": 0, "problem": "4779个测试但19个文件0%覆盖"}
+  ],
+  "summary": {
+    "total_statements": 76253,
+    "covered": 25195,
+    "missed": 51058,
+    "达标模块": 6,
+    "不达标模块": 11,
+    "投产建议": "不建议投产 - 距80%标准差47%"
+  },
+  "key_findings": {
+    "health模块问题": "4779测试集中少数文件，19个文件（3283行）0%覆盖",
+    "utils模块问题": "2602个测试但0个通过，存在严重测试错误",
+    "distributed模块问题": "507个测试但0个通过",
+    "修复成果": "constants 0%→100%, ops 0%→72%, error 43%→91%, core 56%→89%"
+  }
+}
+

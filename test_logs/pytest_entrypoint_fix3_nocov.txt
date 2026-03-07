@@ -1,0 +1,28 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class FAILED [ 50%]
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols FAILED [100%]
+
+================================== FAILURES ===================================
+__________ test_create_enhanced_data_integration_uses_exported_class __________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:24: in test_create_enhanced_data_integration_uses_exported_class
+    instance = entry_module.create_enhanced_data_integration(config)
+E   AttributeError: module 'src.data.integration.enhanced_data_integration' has no attribute 'create_enhanced_data_integration'
+_________________ test_entrypoint_reexports_expected_symbols __________________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:48: in test_entrypoint_reexports_expected_symbols
+    assert expected_symbols <= exported
+E   AssertionError: assert {'ConnectionP...nConfig', ...} <= {'AlertConfig...Monitor', ...}
+E     
+E     Extra items in the left set:
+E     'IntegrationConfig'
+E     'LoadTask'
+E     'shutdown'
+E     'EnhancedParallelLoadingManager'
+E     'DynamicThreadPoolManager'...
+E     
+E     ...Full output truncated (7 lines hidden), use '-vv' to show
+=========================== short test summary info ===========================
+FAILED tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class
+FAILED tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols
+============================== 2 failed in 0.88s ==============================

@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 智能告警可视化</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mobile-optimization.css">
+    <script src="mobile-utils.js"></script>
+    <script src="ux-optimization.js"></script>
+    <style>
+        .gradient-bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .alert-card {
+            transition: all 0.3s ease;
+        }
+        .alert-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .alert-critical {
+            border-left: 4px solid #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        }
+        .alert-high {
+            border-left: 4px solid #f97316;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05));
+        }
+        .alert-medium {
+            border-left: 4px solid #eab308;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(234, 179, 8, 0.05));
+        }
+        .alert-low {
+            border-left: 4px solid #22c55e;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+        }
+        .alert-info {
+            border-left: 4px solid #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+        }
+        .network-node {
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+        .network-link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+        .correlation-heatmap {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+        }
+        .trend-arrow {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            margin-left: 4px;
+        }
+        .trend-up {
+            border-bottom: 6px solid #ef4444;
+        }
+        .trend-down {
+            border-top: 6px solid #22c55e;
+        }
+        .trend-stable {
+            border-top: 3px solid #6b7280;
+            border-bottom: 3px solid #6b7280;
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                            <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">智能告警可视化</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-red-600 font-medium">3个严重告警</span>
+                    </div>
+                    <button onclick="refreshAll()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-brain text-indigo-600 mr-3"></i>
+                智能告警可视化
+            </h1>
+            <p class="text-gray-600">基于AI分析的告警关联、趋势预测和模式识别</p>
+        </div>
+
+        <!-- Alert Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 shadow-lg alert-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">严重告警</dt>
+                        <dd class="text-2xl font-semibold text-red-600" id="alert-critical">3</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg alert-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-circle text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">高优先级</dt>
+                        <dd class="text-2xl font-semibold text-orange-600" id="alert-high">12</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg alert-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-info-circle text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">中等优先级</dt>
+                        <dd class="text-2xl font-semibold text-yellow-600" id="alert-medium">28</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg alert-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">告警趋势</dt>
+                        <dd class="text-2xl font-semibold text-blue-600 flex items-center">
+                            <span id="alert-trend">-15%</span>
+                            <span class="trend-down ml-1"></span>
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8 px-6">
+                    <button onclick="switchTab('overview')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm active-tab" id="tab-overview">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        告警概览
+                    </button>
+                    <button onclick="switchTab('correlation')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-correlation">
+                        <i class="fas fa-project-diagram mr-2"></i>
+                        关联分析
+                    </button>
+                    <button onclick="switchTab('prediction')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-prediction">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        趋势预测
+                    </button>
+                    <button onclick="switchTab('patterns')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-patterns">
+                        <i class="fas fa-brain mr-2"></i>
+                        模式识别
+                    </button>
+                    <button onclick="switchTab('recommendations')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" id="tab-recommendations">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        处理建议
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- Alert Overview Tab -->
+                <div id="content-overview" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Recent Alerts -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">最新告警</h3>
+                            <div class="space-y-3" id="recent-alerts">
+                                <!-- Alerts will be loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Alert Distribution -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">告警分布</h3>
+                            <canvas id="alert-distribution-chart" width="300" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Alert Timeline -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">告警时间线</h3>
+                        <canvas id="alert-timeline-chart" width="600" height="150"></canvas>
+                    </div>
+                </div>
+
+                <!-- Correlation Analysis Tab -->
+                <div id="content-correlation" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Correlation Network -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">告警关联网络</h3>
+                            <div id="correlation-network" class="w-full h-96 border rounded"></div>
+                        </div>
+
+                        <!-- Correlation Heatmap -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">关联热力图</h3>
+                            <div class="correlation-heatmap rounded-lg p-4">
+                                <canvas id="correlation-heatmap" width="300" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Root Cause Analysis -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">根因分析</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="root-cause-analysis">
+                            <!-- Root cause analysis will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Tab -->
+                <div id="content-prediction" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Alert Trend Prediction -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">告警趋势预测</h3>
+                            <canvas id="alert-prediction-chart" width="400" height="250"></canvas>
+                        </div>
+
+                        <!-- Prediction Confidence -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">预测置信度</h3>
+                            <canvas id="prediction-confidence-chart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Insights -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">预测洞察</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="prediction-insights">
+                            <!-- Prediction insights will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern Recognition Tab -->
+                <div id="content-patterns" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Alert Patterns Clustering -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">告警模式聚类</h3>
+                            <canvas id="pattern-clustering-chart" width="400" height="300"></canvas>
+                        </div>
+
+                        <!-- Anomaly Detection -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">异常模式检测</h3>
+                            <div class="space-y-4" id="anomaly-detection">
+                                <!-- Anomaly patterns will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pattern Analysis Results -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">模式分析结果</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模式ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模式类型</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">频率</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">影响程度</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后出现</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pattern-analysis-table" class="bg-white divide-y divide-gray-200">
+                                    <!-- Pattern analysis will be loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations Tab -->
+                <div id="content-recommendations" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- AI Recommendations -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">AI处理建议</h3>
+                            <div class="space-y-4" id="ai-recommendations">
+                                <!-- AI recommendations will be loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Action Priority -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">行动优先级排序</h3>
+                            <div class="space-y-3" id="action-priority">
+                                <!-- Action priority will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Automated Actions -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">自动化处理</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="automated-actions">
+                            <!-- Automated actions will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // API基础URL生成函数
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        let currentTab = 'overview';
+        let alertCharts = {};
+        let correlationNetwork = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAlertOverview();
+            loadAlertCharts();
+
+            // Set up periodic updates
+            setInterval(() => {
+                loadAlertOverview();
+                updateCharts();
+            }, 30000); // Update every 30 seconds
+        });
+
+        function switchTab(tabId) {
+            // Update tab styles
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.classList.remove('active-tab', 'border-indigo-500', 'text-indigo-600');
+                tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active-tab', 'border-indigo-500', 'text-indigo-600');
+            document.getElementById(`tab-${tabId}`).classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+            currentTab = tabId;
+
+            // Load tab-specific data
+            switch(tabId) {
+                case 'correlation':
+                    loadCorrelationAnalysis();
+                    break;
+                case 'prediction':
+                    loadPredictionAnalysis();
+                    break;
+                case 'patterns':
+                    loadPatternAnalysis();
+                    break;
+                case 'recommendations':
+                    loadRecommendations();
+                    break;
+            }
+        }
+
+        async function loadAlertOverview() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/alerts/overview'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateAlertOverview(data);
+                }
+            } catch (error) {
+                console.error('加载告警概览失败:', error);
+            }
+        }
+
+        function updateAlertOverview(data) {
+            // Update alert counts
+            document.getElementById('alert-critical').textContent = data.critical || 0;
+            document.getElementById('alert-high').textContent = data.high || 0;
+            document.getElementById('alert-medium').textContent = data.medium || 0;
+            document.getElementById('alert-trend').textContent = data.trend || '0%';
+
+            // Update recent alerts
+            const recentAlertsContainer = document.getElementById('recent-alerts');
+            const alerts = data.recent_alerts || [
+                { level: 'critical', title: '数据库连接超时', source: '数据管理层', time: '2分钟前' },
+                { level: 'high', title: 'GPU内存不足', source: '机器学习层', time: '5分钟前' },
+                { level: 'medium', title: '网络延迟增加', source: '基础设施层', time: '8分钟前' },
+                { level: 'low', title: '缓存命中率下降', source: '基础设施层', time: '12分钟前' }
+            ];
+
+            const alertHtml = alerts.map(alert => `
+                <div class="alert-card ${getAlertClass(alert.level)} rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="${getAlertIcon(alert.level)} mr-3"></i>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${alert.title}</div>
+                                <div class="text-xs text-gray-500">${alert.source} • ${alert.time}</div>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAlertBadgeClass(alert.level)}">
+                            ${getAlertLevelText(alert.level)}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+
+            recentAlertsContainer.innerHTML = alertHtml;
+        }
+
+        function loadAlertCharts() {
+            // Alert Distribution Chart
+            const distributionCtx = document.getElementById('alert-distribution-chart');
+            if (distributionCtx) {
+                alertCharts.distribution = new Chart(distributionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['严重', '高优先级', '中等', '低优先级'],
+                        datasets: [{
+                            data: [3, 12, 28, 45],
+                            backgroundColor: [
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(249, 115, 22, 0.8)',
+                                'rgba(234, 179, 8, 0.8)',
+                                'rgba(34, 197, 94, 0.8)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Alert Timeline Chart
+            const timelineCtx = document.getElementById('alert-timeline-chart');
+            if (timelineCtx) {
+                alertCharts.timeline = new Chart(timelineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                        datasets: [{
+                            label: '告警数量',
+                            data: [2, 5, 8, 12, 6, 3],
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        async function loadCorrelationAnalysis() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/alerts/correlation'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderCorrelationNetwork(data);
+                    renderCorrelationHeatmap(data);
+                    renderRootCauseAnalysis(data);
+                }
+            } catch (error) {
+                console.error('加载关联分析失败:', error);
+            }
+        }
+
+        function renderCorrelationNetwork(data) {
+            const container = document.getElementById('correlation-network');
+            container.innerHTML = ''; // Clear previous content
+
+            const width = container.clientWidth;
+            const height = 400;
+
+            const svg = d3.select('#correlation-network')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Sample network data
+            const nodes = data.nodes || [
+                { id: 'db', name: '数据库', group: 1 },
+                { id: 'cache', name: '缓存', group: 1 },
+                { id: 'network', name: '网络', group: 2 },
+                { id: 'cpu', name: 'CPU', group: 3 },
+                { id: 'memory', name: '内存', group: 3 }
+            ];
+
+            const links = data.links || [
+                { source: 'db', target: 'cache', value: 0.8 },
+                { source: 'cache', target: 'network', value: 0.6 },
+                { source: 'network', target: 'cpu', value: 0.4 },
+                { source: 'cpu', target: 'memory', value: 0.7 }
+            ];
+
+            const simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2));
+
+            const link = svg.append('g')
+                .selectAll('line')
+                .data(links)
+                .enter().append('line')
+                .attr('class', 'network-link')
+                .attr('stroke-width', d => Math.sqrt(d.value) * 3);
+
+            const node = svg.append('g')
+                .selectAll('circle')
+                .data(nodes)
+                .enter().append('circle')
+                .attr('class', 'network-node')
+                .attr('r', 20)
+                .attr('fill', d => d3.schemeCategory10[d.group])
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+
+            node.append('title')
+                .text(d => d.name);
+
+            const text = svg.append('g')
+                .selectAll('text')
+                .data(nodes)
+                .enter().append('text')
+                .attr('dy', '.35em')
+                .attr('text-anchor', 'middle')
+                .style('font-size', '12px')
+                .style('fill', '#fff')
+                .style('font-weight', 'bold')
+                .text(d => d.name);
+
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+
+                node
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+
+                text
+                    .attr('x', d => d.x)
+                    .attr('y', d => d.y);
+            });
+
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+
+        function renderCorrelationHeatmap(data) {
+            const ctx = document.getElementById('correlation-heatmap');
+            if (ctx) {
+                alertCharts.heatmap = new Chart(ctx, {
+                    type: 'matrix',
+                    data: {
+                        datasets: [{
+                            data: data.heatmap || [
+                                { x: '数据库', y: '缓存', v: 0.8 },
+                                { x: '数据库', y: '网络', v: 0.4 },
+                                { x: '缓存', y: '网络', v: 0.6 },
+                                { x: '缓存', y: 'CPU', v: 0.3 },
+                                { x: '网络', y: 'CPU', v: 0.7 },
+                                { x: '网络', y: '内存', v: 0.5 },
+                                { x: 'CPU', y: '内存', v: 0.9 }
+                            ],
+                            backgroundColor: (ctx) => {
+                                const value = ctx.raw.v;
+                                const alpha = value;
+                                return `rgba(59, 130, 246, ${alpha})`;
+                            },
+                            borderColor: 'rgba(59, 130, 246, 0.8)',
+                            borderWidth: 1,
+                            width: 30,
+                            height: 30
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `相关性: ${(ctx.raw.v * 100).toFixed(1)}%`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'category',
+                                labels: ['数据库', '缓存', '网络', 'CPU', '内存'],
+                                ticks: { display: true }
+                            },
+                            y: {
+                                type: 'category',
+                                labels: ['数据库', '缓存', '网络', 'CPU', '内存'],
+                                ticks: { display: true }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderRootCauseAnalysis(data) {
+            const container = document.getElementById('root-cause-analysis');
+            const analysis = data.root_cause || [
+                {
+                    title: '数据库性能问题',
+                    probability: 0.85,
+                    impact: '高',
+                    affected: ['交易执行', '策略计算', '数据查询']
+                },
+                {
+                    title: '网络延迟增加',
+                    probability: 0.72,
+                    impact: '中',
+                    affected: ['数据同步', '外部API调用']
+                },
+                {
+                    title: '内存泄漏',
+                    probability: 0.68,
+                    impact: '高',
+                    affected: ['机器学习服务', '缓存服务']
+                }
+            ];
+
+            const html = analysis.map(item => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${item.title}</h4>
+                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">${(item.probability * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="text-xs text-gray-600 mb-2">影响程度: ${item.impact}</div>
+                    <div class="text-xs text-gray-500">
+                        影响组件: ${item.affected.join(', ')}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        async function loadPredictionAnalysis() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/alerts/prediction'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderPredictionCharts(data);
+                    renderPredictionInsights(data);
+                }
+            } catch (error) {
+                console.error('加载预测分析失败:', error);
+            }
+        }
+
+        function renderPredictionCharts(data) {
+            // Alert Prediction Chart
+            const predictionCtx = document.getElementById('alert-prediction-chart');
+            if (predictionCtx) {
+                alertCharts.prediction = new Chart(predictionCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels || ['1h', '2h', '3h', '4h', '5h', '6h'],
+                        datasets: [{
+                            label: '历史告警数',
+                            data: data.historical || [12, 15, 8, 22, 18, 14],
+                            borderColor: 'rgb(156, 163, 175)',
+                            backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '预测告警数',
+                            data: data.predicted || [16, 20, 18, 25, 22, 19],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            // Prediction Confidence Chart
+            const confidenceCtx = document.getElementById('prediction-confidence-chart');
+            if (confidenceCtx) {
+                alertCharts.confidence = new Chart(confidenceCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['1h', '2h', '3h', '4h', '5h', '6h'],
+                        datasets: [{
+                            label: '预测置信度',
+                            data: data.confidence || [0.85, 0.78, 0.82, 0.75, 0.88, 0.79],
+                            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1,
+                                ticks: {
+                                    callback: (value) => `${(value * 100).toFixed(0)}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderPredictionInsights(data) {
+            const container = document.getElementById('prediction-insights');
+            const insights = data.insights || [
+                {
+                    type: 'warning',
+                    title: '告警数量上升趋势',
+                    description: '预计未来2小时告警数量将增加25%',
+                    confidence: 0.82
+                },
+                {
+                    type: 'info',
+                    title: '周末告警模式',
+                    description: '检测到周末特有的告警模式，建议加强监控',
+                    confidence: 0.91
+                }
+            ];
+
+            const html = insights.map(insight => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-${insight.type === 'warning' ? 'exclamation-triangle text-yellow-500' : 'info-circle text-blue-500'} mr-2"></i>
+                        <h4 class="text-sm font-medium text-gray-900">${insight.title}</h4>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${insight.description}</p>
+                    <div class="text-xs text-gray-500">置信度: ${(insight.confidence * 100).toFixed(1)}%</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        async function loadPatternAnalysis() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/alerts/patterns'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderPatternCharts(data);
+                    renderPatternAnalysisTable(data);
+                }
+            } catch (error) {
+                console.error('加载模式分析失败:', error);
+            }
+        }
+
+        function renderPatternCharts(data) {
+            // Pattern Clustering Chart
+            const clusteringCtx = document.getElementById('pattern-clustering-chart');
+            if (clusteringCtx) {
+                alertCharts.clustering = new Chart(clusteringCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: '模式聚类',
+                            data: data.clusters || [
+                                { x: 10, y: 20 }, { x: 15, y: 25 }, { x: 20, y: 15 },
+                                { x: 5, y: 35 }, { x: 25, y: 30 }, { x: 8, y: 12 }
+                            ],
+                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: '频率' } },
+                            y: { title: { display: true, text: '严重程度' } }
+                        }
+                    }
+                });
+            }
+
+            // Anomaly Detection
+            const anomalyContainer = document.getElementById('anomaly-detection');
+            const anomalies = data.anomalies || [
+                {
+                    pattern: '数据库连接风暴',
+                    score: 0.95,
+                    frequency: '高频',
+                    lastSeen: '5分钟前'
+                },
+                {
+                    pattern: '内存泄漏模式',
+                    score: 0.87,
+                    frequency: '中频',
+                    lastSeen: '1小时前'
+                }
+            ];
+
+            const html = anomalies.map(anomaly => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${anomaly.pattern}</h4>
+                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">${(anomaly.score * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="text-xs text-gray-600">频率: ${anomaly.frequency} • 最后出现: ${anomaly.lastSeen}</div>
+                </div>
+            `).join('');
+
+            anomalyContainer.innerHTML = html;
+        }
+
+        function renderPatternAnalysisTable(data) {
+            const tbody = document.getElementById('pattern-analysis-table');
+            const patterns = data.patterns || [
+                { id: 'P001', type: '性能异常', frequency: '高', impact: '高', lastSeen: '2分钟前' },
+                { id: 'P002', type: '连接超时', frequency: '中', impact: '中', lastSeen: '15分钟前' },
+                { id: 'P003', type: '资源耗尽', frequency: '低', impact: '高', lastSeen: '1小时前' },
+                { id: 'P004', type: '网络抖动', frequency: '高', impact: '低', lastSeen: '8分钟前' }
+            ];
+
+            const html = patterns.map(pattern => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${pattern.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${pattern.type}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${pattern.frequency}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${pattern.impact === '高' ? 'bg-red-100 text-red-800' : pattern.impact === '中' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                            ${pattern.impact}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${pattern.lastSeen}</td>
+                </tr>
+            `).join('');
+
+            tbody.innerHTML = html;
+        }
+
+        async function loadRecommendations() {
+            try {
+                const response = await fetch(getApiBaseUrl('/monitoring/alerts/recommendations'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderRecommendations(data);
+                    renderActionPriority(data);
+                    renderAutomatedActions(data);
+                }
+            } catch (error) {
+                console.error('加载处理建议失败:', error);
+            }
+        }
+
+        function renderRecommendations(data) {
+            const container = document.getElementById('ai-recommendations');
+            const recommendations = data.recommendations || [
+                {
+                    title: '增加数据库连接池大小',
+                    priority: '高',
+                    confidence: 0.92,
+                    impact: '解决连接超时问题'
+                },
+                {
+                    title: '优化GPU内存管理',
+                    priority: '高',
+                    confidence: 0.88,
+                    impact: '减少内存不足告警'
+                },
+                {
+                    title: '实施网络负载均衡',
+                    priority: '中',
+                    confidence: 0.76,
+                    impact: '降低网络延迟波动'
+                }
+            ];
+
+            const html = recommendations.map(rec => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${rec.title}</h4>
+                        <span class="text-xs ${rec.priority === '高' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'} px-2 py-1 rounded">${rec.priority}优先级</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${rec.impact}</p>
+                    <div class="text-xs text-gray-500">置信度: ${(rec.confidence * 100).toFixed(1)}%</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderActionPriority(data) {
+            const container = document.getElementById('action-priority');
+            const priorities = data.priorities || [
+                { action: '重启数据库服务', priority: 1, urgency: '立即' },
+                { action: '扩展GPU集群', priority: 2, urgency: '高' },
+                { action: '优化网络配置', priority: 3, urgency: '中' },
+                { action: '清理缓存数据', priority: 4, urgency: '低' }
+            ];
+
+            const html = priorities.map(item => `
+                <div class="flex items-center justify-between p-3 bg-white rounded-lg border">
+                    <div class="flex items-center">
+                        <span class="inline-flex items-center justify-center w-6 h-6 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full mr-3">
+                            ${item.priority}
+                        </span>
+                        <span class="text-sm text-gray-900">${item.action}</span>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.urgency === '立即' ? 'bg-red-100 text-red-800' : item.urgency === '高' ? 'bg-orange-100 text-orange-800' : item.urgency === '中' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                        ${item.urgency}
+                    </span>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderAutomatedActions(data) {
+            const container = document.getElementById('automated-actions');
+            const actions = data.automated || [
+                {
+                    type: '自动扩展',
+                    status: '执行中',
+                    target: '数据库连接池',
+                    progress: 75
+                },
+                {
+                    type: '自动重启',
+                    status: '完成',
+                    target: '缓存服务',
+                    progress: 100
+                }
+            ];
+
+            const html = actions.map(action => `
+                <div class="bg-white rounded-lg p-4 border">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-900">${action.type}</h4>
+                        <span class="text-xs ${action.status === '执行中' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} px-2 py-1 rounded">${action.status}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 mb-2">目标: ${action.target}</div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-${action.status === '执行中' ? 'blue' : 'green'}-500 h-2 rounded-full transition-all duration-300" style="width: ${action.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function updateCharts() {
+            // Update existing charts with new data
+            if (alertCharts.distribution) {
+                alertCharts.distribution.data.datasets[0].data = [4, 15, 32, 48];
+                alertCharts.distribution.update();
+            }
+
+            if (alertCharts.timeline) {
+                alertCharts.timeline.data.datasets[0].data = [3, 7, 12, 18, 8, 5];
+                alertCharts.timeline.update();
+            }
+        }
+
+        function refreshAll() {
+            loadAlertOverview();
+            updateCharts();
+
+            if (currentTab !== 'overview') {
+                switch(currentTab) {
+                    case 'correlation':
+                        loadCorrelationAnalysis();
+                        break;
+                    case 'prediction':
+                        loadPredictionAnalysis();
+                        break;
+                    case 'patterns':
+                        loadPatternAnalysis();
+                        break;
+                    case 'recommendations':
+                        loadRecommendations();
+                        break;
+                }
+            }
+
+            // Visual feedback
+            const btn = event.target;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>刷新中...';
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 1000);
+        }
+
+        // Helper functions
+        function getAlertClass(level) {
+            switch(level) {
+                case 'critical': return 'alert-critical';
+                case 'high': return 'alert-high';
+                case 'medium': return 'alert-medium';
+                case 'low': return 'alert-low';
+                default: return 'alert-info';
+            }
+        }
+
+        function getAlertIcon(level) {
+            switch(level) {
+                case 'critical': return 'fas fa-exclamation-triangle text-red-600';
+                case 'high': return 'fas fa-exclamation-circle text-orange-600';
+                case 'medium': return 'fas fa-info-circle text-yellow-600';
+                case 'low': return 'fas fa-check-circle text-green-600';
+                default: return 'fas fa-info-circle text-blue-600';
+            }
+        }
+
+        function getAlertBadgeClass(level) {
+            switch(level) {
+                case 'critical': return 'bg-red-100 text-red-800';
+                case 'high': return 'bg-orange-100 text-orange-800';
+                case 'medium': return 'bg-yellow-100 text-yellow-800';
+                case 'low': return 'bg-green-100 text-green-800';
+                default: return 'bg-blue-100 text-blue-800';
+            }
+        }
+
+        function getAlertLevelText(level) {
+            switch(level) {
+                case 'critical': return '严重';
+                case 'high': return '高';
+                case 'medium': return '中';
+                case 'low': return '低';
+                default: return '信息';
+            }
+        }
+    </script>
+</body>
+</html>

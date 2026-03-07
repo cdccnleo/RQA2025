@@ -1,0 +1,61 @@
+================================================================================
+🎯 AI智能化代码分析报告 - src/utils
+================================================================================
+
+📊 总体统计
+   📁 文件数量: 2
+   📝 总代码行数: 388
+   🔄 总复杂度: 50.70
+   📈 平均可维护性: 89.00
+
+🚨 问题统计
+   MEDIUM: 1
+   LOW: 3
+
+   performance: 1
+   best_practices: 1
+   maintainability: 2
+
+📋 文件详情
+   📄 src\utils\backtest_utils.py
+      代码行数: 278
+      🔄 复杂度: 32.70
+      📈 可维护性: 83.00
+      问题数量: 4
+         - [LOW] 潜在性能优化点
+         - [LOW] 过长代码行
+         - [MEDIUM] 方法过长
+
+   📄 src\utils\logger.py
+      代码行数: 110
+      🔄 复杂度: 18.00
+      📈 可维护性: 95.00
+
+🔍 详细问题列表
+   📍 [MEDIUM] src\utils\backtest_utils.py:174
+      💡 方法过长
+      📝 方法'validate_data'过长: 59行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [LOW] src\utils\backtest_utils.py:1
+      💡 潜在性能优化点
+      📝 检测到31个潜在的性能优化点
+      💡 考虑使用numpy向量化操作或缓存机制
+
+   📍 [LOW] src\utils\backtest_utils.py:158
+      💡 过长代码行
+      📝 代码行长度超过120字符: 133
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      profit_factor = winning_trades.sum() / abs(losing_trades.sum()) if len(losing_trades) > 0 and losing_trades.sum() != 0 else 0
+      ```
+
+   📍 [LOW] src\utils\backtest_utils.py:1
+      💡 过多魔法数字
+      📝 检测到15个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+🏗️ 架构建议
+   💡 建议增加异步处理支持
+
+================================================================================

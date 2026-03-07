@@ -1,0 +1,42 @@
+{
+  "summary": {
+    "total_functions": 18,
+    "avg_cyclomatic_complexity": 2.72,
+    "avg_cognitive_complexity": 4.61,
+    "avg_lines_of_code": 16.17,
+    "risk_distribution": {
+      "very_high": 0,
+      "high": 1,
+      "medium": 1,
+      "low": 16
+    }
+  },
+  "high_risk_functions": [
+    {
+      "name": "_classify_error (error_handler.py:138)",
+      "cyclomatic": 8,
+      "cognitive": 29,
+      "lines": 20,
+      "risk_level": "high",
+      "suggestions": [
+        "认知复杂度过高 (29)，建议简化条件逻辑",
+        "嵌套过深 (7层)，建议提取嵌套逻辑或使用早期返回"
+      ]
+    }
+  ],
+  "most_complex_function": {
+    "name": "_classify_error (error_handler.py:138)",
+    "cyclomatic": 8,
+    "cognitive": 29,
+    "lines": 20,
+    "suggestions": [
+      "认知复杂度过高 (29)，建议简化条件逻辑",
+      "嵌套过深 (7层)，建议提取嵌套逻辑或使用早期返回"
+    ]
+  },
+  "recommendations": [
+    "⚠️ 优先处理 1 个高复杂度函数，这些函数需要重构",
+    "🛠️ 推荐使用Extract Method、Replace Conditional with Polymorphism等重构手法",
+    "📏 建立复杂度监控机制，定期检查代码质量指标"
+  ]
+}

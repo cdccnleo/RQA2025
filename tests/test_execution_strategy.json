@@ -1,0 +1,95 @@
+{
+  "execution_strategy": {
+    "description": "分层分模块测试执行策略，避免死锁和长时间等待",
+    "timeout_per_test": 30,
+    "max_parallel_tests": 5,
+    "retry_failed_tests": true,
+    "max_retry_count": 3
+  },
+  "layer_execution_order": [
+    "infrastructure",
+    "core",
+    "data",
+    "trading",
+    "risk",
+    "strategy"
+  ],
+  "module_priorities": {
+    "high_priority": [
+      "test_system_monitor.py",
+      "test_connection_pool.py",
+      "test_unified_logger.py",
+      "test_event_bus_advanced.py",
+      "test_api_gateway.py",
+      "test_data_manager.py",
+      "test_portfolio_portfolio_manager.py",
+      "test_live_trading.py",
+      "test_risk_assessment.py",
+      "test_risk_monitoring_alerts.py"
+    ],
+    "medium_priority": [
+      "test_data_adapters.py",
+      "test_data_quality.py",
+      "test_data_monitoring.py",
+      "test_risk_calculators.py",
+      "test_advanced_risk_models.py",
+      "test_compliance_workflow.py"
+    ],
+    "low_priority": [
+      "test_*_integration.py",
+      "test_*_performance.py",
+      "test_*_stress.py"
+    ]
+  },
+  "risk_assessment": {
+    "long_running_tests": [
+      "test_*_performance*",
+      "test_*_integration*",
+      "test_*_stress*",
+      "test_*_concurrent*"
+    ],
+    "async_tests": [
+      "test_*_async*",
+      "test_event_bus*",
+      "test_*_streaming*"
+    ],
+    "external_dependency_tests": [
+      "test_*_api*",
+      "test_*_network*",
+      "test_*_external*"
+    ]
+  },
+  "execution_phases": {
+    "phase_1_core_functionality": {
+      "description": "核心功能测试",
+      "timeout": 30,
+      "modules": ["infrastructure", "core"],
+      "exclude_patterns": ["*integration*", "*performance*", "*stress*"]
+    },
+    "phase_2_business_logic": {
+      "description": "业务逻辑测试",
+      "timeout": 45,
+      "modules": ["data", "trading", "risk"],
+      "exclude_patterns": ["*stress*", "*load*"]
+    },
+    "phase_3_integration": {
+      "description": "集成测试",
+      "timeout": 60,
+      "modules": ["integration"],
+      "include_patterns": ["*integration*"]
+    },
+    "phase_4_performance": {
+      "description": "性能测试",
+      "timeout": 120,
+      "modules": ["performance"],
+      "include_patterns": ["*performance*", "*benchmark*"]
+    }
+  },
+  "monitoring_and_alerts": {
+    "enable_timeout_monitoring": true,
+    "alert_on_long_running_test": true,
+    "long_running_threshold_seconds": 60,
+    "generate_execution_report": true,
+    "track_test_flakiness": true
+  }
+}

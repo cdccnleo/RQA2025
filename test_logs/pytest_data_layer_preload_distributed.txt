@@ -1,0 +1,120 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+INTERNALERROR> def worker_internal_error(
+INTERNALERROR>         self, node: WorkerController, formatted_error: str
+INTERNALERROR>     ) -> None:
+INTERNALERROR>         """
+INTERNALERROR>         pytest_internalerror() was called on the worker.
+INTERNALERROR>     
+INTERNALERROR>         pytest_internalerror() arguments are an excinfo and an excrepr, which can't
+INTERNALERROR>         be serialized, so we go with a poor man's solution of raising an exception
+INTERNALERROR>         here ourselves using the formatted message.
+INTERNALERROR>         """
+INTERNALERROR>         self._active_nodes.remove(node)
+INTERNALERROR>         try:
+INTERNALERROR> >           assert False, formatted_error
+INTERNALERROR> E           AssertionError: Traceback (most recent call last):
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqlitedb.py", line 115, in _execute
+INTERNALERROR> E                 return self.con.execute(sql, parameters)    # type: ignore[arg-type]
+INTERNALERROR> E             sqlite3.OperationalError: no such table: file
+INTERNALERROR> E             
+INTERNALERROR> E             During handling of the above exception, another exception occurred:
+INTERNALERROR> E             
+INTERNALERROR> E             Traceback (most recent call last):
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqlitedb.py", line 120, in _execute
+INTERNALERROR> E                 return self.con.execute(sql, parameters)    # type: ignore[arg-type]
+INTERNALERROR> E             sqlite3.OperationalError: no such table: file
+INTERNALERROR> E             
+INTERNALERROR> E             The above exception was the direct cause of the following exception:
+INTERNALERROR> E             
+INTERNALERROR> E             Traceback (most recent call last):
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\main.py", line 289, in wrap_session
+INTERNALERROR> E                 session.exitstatus = doit(config, session) or 0
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\main.py", line 343, in _main
+INTERNALERROR> E                 config.hook.pytest_runtestloop(session=session)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+INTERNALERROR> E                 return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+INTERNALERROR> E                 return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+INTERNALERROR> E                 raise exception
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+INTERNALERROR> E                 teardown.throw(exception)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\logging.py", line 801, in pytest_runtestloop
+INTERNALERROR> E                 return (yield)  # Run all the tests.
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+INTERNALERROR> E                 teardown.throw(exception)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\terminal.py", line 688, in pytest_runtestloop
+INTERNALERROR> E                 result = yield
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 152, in _multicall
+INTERNALERROR> E                 teardown.send(result)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 43, in run_old_style_hookwrapper
+INTERNALERROR> E                 teardown.send(result)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pytest_cov\plugin.py", line 329, in pytest_runtestloop
+INTERNALERROR> E                 self.cov_controller.finish()
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pytest_cov\engine.py", line 54, in ensure_topdir_wrapper
+INTERNALERROR> E                 return meth(self, *args, **kwargs)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\pytest_cov\engine.py", line 425, in finish
+INTERNALERROR> E                 self.cov.save()
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\control.py", line 789, in save
+INTERNALERROR> E                 data = self.get_data()
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\control.py", line 870, in get_data
+INTERNALERROR> E                 self._post_save_work()
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\control.py", line 901, in _post_save_work
+INTERNALERROR> E                 self._data.touch_files(paths, plugin_name)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqldata.py", line 620, in touch_files
+INTERNALERROR> E                 self._file_id(filename, add=True)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqldata.py", line 416, in _file_id
+INTERNALERROR> E                 self._file_map[filename] = con.execute_for_rowid(
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqlitedb.py", line 171, in execute_for_rowid
+INTERNALERROR> E                 with self.execute(sql, parameters) as cur:
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\contextlib.py", line 119, in __enter__
+INTERNALERROR> E                 return next(self.gen)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqlitedb.py", line 150, in execute
+INTERNALERROR> E                 cur = self._execute(sql, parameters)
+INTERNALERROR> E               File "C:\Users\AILeo\miniconda3\lib\site-packages\coverage\sqlitedb.py", line 138, in _execute
+INTERNALERROR> E                 raise DataError(f"Couldn't use data file {self.filename!r}: {msg}") from exc
+INTERNALERROR> E             coverage.exceptions.DataError: Couldn't use data file 'C:\\PythonProject\\RQA2025\\.coverage.AIPC.37168.XJqOYBxx.wgw0': no such table: file
+INTERNALERROR> E           assert False
+INTERNALERROR> 
+INTERNALERROR> C:\Users\AILeo\miniconda3\lib\site-packages\xdist\dsession.py:232: AssertionError
+INTERNALERROR> Traceback (most recent call last):
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\main.py", line 289, in wrap_session
+INTERNALERROR>     session.exitstatus = doit(config, session) or 0
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\main.py", line 343, in _main
+INTERNALERROR>     config.hook.pytest_runtestloop(session=session)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\logging.py", line 801, in pytest_runtestloop
+INTERNALERROR>     return (yield)  # Run all the tests.
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\terminal.py", line 688, in pytest_runtestloop
+INTERNALERROR>     result = yield
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+INTERNALERROR>     teardown.throw(exception)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 43, in run_old_style_hookwrapper
+INTERNALERROR>     teardown.send(result)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_result.py", line 103, in get_result
+INTERNALERROR>     raise exc.with_traceback(tb)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 38, in run_old_style_hookwrapper
+INTERNALERROR>     res = yield
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+INTERNALERROR>     res = hook_impl.function(*args)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\xdist\dsession.py", line 138, in pytest_runtestloop
+INTERNALERROR>     self.loop_once()
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\xdist\dsession.py", line 163, in loop_once
+INTERNALERROR>     call(**kwargs)
+INTERNALERROR>   File "C:\Users\AILeo\miniconda3\lib\site-packages\xdist\dsession.py", line 218, in worker_workerfinished
+INTERNALERROR>     self._active_nodes.remove(node)
+INTERNALERROR> KeyError: <WorkerController gw0>
+
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 7 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+============================= 7 errors in 56.10s ==============================

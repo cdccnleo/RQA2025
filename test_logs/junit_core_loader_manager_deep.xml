@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="1" skipped="0" tests="3" time="83.413" timestamp="2025-11-16T14:35:34.489947+08:00" hostname="AIPC"><testcase classname="unit.data.core.test_data_manager_deep_errors" name="test_load_data_cache_write_failure_raises" time="0.960"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+WARNING  data_manager:data_manager.py:931 Quality monitoring failed: qm-err
+ERROR    data_manager:data_manager.py:949 Failed to cache data: cache-set-error
+ERROR    root:exceptions.py:33 基础设施异常: DATA_LOADER_ERROR - Cache write failed: cache-set-error
+ERROR    data_manager:data_manager.py:959 Failed to load data: Cache write failed: cache-set-error
+ERROR    root:exceptions.py:33 基础设施异常: DATA_LOADER_ERROR - Data loading failed: Cache write failed: cache-set-error
+INFO     data_manager:data_manager.py:1258 DataManager shutdown completed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 14:36:53,315 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+WARNING:data_manager:Quality monitoring failed: qm-err
+ERROR:data_manager:Failed to cache data: cache-set-error
+ERROR:root:基础设施异常: DATA_LOADER_ERROR - Cache write failed: cache-set-error
+ERROR:data_manager:Failed to load data: Cache write failed: cache-set-error
+ERROR:root:基础设施异常: DATA_LOADER_ERROR - Data loading failed: Cache write failed: cache-set-error
+INFO:data_manager:DataManager shutdown completed
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_formats" name="test_file_loader_json_roundtrip_success" time="0.921"><failure message="assert False is True">tests\unit\data\core\test_data_loader_formats.py:17: in test_file_loader_json_roundtrip_success
+    assert ok is True
+E   assert False is True</failure><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:168 保存数据失败: C:\Users\AILeo\AppData\Local\Temp\tmptdy29uus.json, 错误: to_json() got an unexpected keyword argument 'format'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:保存数据失败: C:\Users\AILeo\AppData\Local\Temp\tmptdy29uus.json, 错误: to_json() got an unexpected keyword argument 'format'
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_deep_errors" name="test_load_multi_source_aggregates_errors" time="0.071"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+WARNING  data_manager:data_manager.py:931 Quality monitoring failed: qm-err
+INFO     data_manager:data_manager.py:955 Data loaded successfully: stock
+ERROR    data_manager:data_manager.py:994 Failed to load index data: index-fail
+ERROR    root:exceptions.py:33 基础设施异常: DATA_LOADER_ERROR - Multi - source data loading failed: index-fail
+ERROR    data_manager:data_manager.py:998 Multi - source data loading failed: Multi - source data loading failed: index-fail
+ERROR    root:exceptions.py:33 基础设施异常: DATA_LOADER_ERROR - Multi - source data loading failed: Multi - source data loading failed: index-fail
+INFO     data_manager:data_manager.py:1258 DataManager shutdown completed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 14:36:53,423 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+WARNING:data_manager:Quality monitoring failed: qm-err
+INFO:data_manager:Data loaded successfully: stock
+ERROR:data_manager:Failed to load index data: index-fail
+ERROR:root:基础设施异常: DATA_LOADER_ERROR - Multi - source data loading failed: index-fail
+ERROR:data_manager:Multi - source data loading failed: Multi - source data loading failed: index-fail
+ERROR:root:基础设施异常: DATA_LOADER_ERROR - Multi - source data loading failed: Multi - source data loading failed: index-fail
+INFO:data_manager:DataManager shutdown completed
+
+</system-err></testcase></testsuite></testsuites>

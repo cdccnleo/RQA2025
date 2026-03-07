@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="39" time="112.623" timestamp="2025-11-16T16:25:30.336578+08:00" hostname="AIPC"><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_alert_condition_evaluate_variations" time="0.825"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules_spots" name="test_rule_data_types_filter_handles_unknown_string_type" time="0.850"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_alert_rules_engine_basic" name="test_threshold_rule_and_cooldown" time="0.872"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 5 rules, 状态: 1 alerts
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 5 rules, 状态: 0 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_alert_rule_data_type_filter_and_condition_errors" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules_spots" name="test_composite_rule_exception_in_condition_is_ignored" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_alert_rules_engine_basic" name="test_composite_rule_triggers_on_any_condition" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 5 rules, 状态: 1 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_alert_rule_from_dict_ignores_invalid_data_types" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_engine_init_fallback_logger" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_alert_rules_engine_basic" name="test_suppression_blocks_alerts_by_rule_id" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: sup1, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 5 rules, 状态: 0 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_add_update_remove_rule" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - update_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - remove_rule: test_rule, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_alert_rules_engine_basic" name="test_export_and_import_rules_roundtrip" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_add_rule_duplicate_returns_false" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: dup_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: dup_rule, 状态: failed: 规则ID已存在: dup_rule
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_update_remove_rule_missing" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - update_rule: missing_rule, 状态: failed: 规则不存在: missing_rule
+[DataAlertRulesEngine] 告警规则引擎 - remove_rule: missing_rule, 状态: failed: 规则不存在: missing_rule
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_evaluate_rules_respects_cooldown" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 0 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_suppression_prevents_alert" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: sup1, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 0 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_export_import_roundtrip" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: round_trip_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: sup2, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: round_trip_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: sup2, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_cleanup_expired_suppressions" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: expired, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: active, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - cleanup_suppressions: 1 expired, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_remove_suppression_missing_raises" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - remove_suppression: nonexistent, 状态: failed: 抑制不存在: nonexistent
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_remove_suppression_success" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: sup_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: temp-sup, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - remove_suppression: temp-sup, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_add_suppression_duplicate_returns_false" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: dup, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_suppression: dup, 状态: failed: 抑制ID已存在: dup
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_get_engine_stats" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: rule1, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: rule2, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_get_rule_performance_report" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: perf1, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: perf2, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 2 rules, 状态: 2 alerts
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 2 rules, 状态: 0 alerts
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 2 rules, 状态: 0 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_import_rules_invalid_json" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_import_rules_parse_error" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_import_rules_suppression_parse_error" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_import_rules_add_rule_failure" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_import_rules_add_suppression_failure" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_cooldown_expires_allows_alert" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_record_alert_history_limit" time="0.249"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_rule_data_types_filter_handles_unknown_string_type" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_composite_rule_exception_in_condition_is_ignored" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_clear_history" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+[DataAlertRulesEngine] 告警规则引擎 - clear_history: alert_history, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_reset_rule_performance" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: 1 rules, 状态: 1 alerts
+[DataAlertRulesEngine] 告警规则引擎 - reset_performance: rule_performance, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_log_operation_with_monitoring" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_log_operation_monitoring_failure_warns" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - test_op: target, 状态: status
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_log_operation_logger_failure_triggers_outer_except" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_evaluate_rules_exception_handling" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - evaluate_rules: batch, 状态: failed: Evaluation failed
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_is_in_cooldown_no_performance" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.monitoring.test_data_alert_rules" name="test_enable_disable_rule" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: cache_hit_rate_low, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: data_quality_degraded, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: processing_error_rate_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: response_time_high, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: connection_failed, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - initialized: DataAlertRulesEngine, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - add_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - update_rule: test_rule, 状态: success
+[DataAlertRulesEngine] 告警规则引擎 - update_rule: test_rule, 状态: success
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

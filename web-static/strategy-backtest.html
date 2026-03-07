@@ -1,0 +1,2700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>策略回测分析 - RQA2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 本地加载 Chart.js -->
+    <script src="/js/chart.js" onload="console.log('✅ Chart.js 本地加载成功')" onerror="console.error('❌ Chart.js 本地加载失败')"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            max-width: 400px;
+            word-wrap: break-word;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.warning { background: #f59e0b; }
+        .toast.info { background: #3b82f6; }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .strategy-card {
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .strategy-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .strategy-card.selected {
+            border-left-color: #10b981;
+            background-color: #f0fdf4;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        .config-panel {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+        }
+        .fee-input {
+            transition: all 0.2s ease;
+        }
+        .fee-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .date-input {
+            transition: all 0.2s ease;
+        }
+        .date-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .preset-btn {
+            transition: all 0.2s ease;
+        }
+        .preset-btn:hover {
+            background-color: #e0e7ff;
+        }
+        .preset-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-draft {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-archived {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">策略回测分析</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Breadcrumb Navigation -->
+        <nav class="flex mb-4" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="inline-flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <a href="/strategy-management" class="text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-chess-knight mr-1"></i>
+                        策略管理
+                    </a>
+                </li>
+                <li class="inline-flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <span class="text-sm font-medium text-gray-500">
+                        <i class="fas fa-chart-line mr-1"></i>
+                        策略回测
+                    </span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-chart-line text-indigo-600 mr-3"></i>
+                策略回测分析
+            </h1>
+            <p class="text-gray-600">选择策略、设置交易费用和回测时间范围，执行量化策略回测</p>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Left Column: Strategy Selection & Configuration -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Strategy Source Selection -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-robot text-blue-500 mr-2"></i>
+                            策略来源
+                        </h3>
+                    </div>
+                    
+                    <!-- 策略来源选择 -->
+                    <div class="mb-4">
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="strategySource" value="preset" checked 
+                                       onchange="toggleStrategySource()" class="mr-2">
+                                <span>预设策略</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="strategySource" value="model" 
+                                       onchange="toggleStrategySource()" class="mr-2">
+                                <span>训练好的模型</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 预设策略列表 -->
+                    <div id="presetStrategyList">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500" id="strategy-count">0个策略</span>
+                        </div>
+                        <div id="strategy-list" class="space-y-3 max-h-96 overflow-y-auto">
+                            <div class="text-center text-gray-500 py-8">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <p>加载策略中...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 模型选择器 -->
+                    <div id="modelSelector" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选择训练好的模型</label>
+                        <select id="modelSelect" onchange="onModelSelectChange()" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none mb-3">
+                            <option value="">加载中...</option>
+                        </select>
+                        
+                        <!-- 预测阈值配置 -->
+                        <div class="mb-3">
+                            <label class="block text-xs text-gray-500 mb-1">
+                                预测阈值: <span id="thresholdValue">0.5</span>
+                            </label>
+                            <input type="range" id="predictionThreshold" min="0.1" max="0.9" step="0.1" value="0.5"
+                                   oninput="document.getElementById('thresholdValue').textContent = this.value"
+                                   class="w-full">
+                            <p class="text-xs text-gray-400 mt-1">阈值越高，交易信号越保守</p>
+                        </div>
+                        
+                        <!-- 模型信息 -->
+                        <div id="modelInfo" class="hidden p-3 bg-gray-50 rounded-lg text-sm">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><span class="text-gray-500">模型类型:</span> <span id="modelType" class="font-semibold">-</span></div>
+                                <div><span class="text-gray-500">准确率:</span> <span id="modelAccuracy" class="font-semibold">-</span></div>
+                                <div><span class="text-gray-500">训练日期:</span> <span id="modelTrainDate" class="font-semibold">-</span></div>
+                                <div><span class="text-gray-500">模型ID:</span> <span id="modelIdDisplay" class="font-semibold text-xs">-</span></div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-xs text-gray-500 mt-2">使用训练好的模型生成交易信号进行回测</p>
+                    </div>
+                </div>
+
+                <!-- Backtest Configuration Panel -->
+                <div class="config-panel rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-cogs text-purple-500 mr-2"></i>
+                        回测配置
+                    </h3>
+                    
+                    <!-- Date Range Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-alt mr-1"></i>回测时间范围
+                        </label>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">开始日期</label>
+                                <input type="date" id="start-date" class="date-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">结束日期</label>
+                                <input type="date" id="end-date" class="date-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                            </div>
+                        </div>
+                        <!-- Preset Date Ranges -->
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <button onclick="setDateRange('1m')" class="preset-btn px-3 py-1 text-xs border border-gray-300 rounded-full hover:border-blue-400">最近1个月</button>
+                            <button onclick="setDateRange('3m')" class="preset-btn px-3 py-1 text-xs border border-gray-300 rounded-full hover:border-blue-400">最近3个月</button>
+                            <button onclick="setDateRange('6m')" class="preset-btn px-3 py-1 text-xs border border-gray-300 rounded-full hover:border-blue-400">最近6个月</button>
+                            <button onclick="setDateRange('1y')" class="preset-btn px-3 py-1 text-xs border border-gray-300 rounded-full hover:border-blue-400">最近1年</button>
+                            <button onclick="setDateRange('all')" class="preset-btn px-3 py-1 text-xs border border-gray-300 rounded-full hover:border-blue-400">全部</button>
+                        </div>
+                    </div>
+
+                    <!-- Trading Fees Configuration -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-dollar-sign mr-1"></i>交易费用设置
+                        </label>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">佣金率 (%)</label>
+                                <input type="number" id="commission-rate" value="0.1" step="0.01" min="0" max="1" 
+                                    class="fee-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                                    onchange="updateTotalFees()">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">滑点 (%)</label>
+                                <input type="number" id="slippage" value="0.1" step="0.01" min="0" max="1" 
+                                    class="fee-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                                    onchange="updateTotalFees()">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">市场冲击 (%)</label>
+                                <input type="number" id="market-impact" value="0.1" step="0.01" min="0" max="1" 
+                                    class="fee-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                                    onchange="updateTotalFees()">
+                            </div>
+                        </div>
+                        <!-- Total Fees Display -->
+                        <div class="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-blue-800">总交易成本</span>
+                                <span class="text-lg font-bold text-blue-600" id="total-fees">0.30%</span>
+                            </div>
+                            <p class="text-xs text-blue-600 mt-1">单边交易成本，双边需乘以2</p>
+                        </div>
+                    </div>
+
+                    <!-- Initial Capital -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-wallet mr-1"></i>初始资金
+                        </label>
+                        <input type="number" id="initial-capital" value="100000" step="10000" min="10000" 
+                            class="fee-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                    </div>
+
+                    <!-- Run Backtest Button -->
+                    <button onclick="runBacktest()" id="run-backtest-btn" 
+                        class="btn-primary w-full text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-play mr-2"></i>
+                        运行回测
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Results & Charts -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Strategy Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-lg shadow p-4 card-hover">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-robot text-blue-500 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <dt class="text-xs font-medium text-gray-500">活跃策略</dt>
+                                <dd class="text-xl font-semibold text-gray-900" id="active-strategies">0</dd>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-4 card-hover">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-percentage text-green-500 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <dt class="text-xs font-medium text-gray-500">平均年化收益</dt>
+                                <dd class="text-xl font-semibold text-gray-900" id="avg-annual-return">0.0%</dd>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-4 card-hover">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-balance-scale text-yellow-500 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <dt class="text-xs font-medium text-gray-500">夏普比率</dt>
+                                <dd class="text-xl font-semibold text-gray-900" id="avg-sharpe-ratio">0.00</dd>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-4 card-hover">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-arrow-down text-red-500 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <dt class="text-xs font-medium text-gray-500">最大回撤</dt>
+                                <dd class="text-xl font-semibold text-gray-900" id="max-drawdown">0.0%</dd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Returns Chart -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">累计收益率走势</h3>
+                        <div class="chart-container">
+                            <canvas id="returnsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Risk-Return Chart -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">风险收益分布</h3>
+                        <div class="chart-container">
+                            <canvas id="riskReturnChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy Comparison Chart -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">策略多维度对比</h3>
+                    <div class="chart-container">
+                        <canvas id="strategyComparisonChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">详细性能指标</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div id="return-metrics">
+                            <h4 class="text-md font-medium text-gray-700 mb-3">收益指标</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">年化收益率</span>
+                                    <span class="font-semibold" id="metric-annual-return">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">胜率</span>
+                                    <span class="font-semibold" id="metric-win-rate">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">总收益率</span>
+                                    <span class="font-semibold" id="metric-total-return">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="risk-metrics">
+                            <h4 class="text-md font-medium text-gray-700 mb-3">风险指标</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">最大回撤</span>
+                                    <span class="font-semibold" id="metric-max-drawdown">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">波动率</span>
+                                    <span class="font-semibold" id="metric-volatility">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">VaR (95%)</span>
+                                    <span class="font-semibold" id="metric-var">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="efficiency-metrics">
+                            <h4 class="text-md font-medium text-gray-700 mb-3">效率指标</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">夏普比率</span>
+                                    <span class="font-semibold" id="metric-sharpe">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">索提诺比率</span>
+                                    <span class="font-semibold" id="metric-sortino">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">信息比率</span>
+                                    <span class="font-semibold" id="metric-info-ratio">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backtest History Dashboard -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-history text-purple-500 mr-2"></i>
+                            历史回测记录
+                        </h3>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500" id="history-count">0条记录</span>
+                            <button onclick="refreshBacktestHistory()" class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+                                <i class="fas fa-sync-alt mr-1"></i>刷新
+                            </button>
+                            <button onclick="clearAllBacktestHistory()" class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-full hover:bg-red-200">
+                                <i class="fas fa-trash-alt mr-1"></i>清空
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- History Statistics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-purple-600">总回测次数</p>
+                                    <p class="text-2xl font-bold text-purple-800" id="history-total-count">0</p>
+                                </div>
+                                <i class="fas fa-chart-line text-purple-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-green-600">盈利回测</p>
+                                    <p class="text-2xl font-bold text-green-800" id="history-profit-count">0</p>
+                                </div>
+                                <i class="fas fa-arrow-up text-green-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-red-600">亏损回测</p>
+                                    <p class="text-2xl font-bold text-red-800" id="history-loss-count">0</p>
+                                </div>
+                                <i class="fas fa-arrow-down text-red-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-blue-600">平均收益率</p>
+                                    <p class="text-2xl font-bold text-blue-800" id="history-avg-return">0%</p>
+                                </div>
+                                <i class="fas fa-percentage text-blue-400 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Filter -->
+                    <div class="flex items-center space-x-2 mb-4">
+                        <button onclick="filterHistory('all')" class="history-filter-btn active px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100" data-filter="all">全部</button>
+                        <button onclick="filterHistory('profit')" class="history-filter-btn px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-green-50" data-filter="profit">盈利</button>
+                        <button onclick="filterHistory('loss')" class="history-filter-btn px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-red-50" data-filter="loss">亏损</button>
+                        <select id="history-strategy-filter" onchange="filterHistoryByStrategy()" class="ml-2 px-3 py-1 text-sm border border-gray-300 rounded-full">
+                            <option value="">所有策略</option>
+                        </select>
+                    </div>
+
+                    <!-- History Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <input type="checkbox" id="select-all-history" onchange="toggleSelectAllHistory()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">回测ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期范围</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总收益</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">夏普比率</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最大回撤</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">交易次数</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">执行时间</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="backtest-history-table" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="10" class="px-4 py-8 text-center text-gray-500">
+                                        <i class="fas fa-history text-4xl mb-2 text-gray-300"></i>
+                                        <p>暂无历史回测记录</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- History Pagination -->
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="text-sm text-gray-600">
+                            显示 <span id="history-start-index">0</span> - <span id="history-end-index">0</span> 条，共 <span id="history-total-items">0</span> 条
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeHistoryPage(-1)" id="history-prev-btn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50" disabled>
+                                <i class="fas fa-chevron-left"></i> 上一页
+                            </button>
+                            <span id="history-current-page" class="text-sm text-gray-600">第 1 页</span>
+                            <button onclick="changeHistoryPage(1)" id="history-next-btn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50" disabled>
+                                下一页 <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Batch Operations -->
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                        <div class="text-sm text-gray-600">
+                            已选择 <span id="history-selected-count">0</span> 条记录
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="exportSelectedHistory()" id="btn-export-selected" class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded hover:bg-indigo-200 disabled:opacity-50" disabled>
+                                <i class="fas fa-download mr-1"></i>导出选中
+                            </button>
+                            <button onclick="deleteSelectedHistory()" id="btn-delete-selected" class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 disabled:opacity-50" disabled>
+                                <i class="fas fa-trash-alt mr-1"></i>删除选中
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Records Section -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-exchange-alt text-indigo-500 mr-2"></i>
+                            交易记录明细
+                        </h3>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="filterTrades('all')" class="trade-filter-btn active px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100" data-filter="all">全部</button>
+                            <button onclick="filterTrades('profit')" class="trade-filter-btn px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-green-50" data-filter="profit">盈利</button>
+                            <button onclick="filterTrades('loss')" class="trade-filter-btn px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-red-50" data-filter="loss">亏损</button>
+                            <button onclick="refreshTrades()" class="px-3 py-1 text-sm bg-blue-600 text-white rounded-full hover:bg-blue-700" title="刷新交易记录">
+                                <i class="fas fa-sync-alt mr-1"></i>刷新
+                            </button>
+                            <button onclick="exportTrades()" class="px-3 py-1 text-sm bg-indigo-600 text-white rounded-full hover:bg-indigo-700">
+                                <i class="fas fa-download mr-1"></i>导出
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trading Statistics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-blue-600">总交易次数</p>
+                                    <p class="text-2xl font-bold text-blue-800" id="trade-total-count">0</p>
+                                </div>
+                                <i class="fas fa-list-ol text-blue-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-green-600">盈利次数</p>
+                                    <p class="text-2xl font-bold text-green-800" id="trade-profit-count">0</p>
+                                </div>
+                                <i class="fas fa-arrow-up text-green-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-red-600">亏损次数</p>
+                                    <p class="text-2xl font-bold text-red-800" id="trade-loss-count">0</p>
+                                </div>
+                                <i class="fas fa-arrow-down text-red-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-yellow-600">胜率</p>
+                                    <p class="text-2xl font-bold text-yellow-800" id="trade-win-rate">0%</p>
+                                </div>
+                                <i class="fas fa-percentage text-yellow-400 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trading Summary -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <p class="text-sm text-gray-600">平均盈利</p>
+                            <p class="text-lg font-semibold text-green-600" id="trade-avg-profit">¥0.00</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <p class="text-sm text-gray-600">平均亏损</p>
+                            <p class="text-lg font-semibold text-red-600" id="trade-avg-loss">¥0.00</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <p class="text-sm text-gray-600">盈亏比</p>
+                            <p class="text-lg font-semibold text-indigo-600" id="trade-profit-loss-ratio">0.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Trading Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">交易时间</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">股票代码</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">股票名称</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">成交价格</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">数量</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">交易成本</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">盈亏金额</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">盈亏比例</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">账户可用资金</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trades-table-body" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="12" class="px-4 py-8 text-center text-gray-500">
+                                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                                        <p>暂无交易记录</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="text-sm text-gray-500">
+                            显示 <span id="trade-show-start">0</span> - <span id="trade-show-end">0</span> 条，共 <span id="trade-total">0</span> 条
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeTradePage(-1)" id="trade-prev-btn" class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="trade-page-info" class="text-sm text-gray-600">第 1 页</span>
+                            <button onclick="changeTradePage(1)" id="trade-next-btn" class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50" disabled>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL生成函数（环境感知）
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        // API超时处理机制
+        const API_TIMEOUT_MS = 30000;
+        
+        function fetchWithTimeout(url, options = {}, timeoutMs = API_TIMEOUT_MS) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeoutMs);
+            return fetch(url, { ...options, signal: controller.signal })
+                .then(r => { clearTimeout(id); return r; })
+                .catch(e => ({ ok: false, json: () => Promise.resolve({}), status: 0 }));
+        }
+
+        let returnsChart, riskReturnChart, strategyComparisonChart;
+        let selectedStrategies = new Set();
+        let allStrategies = [];
+        
+        // Toast通知系统
+        const toastSystem = {
+            toasts: [],
+            maxToasts: 3,
+            
+            show(message, type = 'info', duration = 3000) {
+                if (this.toasts.length >= this.maxToasts) {
+                    this.removeToast(this.toasts[0]);
+                }
+                
+                const toast = this.createToast(message, type, duration);
+                document.body.appendChild(toast);
+                this.toasts.push(toast);
+                
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+                
+                if (duration > 0) {
+                    setTimeout(() => {
+                        this.removeToast(toast);
+                    }, duration);
+                }
+                
+                return toast;
+            },
+            
+            createToast(message, type, duration) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const iconMap = {
+                    success: 'fas fa-check-circle',
+                    error: 'fas fa-exclamation-circle',
+                    warning: 'fas fa-exclamation-triangle',
+                    info: 'fas fa-info-circle'
+                };
+                
+                toast.innerHTML = `
+                    <i class="${iconMap[type] || iconMap.info}"></i>
+                    <div class="toast-message">${message}</div>
+                    <div class="toast-close" onclick="toastSystem.removeToast(this.parentElement)">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                
+                return toast;
+            },
+            
+            removeToast(toast) {
+                if (!toast) return;
+                
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                    const index = this.toasts.indexOf(toast);
+                    if (index > -1) {
+                        this.toasts.splice(index, 1);
+                    }
+                }, 300);
+            },
+            
+            success(message, duration = 3000) {
+                return this.show(message, 'success', duration);
+            },
+            
+            error(message, duration = 4000) {
+                return this.show(message, 'error', duration);
+            },
+            
+            warning(message, duration = 3500) {
+                return this.show(message, 'warning', duration);
+            },
+            
+            info(message, duration = 3000) {
+                return this.show(message, 'info', duration);
+            }
+        };
+
+        // 显示提示
+        function showSuccessToast(message) { toastSystem.success(message); }
+        function showErrorToast(message) { toastSystem.error(message); }
+        function showInfoToast(message) { toastSystem.info(message); }
+        function showWarningToast(message) { toastSystem.warning(message); }
+
+        // 切换策略来源
+        function toggleStrategySource() {
+            const source = document.querySelector('input[name="strategySource"]:checked').value;
+            const presetList = document.getElementById('presetStrategyList');
+            const modelSelector = document.getElementById('modelSelector');
+            
+            if (source === 'model') {
+                presetList.classList.add('hidden');
+                modelSelector.classList.remove('hidden');
+                // 加载可用模型
+                loadAvailableModels();
+            } else {
+                presetList.classList.remove('hidden');
+                modelSelector.classList.add('hidden');
+            }
+            
+            // 清空选择
+            selectedStrategies.clear();
+            updateSelectedCount();
+        }
+        
+        // 加载可用模型列表
+        async function loadAvailableModels() {
+            const select = document.getElementById('modelSelect');
+            const modelInfo = document.getElementById('modelInfo');
+            
+            select.innerHTML = '<option value="">加载中...</option>';
+            select.disabled = true;
+            modelInfo.classList.add('hidden');
+            
+            try {
+                const response = await fetch(getApiBaseUrl('/backtest/models/available'));
+                if (!response.ok) {
+                    throw new Error('加载模型列表失败');
+                }
+                
+                const data = await response.json();
+                const models = data.models || [];
+                
+                if (models.length === 0) {
+                    select.innerHTML = '<option value="">没有可用的训练好的模型</option>';
+                } else {
+                    select.innerHTML = '<option value="">请选择模型</option>';
+                    models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.model_id;
+                        option.textContent = model.description;
+                        option.dataset.info = JSON.stringify(model);
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('加载模型列表失败:', error);
+                select.innerHTML = '<option value="">加载失败</option>';
+                showErrorToast('加载模型列表失败');
+            } finally {
+                select.disabled = false;
+            }
+        }
+        
+        // 模型选择变化处理
+        function onModelSelectChange() {
+            const select = document.getElementById('modelSelect');
+            const modelInfo = document.getElementById('modelInfo');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption.value && selectedOption.dataset.info) {
+                const model = JSON.parse(selectedOption.dataset.info);
+                
+                // 显示模型信息
+                document.getElementById('modelType').textContent = model.model_type || '-';
+                document.getElementById('modelAccuracy').textContent = model.accuracy ? (model.accuracy * 100).toFixed(2) + '%' : '-';
+                document.getElementById('modelTrainDate').textContent = model.trained_at ? new Date(model.trained_at).toLocaleDateString() : '-';
+                document.getElementById('modelIdDisplay').textContent = model.model_id || '-';
+                
+                modelInfo.classList.remove('hidden');
+                
+                // 添加到选中策略
+                selectedStrategies.clear();
+                selectedStrategies.add(model.model_id);
+                updateSelectedCount();
+            } else {
+                modelInfo.classList.add('hidden');
+                selectedStrategies.clear();
+                updateSelectedCount();
+            }
+        }
+        
+        // 加载活跃策略列表
+        async function loadActiveStrategies() {
+            console.log('加载活跃策略列表...');
+            const startTime = Date.now();
+            
+            try {
+                const apiUrl = getApiBaseUrl('/strategy/conceptions');
+                console.log('API URL:', apiUrl);
+                
+                const response = await fetchWithTimeout(apiUrl, API_TIMEOUT_MS);
+                console.log('API响应状态:', response.status, response.ok);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态码: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API返回数据:', data);
+                
+                // 检查数据格式
+                if (!data) {
+                    throw new Error('API返回空数据');
+                }
+                
+                // 支持多种数据格式
+                allStrategies = data.conceptions || data.strategies || data.data || [];
+                
+                if (!Array.isArray(allStrategies)) {
+                    console.warn('API返回的策略数据不是数组，尝试转换:', allStrategies);
+                    allStrategies = [];
+                }
+                
+                console.log(`解析到${allStrategies.length}个策略`);
+                
+                // 更新策略计数
+                document.getElementById('strategy-count').textContent = `${allStrategies.length}个策略`;
+                document.getElementById('active-strategies').textContent = allStrategies.length;
+                
+                // 渲染策略列表
+                renderStrategyList(allStrategies);
+                
+                const loadTime = Date.now() - startTime;
+                console.log(`成功加载${allStrategies.length}个策略，耗时${loadTime}ms`);
+                
+                if (allStrategies.length === 0) {
+                    showInfoToast('暂无策略数据，请先在策略管理页面创建策略');
+                }
+            } catch (error) {
+                console.error('加载策略列表失败:', error);
+                console.error('错误详情:', error.stack);
+                
+                // 显示详细的错误信息
+                let errorMessage = error.message;
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    errorMessage = '网络连接失败，请检查网络或刷新页面重试';
+                } else if (error.message.includes('timeout') || error.message.includes('abort')) {
+                    errorMessage = '请求超时，请稍后重试';
+                }
+                
+                document.getElementById('strategy-list').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                        <p class="font-semibold">加载策略失败</p>
+                        <p class="text-sm mt-2">${errorMessage}</p>
+                        <button onclick="loadActiveStrategies()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                            <i class="fas fa-sync-alt mr-2"></i>重新加载
+                        </button>
+                    </div>
+                `;
+                showErrorToast(`加载策略列表失败: ${errorMessage}`);
+            }
+        }
+
+        // 渲染策略列表
+        function renderStrategyList(strategies) {
+            const container = document.getElementById('strategy-list');
+            
+            if (strategies.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <p>暂无策略</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = strategies.map(strategy => `
+                <div class="strategy-card bg-white border border-gray-200 rounded-lg p-4 cursor-pointer ${selectedStrategies.has(strategy.id) ? 'selected' : ''}" 
+                     onclick="toggleStrategySelection('${strategy.id}')" 
+                     data-strategy-id="${strategy.id}">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${strategy.name || '未命名策略'}</h4>
+                            <p class="text-sm text-gray-500 mt-1">${strategy.description || '暂无描述'}</p>
+                            <div class="flex items-center mt-2 space-x-2">
+                                <span class="status-badge ${strategy.status === 'active' ? 'status-active' : strategy.status === 'draft' ? 'status-draft' : 'status-archived'}">
+                                    ${strategy.status === 'active' ? '活跃' : strategy.status === 'draft' ? '草稿' : '已归档'}
+                                </span>
+                                <span class="text-xs text-gray-400">
+                                    <i class="fas fa-clock mr-1"></i>${new Date(strategy.created_at || Date.now()).toLocaleDateString()}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ml-3">
+                            <i class="fas ${selectedStrategies.has(strategy.id) ? 'fa-check-circle text-green-500' : 'fa-circle text-gray-300'} text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 切换策略选择
+        function toggleStrategySelection(strategyId) {
+            if (selectedStrategies.has(strategyId)) {
+                selectedStrategies.delete(strategyId);
+            } else {
+                selectedStrategies.add(strategyId);
+            }
+            
+            // 更新UI
+            renderStrategyList(allStrategies);
+            updateSelectedCount();
+
+            console.log(`策略 ${strategyId} 选择状态:`, selectedStrategies.has(strategyId));
+        }
+
+        // 更新选中策略计数
+        function updateSelectedCount() {
+            const count = selectedStrategies.size;
+            console.log(`选中策略数量: ${count}`);
+            // 可以在这里添加UI更新逻辑，例如更新按钮文本或显示计数
+        }
+
+        // 设置日期范围
+        function setDateRange(range) {
+            const endDate = new Date();
+            let startDate = new Date();
+            
+            switch(range) {
+                case '1m':
+                    startDate.setMonth(startDate.getMonth() - 1);
+                    break;
+                case '3m':
+                    startDate.setMonth(startDate.getMonth() - 3);
+                    break;
+                case '6m':
+                    startDate.setMonth(startDate.getMonth() - 6);
+                    break;
+                case '1y':
+                    startDate.setFullYear(startDate.getFullYear() - 1);
+                    break;
+                case 'all':
+                    startDate = new Date('2020-01-01');
+                    break;
+            }
+            
+            document.getElementById('start-date').value = startDate.toISOString().split('T')[0];
+            document.getElementById('end-date').value = endDate.toISOString().split('T')[0];
+            
+            // 更新按钮状态
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // 更新总费用显示
+        function updateTotalFees() {
+            const commission = parseFloat(document.getElementById('commission-rate').value) || 0;
+            const slippage = parseFloat(document.getElementById('slippage').value) || 0;
+            const marketImpact = parseFloat(document.getElementById('market-impact').value) || 0;
+            
+            const total = commission + slippage + marketImpact;
+            document.getElementById('total-fees').textContent = `${total.toFixed(2)}%`;
+        }
+
+        // 运行回测
+        async function runBacktest() {
+            if (selectedStrategies.size === 0) {
+                showWarningToast('请至少选择一个策略或模型');
+                return;
+            }
+            
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            if (!startDate || !endDate) {
+                showWarningToast('请设置回测时间范围');
+                return;
+            }
+            
+            if (new Date(startDate) >= new Date(endDate)) {
+                showWarningToast('开始日期必须早于结束日期');
+                return;
+            }
+            
+            const btn = document.getElementById('run-backtest-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>回测运行中...';
+            
+            showInfoToast('开始运行回测...');
+            
+            try {
+                const source = document.querySelector('input[name="strategySource"]:checked').value;
+                let results = [];
+                
+                if (source === 'model') {
+                    // 使用模型进行回测
+                    const modelId = Array.from(selectedStrategies)[0];
+                    const threshold = parseFloat(document.getElementById('predictionThreshold').value) || 0.5;
+                    
+                    const requestData = {
+                        model_id: modelId,
+                        start_date: startDate,
+                        end_date: endDate,
+                        initial_capital: parseFloat(document.getElementById('initial-capital').value) || 100000,
+                        commission_rate: (parseFloat(document.getElementById('commission-rate').value) || 0.1) / 100,
+                        slippage: (parseFloat(document.getElementById('slippage').value) || 0.1) / 100,
+                        market_impact: (parseFloat(document.getElementById('market-impact').value) || 0.1) / 100,
+                        prediction_threshold: threshold
+                    };
+                    
+                    const response = await fetch(getApiBaseUrl('/backtest/model'), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`模型回测失败: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    results = [result.backtest];
+                    
+                    showSuccessToast('模型驱动回测完成');
+                } else {
+                    // 使用预设策略进行回测
+                    const backtestPromises = Array.from(selectedStrategies).map(async (strategyId) => {
+                        const requestData = {
+                            strategy_id: strategyId,
+                            start_date: startDate,
+                            end_date: endDate,
+                            initial_capital: parseFloat(document.getElementById('initial-capital').value) || 100000,
+                            commission_rate: (parseFloat(document.getElementById('commission-rate').value) || 0.1) / 100,
+                            slippage: (parseFloat(document.getElementById('slippage').value) || 0.1) / 100,
+                            market_impact: (parseFloat(document.getElementById('market-impact').value) || 0.1) / 100
+                        };
+                        
+                        const response = await fetch(getApiBaseUrl('/backtest/run'), {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(requestData)
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`回测失败: ${response.status}`);
+                        }
+                        
+                        return await response.json();
+                    });
+                    
+                    results = await Promise.all(backtestPromises);
+                    showSuccessToast(`成功完成${results.length}个策略的回测`);
+                }
+                
+                // 更新仪表盘
+                updateDashboard(results);
+                
+            } catch (error) {
+                console.error('回测执行失败:', error);
+                showErrorToast(`回测执行失败: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-play mr-2"></i>运行回测';
+            }
+        }
+
+        // 更新仪表盘
+        function updateDashboard(results) {
+            console.log('更新仪表盘，结果数量:', results ? results.length : 0);
+            
+            if (!results || results.length === 0) {
+                console.warn('updateDashboard: 没有回测结果数据');
+                return;
+            }
+            
+            // 验证每个结果对象
+            results.forEach((result, index) => {
+                console.log(`结果${index}:`, {
+                    strategy_id: result.strategy_id,
+                    annualized_return: result.annualized_return,
+                    sharpe_ratio: result.sharpe_ratio,
+                    max_drawdown: result.max_drawdown,
+                    equity_curve_length: result.equity_curve ? result.equity_curve.length : 0,
+                    trades_count: result.trades ? result.trades.length : 0
+                });
+            });
+            
+            // 计算统计数据（不过滤0值，确保数据一致性）
+            const annualReturns = results.map(r => r.annualized_return || 0);
+            const sharpeRatios = results.map(r => r.sharpe_ratio || 0);
+            const maxDrawdowns = results.map(r => r.max_drawdown || 0);
+            const winRates = results.map(r => r.win_rate || 0);
+            const totalReturns = results.map(r => r.total_return || 0);
+            
+            console.log('统计数据:', {
+                annualReturns,
+                sharpeRatios,
+                maxDrawdowns,
+                winRates,
+                totalReturns
+            });
+            
+            // 计算平均值（排除0值）
+            const validAnnualReturns = annualReturns.filter(r => r !== 0);
+            const validSharpeRatios = sharpeRatios.filter(s => s !== 0);
+            const validMaxDrawdowns = maxDrawdowns.filter(m => m !== 0);
+            
+            // 更新概览卡片
+            document.getElementById('avg-annual-return').textContent = validAnnualReturns.length > 0 
+                ? `${(validAnnualReturns.reduce((a, b) => a + b, 0) / validAnnualReturns.length * 100).toFixed(1)}%` 
+                : '0.0%';
+            document.getElementById('avg-sharpe-ratio').textContent = validSharpeRatios.length > 0 
+                ? (validSharpeRatios.reduce((a, b) => a + b, 0) / validSharpeRatios.length).toFixed(2) 
+                : '0.00';
+            document.getElementById('max-drawdown').textContent = validMaxDrawdowns.length > 0 
+                ? `${(Math.min(...validMaxDrawdowns) * 100).toFixed(1)}%` 
+                : '0.0%';
+            
+            // 更新详细指标（使用第一个有效结果或计算平均值）
+            const firstValidResult = results.find(r => r.annualized_return !== undefined) || results[0];
+            
+            if (firstValidResult) {
+                const avgAnnualReturn = validAnnualReturns.length > 0 
+                    ? validAnnualReturns.reduce((a, b) => a + b, 0) / validAnnualReturns.length 
+                    : 0;
+                const avgWinRate = winRates.filter(w => w !== 0).length > 0
+                    ? winRates.filter(w => w !== 0).reduce((a, b) => a + b, 0) / winRates.filter(w => w !== 0).length
+                    : 0;
+                const avgTotalReturn = totalReturns.filter(t => t !== 0).length > 0
+                    ? totalReturns.filter(t => t !== 0).reduce((a, b) => a + b, 0) / totalReturns.filter(t => t !== 0).length
+                    : 0;
+                const avgMaxDrawdown = validMaxDrawdowns.length > 0
+                    ? validMaxDrawdowns.reduce((a, b) => a + b, 0) / validMaxDrawdowns.length
+                    : 0;
+                
+                document.getElementById('metric-annual-return').textContent = `${(avgAnnualReturn * 100).toFixed(1)}%`;
+                document.getElementById('metric-win-rate').textContent = `${(avgWinRate * 100).toFixed(1)}%`;
+                document.getElementById('metric-total-return').textContent = `${(avgTotalReturn * 100).toFixed(1)}%`;
+                document.getElementById('metric-max-drawdown').textContent = `${(avgMaxDrawdown * 100).toFixed(1)}%`;
+                
+                // 波动率和VaR
+                const volatilities = results.map(r => r.metrics?.volatility || r.volatility || 0).filter(v => v !== 0);
+                const vars = results.map(r => r.metrics?.var_95 || r.var_95 || 0).filter(v => v !== 0);
+                const sortinos = results.map(r => r.metrics?.sortino_ratio || r.sortino_ratio || 0).filter(s => s !== 0);
+                const infoRatios = results.map(r => r.metrics?.information_ratio || r.information_ratio || 0).filter(i => i !== 0);
+                
+                document.getElementById('metric-volatility').textContent = volatilities.length > 0
+                    ? `${(volatilities.reduce((a, b) => a + b, 0) / volatilities.length * 100).toFixed(1)}%`
+                    : '0.0%';
+                document.getElementById('metric-var').textContent = vars.length > 0
+                    ? `${(vars.reduce((a, b) => a + b, 0) / vars.length * 100).toFixed(1)}%`
+                    : '0.0%';
+                document.getElementById('metric-sharpe').textContent = validSharpeRatios.length > 0
+                    ? (validSharpeRatios.reduce((a, b) => a + b, 0) / validSharpeRatios.length).toFixed(2)
+                    : '0.00';
+                document.getElementById('metric-sortino').textContent = sortinos.length > 0
+                    ? (sortinos.reduce((a, b) => a + b, 0) / sortinos.length).toFixed(2)
+                    : '0.00';
+                document.getElementById('metric-info-ratio').textContent = infoRatios.length > 0
+                    ? (infoRatios.reduce((a, b) => a + b, 0) / infoRatios.length).toFixed(2)
+                    : '0.00';
+            }
+            
+            // 更新图表
+            console.log('调用updateCharts...');
+            updateCharts(results);
+
+            // 更新交易记录
+            console.log('调用updateTradesDisplay...');
+            updateTradesDisplay(results);
+
+            // 刷新历史回测记录列表
+            console.log('刷新历史回测记录...');
+            loadBacktestHistory();
+
+            console.log('仪表盘更新完成');
+        }
+
+        // 初始化图表
+        function initCharts() {
+            // 检查Chart.js是否已加载
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js未加载，跳过图表初始化');
+                showWarningToast('图表库未加载，部分功能可能不可用');
+                return;
+            }
+
+            try {
+                // 检查必要的DOM元素是否存在
+                const returnsCanvas = document.getElementById('returnsChart');
+                const riskReturnCanvas = document.getElementById('riskReturnChart');
+                const comparisonCanvas = document.getElementById('strategyComparisonChart');
+
+                if (!returnsCanvas || !riskReturnCanvas || !comparisonCanvas) {
+                    console.warn('图表画布元素未找到，跳过图表初始化');
+                    return;
+                }
+
+                // 销毁已存在的图表实例
+                if (returnsChart) {
+                    returnsChart.destroy();
+                    returnsChart = null;
+                }
+                if (riskReturnChart) {
+                    riskReturnChart.destroy();
+                    riskReturnChart = null;
+                }
+                if (strategyComparisonChart) {
+                    strategyComparisonChart.destroy();
+                    strategyComparisonChart = null;
+                }
+
+                // Cumulative Returns Chart
+                const returnsCtx = returnsCanvas.getContext('2d');
+                returnsChart = new Chart(returnsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: '策略累计收益率走势' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: '累计收益率 (%)' }
+                        }
+                    }
+                }
+            });
+
+            // Risk-Return Scatter Plot
+            const riskReturnCtx = document.getElementById('riskReturnChart').getContext('2d');
+            riskReturnChart = new Chart(riskReturnCtx, {
+                type: 'scatter',
+                data: { datasets: [] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: '风险收益分布图' }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: '年化波动率 (%)' },
+                            beginAtZero: true
+                        },
+                        y: {
+                            title: { display: true, text: '年化收益率 (%)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Strategy Comparison Chart
+            const comparisonCtx = document.getElementById('strategyComparisonChart').getContext('2d');
+            strategyComparisonChart = new Chart(comparisonCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['年化收益率', '夏普比率', '最大回撤', '胜率', '信息比率'],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: '策略多维度对比' }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0
+                        }
+                    }
+                }
+            });
+
+                console.log('图表初始化完成');
+            } catch (error) {
+                console.error('图表初始化失败:', error);
+                showErrorToast('图表初始化失败: ' + error.message);
+            }
+        }
+
+        // 颜色配置
+        const chartColors = [
+            'rgba(59, 130, 246, 1)',   // 蓝色
+            'rgba(16, 185, 129, 1)',   // 绿色
+            'rgba(245, 158, 11, 1)',   // 黄色
+            'rgba(239, 68, 68, 1)',    // 红色
+            'rgba(139, 92, 246, 1)',   // 紫色
+            'rgba(236, 72, 153, 1)',   // 粉色
+            'rgba(14, 165, 233, 1)',   // 天蓝
+            'rgba(249, 115, 22, 1)'    // 橙色
+        ];
+
+        const chartBackgroundColors = [
+            'rgba(59, 130, 246, 0.1)',
+            'rgba(16, 185, 129, 0.1)',
+            'rgba(245, 158, 11, 0.1)',
+            'rgba(239, 68, 68, 0.1)',
+            'rgba(139, 92, 246, 0.1)',
+            'rgba(236, 72, 153, 0.1)',
+            'rgba(14, 165, 233, 0.1)',
+            'rgba(249, 115, 22, 0.1)'
+        ];
+
+        // 更新图表
+        function updateCharts(results) {
+            console.log('更新图表数据:', results);
+            
+            if (!results || results.length === 0) {
+                console.log('没有回测结果数据，跳过图表更新');
+                return;
+            }
+
+            // 更新累计收益率走势图
+            updateReturnsChart(results);
+            
+            // 更新风险收益分布图
+            updateRiskReturnChart(results);
+            
+            // 更新策略多维度对比图
+            updateComparisonChart(results);
+        }
+
+        // 更新累计收益率走势图
+        function updateReturnsChart(results) {
+            console.log('更新累计收益率走势图，结果数量:', results.length);
+            
+            const datasets = results.map((result, index) => {
+                const color = chartColors[index % chartColors.length];
+                const bgColor = chartBackgroundColors[index % chartBackgroundColors.length];
+                
+                // 获取策略名称
+                const strategy = allStrategies.find(s => s.id === result.strategy_id);
+                const strategyName = strategy ? strategy.name : `策略${index + 1}`;
+                
+                // 处理权益曲线数据 - 支持多种字段名
+                let equityCurve = result.equity_curve || result.equityCurve || result.portfolio_value || [];
+                
+                // 如果没有权益曲线，尝试从日收益率计算
+                if (equityCurve.length === 0 && (result.daily_returns || result.returns)) {
+                    const dailyReturns = result.daily_returns || result.returns;
+                    if (Array.isArray(dailyReturns) && dailyReturns.length > 0) {
+                        const initialCapital = result.initial_capital || 100000;
+                        equityCurve = [initialCapital];
+                        let currentValue = initialCapital;
+                        dailyReturns.forEach(ret => {
+                            currentValue *= (1 + ret);
+                            equityCurve.push(currentValue);
+                        });
+                        console.log(`策略${index}：从日收益率计算权益曲线，长度:`, equityCurve.length);
+                    }
+                }
+                
+                // 如果还是没有，使用累计收益率
+                if (equityCurve.length === 0 && result.total_return) {
+                    const initialCapital = result.initial_capital || 100000;
+                    const finalValue = initialCapital * (1 + result.total_return);
+                    equityCurve = [initialCapital, finalValue];
+                    console.log(`策略${index}：使用总收益率生成权益曲线`);
+                }
+                
+                console.log(`策略${index} (${strategyName}) 权益曲线长度:`, equityCurve.length);
+                
+                // 计算累计收益率（相对于初始资金）
+                const initialCapital = result.initial_capital || 100000;
+                const returnsData = equityCurve.map((value, i) => {
+                    if (typeof value === 'number') {
+                        return ((value - initialCapital) / initialCapital * 100);
+                    }
+                    return 0;
+                });
+
+                return {
+                    label: strategyName,
+                    data: returnsData,
+                    borderColor: color,
+                    backgroundColor: bgColor,
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                };
+            }).filter(ds => ds.data.length > 0);
+
+            console.log('生成的数据集数量:', datasets.length);
+
+            // 更新图表
+            if (datasets.length > 0) {
+                // 确保returnsChart已初始化
+                if (!returnsChart || !returnsChart.data) {
+                    console.warn('returnsChart未初始化，尝试重新初始化...');
+                    initCharts();
+                    if (!returnsChart || !returnsChart.data) {
+                        console.error('returnsChart初始化失败，无法更新图表');
+                        return;
+                    }
+                }
+                
+                // 安全地更新数据集
+                try {
+                    returnsChart.data.datasets = datasets;
+                } catch (e) {
+                    console.error('更新returnsChart.datasets失败:', e);
+                    return;
+                }
+                
+                // 使用第一个数据集的长度生成时间标签
+                const dataLength = datasets[0].data.length;
+                const result = results[0];
+                const startDate = new Date(result.start_date || Date.now());
+                const endDate = new Date(result.end_date || Date.now());
+
+                // 生成交易日标签，确保不重复且与实际交易日期一致
+                const labels = [];
+                let currentDate = new Date(startDate);
+                const lastDate = new Date(endDate);
+
+                // 计算实际的交易日序列（从开始日期到结束日期的所有交易日）
+                const tradingDates = [];
+                while (currentDate <= lastDate) {
+                    const dayOfWeek = currentDate.getDay();
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                        tradingDates.push(new Date(currentDate));
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                // 根据数据点数量生成标签，确保不重复
+                if (tradingDates.length > 0 && dataLength > 0) {
+                    // 如果数据点数量大于交易日数量，需要合并数据点
+                    if (dataLength > tradingDates.length) {
+                        // 使用交易日作为标签，每个交易日只显示一次
+                        for (let i = 0; i < tradingDates.length; i++) {
+                            const date = tradingDates[i];
+                            labels.push(date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }));
+                        }
+                        
+                        // 需要重新采样数据，使数据点数量与标签数量一致
+                        const originalData = datasets[0].data;
+                        const resampledData = [];
+                        const step = Math.floor(originalData.length / tradingDates.length);
+                        
+                        for (let i = 0; i < tradingDates.length; i++) {
+                            const dataIndex = Math.min(i * step, originalData.length - 1);
+                            resampledData.push(originalData[dataIndex]);
+                        }
+                        
+                        // 更新数据集
+                        datasets.forEach(ds => {
+                            const original = ds.data;
+                            ds.data = [];
+                            for (let i = 0; i < tradingDates.length; i++) {
+                                const dataIndex = Math.min(i * step, original.length - 1);
+                                ds.data.push(original[dataIndex]);
+                            }
+                        });
+                        
+                        console.log(`数据重新采样: 原始${originalData.length}个点 → 合并为${resampledData.length}个点`);
+                    } else {
+                        // 数据点数量小于等于交易日数量，均匀分布
+                        const step = Math.max(1, Math.floor(tradingDates.length / dataLength));
+                        const usedIndices = new Set();
+                        
+                        for (let i = 0; i < dataLength; i++) {
+                            let dateIndex = Math.min(i * step, tradingDates.length - 1);
+                            // 确保不重复使用同一个日期
+                            while (usedIndices.has(dateIndex) && dateIndex < tradingDates.length - 1) {
+                                dateIndex++;
+                            }
+                            usedIndices.add(dateIndex);
+                            
+                            const date = tradingDates[dateIndex];
+                            labels.push(date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }));
+                        }
+                    }
+                }
+
+                console.log(`生成标签: ${labels.length}个, 起始: ${labels[0]}, 结束: ${labels[labels.length-1]}, 交易日总数: ${tradingDates.length}`);
+                returnsChart.data.labels = labels;
+                returnsChart.update('active');
+                console.log('累计收益率走势图更新完成');
+            } else {
+                console.warn('没有有效的权益曲线数据，无法更新图表');
+            }
+        }
+
+        // 更新风险收益分布图
+        function updateRiskReturnChart(results) {
+            console.log('更新风险收益分布图，结果数量:', results.length);
+            
+            const datasets = results.map((result, index) => {
+                const color = chartColors[index % chartColors.length];
+                const strategy = allStrategies.find(s => s.id === result.strategy_id);
+                const strategyName = strategy ? strategy.name : `策略${index + 1}`;
+                
+                // 计算年化波动率（支持多种字段名）
+                let volatility = result.annual_volatility || result.volatility || 0;
+                if (volatility === 0 && result.metrics) {
+                    volatility = result.metrics.volatility || result.metrics.annual_volatility || 0;
+                }
+                
+                // 如果还是没有，从权益曲线计算
+                const equityCurve = result.equity_curve || result.equityCurve || result.portfolio_value || [];
+                if (volatility === 0 && equityCurve.length > 1) {
+                    const returns = [];
+                    for (let i = 1; i < equityCurve.length; i++) {
+                        const dailyReturn = (equityCurve[i] - equityCurve[i-1]) / equityCurve[i-1];
+                        returns.push(dailyReturn);
+                    }
+                    if (returns.length > 0) {
+                        const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
+                        const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+                        volatility = Math.sqrt(variance) * Math.sqrt(252) * 100; // 年化波动率
+                        console.log(`策略${index}：从权益曲线计算波动率:`, volatility.toFixed(2) + '%');
+                    }
+                }
+                
+                // 如果还是没有，使用默认值
+                if (volatility === 0) {
+                    volatility = 15; // 默认15%波动率
+                    console.log(`策略${index}：使用默认波动率15%`);
+                }
+
+                const annualReturn = (result.annualized_return || 0) * 100;
+                console.log(`策略${index} (${strategyName}): 年化收益=${annualReturn.toFixed(2)}%, 波动率=${volatility.toFixed(2)}%`);
+
+                return {
+                    label: strategyName,
+                    data: [{
+                        x: volatility,
+                        y: annualReturn
+                    }],
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderWidth: 2,
+                    pointRadius: 8,
+                    pointHoverRadius: 10
+                };
+            });
+
+            // 确保riskReturnChart已初始化
+            if (!riskReturnChart || !riskReturnChart.data) {
+                console.warn('riskReturnChart未初始化，尝试重新初始化...');
+                initCharts();
+                if (!riskReturnChart || !riskReturnChart.data) {
+                    console.error('riskReturnChart初始化失败，无法更新图表');
+                    return;
+                }
+            }
+            
+            // 安全地更新数据集
+            try {
+                riskReturnChart.data.datasets = datasets;
+                riskReturnChart.update('active');
+                console.log('风险收益分布图更新完成');
+            } catch (e) {
+                console.error('更新riskReturnChart失败:', e);
+            }
+        }
+
+        // 更新策略多维度对比图
+        function updateComparisonChart(results) {
+            // 雷达图指标：年化收益率、夏普比率、最大回撤(取反)、胜率、信息比率
+            // 所有指标需要归一化到0-100的范围
+            
+            const datasets = results.map((result, index) => {
+                const color = chartColors[index % chartColors.length];
+                const bgColor = chartBackgroundColors[index % chartBackgroundColors.length];
+                const strategy = allStrategies.find(s => s.id === result.strategy_id);
+                const strategyName = strategy ? strategy.name : `策略${index + 1}`;
+                
+                // 获取各项指标值
+                const annualReturn = (result.annualized_return || 0) * 100;
+                const sharpeRatio = result.sharpe_ratio || 0;
+                const maxDrawdown = Math.abs(result.max_drawdown || 0) * 100; // 取绝对值
+                const winRate = (result.win_rate || 0) * 100;
+                const infoRatio = (result.metrics?.information_ratio || 0);
+                
+                // 归一化处理（根据经验值设定合理范围）
+                // 年化收益率: 0-50% -> 0-100
+                const normalizedReturn = Math.min(Math.max(annualReturn / 50 * 100, 0), 100);
+                
+                // 夏普比率: 0-3 -> 0-100
+                const normalizedSharpe = Math.min(Math.max(sharpeRatio / 3 * 100, 0), 100);
+                
+                // 最大回撤: 0-30% -> 100-0 (越小越好，所以取反)
+                const normalizedDrawdown = Math.max(0, 100 - (maxDrawdown / 30 * 100));
+                
+                // 胜率: 0-100% -> 0-100
+                const normalizedWinRate = Math.min(Math.max(winRate, 0), 100);
+                
+                // 信息比率: 0-2 -> 0-100
+                const normalizedInfoRatio = Math.min(Math.max(infoRatio / 2 * 100, 0), 100);
+
+                return {
+                    label: strategyName,
+                    data: [
+                        normalizedReturn,
+                        normalizedSharpe,
+                        normalizedDrawdown,
+                        normalizedWinRate,
+                        normalizedInfoRatio
+                    ],
+                    borderColor: color,
+                    backgroundColor: bgColor,
+                    borderWidth: 2,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: color
+                };
+            });
+
+            // 确保strategyComparisonChart已初始化
+            if (!strategyComparisonChart || !strategyComparisonChart.data) {
+                console.warn('strategyComparisonChart未初始化，尝试重新初始化...');
+                initCharts();
+                if (!strategyComparisonChart || !strategyComparisonChart.data) {
+                    console.error('strategyComparisonChart初始化失败，无法更新图表');
+                    return;
+                }
+            }
+            
+            // 安全地更新数据集
+            try {
+                strategyComparisonChart.data.datasets = datasets;
+                strategyComparisonChart.update('active');
+                console.log('策略多维度对比图更新完成');
+            } catch (e) {
+                console.error('更新strategyComparisonChart失败:', e);
+            }
+        }
+
+        // 加载历史回测数据
+        async function loadBacktestHistory() {
+            console.log('加载历史回测数据...');
+            try {
+                const response = await fetchWithTimeout(getApiBaseUrl('/backtest'), API_TIMEOUT_MS);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态码: ${response.status}`);
+                }
+
+                const data = await response.json();
+                backtestHistoryData = data.backtests || [];
+
+                console.log(`加载了${backtestHistoryData.length}条历史回测记录`);
+
+                // 更新历史回测仪表盘
+                updateHistoryStats();
+                updateStrategyFilter();
+                filterHistory('all');
+
+                // 更新图表显示
+                if (backtestHistoryData.length > 0) {
+                    console.log('历史记录加载完成，更新图表...');
+                    updateCharts(backtestHistoryData);
+                    updateTradesDisplay(backtestHistoryData);
+                } else {
+                    updateTradesDisplay([]);
+                }
+            } catch (error) {
+                console.error('加载历史回测数据失败:', error);
+                // 不显示错误提示，因为这不是关键功能
+            }
+        }
+
+        // 刷新数据
+        function refreshData() {
+            loadActiveStrategies();
+            loadBacktestHistory();
+            showInfoToast('数据刷新中...');
+        }
+
+        // ==================== 历史回测记录功能 ====================
+        
+        // 历史回测数据存储
+        let backtestHistoryData = [];
+        let filteredHistoryData = [];
+        let currentHistoryPage = 1;
+        const HISTORY_PER_PAGE = 10;
+        let currentHistoryFilter = 'all';
+        let selectedHistoryIds = new Set();
+        
+        // 刷新历史回测记录
+        async function refreshBacktestHistory() {
+            await loadBacktestHistory();
+            showSuccessToast('历史回测记录已刷新');
+        }
+        
+        // 渲染历史回测记录表格
+        function renderHistoryTable() {
+            const tbody = document.getElementById('backtest-history-table');
+            const start = (currentHistoryPage - 1) * HISTORY_PER_PAGE;
+            const end = Math.min(start + HISTORY_PER_PAGE, filteredHistoryData.length);
+            const pageData = filteredHistoryData.slice(start, end);
+            
+            if (pageData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="px-4 py-8 text-center text-gray-500">
+                            <i class="fas fa-history text-4xl mb-2 text-gray-300"></i>
+                            <p>暂无历史回测记录</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = pageData.map((item, index) => {
+                    const totalReturn = (item.total_return || 0) * 100;
+                    const isProfit = totalReturn > 0;
+                    const isLoss = totalReturn < 0;
+                    const returnClass = isProfit ? 'text-green-600' : isLoss ? 'text-red-600' : 'text-gray-600';
+                    const returnIcon = isProfit ? '↑' : isLoss ? '↓' : '-';
+                    
+                    const createdAt = item.created_at || item.saved_at || '-';
+                    const dateStr = createdAt !== '-' ? new Date(createdAt).toLocaleString('zh-CN') : '-';
+                    
+                    const startDate = item.start_date || '-';
+                    const endDate = item.end_date || '-';
+                    const dateRange = startDate !== '-' && endDate !== '-' ? `${startDate} 至 ${endDate}` : '-';
+                    
+                    const isSelected = selectedHistoryIds.has(item.backtest_id);
+                    
+                    return `
+                        <tr class="hover:bg-gray-50 transition-colors ${isSelected ? 'bg-indigo-50' : ''}">
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <input type="checkbox" value="${item.backtest_id}" 
+                                    ${isSelected ? 'checked' : ''} 
+                                    onchange="toggleHistorySelection('${item.backtest_id}')"
+                                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-600">${item.backtest_id || '-'}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">${item.strategy_id || '-'}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">${dateRange}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-semibold ${returnClass}">${returnIcon} ${totalReturn.toFixed(2)}%</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">${(item.sharpe_ratio || 0).toFixed(2)}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-red-600">${((item.max_drawdown || 0) * 100).toFixed(2)}%</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">${item.total_trades || 0}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">${dateStr}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                <button onclick="viewHistoryDetail('${item.backtest_id}')" class="text-indigo-600 hover:text-indigo-800 mr-2" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="goToOptimize('${item.strategy_id}', '${item.backtest_id}')" class="text-orange-600 hover:text-orange-800 mr-2" title="去优化">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <button onclick="deleteHistoryItem('${item.backtest_id}')" class="text-red-600 hover:text-red-800" title="删除">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            // 更新分页信息
+            document.getElementById('history-start-index').textContent = filteredHistoryData.length > 0 ? start + 1 : 0;
+            document.getElementById('history-end-index').textContent = end;
+            document.getElementById('history-total-items').textContent = filteredHistoryData.length;
+            document.getElementById('history-current-page').textContent = `第 ${currentHistoryPage} 页`;
+            
+            // 更新分页按钮状态
+            document.getElementById('history-prev-btn').disabled = currentHistoryPage <= 1;
+            document.getElementById('history-next-btn').disabled = end >= filteredHistoryData.length;
+            
+            // 更新选择计数
+            updateHistorySelectionCount();
+        }
+        
+        // 更新历史回测统计数据
+        function updateHistoryStats() {
+            const totalCount = backtestHistoryData.length;
+            const profitCount = backtestHistoryData.filter(item => (item.total_return || 0) > 0).length;
+            const lossCount = backtestHistoryData.filter(item => (item.total_return || 0) < 0).length;
+            const avgReturn = totalCount > 0 ? backtestHistoryData.reduce((sum, item) => sum + (item.total_return || 0), 0) / totalCount : 0;
+            
+            document.getElementById('history-count').textContent = `${totalCount}条记录`;
+            document.getElementById('history-total-count').textContent = totalCount;
+            document.getElementById('history-profit-count').textContent = profitCount;
+            document.getElementById('history-loss-count').textContent = lossCount;
+            document.getElementById('history-avg-return').textContent = `${(avgReturn * 100).toFixed(2)}%`;
+            document.getElementById('history-avg-return').className = `text-2xl font-bold ${avgReturn >= 0 ? 'text-blue-800' : 'text-red-800'}`;
+        }
+        
+        // 筛选历史回测记录
+        function filterHistory(filter) {
+            currentHistoryFilter = filter;
+            currentHistoryPage = 1;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.history-filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-indigo-100', 'text-indigo-800', 'border-indigo-300');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active', 'bg-indigo-100', 'text-indigo-800', 'border-indigo-300');
+                }
+            });
+            
+            // 筛选数据
+            if (filter === 'all') {
+                filteredHistoryData = [...backtestHistoryData];
+            } else if (filter === 'profit') {
+                filteredHistoryData = backtestHistoryData.filter(item => (item.total_return || 0) > 0);
+            } else if (filter === 'loss') {
+                filteredHistoryData = backtestHistoryData.filter(item => (item.total_return || 0) < 0);
+            }
+            
+            // 应用策略筛选
+            const strategyFilter = document.getElementById('history-strategy-filter').value;
+            if (strategyFilter) {
+                filteredHistoryData = filteredHistoryData.filter(item => item.strategy_id === strategyFilter);
+            }
+            
+            renderHistoryTable();
+        }
+        
+        // 按策略筛选
+        function filterHistoryByStrategy() {
+            filterHistory(currentHistoryFilter);
+        }
+        
+        // 更新策略筛选下拉框
+        function updateStrategyFilter() {
+            const select = document.getElementById('history-strategy-filter');
+            const strategies = [...new Set(backtestHistoryData.map(item => item.strategy_id).filter(Boolean))];
+            
+            select.innerHTML = '<option value="">所有策略</option>' + 
+                strategies.map(id => `<option value="${id}">${id}</option>`).join('');
+        }
+        
+        // 切换历史记录选择
+        function toggleHistorySelection(backtestId) {
+            if (selectedHistoryIds.has(backtestId)) {
+                selectedHistoryIds.delete(backtestId);
+            } else {
+                selectedHistoryIds.add(backtestId);
+            }
+            renderHistoryTable();
+        }
+        
+        // 全选/取消全选
+        function toggleSelectAllHistory() {
+            const selectAll = document.getElementById('select-all-history').checked;
+            if (selectAll) {
+                filteredHistoryData.forEach(item => {
+                    if (item.backtest_id) {
+                        selectedHistoryIds.add(item.backtest_id);
+                    }
+                });
+            } else {
+                selectedHistoryIds.clear();
+            }
+            renderHistoryTable();
+        }
+        
+        // 更新选择计数
+        function updateHistorySelectionCount() {
+            const count = selectedHistoryIds.size;
+            document.getElementById('history-selected-count').textContent = count;
+            document.getElementById('btn-export-selected').disabled = count === 0;
+            document.getElementById('btn-delete-selected').disabled = count === 0;
+        }
+        
+        // 切换历史记录页码
+        function changeHistoryPage(delta) {
+            const maxPage = Math.ceil(filteredHistoryData.length / HISTORY_PER_PAGE);
+            const newPage = currentHistoryPage + delta;
+            
+            if (newPage >= 1 && newPage <= maxPage) {
+                currentHistoryPage = newPage;
+                renderHistoryTable();
+            }
+        }
+        
+        // 查看历史记录详情
+        function viewHistoryDetail(backtestId) {
+            const item = backtestHistoryData.find(h => h.backtest_id === backtestId);
+            if (item) {
+                // 显示详情弹窗
+                alert(`回测详情:\n\n回测ID: ${item.backtest_id}\n策略: ${item.strategy_id}\n总收益: ${((item.total_return || 0) * 100).toFixed(2)}%\n夏普比率: ${(item.sharpe_ratio || 0).toFixed(2)}\n最大回撤: ${((item.max_drawdown || 0) * 100).toFixed(2)}%\n交易次数: ${item.total_trades || 0}`);
+            }
+        }
+
+        // 去优化页面
+        function goToOptimize(strategyId, backtestId) {
+            if (!strategyId) {
+                showErrorToast('无法获取策略ID');
+                return;
+            }
+
+            // 保存回测结果到sessionStorage，供优化页面使用
+            const item = backtestHistoryData.find(h => h.backtest_id === backtestId);
+            if (item) {
+                sessionStorage.setItem('backtestResultForOptimize', JSON.stringify({
+                    strategy_id: strategyId,
+                    backtest_id: backtestId,
+                    parameters: item.parameters || {},
+                    performance: {
+                        total_return: item.total_return,
+                        sharpe_ratio: item.sharpe_ratio,
+                        max_drawdown: item.max_drawdown
+                    }
+                }));
+            }
+
+            // 跳转到优化器页面
+            window.location.href = `/strategy-optimizer?strategy_id=${strategyId}&from_backtest=${backtestId}`;
+        }
+        
+        // 删除单条历史记录
+        async function deleteHistoryItem(backtestId) {
+            if (!confirm('确定要删除这条回测记录吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetchWithTimeout(getApiBaseUrl(`/backtest/${backtestId}`), {
+                    method: 'DELETE'
+                }, API_TIMEOUT_MS);
+                
+                if (response.ok) {
+                    showSuccessToast('回测记录已删除');
+                    // 从本地数据中移除
+                    backtestHistoryData = backtestHistoryData.filter(item => item.backtest_id !== backtestId);
+                    selectedHistoryIds.delete(backtestId);
+                    updateHistoryStats();
+                    filterHistory(currentHistoryFilter);
+                } else {
+                    throw new Error('删除失败');
+                }
+            } catch (error) {
+                console.error('删除回测记录失败:', error);
+                showErrorToast('删除回测记录失败: ' + error.message);
+            }
+        }
+        
+        // 删除选中的历史记录
+        async function deleteSelectedHistory() {
+            if (selectedHistoryIds.size === 0) {
+                showWarningToast('请先选择要删除的记录');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${selectedHistoryIds.size} 条回测记录吗？`)) {
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const backtestId of selectedHistoryIds) {
+                try {
+                    const response = await fetchWithTimeout(getApiBaseUrl(`/backtest/${backtestId}`), {
+                        method: 'DELETE'
+                    }, API_TIMEOUT_MS);
+                    
+                    if (response.ok) {
+                        successCount++;
+                        backtestHistoryData = backtestHistoryData.filter(item => item.backtest_id !== backtestId);
+                    } else {
+                        failCount++;
+                    }
+                } catch (error) {
+                    console.error(`删除回测记录 ${backtestId} 失败:`, error);
+                    failCount++;
+                }
+            }
+            
+            selectedHistoryIds.clear();
+            updateHistoryStats();
+            filterHistory(currentHistoryFilter);
+
+            // 刷新交易记录明细（删除后重新加载剩余记录的交易）
+            if (backtestHistoryData.length > 0) {
+                updateTradesDisplay(backtestHistoryData);
+            } else {
+                // 如果没有剩余记录，清空交易记录
+                currentTrades = [];
+                updateTradesDisplay([]);
+            }
+
+            if (failCount === 0) {
+                showSuccessToast(`成功删除 ${successCount} 条回测记录`);
+            } else {
+                showWarningToast(`删除完成: 成功 ${successCount} 条, 失败 ${failCount} 条`);
+            }
+        }
+
+        // 清空所有历史记录
+        async function clearAllBacktestHistory() {
+            if (backtestHistoryData.length === 0) {
+                showInfoToast('没有可清空的历史记录');
+                return;
+            }
+            
+            if (!confirm(`确定要清空所有 ${backtestHistoryData.length} 条回测记录吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const item of backtestHistoryData) {
+                if (item.backtest_id) {
+                    try {
+                        const response = await fetchWithTimeout(getApiBaseUrl(`/backtest/${item.backtest_id}`), {
+                            method: 'DELETE'
+                        }, API_TIMEOUT_MS);
+                        
+                        if (response.ok) {
+                            successCount++;
+                        } else {
+                            failCount++;
+                        }
+                    } catch (error) {
+                        console.error(`删除回测记录 ${item.backtest_id} 失败:`, error);
+                        failCount++;
+                    }
+                }
+            }
+            
+            backtestHistoryData = [];
+            filteredHistoryData = [];
+            selectedHistoryIds.clear();
+            updateHistoryStats();
+            renderHistoryTable();
+
+            // 清空交易记录明细仪表盘
+            currentTrades = [];
+            updateTradesDisplay([]);
+
+            if (failCount === 0) {
+                showSuccessToast(`成功清空 ${successCount} 条回测记录`);
+            } else {
+                showWarningToast(`清空完成: 成功 ${successCount} 条, 失败 ${failCount} 条`);
+            }
+        }
+        
+        // 导出选中的历史记录
+        function exportSelectedHistory() {
+            if (selectedHistoryIds.size === 0) {
+                showWarningToast('请先选择要导出的记录');
+                return;
+            }
+            
+            const selectedData = backtestHistoryData.filter(item => selectedHistoryIds.has(item.backtest_id));
+            
+            // 构建CSV内容
+            const headers = ['回测ID', '策略ID', '开始日期', '结束日期', '初始资金', '最终资金', '总收益', '年化收益', '夏普比率', '最大回撤', '胜率', '交易次数', '执行时间'];
+            const rows = selectedData.map(item => {
+                const createdAt = item.created_at || item.saved_at || '-';
+                return [
+                    item.backtest_id || '-',
+                    item.strategy_id || '-',
+                    item.start_date || '-',
+                    item.end_date || '-',
+                    item.initial_capital || 0,
+                    item.final_capital || 0,
+                    ((item.total_return || 0) * 100).toFixed(2) + '%',
+                    ((item.annualized_return || 0) * 100).toFixed(2) + '%',
+                    (item.sharpe_ratio || 0).toFixed(2),
+                    ((item.max_drawdown || 0) * 100).toFixed(2) + '%',
+                    ((item.win_rate || 0) * 100).toFixed(2) + '%',
+                    item.total_trades || 0,
+                    createdAt !== '-' ? new Date(createdAt).toLocaleString('zh-CN') : '-'
+                ];
+            });
+            
+            const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+            
+            // 创建下载链接
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `回测历史记录_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showSuccessToast(`已导出 ${selectedData.length} 条回测记录`);
+        }
+
+        // ==================== 交易记录功能 ====================
+        
+        // 交易数据存储
+        let currentTrades = [];
+        let filteredTrades = [];
+        let currentTradePage = 1;
+        const TRADES_PER_PAGE = 20;
+        let currentTradeFilter = 'all';
+
+        // 更新交易记录展示
+        function updateTradesDisplay(results) {
+            console.log('更新交易记录显示:', results);
+            
+            // 验证输入数据
+            if (!results || !Array.isArray(results)) {
+                console.warn('updateTradesDisplay: 无效的输入数据', results);
+                results = [];
+            }
+            
+            // 合并所有回测结果的交易记录
+            let allTrades = [];
+            let totalTradeCount = 0;
+            
+            results.forEach((result, resultIndex) => {
+                // 验证result对象
+                if (!result || typeof result !== 'object') {
+                    console.warn(`结果${resultIndex}无效:`, result);
+                    return;
+                }
+                
+                // 获取交易记录，支持多种字段名
+                let trades = result.trades || result.trade_records || result.transactions || [];
+                
+                // 确保trades是数组
+                if (!Array.isArray(trades)) {
+                    console.warn(`结果${resultIndex}的交易记录不是数组:`, trades);
+                    trades = [];
+                }
+                
+                console.log(`结果${resultIndex}: 找到${trades.length}条交易记录`);
+                totalTradeCount += trades.length;
+                
+                const strategy = allStrategies.find(s => s.id === result.strategy_id);
+                const strategyName = strategy ? strategy.name : `策略${resultIndex + 1}`;
+                
+                trades.forEach((trade, tradeIndex) => {
+                    // 验证trade对象
+                    if (!trade || typeof trade !== 'object') {
+                        console.warn(`无效的交易记录:`, trade);
+                        return;
+                    }
+                    
+                    allTrades.push({
+                        ...trade,
+                        strategy_name: strategyName,
+                        result_index: resultIndex,
+                        trade_index: tradeIndex + 1
+                    });
+                });
+            });
+            
+            console.log(`总共合并了${allTrades.length}条交易记录（来自${results.length}个回测结果）`);
+
+            // 按时间排序（最早的在前面，用于计算资金变化）
+            // 对于同一时间戳的交易，优先处理卖出（增加资金），再处理买入（减少资金）
+            allTrades.sort((a, b) => {
+                const timeA = new Date(a.timestamp || a.date || a.time || 0);
+                const timeB = new Date(b.timestamp || b.date || b.time || 0);
+
+                // 如果时间不同，按时间排序
+                if (timeA.getTime() !== timeB.getTime()) {
+                    return timeA - timeB;
+                }
+
+                // 如果时间相同，按交易类型排序：卖出优先，然后买入
+                const typeA = a.type || a.side || '';
+                const typeB = b.type || b.side || '';
+                const isSellA = typeA === 'sell' || typeA === 'sell_forced';
+                const isSellB = typeB === 'sell' || typeB === 'sell_forced';
+
+                if (isSellA && !isSellB) return -1; // A是卖出，B不是，A排前面
+                if (!isSellA && isSellB) return 1;  // A不是卖出，B是，B排前面
+                return 0; // 相同类型，保持原顺序
+            });
+            
+            // 计算账户可用资金
+            let availableCapital = 0;
+            let initialCapital = 0;
+            
+            // 获取初始资金（从第一个回测结果）
+            if (results.length > 0 && results[0]) {
+                initialCapital = results[0].initial_capital || 100000;
+                availableCapital = initialCapital;
+            }
+            
+            console.log(`初始资金: ¥${initialCapital.toFixed(2)}, 开始计算账户可用资金...`);
+            
+            // 遍历交易记录，计算每笔交易后的账户可用资金
+            allTrades.forEach((trade, index) => {
+                const tradeType = trade.type || trade.side || '';
+                const price = trade.price || 0;
+                const quantity = trade.quantity || trade.amount || 0;
+                const cost = trade.cost || trade.fee || 0;
+                const pnl = trade.pnl || trade.profit || 0;
+                
+                // 判断cost字段是手续费还是买入总金额
+                // 如果cost接近价格×数量，说明是买入总金额，不是手续费
+                const tradeAmount = price * quantity;
+                const isCostTotalAmount = Math.abs(cost - tradeAmount) < tradeAmount * 0.1; // 误差10%以内认为是总金额
+                
+                if (tradeType === 'buy' || tradeType === 'buy_forced') {
+                    // 买入：扣除买入金额
+                    // 注意：后端存储的cost字段可能是买入总金额，不是手续费
+                    if (isCostTotalAmount && cost > 0) {
+                        // cost是买入总金额，直接使用
+                        availableCapital -= cost;
+                    } else {
+                        // cost是手续费，需要加上买入金额
+                        availableCapital -= tradeAmount;
+                    }
+                } else if (tradeType === 'sell' || tradeType === 'sell_forced') {
+                    // 卖出：增加卖出金额
+                    // 卖出时的cost字段通常是手续费或为空
+                    const fee = (cost < tradeAmount * 0.5) ? cost : 0; // 如果cost小于交易金额的一半，认为是手续费
+                    availableCapital += (tradeAmount - fee);
+                }
+                
+                // 记录账户可用资金
+                trade.available_capital = availableCapital;
+                trade.cumulative_pnl = availableCapital - initialCapital;
+                
+                console.log(`交易${index + 1} (${tradeType}): 价格¥${price}, 数量${quantity}, 金额¥${tradeAmount.toFixed(2)}, cost字段¥${cost}, 盈亏¥${pnl}, 账户可用资金: ¥${availableCapital.toFixed(2)}`);
+            });
+            
+            // 验证最终资金是否匹配
+            if (results.length > 0 && results[0]) {
+                const finalCapital = results[0].final_capital || 0;
+                const expectedFinal = availableCapital;
+                const difference = Math.abs(finalCapital - expectedFinal);
+                
+                if (difference > 0.01) {
+                    console.warn(`资金验证警告: 计算的最终资金(¥${expectedFinal.toFixed(2)})与记录的最终资金(¥${finalCapital.toFixed(2)})不匹配，差异: ¥${difference.toFixed(2)}`);
+                } else {
+                    console.log(`资金验证通过: 最终资金 ¥${expectedFinal.toFixed(2)} 与记录一致`);
+                }
+            }
+            
+            // 按时间排序（最新的在前，用于显示）
+            allTrades.sort((a, b) => {
+                const timeA = new Date(a.timestamp || a.date || a.time || 0);
+                const timeB = new Date(b.timestamp || b.date || b.time || 0);
+                return timeB - timeA;
+            });
+            
+            currentTrades = allTrades;
+            filteredTrades = [...allTrades];
+            currentTradePage = 1;
+            
+            // 更新交易统计
+            updateTradeStats(allTrades);
+            
+            // 渲染交易表格
+            renderTradesTable();
+        }
+
+        // 更新交易统计
+        function updateTradeStats(trades) {
+            const totalCount = trades.length;
+            const profitTrades = trades.filter(t => (t.pnl || t.profit || 0) > 0);
+            const lossTrades = trades.filter(t => (t.pnl || t.profit || 0) < 0);
+            const profitCount = profitTrades.length;
+            const lossCount = lossTrades.length;
+            const winRate = totalCount > 0 ? (profitCount / totalCount * 100).toFixed(1) : 0;
+            
+            // 计算平均盈利和亏损
+            const totalProfit = profitTrades.reduce((sum, t) => sum + (t.pnl || t.profit || 0), 0);
+            const totalLoss = Math.abs(lossTrades.reduce((sum, t) => sum + (t.pnl || t.profit || 0), 0));
+            const avgProfit = profitCount > 0 ? totalProfit / profitCount : 0;
+            const avgLoss = lossCount > 0 ? totalLoss / lossCount : 0;
+            const profitLossRatio = avgLoss > 0 ? (avgProfit / avgLoss).toFixed(2) : avgProfit > 0 ? '∞' : '0.00';
+            
+            // 更新统计卡片
+            document.getElementById('trade-total-count').textContent = totalCount;
+            document.getElementById('trade-profit-count').textContent = profitCount;
+            document.getElementById('trade-loss-count').textContent = lossCount;
+            document.getElementById('trade-win-rate').textContent = winRate + '%';
+            
+            // 更新汇总信息
+            document.getElementById('trade-avg-profit').textContent = '¥' + avgProfit.toFixed(2);
+            document.getElementById('trade-avg-loss').textContent = '¥' + avgLoss.toFixed(2);
+            document.getElementById('trade-profit-loss-ratio').textContent = profitLossRatio;
+        }
+
+        // 渲染交易表格
+        function renderTradesTable() {
+            const tbody = document.getElementById('trades-table-body');
+            const start = (currentTradePage - 1) * TRADES_PER_PAGE;
+            const end = Math.min(start + TRADES_PER_PAGE, filteredTrades.length);
+            const pageTrades = filteredTrades.slice(start, end);
+            
+            if (pageTrades.length === 0) {
+                const isFiltered = currentTradeFilter !== 'all';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="12" class="px-4 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-3xl mb-3 text-gray-300"></i>
+                            <p class="text-lg font-medium text-gray-600">${isFiltered ? '没有符合条件的交易记录' : '暂无交易记录'}</p>
+                            <p class="text-sm mt-2 text-gray-400">${isFiltered ? '请尝试切换筛选条件' : '运行回测后将在此显示交易明细'}</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = pageTrades.map((trade, index) => {
+                    const pnl = trade.pnl || trade.profit || 0;
+                    const pnlPercent = trade.pnl_percent || trade.profit_percent || 0;
+                    const isProfit = pnl > 0;
+                    const isLoss = pnl < 0;
+                    const statusClass = isProfit ? 'bg-green-100 text-green-800' : isLoss ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800';
+                    const statusText = isProfit ? '盈利' : isLoss ? '亏损' : '持平';
+                    const pnlClass = isProfit ? 'text-green-600' : isLoss ? 'text-red-600' : 'text-gray-600';
+                    
+                    const timestamp = trade.timestamp || trade.date || trade.time || '-';
+                    const dateStr = timestamp !== '-' ? new Date(timestamp).toLocaleString('zh-CN') : '-';
+                    
+                    // 获取股票代码和名称
+                    const stockCode = trade.stock_code || trade.symbol || trade.code || '-';
+                    const stockName = trade.stock_name || trade.name || trade.stockName || '-';
+                    
+                    // 获取账户可用资金和累计盈亏
+                    const availableCapital = trade.available_capital || 0;
+                    const cumulativePnl = trade.cumulative_pnl || 0;
+                    const capitalClass = availableCapital < 0 ? 'text-red-600 bg-red-50' : (cumulativePnl >= 0 ? 'text-green-600' : 'text-red-600');
+
+                    // 资金不足警告
+                    const capitalWarning = availableCapital < 0 ? ' <span class="text-xs text-red-500 font-bold">(资金不足)</span>' : '';
+
+                    return `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">${start + index + 1}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">${dateStr}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-800">${stockCode}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">${stockName}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                <span class="px-2 py-1 text-xs rounded-full ${trade.type === 'buy' || trade.side === 'buy' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}">
+                                    ${trade.type === 'buy' || trade.side === 'buy' ? '买入' : '卖出'}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-900">${(trade.price || 0).toFixed(2)}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-900">${trade.quantity || trade.amount || 0}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-600">${(trade.cost || trade.fee || 0).toFixed(2)}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-right font-semibold ${pnlClass}">¥${pnl.toFixed(2)}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-right ${pnlClass}">${pnlPercent.toFixed(2)}%</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-right font-semibold ${capitalClass}">¥${availableCapital.toFixed(2)}${capitalWarning}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center">
+                                <span class="px-2 py-1 text-xs rounded-full ${statusClass}">${statusText}</span>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            // 更新分页信息
+            document.getElementById('trade-show-start').textContent = filteredTrades.length > 0 ? start + 1 : 0;
+            document.getElementById('trade-show-end').textContent = end;
+            document.getElementById('trade-total').textContent = filteredTrades.length;
+            document.getElementById('trade-page-info').textContent = `第 ${currentTradePage} 页`;
+            
+            // 更新分页按钮状态
+            document.getElementById('trade-prev-btn').disabled = currentTradePage <= 1;
+            document.getElementById('trade-next-btn').disabled = end >= filteredTrades.length;
+        }
+
+        // 筛选交易记录
+        function filterTrades(filter) {
+            currentTradeFilter = filter;
+            currentTradePage = 1;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.trade-filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-indigo-100', 'text-indigo-800', 'border-indigo-300');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active', 'bg-indigo-100', 'text-indigo-800', 'border-indigo-300');
+                }
+            });
+            
+            // 筛选数据
+            if (filter === 'all') {
+                filteredTrades = [...currentTrades];
+            } else if (filter === 'profit') {
+                filteredTrades = currentTrades.filter(t => (t.pnl || t.profit || 0) > 0);
+            } else if (filter === 'loss') {
+                filteredTrades = currentTrades.filter(t => (t.pnl || t.profit || 0) < 0);
+            }
+            
+            renderTradesTable();
+        }
+
+        // 切换交易记录页码
+        function changeTradePage(delta) {
+            const maxPage = Math.ceil(filteredTrades.length / TRADES_PER_PAGE);
+            const newPage = currentTradePage + delta;
+            
+            if (newPage >= 1 && newPage <= maxPage) {
+                currentTradePage = newPage;
+                renderTradesTable();
+            }
+        }
+
+        // 导出交易记录
+        function exportTrades() {
+            if (currentTrades.length === 0) {
+                showWarningToast('没有可导出的交易记录');
+                return;
+            }
+            
+            // 构建CSV内容
+            const headers = ['序号', '策略名称', '交易时间', '类型', '成交价格', '数量', '交易成本', '盈亏金额', '盈亏比例'];
+            const rows = currentTrades.map((trade, index) => {
+                const pnl = trade.pnl || trade.profit || 0;
+                const pnlPercent = trade.pnl_percent || trade.profit_percent || 0;
+                const timestamp = trade.timestamp || trade.date || trade.time || '-';
+                const dateStr = timestamp !== '-' ? new Date(timestamp).toLocaleString('zh-CN') : '-';
+                
+                return [
+                    index + 1,
+                    trade.strategy_name || '-',
+                    dateStr,
+                    trade.type === 'buy' || trade.side === 'buy' ? '买入' : '卖出',
+                    trade.price || 0,
+                    trade.quantity || trade.amount || 0,
+                    trade.cost || trade.fee || 0,
+                    pnl.toFixed(2),
+                    pnlPercent.toFixed(2) + '%'
+                ];
+            });
+            
+            const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+            
+            // 创建下载链接
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `交易记录_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showSuccessToast(`已导出 ${currentTrades.length} 条交易记录`);
+        }
+
+        // 刷新交易记录
+        async function refreshTrades() {
+            showInfoToast('正在刷新交易记录...');
+
+            try {
+                // 重新加载历史回测数据
+                await loadBacktestHistory();
+
+                // 使用历史回测数据更新交易记录显示
+                if (backtestHistoryData && backtestHistoryData.length > 0) {
+                    updateTradesDisplay(backtestHistoryData);
+                } else {
+                    // 如果没有历史数据，清空交易记录显示
+                    updateTradesDisplay([]);
+                }
+
+                showSuccessToast('交易记录已刷新');
+            } catch (error) {
+                console.error('刷新交易记录失败:', error);
+                showErrorToast('刷新交易记录失败: ' + error.message);
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，开始初始化...');
+            
+            // 初始化日期为最近3个月
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 3);
+            
+            document.getElementById('start-date').value = startDate.toISOString().split('T')[0];
+            document.getElementById('end-date').value = endDate.toISOString().split('T')[0];
+            
+            // 等待Chart.js加载完成
+            function waitForChartJS(callback, maxAttempts = 100) {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    if (typeof Chart !== 'undefined') {
+                        clearInterval(checkInterval);
+                        console.log('Chart.js已加载，版本:', Chart.version);
+                        callback(true);
+                    } else if (attempts >= maxAttempts) { // 最多等待10秒
+                        clearInterval(checkInterval);
+                        console.error('Chart.js加载超时，请检查网络连接');
+                        showErrorToast('图表库加载失败，请检查网络连接后刷新页面');
+                        callback(false);
+                    }
+                }, 100);
+            }
+
+            // 加载策略列表（不依赖图表）
+            loadActiveStrategies().then(() => {
+                // 检查URL参数中是否有strategy_id
+                const urlParams = new URLSearchParams(window.location.search);
+                const strategyId = urlParams.get('strategy_id');
+                if (strategyId) {
+                    console.log('从URL获取到策略ID:', strategyId);
+                    // 自动选择该策略
+                    setTimeout(() => {
+                        const checkbox = document.querySelector(`input[value="${strategyId}"]`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            toggleStrategySelection(strategyId);
+                            showSuccessToast(`已自动选择策略: ${strategyId}`);
+                        }
+                    }, 1000); // 等待策略列表加载完成
+                }
+            });
+
+            // 等待Chart.js加载完成后再初始化图表和加载历史数据
+            waitForChartJS((loaded) => {
+                if (loaded) {
+                    initCharts();
+                    // 图表初始化完成后再加载历史回测数据
+                    loadBacktestHistory();
+                } else {
+                    // 图表加载失败，仍然加载历史数据（但不显示图表）
+                    loadBacktestHistory();
+                }
+            });
+
+            // 初始化总费用显示
+            updateTotalFees();
+
+            console.log('初始化完成');
+        });
+    </script>
+</body>
+</html>

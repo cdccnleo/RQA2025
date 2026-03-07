@@ -1,0 +1,335 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-core
+  namespace: trading-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa2025-core
+  template:
+    metadata:
+      labels:
+        app: rqa2025-core
+    spec:
+      containers:
+      - name: rqa2025-core
+        image: rqa2025/rqa2025-core:latest
+        ports:
+        - containerPort: 8080
+          name: ml-service
+        - containerPort: 8081
+          name: trading-service
+        - containerPort: 8082
+          name: monitoring-service
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: POSTGRES_HOST
+          value: "postgres-service"
+        - name: KAFKA_HOST
+          value: "kafka-service"
+        volumeMounts:
+        - name: model-storage
+          mountPath: /app/models
+        - name: data-storage
+          mountPath: /app/data
+        - name: log-storage
+          mountPath: /app/logs
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: model-pvc
+      - name: data-storage
+        persistentVolumeClaim:
+          claimName: data-pvc
+      - name: log-storage
+        persistentVolumeClaim:
+          claimName: log-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-hft-nodes
+  namespace: trading-system
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: rqa2025-hft
+  template:
+    metadata:
+      labels:
+        app: rqa2025-hft
+    spec:
+      nodeSelector:
+        hft: "true"  # 专门的高频交易节点
+      containers:
+      - name: hft-engine
+        image: rqa2025/rqa2025-hft:latest
+        ports:
+        - containerPort: 9001
+          name: hft-port
+        env:
+        - name: NODE_TYPE
+          value: "hft"
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: KAFKA_HOST
+          value: "kafka-service"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+        securityContext:
+          privileged: true  # 需要更高权限进行低延迟操作
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-ml-nodes
+  namespace: trading-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa2025-ml
+  template:
+    metadata:
+      labels:
+        app: rqa2025-ml
+    spec:
+      containers:
+      - name: ml-inference
+        image: rqa2025/rqa2025-ml:latest
+        ports:
+        - containerPort: 8080
+          name: inference-port
+        env:
+        - name: NODE_TYPE
+          value: "ml"
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0,1"  # 使用GPU
+        volumeMounts:
+        - name: model-storage
+          mountPath: /app/models
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "16Gi"
+            cpu: "8000m"
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: model-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-data-collectors
+  namespace: trading-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa2025-data
+  template:
+    metadata:
+      labels:
+        app: rqa2025-data
+    spec:
+      containers:
+      - name: data-collector
+        image: rqa2025/rqa2025-data:latest
+        env:
+        - name: NODE_TYPE
+          value: "data_collector"
+        volumeMounts:
+        - name: data-storage
+          mountPath: /app/data
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+      volumes:
+      - name: data-storage
+        persistentVolumeClaim:
+          claimName: data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-core-service
+  namespace: trading-system
+spec:
+  selector:
+    app: rqa2025-core
+  ports:
+  - name: ml-service
+    port: 8080
+    targetPort: 8080
+  - name: trading-service
+    port: 8081
+    targetPort: 8081
+  - name: monitoring-service
+    port: 8082
+    targetPort: 8082
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: trading-system
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: trading-system
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  namespace: trading-system
+spec:
+  selector:
+    app: kafka
+  ports:
+  - port: 9092
+    targetPort: 9092
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-config
+  namespace: trading-system
+data:
+  config.yaml: |
+    system:
+      name: "RQA2025 Distributed Trading System"
+      version: "2.0.0"
+      environment: "production"
+
+    redis:
+      host: "redis-service"
+      port: 6379
+      db: 0
+
+    postgres:
+      host: "postgres-service"
+      port: 5432
+      database: "rqa2025"
+      username: "rqa2025_user"
+      password: "rqa2025_password"
+
+    kafka:
+      bootstrap_servers: "kafka-service:9092"
+      topics:
+        market_data: "market_data"
+        signals: "trading_signals"
+        orders: "orders"
+        executions: "executions"
+
+    monitoring:
+      prometheus_enabled: true
+      metrics_interval: 10
+      alert_thresholds:
+        cpu_usage: 80
+        memory_usage: 85
+        latency_threshold: 1000
+
+    hft:
+      max_latency_us: 500
+      risk_limits:
+        max_position: 10000
+        max_order_rate: 100
+
+    ml:
+      model_cache_size: 100
+      inference_timeout: 5
+      batch_size: 32
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-pvc
+  namespace: trading-system
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: trading-system
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: log-pvc
+  namespace: trading-system
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard

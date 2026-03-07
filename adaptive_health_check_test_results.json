@@ -1,0 +1,58 @@
+{
+  "adaptive_health_check_test": {
+    "total_checks": 15,
+    "successful_checks": 15,
+    "success_rate": 100.0,
+    "average_interval": 32.7,
+    "final_stability": 1.0,
+    "adaptive_stats": {
+      "total_checks": 15,
+      "adaptive_adjustments": 4,
+      "average_interval": 32.7,
+      "interval_changes": [
+        {
+          "service": "test_service",
+          "timestamp": 1756813856.686386,
+          "from_interval": 30,
+          "to_interval": 45.0,
+          "reason": "连续失败 1 次"
+        },
+        {
+          "service": "test_service",
+          "timestamp": 1756813856.7943983,
+          "from_interval": 45.0,
+          "to_interval": 67.5,
+          "reason": "连续失败 2 次"
+        },
+        {
+          "service": "test_service",
+          "timestamp": 1756813856.9031734,
+          "from_interval": 67.5,
+          "to_interval": 30,
+          "reason": "正常调整"
+        },
+        {
+          "service": "test_service",
+          "timestamp": 1756813857.9952168,
+          "from_interval": 30,
+          "to_interval": 24.0,
+          "reason": "连续成功 11 次，服务稳定"
+        }
+      ],
+      "services_info": {
+        "test_service": {
+          "service_name": "test_service",
+          "current_interval": 24.0,
+          "stability_score": 1.0,
+          "trend_direction": "stable",
+          "consecutive_failures": 0,
+          "success_count": 12,
+          "interval_history_length": 31,
+          "next_check_interval": 24.0
+        }
+      }
+    }
+  },
+  "timestamp": "2025-09-02T19:50:58.215077",
+  "test_description": "自适应健康检查器功能测试"
+}

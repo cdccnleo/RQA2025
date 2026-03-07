@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据源测试</title>
+</head>
+<body>
+    <h1>数据源加载测试</h1>
+    <div id="result"></div>
+
+    <script>
+        async function testLoadDataSources() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '正在加载数据源...';
+
+            try {
+                console.log('开始测试数据源加载...');
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    console.log('请求超时，取消请求');
+                    controller.abort();
+                }, 10000);
+
+                const response = await fetch('http://localhost:8000/api/v1/data/sources', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    signal: controller.signal,
+                    body: JSON.stringify({ action: 'get_all' })
+                });
+
+                clearTimeout(timeoutId);
+
+                console.log('响应状态:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('响应数据:', data);
+                    resultDiv.innerHTML = `✅ 成功加载 ${data.total || 0} 个数据源`;
+                } else {
+                    resultDiv.innerHTML = `❌ HTTP错误: ${response.status}`;
+                }
+
+            } catch (error) {
+                console.error('加载失败:', error);
+                if (error.name === 'AbortError') {
+                    resultDiv.innerHTML = `❌ 请求被取消: ${error.message}`;
+                } else {
+                    resultDiv.innerHTML = `❌ 错误: ${error.message}`;
+                }
+            }
+        }
+
+        // 页面加载完成后开始测试
+        window.addEventListener('load', () => {
+            setTimeout(testLoadDataSources, 1000);
+        });
+    </script>
+</body>
+</html>

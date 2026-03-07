@@ -1,0 +1,55 @@
+# RQA2026 Prometheus 监控配置
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # 融合引擎指标
+  - job_name: 'fusion_engine'
+    static_configs:
+      - targets: ['localhost:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+
+  # 量子引擎指标
+  - job_name: 'quantum_engine'
+    static_configs:
+      - targets: ['localhost:8081']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # AI引擎指标
+  - job_name: 'ai_engine'
+    static_configs:
+      - targets: ['localhost:8082']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # BCI引擎指标
+  - job_name: 'bci_engine'
+    static_configs:
+      - targets: ['localhost:8083']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # 系统指标
+  - job_name: 'node'
+    static_configs:
+      - targets: ['localhost:9100']
+    scrape_interval: 15s
+
+  # Redis指标 (如果安装了redis_exporter)
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['localhost:9121']
+  #   scrape_interval: 30s
+
+  # PostgreSQL指标 (如果安装了postgres_exporter)
+  # - job_name: 'postgresql'
+  #   static_configs:
+  #     - targets: ['localhost:9187']
+  #   scrape_interval: 30s

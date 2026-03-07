@@ -1,0 +1,2045 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="250" time="10.304" timestamp="2025-11-16T13:02:16.722180+08:00" hostname="AIPC"><testcase classname="unit.features.core.test_config_integration_manager" name="test_local_configuration_loads_from_files" time="0.113"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_infrastructure_configuration_priority" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_get_and_set_global_values" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_register_config_watcher_and_notify" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_get_config_returns_none_on_error" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+ERROR    src.features.core.config_integration:config_integration.py:218 获取配置失败: 不支持的配置作用域: ConfigScope.FEATURE
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+ERROR:src.features.core.config_integration:获取配置失败: 不支持的配置作用域: ConfigScope.FEATURE
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_load_configuration_falls_back_to_defaults" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.config_integration:config_integration.py:133 配置加载失败: boom
+INFO     src.features.core.config_integration:config_integration.py:190 使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.config_integration:配置加载失败: boom
+INFO:src.features.core.config_integration:使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_save_to_infrastructure_success" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_save_to_infrastructure_failure" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.config_integration:config_integration.py:366 保存到基础设施层失败: fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.config_integration:保存到基础设施层失败: fail
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_save_to_local_failure" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+ERROR    src.features.core.config_integration:config_integration.py:395 保存到本地文件失败: dump error
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+ERROR:src.features.core.config_integration:保存到本地文件失败: dump error
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_save_to_local_global_writes_all" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_set_config_invalid_key_returns_false" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_set_config_invalid_scope_returns_false" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+ERROR    src.features.core.config_integration:config_integration.py:286 设置配置失败: 不支持的配置作用域: ConfigScope.FEATURE
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+ERROR:src.features.core.config_integration:设置配置失败: 不支持的配置作用域: ConfigScope.FEATURE
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_notify_config_change_handles_exceptions" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+ERROR    src.features.core.config_integration:config_integration.py:425 配置监听器回调失败: callback boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+ERROR:src.features.core.config_integration:配置监听器回调失败: callback boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_get_config_summary_returns_expected_structure" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_load_from_local_missing_dir" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_manager" name="test_save_to_infrastructure_global" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_unit" name="test_set_and_get_processing_config" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_unit" name="test_global_and_monitoring_config" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_unit" name="test_register_and_notify_watchers" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_unit" name="test_save_config_persists_local_files" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_unit" name="test_load_from_local_overrides_defaults" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+
+</system-err></testcase><testcase classname="unit.features.core.test_config_integration_unit" name="test_infrastructure_load_and_save" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_dependency_available_when_version_ok" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_dependency_rejected_when_version_low" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_dependency_missing_sets_error" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_version_satisfies_handles_edge_cases[1.0.0-1.0.0-True]" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_version_satisfies_handles_edge_cases[1.2.0-1.1.0-True]" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_version_satisfies_handles_edge_cases[1.0.0-1.1.0-False]" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_version_satisfies_handles_edge_cases[unknown-1.0.0-False]" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_version_satisfies_handles_edge_cases[invalid-1.0.0-False]" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_safe_import_returns_fallback_when_provided" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.dependency_manager:dependency_manager.py:129 依赖 torch 不可用，使用fallback
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.dependency_manager:依赖 torch 不可用，使用fallback
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_safe_import_returns_mock_when_missing" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.dependency_manager:dependency_manager.py:133 依赖 torch 不可用，使用mock对象
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.dependency_manager:依赖 torch 不可用，使用mock对象
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_dependency_info_returns_copy" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_log_dependency_status_outputs_to_logger" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.dependency_manager:dependency_manager.py:142 === 特征层依赖状态 ===
+WARNING  src.features.core.dependency_manager:dependency_manager.py:148 ❌ torch - 不可用: missing
+INFO     src.features.core.dependency_manager:dependency_manager.py:150 =========================
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.dependency_manager:=== 特征层依赖状态 ===
+WARNING:src.features.core.dependency_manager:❌ torch - 不可用: missing
+INFO:src.features.core.dependency_manager:=========================
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_transformers_pipeline_uses_real_pipeline" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_transformers_pipeline_fallback_when_missing" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_transformers_pipeline_fallback_on_exception" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.dependency_manager:dependency_manager.py:165 创建transformers pipeline失败: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.dependency_manager:创建transformers pipeline失败: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_torch_device_returns_cuda" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_torch_device_returns_none_without_cuda" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_is_gpu_available" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_is_gpu_unavailable_when_no_cuda" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_gpu_count" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_dependency_manager" name="test_get_gpu_count_returns_zero_without_cuda" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_data_validation_error_str_includes_details" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_processing_error_str_with_original_exception" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_exception_factory_creates_concrete_instances" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_exception_handler_enhances_known_errors_and_tracks_history" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_exception_handler_enhances_processing_error_with_context" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_handle_feature_exception_decorator_uses_global_handler" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_exceptions_module" name="test_exception_handler_returns_features_on_assessment_failure" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_register_processor_adds_new_entry" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.factory:factory.py:120 注册处理器类型: custom -&gt; CustomProcessor
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.factory:注册处理器类型: custom -&gt; CustomProcessor
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_create_processor_handles_unknown_type" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_create_processor_branches" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_create_processor_logs_and_raises_on_failure" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.factory:factory.py:120 注册处理器类型: failing -&gt; FailingProcessor
+ERROR    src.features.core.factory:factory.py:182 创建处理器 failing 失败: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.factory:注册处理器类型: failing -&gt; FailingProcessor
+ERROR:src.features.core.factory:创建处理器 failing 失败: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_unified_feature_manager_initializes_and_processes" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.factory:factory.py:243 未找到处理器: missing
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.factory:未找到处理器: missing
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_unified_feature_manager_create_processor_handles_error" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.factory:factory.py:231 创建处理器 any 失败: factory failure
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.factory:创建处理器 any 失败: factory failure
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_create_feature_processor_delegates" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_factory_module" name="test_get_unified_feature_manager_returns_instance" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureConfig" name="test_feature_config_creation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureConfig" name="test_feature_config_defaults" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureConfig" name="test_feature_config_validation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureConfig" name="test_feature_config_validation_failure" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureProcessingConfig" name="test_processing_config_creation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureProcessingConfig" name="test_processing_config_defaults" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestFeatureProcessingConfig" name="test_processing_config_validation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestTechnicalParams" name="test_technical_params_creation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestTechnicalParams" name="test_technical_params_defaults" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestTechnicalParams" name="test_technical_params_validation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestSentimentParams" name="test_sentiment_params_creation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestSentimentParams" name="test_sentiment_params_defaults" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestSentimentParams" name="test_sentiment_params_validation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookConfig" name="test_orderbook_config_creation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookConfig" name="test_orderbook_config_defaults" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookConfig" name="test_orderbook_config_validation" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookConfig" name="test_orderbook_config_to_dict_and_from_dict" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookConfig" name="test_orderbook_config_validate_failure" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestTechnicalIndicatorType" name="test_indicator_type_values" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestTechnicalIndicatorType" name="test_indicator_type_list" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestSentimentType" name="test_sentiment_type_values" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestSentimentType" name="test_sentiment_type_list" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookType" name="test_orderbook_type_values" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestOrderBookType" name="test_orderbook_type_list" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestDefaultConfigs" name="test_default_configs_static_methods" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestDefaultConfigs" name="test_default_configs_values" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestConfigIntegration" name="test_config_serialization" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestConfigIntegration" name="test_config_equality" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config.TestConfigIntegration" name="test_config_copy" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config" name="test_feature_config_to_dict_and_json_roundtrip" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config" name="test_feature_config_validate_errors" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+配置验证失败: 技术指标类型需要指定指标列表
+配置验证失败: SMA周期必须大于0
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config" name="test_feature_config_validate_success_with_all_types" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_config" name="test_feature_processing_config_to_dict_and_from_dict" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_generate_technical_features" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 2 parameters
+INFO     src.features.core.feature_engineer:feature_engineer.py:293 技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 2 parameters
+INFO:src.features.core.feature_engineer:技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_generate_technical_features_requires_processor" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 2 parameters
+ERROR    src.features.core.feature_engineer:feature_engineer.py:297 生成技术指标特征失败: 技术处理器未初始化
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 2 parameters
+ERROR:src.features.core.feature_engineer:生成技术指标特征失败: 技术处理器未初始化
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_generate_sentiment_features" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 3 parameters
+INFO     src.features.core.feature_engineer:feature_engineer.py:335 情感分析特征生成完成，特征列名: ['score', 'label']
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 3 parameters
+INFO:src.features.core.feature_engineer:情感分析特征生成完成，特征列名: ['score', 'label']
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_merge_features_success" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 2 parameters
+INFO     src.features.core.feature_engineer:feature_engineer.py:293 技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+INFO     src.features.processors.feature_metadata:feature_metadata.py:83 Updated feature columns: 9 features
+INFO     src.features.core.feature_engineer:feature_engineer.py:379 特征合并完成，最终特征数: 9
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 2 parameters
+INFO:src.features.core.feature_engineer:技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+INFO:src.features.processors.feature_metadata:Updated feature columns: 9 features
+INFO:src.features.core.feature_engineer:特征合并完成，最终特征数: 9
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_merge_features_index_mismatch" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_engineer:feature_engineer.py:383 特征合并失败: 技术指标特征索引不匹配
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_engineer:特征合并失败: 技术指标特征索引不匹配
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_generate_technical_features_with_invalid_data" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_auto_fix" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.feature_engineer:feature_engineer.py:147 检测到负值价格，已自动修复为绝对值
+WARNING  src.features.core.feature_engineer:feature_engineer.py:157 检测到负值交易量，已自动修复为绝对值
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 2 parameters
+INFO     src.features.core.feature_engineer:feature_engineer.py:293 技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.feature_engineer:检测到负值价格，已自动修复为绝对值
+WARNING:src.features.core.feature_engineer:检测到负值交易量，已自动修复为绝对值
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 2 parameters
+INFO:src.features.core.feature_engineer:技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_save_and_load_metadata" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 2 parameters
+INFO     src.features.core.feature_engineer:feature_engineer.py:293 技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+INFO     src.features.processors.feature_metadata:feature_metadata.py:83 Updated feature columns: 9 features
+INFO     src.features.core.feature_engineer:feature_engineer.py:379 特征合并完成，最终特征数: 9
+INFO     src.features.processors.feature_metadata:feature_metadata.py:118 Saved feature metadata to: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+INFO     src.features.core.feature_engineer:feature_engineer.py:395 特征元数据保存成功: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+INFO     src.features.processors.feature_metadata:feature_metadata.py:138 Loaded feature metadata from: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+INFO     src.features.core.feature_engineer:feature_engineer.py:409 特征元数据加载成功: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 2 parameters
+INFO:src.features.core.feature_engineer:技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+INFO:src.features.processors.feature_metadata:Updated feature columns: 9 features
+INFO:src.features.core.feature_engineer:特征合并完成，最终特征数: 9
+INFO:src.features.processors.feature_metadata:Saved feature metadata to: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+INFO:src.features.core.feature_engineer:特征元数据保存成功: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+INFO:src.features.processors.feature_metadata:Loaded feature metadata from: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+INFO:src.features.core.feature_engineer:特征元数据加载成功: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_metadata0\meta.pkl
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_get_version_stats" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_on_config_change_updates_executor" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_engineer:feature_engineer.py:63 配置变更: processing.max_workers = 2 -&gt; 5
+INFO     src.features.core.feature_engineer:feature_engineer.py:63 配置变更: processing.batch_size = 10 -&gt; 20
+INFO     src.features.core.feature_engineer:feature_engineer.py:63 配置变更: processing.timeout = 30 -&gt; 60
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_engineer:配置变更: processing.max_workers = 2 -&gt; 5
+INFO:src.features.core.feature_engineer:配置变更: processing.batch_size = 10 -&gt; 20
+INFO:src.features.core.feature_engineer:配置变更: processing.timeout = 30 -&gt; 60
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_on_config_change_updates_monitoring_flags" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_engineer:feature_engineer.py:63 配置变更: monitoring.enable_monitoring = False -&gt; True
+INFO     src.features.core.feature_engineer:feature_engineer.py:63 配置变更: monitoring.monitoring_level = standard -&gt; detailed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_engineer:配置变更: monitoring.enable_monitoring = False -&gt; True
+INFO:src.features.core.feature_engineer:配置变更: monitoring.monitoring_level = standard -&gt; detailed
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_load_cache_metadata_handles_invalid_json" time="0.089"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_register_feature_persists_metadata" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_register_feature_io_error_does_not_raise" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_generate_sentiment_features_propagates_error" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 3 parameters
+ERROR    src.features.core.feature_engineer:feature_engineer.py:339 生成情感分析特征失败: sentiment boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 3 parameters
+ERROR:src.features.core.feature_engineer:生成情感分析特征失败: sentiment boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_strict_validation_raises" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_engineer:feature_engineer.py:233 数据验证和修复过程中出现错误: 无法将索引转换为时间戳类型
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_engineer:数据验证和修复过程中出现错误: 无法将索引转换为时间戳类型
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_fallback_handles_internal_error" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_engineer:feature_engineer.py:233 数据验证和修复过程中出现错误: bad index
+WARNING  src.features.core.feature_engineer:feature_engineer.py:239 数据验证失败，但继续处理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_engineer:数据验证和修复过程中出现错误: bad index
+WARNING:src.features.core.feature_engineer:数据验证失败，但继续处理
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_respects_allow_flags" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_metadata:feature_metadata.py:89 Updated feature parameters: 2 parameters
+INFO     src.features.core.feature_engineer:feature_engineer.py:293 技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_metadata:Updated feature parameters: 2 parameters
+INFO:src.features.core.feature_engineer:技术指标特征生成完成，特征列名: ['ma', 'rsi', 'macd', 'bollinger']
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_raises_when_fallback_disabled" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_engineer:feature_engineer.py:233 数据验证和修复过程中出现错误: 检测到负值价格
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_engineer:数据验证和修复过程中出现错误: 检测到负值价格
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_duplicate_index_without_fallback" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_engineer:feature_engineer.py:233 数据验证和修复过程中出现错误: 检测到重复日期
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_engineer:数据验证和修复过程中出现错误: 检测到重复日期
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_validate_stock_data_internal_error_strict_raises" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_engineer:feature_engineer.py:233 数据验证和修复过程中出现错误: 无法将索引转换为时间戳类型
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_engineer:数据验证和修复过程中出现错误: 无法将索引转换为时间戳类型
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_load_cache_metadata_reads_existing" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_engineer_internal" name="test_load_cache_metadata_io_error" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_feature_metadata_roundtrip" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_register_and_update_feature" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:manager.py:157 注册特征: alpha (版本 1.0.0)
+WARNING  __name__:manager.py:144 特征 alpha 版本 1.0.0 已存在
+INFO     __name__:manager.py:147 更新特征 alpha 从版本 1.0.0 到 1.1.0
+INFO     __name__:manager.py:157 注册特征: alpha (版本 1.1.0)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:注册特征: alpha (版本 1.0.0)
+WARNING:__name__:特征 alpha 版本 1.0.0 已存在
+INFO:__name__:更新特征 alpha 从版本 1.0.0 到 1.1.0
+INFO:__name__:注册特征: alpha (版本 1.1.0)
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_list_enable_disable_feature" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:manager.py:157 注册特征: alpha (版本 1.0.0)
+INFO     __name__:manager.py:157 注册特征: beta (版本 1.0.0)
+INFO     __name__:manager.py:259 禁用特征: alpha
+INFO     __name__:manager.py:238 启用特征: beta
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:注册特征: alpha (版本 1.0.0)
+INFO:__name__:注册特征: beta (版本 1.0.0)
+INFO:__name__:禁用特征: alpha
+INFO:__name__:启用特征: beta
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_unregister_feature_handles_missing" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  __name__:manager.py:181 特征 ghost 不存在
+INFO     __name__:manager.py:157 注册特征: alpha (版本 1.0.0)
+INFO     __name__:manager.py:178 注销特征: alpha
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:__name__:特征 ghost 不存在
+INFO:__name__:注册特征: alpha (版本 1.0.0)
+INFO:__name__:注销特征: alpha
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_cache_roundtrip_and_stats" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_clear_cache_specific_and_all" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:manager.py:370 清理了 1 个缓存文件
+INFO     __name__:manager.py:370 清理了 1 个缓存文件
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:清理了 1 个缓存文件
+INFO:__name__:清理了 1 个缓存文件
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_dependencies_and_validation" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:manager.py:157 注册特征: parent (版本 1.0.0)
+WARNING  __name__:manager.py:425 特征 parent 的依赖 child 不存在
+INFO     __name__:manager.py:157 注册特征: child (版本 1.0.0)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:注册特征: parent (版本 1.0.0)
+WARNING:__name__:特征 parent 的依赖 child 不存在
+INFO:__name__:注册特征: child (版本 1.0.0)
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_layer_manager" name="test_export_and_import_registry" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:manager.py:157 注册特征: alpha (版本 1.0.0)
+INFO     __name__:manager.py:157 注册特征: beta (版本 1.0.0)
+INFO     __name__:manager.py:449 导出特征注册表到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_export_and_import_registr0\registry.json
+INFO     __name__:manager.py:483 导入了 2 个特征
+WARNING  __name__:manager.py:476 跳过已存在的特征: alpha
+WARNING  __name__:manager.py:476 跳过已存在的特征: beta
+INFO     __name__:manager.py:483 导入了 0 个特征
+INFO     __name__:manager.py:483 导入了 2 个特征
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:注册特征: alpha (版本 1.0.0)
+INFO:__name__:注册特征: beta (版本 1.0.0)
+INFO:__name__:导出特征注册表到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_export_and_import_registr0\registry.json
+INFO:__name__:导入了 2 个特征
+WARNING:__name__:跳过已存在的特征: alpha
+WARNING:__name__:跳过已存在的特征: beta
+INFO:__name__:导入了 0 个特征
+INFO:__name__:导入了 2 个特征
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_processing_config_applied" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_single_dataframe_merges_features" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:142 特征选择暂未实现，保留所有2个特征
+INFO     src.features.core.feature_manager:feature_manager.py:154 特征标准化暂未实现，保留原始特征
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO:src.features.core.feature_manager:特征选择暂未实现，保留所有2个特征
+INFO:src.features.core.feature_manager:特征标准化暂未实现，保留原始特征
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 2
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_multiple_dataframes_prefixes_columns" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'dict'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:208 处理数据集: alpha
+INFO     src.features.core.feature_manager:feature_manager.py:208 处理数据集: beta
+INFO     src.features.core.feature_manager:feature_manager.py:142 特征选择暂未实现，保留所有4个特征
+INFO     src.features.core.feature_manager:feature_manager.py:154 特征标准化暂未实现，保留原始特征
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 4
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'dict'&gt;
+INFO:src.features.core.feature_manager:处理数据集: alpha
+INFO:src.features.core.feature_manager:处理数据集: beta
+INFO:src.features.core.feature_manager:特征选择暂未实现，保留所有4个特征
+INFO:src.features.core.feature_manager:特征标准化暂未实现，保留原始特征
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 4
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_features_invalid_type_raises" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'list'&gt;
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'list'&gt;
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_config_watcher_updates_runtime_settings" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.max_workers = None -&gt; 42
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.max_workers = None -&gt; 42
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_get_feature_info_and_validation" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:142 特征选择暂未实现，保留所有2个特征
+INFO     src.features.core.feature_manager:feature_manager.py:154 特征标准化暂未实现，保留原始特征
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO:src.features.core.feature_manager:特征选择暂未实现，保留所有2个特征
+INFO:src.features.core.feature_manager:特征标准化暂未实现，保留原始特征
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 2
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_cleanup_cache_resets_when_expired" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:319 特征缓存已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征缓存已清理
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_run_pipeline_returns_metadata" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:362 开始运行特征处理流程，数据源: source-id
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始运行特征处理流程，数据源: source-id
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_save_and_load_features_delegate" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:252 特征已保存到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_features_de0\features.bin
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征已保存到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_features_de0\features.bin
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_features_single_dataframe" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.config_integration:config_integration.py:164 配置目录不存在，使用默认配置
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:142 特征选择暂未实现，保留所有6个特征
+INFO     src.features.core.feature_manager:feature_manager.py:154 特征标准化暂未实现，保留原始特征
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 6
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.config_integration:配置目录不存在，使用默认配置
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO:src.features.core.feature_manager:特征选择暂未实现，保留所有6个特征
+INFO:src.features.core.feature_manager:特征标准化暂未实现，保留原始特征
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 6
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_features_multiple_frames" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'dict'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:208 处理数据集: alpha
+INFO     src.features.core.feature_manager:feature_manager.py:208 处理数据集: beta
+INFO     src.features.core.feature_manager:feature_manager.py:142 特征选择暂未实现，保留所有2个特征
+INFO     src.features.core.feature_manager:feature_manager.py:154 特征标准化暂未实现，保留原始特征
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'dict'&gt;
+INFO:src.features.core.feature_manager:处理数据集: alpha
+INFO:src.features.core.feature_manager:处理数据集: beta
+INFO:src.features.core.feature_manager:特征选择暂未实现，保留所有2个特征
+INFO:src.features.core.feature_manager:特征标准化暂未实现，保留原始特征
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 2
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_features_unsupported_type" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'int'&gt;
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'int'&gt;
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_cleanup_cache" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:319 特征缓存已清理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征缓存已清理
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_get_status_contains_expected_keys" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_validate_features_reports_flags" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_update_config_replaces_existing" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:329 特征管理器配置已更新
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置已更新
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_save_and_load_features" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:252 特征已保存到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_features0\out.parquet
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征已保存到: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_save_and_load_features0\out.parquet
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_features_with_sentiment" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:142 特征选择暂未实现，保留所有2个特征
+INFO     src.features.core.feature_manager:feature_manager.py:154 特征标准化暂未实现，保留原始特征
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'pandas.core.frame.DataFrame'&gt;
+INFO:src.features.core.feature_manager:特征选择暂未实现，保留所有2个特征
+INFO:src.features.core.feature_manager:特征标准化暂未实现，保留原始特征
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 2
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_streaming_returns_empty" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:232 开始流式特征处理
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始流式特征处理
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_run_pipeline_handles_exception" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:362 开始运行特征处理流程，数据源: mock_source
+ERROR    src.features.core.feature_manager:feature_manager.py:388 特征处理流程失败: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始运行特征处理流程，数据源: mock_source
+ERROR:src.features.core.feature_manager:特征处理流程失败: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_init_applies_processing_config" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_init_processing_config_partial_skips_missing_keys" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[max_workers-5]" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.max_workers = 4 -&gt; 5
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.max_workers = 4 -&gt; 5
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[batch_size-64]" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.batch_size = None -&gt; 64
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.batch_size = None -&gt; 64
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[timeout-999]" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.timeout = None -&gt; 999
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.timeout = None -&gt; 999
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[feature_selection_method-variance]" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.feature_selection_method = mutual_info -&gt; variance
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.feature_selection_method = mutual_info -&gt; variance
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[max_features-15]" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.max_features = 50 -&gt; 15
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.max_features = 50 -&gt; 15
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[min_feature_importance-0.05]" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.min_feature_importance = None -&gt; 0.05
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.min_feature_importance = None -&gt; 0.05
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[standardization_method-minmax]" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.standardization_method = zscore -&gt; minmax
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.standardization_method = zscore -&gt; minmax
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_on_config_change_updates_attributes[robust_scaling-False]" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:89 特征管理器配置变更: processing.robust_scaling = None -&gt; False
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:特征管理器配置变更: processing.robust_scaling = None -&gt; False
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_multiple_dataframes_all_empty_returns_empty" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:124 开始处理特征，数据类型: &lt;class 'dict'&gt;
+INFO     src.features.core.feature_manager:feature_manager.py:208 处理数据集: alpha
+INFO     src.features.core.feature_manager:feature_manager.py:162 特征处理完成，耗时: 0.00秒，特征数量: 0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始处理特征，数据类型: &lt;class 'dict'&gt;
+INFO:src.features.core.feature_manager:处理数据集: alpha
+INFO:src.features.core.feature_manager:特征处理完成，耗时: 0.00秒，特征数量: 0
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_single_dataframe_logs_unsupported_types" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+WARNING  src.features.core.feature_manager:feature_manager.py:184 Orderbook特征处理暂未实现
+WARNING  src.features.core.feature_manager:feature_manager.py:188 Fundamental特征处理暂未实现
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+WARNING:src.features.core.feature_manager:Orderbook特征处理暂未实现
+WARNING:src.features.core.feature_manager:Fundamental特征处理暂未实现
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_process_single_dataframe_all_custom_returns_empty" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+WARNING  src.features.core.feature_manager:feature_manager.py:191 未支持的特征类型: FeatureType.CUSTOM
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+WARNING:src.features.core.feature_manager:未支持的特征类型: FeatureType.CUSTOM
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_cleanup_cache_without_expiry_keeps_cache" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_manager" name="test_run_pipeline_success" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.processors.feature_processor:feature_processor.py:40 FeatureProcessor initialized with 8 features
+INFO     src.features.core.feature_manager:feature_manager.py:85 特征管理器初始化完成
+INFO     src.features.core.feature_manager:feature_manager.py:362 开始运行特征处理流程，数据源: src
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.processors.feature_processor:FeatureProcessor initialized with 8 features
+INFO:src.features.core.feature_manager:特征管理器初始化完成
+INFO:src.features.core.feature_manager:开始运行特征处理流程，数据源: src
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_saver" name="test_save_and_load_parquet" time="0.083"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_saver" name="test_save_versions_csv" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_saver" name="test_save_pickle_and_metadata" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_saver" name="test_save_features_invalid_format" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_saver:feature_saver.py:57 保存特征失败: Unsupported format: txt
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_saver:保存特征失败: Unsupported format: txt
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_saver" name="test_load_missing_file" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_saver" name="test_get_last_metadata_without_save" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_store_and_load_feature_roundtrip" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO     src.features.core.feature_store:feature_store.py:224 特征 sma_feature 加载成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO:src.features.core.feature_store:特征 sma_feature 加载成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_store_feature_updates_existing_metadata" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO     src.features.core.feature_store:feature_store.py:142 特征 sma_feature 已存在，更新中...
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO:src.features.core.feature_store:特征 sma_feature 已存在，更新中...
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_cleanup_expired_removes_old_entries" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO     src.features.core.feature_store:feature_store.py:242 特征 6dab0541e1de40f05dfe341299f8b3c3 删除成功
+INFO     src.features.core.feature_store:feature_store.py:277 清理了 1 个过期特征
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO:src.features.core.feature_store:特征 6dab0541e1de40f05dfe341299f8b3c3 删除成功
+INFO:src.features.core.feature_store:清理了 1 个过期特征
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_get_store_stats_reports_hit_rate" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO     src.features.core.feature_store:feature_store.py:224 特征 sma_feature 加载成功
+INFO     src.features.core.feature_store:feature_store.py:205 特征 unknown_feature 不存在
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO:src.features.core.feature_store:特征 sma_feature 加载成功
+INFO:src.features.core.feature_store:特征 unknown_feature 不存在
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_on_config_change_updates_paths" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_store_feature_handles_save_failure" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_store_feature_cleans_up_on_metadata_failure" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_load_feature_handles_missing_data" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_store_feature_exception_path" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_store:feature_store.py:178 存储特征 boom_feature 失败: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_store:存储特征 boom_feature 失败: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_get_store_stats_handles_corrupted_metadata" time="0.095"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_load_feature_expired_triggers_deletion" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO     src.features.core.feature_store:feature_store.py:211 特征 sma_feature 已过期，删除中...
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+INFO:src.features.core.feature_store:特征 sma_feature 已过期，删除中...
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_delete_feature_handles_failure" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_store:feature_store.py:246 删除特征 any 失败: delete failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_store:删除特征 any 失败: delete failed
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_on_config_change_updates_simple_fields" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_is_expired_respects_non_positive_ttl" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_calculate_checksum_handles_exception" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_list_features_filters_by_type_and_tags" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 sma_feature 存储成功，ID: 6dab0541e1de40f05dfe341299f8b3c3
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_list_features_handles_exception" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_store:feature_store.py:486 从文件系统列出特征失败: glob failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_store:从文件系统列出特征失败: glob failed
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_update_feature_without_metadata_returns_false" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store" name="test_load_metadata_invalid_json_returns_none" time="0.080"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.feature_store:feature_store.py:395 加载元数据失败: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.feature_store:加载元数据失败: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_store_and_load_feature_roundtrip" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:224 特征 alpha_factor 加载成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 alpha_factor 加载成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_store_feature_updates_existing_metadata" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:142 特征 alpha_factor 已存在，更新中...
+INFO     src.features.core.feature_store:feature_store.py:224 特征 alpha_factor 加载成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 alpha_factor 已存在，更新中...
+INFO:src.features.core.feature_store:特征 alpha_factor 加载成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_load_feature_removes_expired_entries" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:211 特征 alpha_factor 已过期，删除中...
+INFO     src.features.core.feature_store:feature_store.py:242 特征 53e6823a38095b3d4616db0771953097 删除成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 alpha_factor 已过期，删除中...
+INFO:src.features.core.feature_store:特征 53e6823a38095b3d4616db0771953097 删除成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_get_store_stats_reports_usage" time="0.038"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:173 特征 beta_factor 存储成功，ID: 11ae64464e458e4894b92a1d7818dbd5
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 beta_factor 存储成功，ID: 11ae64464e458e4894b92a1d7818dbd5
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_config_change_updates_base_path" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_feature_store_applies_processing_config_values" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_store_feature_returns_false_when_data_save_fails" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_store_feature_rolls_back_on_metadata_failure" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_cleanup_expired_removes_multiple_features" time="0.063"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:173 特征 gamma_factor 存储成功，ID: 4ae9056f46d8634d36e0f575f76433d5
+INFO     src.features.core.feature_store:feature_store.py:242 特征 4ae9056f46d8634d36e0f575f76433d5 删除成功
+INFO     src.features.core.feature_store:feature_store.py:242 特征 53e6823a38095b3d4616db0771953097 删除成功
+INFO     src.features.core.feature_store:feature_store.py:277 清理了 2 个过期特征
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 gamma_factor 存储成功，ID: 4ae9056f46d8634d36e0f575f76433d5
+INFO:src.features.core.feature_store:特征 4ae9056f46d8634d36e0f575f76433d5 删除成功
+INFO:src.features.core.feature_store:特征 53e6823a38095b3d4616db0771953097 删除成功
+INFO:src.features.core.feature_store:清理了 2 个过期特征
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_list_features_filters_by_type_and_tags" time="0.029"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:173 特征 sentiment_alpha 存储成功，ID: bf887369dd82ec1fd45d43648d951c19
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 sentiment_alpha 存储成功，ID: bf887369dd82ec1fd45d43648d951c19
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_load_feature_handles_metadata_error" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+ERROR    src.features.core.feature_store:feature_store.py:228 加载特征 alpha_factor 失败: metadata error
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+ERROR:src.features.core.feature_store:加载特征 alpha_factor 失败: metadata error
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_load_feature_missing_data_file_returns_none" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_delete_feature_removes_files_and_updates_stats" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:242 特征 53e6823a38095b3d4616db0771953097 删除成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 53e6823a38095b3d4616db0771953097 删除成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_store_with_compression_roundtrip" time="0.035"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO     src.features.core.feature_store:feature_store.py:224 特征 alpha_factor 加载成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 alpha_factor 存储成功，ID: 53e6823a38095b3d4616db0771953097
+INFO:src.features.core.feature_store:特征 alpha_factor 加载成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_functional" name="test_list_features_ignores_invalid_metadata" time="0.096"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_unit" name="test_store_and_load_roundtrip" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 trend_feature 存储成功，ID: d9324c3e9f07d3b7fd4a4e47a4b296d8
+INFO     src.features.core.feature_store:feature_store.py:224 特征 trend_feature 加载成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 trend_feature 存储成功，ID: d9324c3e9f07d3b7fd4a4e47a4b296d8
+INFO:src.features.core.feature_store:特征 trend_feature 加载成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_unit" name="test_store_feature_updates_existing_metadata" time="0.034"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 trend_feature 存储成功，ID: 19872c070d94be7f83eb54dfe304b8d5
+INFO     src.features.core.feature_store:feature_store.py:142 特征 trend_feature 已存在，更新中...
+INFO     src.features.core.feature_store:feature_store.py:224 特征 trend_feature 加载成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 trend_feature 存储成功，ID: 19872c070d94be7f83eb54dfe304b8d5
+INFO:src.features.core.feature_store:特征 trend_feature 已存在，更新中...
+INFO:src.features.core.feature_store:特征 trend_feature 加载成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_unit" name="test_cleanup_expired_removes_old_entries" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 expiring_feature 存储成功，ID: d67cc34af24078bd24f0cbde79fb7cb8
+INFO     src.features.core.feature_store:feature_store.py:242 特征 d67cc34af24078bd24f0cbde79fb7cb8 删除成功
+INFO     src.features.core.feature_store:feature_store.py:277 清理了 1 个过期特征
+INFO     src.features.core.feature_store:feature_store.py:205 特征 expiring_feature 不存在
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 expiring_feature 存储成功，ID: d67cc34af24078bd24f0cbde79fb7cb8
+INFO:src.features.core.feature_store:特征 d67cc34af24078bd24f0cbde79fb7cb8 删除成功
+INFO:src.features.core.feature_store:清理了 1 个过期特征
+INFO:src.features.core.feature_store:特征 expiring_feature 不存在
+
+</system-err></testcase><testcase classname="unit.features.core.test_feature_store_unit" name="test_get_store_stats_reports_usage" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.feature_store:feature_store.py:173 特征 stats_feature 存储成功，ID: e9cc53603577a6016bfb55fcc1fbd435
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.feature_store:特征 stats_feature 存储成功，ID: e9cc53603577a6016bfb55fcc1fbd435
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_optimized_returns_cached" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:116 从缓存加载特征成功
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:从缓存加载特征成功
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_parallel_and_quality" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:441 质量评估完成，从1个新特征中保留1个
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:质量评估完成，从1个新特征中保留1个
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_serial_when_parallel_disabled" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_batch_generate_features_handles_failures" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:186 股票AAA特征生成完成
+ERROR    src.features.core.optimized_feature_manager:optimized_feature_manager.py:188 处理股票BBB失败: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:股票AAA特征生成完成
+ERROR:src.features.core.optimized_feature_manager:处理股票BBB失败: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_get_stats_and_cleanup" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_close_releases_resources" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_load_from_cache_invalidates_bad_data" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.optimized_feature_manager:optimized_feature_manager.py:348 缓存数据缺少原始列: {'close'}
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.optimized_feature_manager:缓存数据缺少原始列: {'close'}
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_save_to_cache_handles_store_failure" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.optimized_feature_manager:optimized_feature_manager.py:291 保存到缓存失败: fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.optimized_feature_manager:保存到缓存失败: fail
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_serial_generic" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_assess_and_filter_handles_exception" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.optimized_feature_manager:optimized_feature_manager.py:454 特征质量评估失败: quality fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.optimized_feature_manager:特征质量评估失败: quality fail
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_optimized_handles_failures" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.optimized_feature_manager:optimized_feature_manager.py:150 特征生成失败: parallel failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.optimized_feature_manager:特征生成失败: parallel failed
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_skips_quality_without_target" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:289 特征已保存到缓存: 943f0aff6add758aa1492a7a7cd533d0
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:特征已保存到缓存: 943f0aff6add758aa1492a7a7cd533d0
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_without_quality_component" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:289 特征已保存到缓存: 943f0aff6add758aa1492a7a7cd533d0
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:特征已保存到缓存: 943f0aff6add758aa1492a7a7cd533d0
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_generic_features_missing_columns" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_cache_miss_updates_stats_and_cache" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:441 质量评估完成，从1个新特征中保留1个
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:质量评估完成，从1个新特征中保留1个
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_generate_features_without_caching_or_quality" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_load_from_cache_returns_valid_frame" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:249 从缓存加载特征成功: 943f0aff6add758aa1492a7a7cd533d0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:从缓存加载特征成功: 943f0aff6add758aa1492a7a7cd533d0
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_quality_filter_preserves_original_columns" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:441 质量评估完成，从2个新特征中保留1个
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:289 特征已保存到缓存: 943f0aff6add758aa1492a7a7cd533d0
+INFO     src.features.core.optimized_feature_manager:optimized_feature_manager.py:146 特征生成完成，耗时0.00秒
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.optimized_feature_manager:质量评估完成，从2个新特征中保留1个
+INFO:src.features.core.optimized_feature_manager:特征已保存到缓存: 943f0aff6add758aa1492a7a7cd533d0
+INFO:src.features.core.optimized_feature_manager:特征生成完成，耗时0.00秒
+
+</system-err></testcase><testcase classname="unit.features.core.test_optimized_feature_manager" name="test_reports_and_cache_stats" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_process_features_parallel_combines_chunks" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:175 数据分块完成，共3个块
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:92 数据分块完成，共3个块
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共3个块
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共3个块
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_process_features_parallel_returns_original_on_empty" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:175 数据分块完成，共3个块
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:92 数据分块完成，共3个块
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共3个块
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共3个块
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_split_data_warns_and_defaults" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.parallel_feature_processor:parallel_feature_processor.py:169 分块大小不能为0，使用默认值1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.parallel_feature_processor:分块大小不能为0，使用默认值1
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_process_chunk_routes_to_specialized_calculators" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_batch_process_symbols_handles_failures" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_get_performance_stats_computes_averages" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_close_shuts_executor" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_process_features_parallel_handles_chunk_exception" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:175 数据分块完成，共3个块
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:92 数据分块完成，共3个块
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共3个块
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共3个块
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_process_features_parallel_timeout_triggers_fallback" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:175 数据分块完成，共2个块
+INFO     src.features.core.parallel_feature_processor:parallel_feature_processor.py:92 数据分块完成，共2个块
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共2个块
+INFO:src.features.core.parallel_feature_processor:数据分块完成，共2个块
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_calculate_technical_features_warning_on_missing_columns" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.parallel_feature_processor:parallel_feature_processor.py:236 计算技术指标 SMA 失败: 'close'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.parallel_feature_processor:计算技术指标 SMA 失败: 'close'
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_calculate_generic_features_handles_error" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.core.parallel_feature_processor:parallel_feature_processor.py:294 计算通用特征失败: "['open', 'high', 'low'] not in index"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.core.parallel_feature_processor:计算通用特征失败: "['open', 'high', 'low'] not in index"
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_process_single_symbol_logs_error" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.parallel_feature_processor:parallel_feature_processor.py:374 处理股票AAA特征失败: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.parallel_feature_processor:处理股票AAA特征失败: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_parallel_feature_processor" name="test_batch_process_symbols_timeout_returns_original" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_generate_respects_cooldown" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_generate_without_a_share_rules" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_generate_uses_fpga_when_available" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_generate_handles_fpga_failure" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.signal_generator:signal_generator.py:115 FPGA signal generation failed: fpga unavailable
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.signal_generator:FPGA signal generation failed: fpga unavailable
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_generate_checks_a_share_restrictions" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_batch_generate_handles_exceptions" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.core.signal_generator:signal_generator.py:171 Failed to generate signal for BBB: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.core.signal_generator:Failed to generate signal for BBB: boom
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_china_signal_generator_adjusts_position" time="0.002"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_signal_generator" name="test_china_signal_generator_adjusts_stocks" time="0.001"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_create_and_get_version" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_create_and_get_version0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_718, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_718
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_create_and_get_version0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_718, 特征数量: 2
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_718
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_list_versions_filters" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_list_versions_filters0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_747, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_750, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:399 特征版本删除成功: feature_v20251116_130221_747
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_list_versions_filters0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_747, 特征数量: 2
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_750, 特征数量: 2
+INFO:src.features.core.version_management:特征版本删除成功: feature_v20251116_130221_747
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_compare_versions_detects_changes" time="0.047"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_compare_versions_detects_0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_767, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_767
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_771, 特征数量: 3
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_767
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_771
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_compare_versions_detects_0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_767, 特征数量: 2
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_767
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_771, 特征数量: 3
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_767
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_771
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_rollback_creates_new_version" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_rollback_creates_new_vers0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_816, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_819, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_816
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_816
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_831, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:376 版本回滚成功: feature_v20251116_130221_816 -&gt; feature_v20251116_130221_831
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_rollback_creates_new_vers0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_816, 特征数量: 2
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_819, 特征数量: 2
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_816
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_816
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_831, 特征数量: 2
+INFO:src.features.core.version_management:版本回滚成功: feature_v20251116_130221_816 -&gt; feature_v20251116_130221_831
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_delete_version_marks_status" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_delete_version_marks_stat0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_839, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:399 特征版本删除成功: feature_v20251116_130221_839
+WARNING  src.features.core.version_management:version_management.py:390 特征版本不存在: unknown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_delete_version_marks_stat0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_839, 特征数量: 2
+INFO:src.features.core.version_management:特征版本删除成功: feature_v20251116_130221_839
+WARNING:src.features.core.version_management:特征版本不存在: unknown
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_get_version_lineage_contains_descendants" time="0.036"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_get_version_lineage_conta0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_852, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_852
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_860, 特征数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_get_version_lineage_conta0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_852, 特征数量: 2
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_852
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_860, 特征数量: 2
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_record_changes_tracks_added_removed_modified" time="0.052"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_record_changes_tracks_add0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_899, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:271 加载特征版本: feature_v20251116_130221_899
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_906, 特征数量: 3
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_record_changes_tracks_add0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_899, 特征数量: 2
+INFO:src.features.core.version_management:加载特征版本: feature_v20251116_130221_899
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_906, 特征数量: 3
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_get_version_stats" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_get_version_stats1
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_945, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_948, 特征数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_get_version_stats1
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_945, 特征数量: 2
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_948, 特征数量: 2
+
+</system-err></testcase><testcase classname="unit.features.core.test_version_management" name="test_load_existing_index" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_load_existing_index0
+INFO     src.features.core.version_management:version_management.py:238 特征版本创建成功: feature_v20251116_130221_955, 特征数量: 2
+INFO     src.features.core.version_management:version_management.py:132 加载了 1 个特征版本
+INFO     src.features.core.version_management:version_management.py:91 特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_load_existing_index0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_load_existing_index0
+INFO:src.features.core.version_management:特征版本创建成功: feature_v20251116_130221_955, 特征数量: 2
+INFO:src.features.core.version_management:加载了 1 个特征版本
+INFO:src.features.core.version_management:特征版本管理器初始化完成，存储目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3646\test_load_existing_index0
+
+</system-err></testcase></testsuite></testsuites>

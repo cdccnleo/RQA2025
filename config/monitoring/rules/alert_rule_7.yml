@@ -1,0 +1,12 @@
+groups:
+- name: rqa_alerts
+  rules:
+  - alert: HighDiskUsage
+    annotations:
+      description: '磁盘使用率超过90% (阈值: 90.0)'
+      summary: 磁盘使用率超过90%
+    expr: disk_usage > 90
+    for: 5m
+    labels:
+      service: rqa
+      severity: warning

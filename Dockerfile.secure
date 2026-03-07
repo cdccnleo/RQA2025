@@ -1,0 +1,38 @@
+# 安全的RQA2025 Dockerfile
+FROM python:3.9-slim
+
+# 创建非root用户
+RUN groupadd -r rqa2025 && useradd -r -g rqa2025 rqa2025
+
+# 安装安全更新
+RUN apt-get update && apt-get upgrade -y &&     apt-get install -y --no-install-recommends         curl         ca-certificates         && rm -rf /var/lib/apt/lists/*
+
+# 设置安全环境变量
+ENV PYTHONUNBUFFERED=1     PYTHONDONTWRITEBYTECODE=1     PYTHONHASHSEED=random     PIP_NO_CACHE_DIR=1     PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# 创建应用目录
+WORKDIR /app
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 安装Python依赖
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# 复制应用代码
+COPY --chown=rqa2025:rqa2025 . .
+
+# 创建必要目录并设置权限
+RUN mkdir -p /app/logs /app/data &&     chown -R rqa2025:rqa2025 /app
+
+# 切换到非root用户
+USER rqa2025
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3     CMD curl -f http://localhost:8000/health || exit 1
+
+# 暴露端口
+EXPOSE 8000
+
+# 启动应用
+CMD ["python", "app.py"]

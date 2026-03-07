@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-config
+  namespace: rqa2025-app
+data:
+  APP_ENV: "production"
+  LOG_LEVEL: "INFO"
+  CACHE_TTL: "3600"
+  MAX_CONNECTIONS: "100"
+  TIMEOUT: "30"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: rqa2025-data
+type: Opaque
+data:
+  password: UjFhMjAyNVNlY3VyZVBhc3N3b3Jk
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt-secret
+  namespace: rqa2025-app
+type: Opaque
+data:
+  secret: UjFhMjAyNUpXVFNlY3JldEtleQ==
+
+
+
+

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 数据性能监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="common/websocket_manager.js"></script>
+    <script src="common/ui_components.js"></script>
+    <script src="common/toast.js"></script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .performance-indicator {
+            position: relative;
+        }
+        .performance-indicator.good { color: #10b981; }
+        .performance-indicator.warning { color: #f59e0b; }
+        .performance-indicator.critical { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">数据性能监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-tachometer-alt text-purple-600 mr-3"></i>
+                数据性能监控
+            </h1>
+            <p class="text-gray-600">数据访问性能、处理能力和瓶颈分析</p>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bolt text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均响应时间</dt>
+                        <dd class="text-2xl font-semibold performance-indicator good" id="avg-response-time">-- ms</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-stream text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">数据加载速度</dt>
+                        <dd class="text-2xl font-semibold performance-indicator good" id="load-speed">-- MB/s</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-users text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">并发处理数</dt>
+                        <dd class="text-2xl font-semibold performance-indicator good" id="concurrent-requests">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">错误率</dt>
+                        <dd class="text-2xl font-semibold performance-indicator good" id="error-rate">0%</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">响应时间趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="responseTimeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">吞吐量趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="throughputChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Breakdown -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">性能分解</h3>
+            </div>
+            <div class="p-6">
+                <canvas id="performanceBreakdownChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Performance Alerts -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">性能告警</h3>
+            </div>
+            <div class="p-6">
+                <div id="performanceAlerts" class="space-y-3">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <div>加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Recommendations -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">性能优化建议</h3>
+            </div>
+            <div class="p-6">
+                <div id="performanceRecommendations" class="space-y-3">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <div>加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let responseTimeChart, throughputChart, performanceBreakdownChart;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadPerformanceData() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/performance/metrics'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                updatePerformanceMetrics(data);
+                updatePerformanceCharts(data);
+            } catch (error) {
+                console.error('加载性能数据失败:', error);
+            }
+        }
+
+        async function loadPerformanceAlerts() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/performance/alerts'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                renderPerformanceAlerts(data.alerts || []);
+            } catch (error) {
+                console.error('加载性能告警失败:', error);
+            }
+        }
+
+        async function loadRecommendations() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/performance/recommendations'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                renderRecommendations(data.recommendations || []);
+            } catch (error) {
+                console.error('加载优化建议失败:', error);
+            }
+        }
+
+        function updatePerformanceMetrics(data) {
+            const metrics = data.metrics || {};
+            
+            const avgResponse = metrics.avg_response_time || 0;
+            document.getElementById('avg-response-time').textContent = avgResponse.toFixed(2) + ' ms';
+            document.getElementById('avg-response-time').className = 'text-2xl font-semibold performance-indicator ' + 
+                getPerformanceClass(avgResponse, 50, 100);
+            
+            document.getElementById('load-speed').textContent = 
+                metrics.load_speed ? metrics.load_speed.toFixed(2) + ' MB/s' : '-- MB/s';
+            document.getElementById('concurrent-requests').textContent = metrics.concurrent_requests || 0;
+            document.getElementById('error-rate').textContent = 
+                metrics.error_rate ? (metrics.error_rate * 100).toFixed(2) + '%' : '0%';
+        }
+
+        function getPerformanceClass(value, warningThreshold, criticalThreshold) {
+            if (value <= warningThreshold) return 'good';
+            if (value <= criticalThreshold) return 'warning';
+            return 'critical';
+        }
+
+        function updatePerformanceCharts(data) {
+            const history = data.history || {};
+            const responseTimeHistory = history.response_time || [];
+            const throughputHistory = history.throughput || [];
+            const breakdown = data.breakdown || {};
+
+            // 响应时间趋势
+            if (responseTimeChart && responseTimeHistory.length > 0) {
+                const labels = responseTimeHistory.map((_, i) => {
+                    const date = new Date();
+                    date.setMinutes(date.getMinutes() - (responseTimeHistory.length - i));
+                    return date.toLocaleTimeString();
+                });
+                
+                responseTimeChart.data.labels = labels;
+                responseTimeChart.data.datasets[0].data = responseTimeHistory.map(r => r.value || 0);
+                responseTimeChart.update();
+            }
+
+            // 吞吐量趋势
+            if (throughputChart && throughputHistory.length > 0) {
+                const labels = throughputHistory.map((_, i) => {
+                    const date = new Date();
+                    date.setMinutes(date.getMinutes() - (throughputHistory.length - i));
+                    return date.toLocaleTimeString();
+                });
+                
+                throughputChart.data.labels = labels;
+                throughputChart.data.datasets[0].data = throughputHistory.map(t => t.value || 0);
+                throughputChart.update();
+            }
+
+            // 性能分解
+            if (performanceBreakdownChart && Object.keys(breakdown).length > 0) {
+                performanceBreakdownChart.data.labels = Object.keys(breakdown);
+                performanceBreakdownChart.data.datasets[0].data = Object.values(breakdown);
+                performanceBreakdownChart.update();
+            }
+        }
+
+        function renderPerformanceAlerts(alerts) {
+            const container = document.getElementById('performanceAlerts');
+            
+            if (alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-check-circle text-2xl mb-2 text-green-500"></i>
+                        <div>暂无性能告警</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = alerts.map(alert => {
+                const levelColor = {
+                    'critical': 'bg-red-100 border-red-500',
+                    'error': 'bg-orange-100 border-orange-500',
+                    'warning': 'bg-yellow-100 border-yellow-500',
+                    'info': 'bg-blue-100 border-blue-500'
+                }[alert.level] || 'bg-gray-100 border-gray-500';
+
+                return `
+                    <div class="border-l-4 ${levelColor} p-4 rounded">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-900">${alert.metric_name}</div>
+                                <div class="text-sm text-gray-600 mt-1">${alert.message}</div>
+                                <div class="text-xs text-gray-500 mt-2">
+                                    当前值: ${alert.current_value} | 阈值: ${alert.threshold}
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                ${new Date(alert.timestamp * 1000).toLocaleTimeString()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderRecommendations(recommendations) {
+            const container = document.getElementById('performanceRecommendations');
+            
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-check-circle text-2xl mb-2 text-green-500"></i>
+                        <div>暂无优化建议</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = recommendations.map(rec => `
+                <div class="flex items-start p-4 bg-green-50 rounded-lg">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-3 mt-1"></i>
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900">${rec.title || rec}</div>
+                        ${rec.description ? `<div class="text-sm text-gray-600 mt-1">${rec.description}</div>` : ''}
+                        ${rec.expected_improvement ? `<div class="text-xs text-green-600 mt-1">预期提升: ${rec.expected_improvement}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function refreshData() {
+            loadPerformanceData();
+            loadPerformanceAlerts();
+            loadRecommendations();
+        }
+
+        function initCharts() {
+            const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+            responseTimeChart = new Chart(responseTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '响应时间 (ms)',
+                        data: [],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+            throughputChart = new Chart(throughputCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '吞吐量 (MB/s)',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const breakdownCtx = document.getElementById('performanceBreakdownChart').getContext('2d');
+            performanceBreakdownChart = new Chart(breakdownCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '响应时间 (ms)',
+                        data: [],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // WebSocket连接管理
+        let wsDataPerformance = null;
+
+        function handlePerformanceEvent(message) {
+            if (!message.data) return;
+            const eventType = message.event_type;
+            const data = message.data || {};
+            
+            // 根据事件类型更新相应的UI组件
+            if (eventType && eventType.includes('DATA_PERFORMANCE_UPDATED')) {
+                // 更新性能指标
+                if (data.metrics) {
+                    updatePerformanceMetrics({ metrics: data.metrics });
+                }
+                if (data.history) {
+                    updatePerformanceCharts({ history: data.history, breakdown: data.breakdown });
+                }
+            } else if (eventType && eventType.includes('DATA_PERFORMANCE_ALERT')) {
+                // 更新性能告警
+                if (data.alerts) {
+                    renderPerformanceAlerts(data.alerts);
+                }
+            } else if (eventType && eventType.includes('DATA_COLLECTED')) {
+                // 数据采集完成，刷新性能数据
+                loadPerformanceData();
+            } else {
+                // 默认处理：更新所有数据
+                if (data.metrics) {
+                    updatePerformanceMetrics({ metrics: data.metrics });
+                }
+                if (data.history) {
+                    updatePerformanceCharts({ history: data.history, breakdown: data.breakdown });
+                }
+                if (data.alerts) {
+                    renderPerformanceAlerts(data.alerts);
+                }
+            }
+        }
+
+        function refreshPerformanceData() {
+            loadPerformanceData();
+            loadPerformanceAlerts();
+            loadRecommendations();
+        }
+
+        function connectDataPerformanceWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/data-performance`;
+            
+            try {
+                wsDataPerformance = new WebSocket(wsUrl);
+                
+                wsDataPerformance.onopen = function() {
+                    console.log('数据性能监控WebSocket连接已建立');
+                };
+                
+                wsDataPerformance.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'data_performance') {
+                            // 处理事件驱动的实时更新
+                            handlePerformanceEvent(data);
+                        }
+                    } catch (error) {
+                        console.error('处理WebSocket消息失败:', error);
+                    }
+                };
+                
+                wsDataPerformance.onerror = function(error) {
+                    console.error('WebSocket错误:', error);
+                };
+                
+                wsDataPerformance.onclose = function() {
+                    console.log('数据性能监控WebSocket连接已关闭，5秒后重连...');
+                    setTimeout(connectDataPerformanceWebSocket, 5000);
+                };
+            } catch (error) {
+                console.error('WebSocket连接失败:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadPerformanceData();
+            loadPerformanceAlerts();
+            loadRecommendations();
+            // 优先使用WebSocket实时更新，失败则使用轮询
+            try {
+                if (typeof connectDataPerformanceWebSocket === 'function') {
+                    wsDataPerformance = connectDataPerformanceWebSocket(
+                        (data) => {
+                            handlePerformanceEvent({ data: data });
+                        },
+                        () => {
+                            refreshPerformanceData();
+                        }
+                    );
+                } else {
+                    setInterval(refreshPerformanceData, 10000); // 每10秒刷新
+                }
+            } catch (error) {
+                console.warn('WebSocket连接失败，使用轮询模式:', error);
+                setInterval(refreshPerformanceData, 10000); // 每10秒刷新
+            }
+        });
+    </script>
+</body>
+</html>
+

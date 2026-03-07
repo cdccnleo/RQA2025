@@ -1,0 +1,243 @@
+{
+  "timestamp": "2025-08-06T15:07:27.005710",
+  "current_metrics": {
+    "system_metrics": {
+      "cpu_usage": 5.6,
+      "memory_usage": 13.9,
+      "memory_available": 58416267264,
+      "memory_total": 67880980480,
+      "disk_usage": 85.3,
+      "disk_free": 47372984320,
+      "disk_total": 322128834560,
+      "load_average": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "application_metrics": {
+      "process_count": 278,
+      "python_processes": 1,
+      "memory_usage_mb": 25.078125,
+      "cpu_percent": 0.0,
+      "open_files": 2,
+      "threads": 5
+    },
+    "business_metrics": {
+      "active_connections": 0,
+      "requests_per_second": 0,
+      "response_time_avg": 0,
+      "error_rate": 0,
+      "throughput": 0
+    },
+    "infrastructure_metrics": {
+      "config_files": 746,
+      "log_files": 191,
+      "test_files": 1080,
+      "source_files": 3629,
+      "documentation_files": 834
+    }
+  },
+  "new_metrics": {
+    "performance_metrics": {
+      "response_time_p95": "95%响应时间",
+      "response_time_p99": "99%响应时间",
+      "throughput_rps": "每秒请求数",
+      "error_rate_percent": "错误率百分比",
+      "availability_percent": "可用性百分比",
+      "memory_leak_rate": "内存泄漏率",
+      "gc_frequency": "垃圾回收频率",
+      "thread_pool_utilization": "线程池利用率"
+    },
+    "security_metrics": {
+      "failed_login_attempts": "失败登录尝试次数",
+      "suspicious_activities": "可疑活动次数",
+      "data_access_violations": "数据访问违规次数",
+      "encryption_errors": "加密错误次数",
+      "authentication_failures": "认证失败次数",
+      "authorization_violations": "授权违规次数"
+    },
+    "business_metrics": {
+      "active_users": "活跃用户数",
+      "transaction_volume": "交易量",
+      "profit_loss": "盈亏情况",
+      "risk_exposure": "风险敞口",
+      "compliance_score": "合规评分",
+      "customer_satisfaction": "客户满意度"
+    },
+    "infrastructure_metrics": {
+      "service_health_score": "服务健康评分",
+      "dependency_health": "依赖服务健康状态",
+      "resource_utilization": "资源利用率",
+      "capacity_planning": "容量规划指标",
+      "deployment_frequency": "部署频率",
+      "rollback_rate": "回滚率"
+    }
+  },
+  "alert_rules": {
+    "critical_alerts": {
+      "high_cpu_usage": {
+        "condition": "cpu_usage > 90",
+        "duration": "5m",
+        "severity": "critical",
+        "action": "立即通知运维团队"
+      },
+      "high_memory_usage": {
+        "condition": "memory_usage > 95",
+        "duration": "3m",
+        "severity": "critical",
+        "action": "立即重启服务"
+      },
+      "service_down": {
+        "condition": "service_health_score = 0",
+        "duration": "1m",
+        "severity": "critical",
+        "action": "立即启动故障恢复流程"
+      },
+      "security_breach": {
+        "condition": "suspicious_activities > 10",
+        "duration": "1m",
+        "severity": "critical",
+        "action": "立即隔离系统并通知安全团队"
+      }
+    },
+    "warning_alerts": {
+      "moderate_cpu_usage": {
+        "condition": "cpu_usage > 70",
+        "duration": "10m",
+        "severity": "warning",
+        "action": "监控并准备扩容"
+      },
+      "moderate_memory_usage": {
+        "condition": "memory_usage > 80",
+        "duration": "5m",
+        "severity": "warning",
+        "action": "检查内存泄漏"
+      },
+      "high_error_rate": {
+        "condition": "error_rate > 5",
+        "duration": "5m",
+        "severity": "warning",
+        "action": "检查应用日志"
+      },
+      "low_availability": {
+        "condition": "availability < 99.5",
+        "duration": "15m",
+        "severity": "warning",
+        "action": "检查服务状态"
+      }
+    },
+    "info_alerts": {
+      "deployment_completed": {
+        "condition": "deployment_status = success",
+        "duration": "1m",
+        "severity": "info",
+        "action": "记录部署日志"
+      },
+      "backup_completed": {
+        "condition": "backup_status = success",
+        "duration": "1m",
+        "severity": "info",
+        "action": "记录备份日志"
+      }
+    }
+  },
+  "performance_analysis": {
+    "current_performance": {
+      "cpu_usage": 6.3,
+      "memory_usage": 14.0,
+      "disk_usage": 85.3,
+      "process_count": 278
+    },
+    "performance_trends": {
+      "cpu_trend": "stable",
+      "memory_trend": "stable",
+      "disk_trend": "stable",
+      "response_time_trend": "stable"
+    },
+    "bottlenecks": [],
+    "optimization_opportunities": []
+  },
+  "recommendations": [
+    "实现实时监控仪表板",
+    "添加自定义业务指标",
+    "完善告警通知机制",
+    "建立监控数据存储策略",
+    "实现监控数据可视化",
+    "添加监控数据备份机制",
+    "建立监控数据清理策略",
+    "实现监控数据导出功能",
+    "添加监控数据API接口",
+    "建立监控数据安全策略"
+  ],
+  "generated_files": [],
+  "monitoring_config": {
+    "prometheus_config": {
+      "global": {
+        "scrape_interval": "15s",
+        "evaluation_interval": "15s"
+      },
+      "rule_files": [
+        "rules/infrastructure_alerts.yml"
+      ],
+      "scrape_configs": [
+        {
+          "job_name": "infrastructure",
+          "static_configs": [
+            {
+              "targets": [
+                "localhost:8000"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "grafana_dashboards": {
+      "infrastructure_overview": {
+        "title": "基础设施概览",
+        "panels": [
+          "CPU使用率",
+          "内存使用率",
+          "磁盘使用率",
+          "网络流量",
+          "服务健康状态"
+        ]
+      },
+      "application_performance": {
+        "title": "应用性能",
+        "panels": [
+          "响应时间",
+          "吞吐量",
+          "错误率",
+          "活跃连接数"
+        ]
+      }
+    },
+    "alertmanager_config": {
+      "global": {
+        "smtp_smarthost": "localhost:587",
+        "smtp_from": "alertmanager@example.com"
+      },
+      "route": {
+        "group_by": [
+          "alertname"
+        ],
+        "group_wait": "10s",
+        "group_interval": "10s",
+        "repeat_interval": "1h",
+        "receiver": "web.hook"
+      },
+      "receivers": [
+        {
+          "name": "web.hook",
+          "webhook_configs": [
+            {
+              "url": "http://127.0.0.1:5001/"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

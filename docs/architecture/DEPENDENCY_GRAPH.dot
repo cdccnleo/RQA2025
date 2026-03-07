@@ -1,0 +1,21 @@
+digraph ArchitectureDependencies {
+    rankdir=TB;
+    node [shape=box, style=filled];
+
+    core [label="core\n(11 deps)", fillcolor=lightblue];
+    infrastructure [label="infrastructure\n(9 deps)", fillcolor=lightgreen];
+    data [label="data\n(0 deps)", fillcolor=lightyellow];
+    gateway [label="gateway\n(0 deps)", fillcolor=lightcyan];
+    features [label="features\n(0 deps)", fillcolor=lightpink];
+    ml [label="ml\n(0 deps)", fillcolor=lavender];
+    backtest [label="backtest\n(0 deps)", fillcolor=lightsalmon];
+    risk [label="risk\n(0 deps)", fillcolor=lightcoral];
+    trading [label="trading\n(2 deps)", fillcolor=orange];
+    engine [label="engine\n(2 deps)", fillcolor=lightgray];
+
+    core -> core [color=red, penwidth=2, label="违规"];
+    infrastructure -> core;
+    infrastructure -> infrastructure [color=red, penwidth=2, label="违规"];
+    trading -> infrastructure;
+    engine -> data;
+}

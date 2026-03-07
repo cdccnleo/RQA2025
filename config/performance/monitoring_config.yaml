@@ -1,0 +1,134 @@
+# 监控告警系统配置文件
+
+# 性能监控配置
+performance_monitoring:
+  update_interval: 5  # 性能指标更新间隔(秒)
+  metrics_history_size: 1000  # 历史指标保存数量
+  network_latency_check_url: "http://www.baidu.com"  # 网络延迟检测URL
+  network_latency_timeout: 5  # 网络延迟检测超时时间(秒)
+
+# 告警规则配置
+alert_rules:
+  # CPU使用率告警
+  cpu_usage:
+    name: "CPU使用率过高"
+    alert_type: "system_error"
+    alert_level: "warning"
+    condition: "cpu_usage > threshold"
+    threshold: 80.0
+    enabled: true
+    cooldown: 300  # 冷却时间(秒)
+    
+  # 内存使用率告警
+  memory_usage:
+    name: "内存使用率过高"
+    alert_type: "resource_exhaustion"
+    alert_level: "warning"
+    condition: "memory_usage > threshold"
+    threshold: 85.0
+    enabled: true
+    cooldown: 300
+    
+  # 磁盘使用率告警
+  disk_usage:
+    name: "磁盘使用率过高"
+    alert_type: "resource_exhaustion"
+    alert_level: "warning"
+    condition: "disk_usage > threshold"
+    threshold: 90.0
+    enabled: true
+    cooldown: 300
+    
+  # 网络延迟告警
+  network_latency:
+    name: "网络延迟过高"
+    alert_type: "network_issue"
+    alert_level: "warning"
+    condition: "network_latency > threshold"
+    threshold: 100.0  # 毫秒
+    enabled: true
+    cooldown: 300
+    
+  # 测试执行超时告警
+  test_timeout:
+    name: "测试执行超时"
+    alert_type: "test_timeout"
+    alert_level: "error"
+    condition: "test_execution_time > threshold"
+    threshold: 300.0  # 秒
+    enabled: true
+    cooldown: 60
+    
+  # 测试成功率告警
+  test_success_rate:
+    name: "测试成功率过低"
+    alert_type: "test_failure"
+    alert_level: "critical"
+    condition: "test_success_rate < threshold"
+    threshold: 80.0  # 百分比
+    enabled: true
+    cooldown: 600
+
+# 测试监控配置
+test_monitoring:
+  default_timeout: 300  # 默认测试超时时间(秒)
+  timeout_check_interval: 1  # 超时检查间隔(秒)
+  max_active_tests: 1000  # 最大活跃测试数量
+  history_retention_hours: 24  # 历史记录保留时间(小时)
+
+# 通知配置
+notifications:
+  # 邮件通知
+  email:
+    enabled: true
+    from_email: "monitor@example.com"
+    to_email: "admin@example.com"
+    smtp_server: "localhost"
+    smtp_port: 25
+    use_tls: false
+    username: ""
+    password: ""
+    
+  # Webhook通知
+  webhook:
+    enabled: true
+    webhook_url: "http://localhost:8080/webhook"
+    timeout: 10
+    retry_count: 3
+    retry_delay: 5
+    
+  # 控制台通知
+  console:
+    enabled: true
+    log_level: "warning"  # 只记录warning及以上级别的告警
+    
+  # 文件通知
+  file:
+    enabled: false
+    log_file: "logs/alerts.log"
+    max_file_size: "10MB"
+    backup_count: 5
+
+# 告警检查配置
+alert_checking:
+  check_interval: 10  # 告警检查间隔(秒)
+  error_retry_delay: 30  # 出错时重试延迟(秒)
+  max_concurrent_checks: 5  # 最大并发检查数量
+
+# 性能报告配置
+performance_reporting:
+  default_time_range: 60  # 默认时间范围(分钟)
+  max_time_range: 1440  # 最大时间范围(分钟，24小时)
+  report_format: "json"  # 报告格式: json, yaml, csv
+  auto_generate: true  # 自动生成报告
+  generation_interval: 3600  # 报告生成间隔(秒，1小时)
+
+# 系统配置
+system:
+  log_level: "info"
+  log_file: "logs/monitoring_system.log"
+  max_log_file_size: "50MB"
+  log_backup_count: 10
+  enable_debug_mode: false
+  enable_metrics_export: true
+  metrics_export_port: 8080

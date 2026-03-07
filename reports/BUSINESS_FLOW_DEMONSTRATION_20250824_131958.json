@@ -1,0 +1,111 @@
+{
+  "business_flow_demonstration": {
+    "start_time": "2025-08-24T13:19:58.730606",
+    "end_time": "2025-08-24T13:19:58.734304",
+    "duration_seconds": 0.003698,
+    "total_steps": 8,
+    "success_steps": 2,
+    "partial_steps": 6,
+    "error_steps": 0,
+    "success_rate": 25.0,
+    "flow_score": 72.4992604,
+    "overall_status": "success"
+  },
+  "step_results": {
+    "step_data_collection": {
+      "status": "partial",
+      "message": "数据采集完成 - 获取到 AAPL 价格数据",
+      "data": {
+        "symbol": "AAPL",
+        "price": 150.25,
+        "volume": 1000000,
+        "timestamp": 1756012798.7318842,
+        "source": "market_data"
+      }
+    },
+    "step_feature_processing": {
+      "status": "success",
+      "message": "特征处理完成 - 生成了 5 个技术指标",
+      "data": {
+        "price_momentum": 0.15,
+        "volume_trend": 0.08,
+        "volatility": 0.25,
+        "rsi": 65.5,
+        "macd": 2.1
+      }
+    },
+    "step_model_inference": {
+      "status": "partial",
+      "message": "模型推理完成 - 预测信号: BUY, 置信度: 78.0%",
+      "data": {
+        "signal": "BUY",
+        "confidence": 0.78,
+        "predicted_price": 155.3,
+        "model_used": "ensemble_model"
+      }
+    },
+    "step_strategy_decision": {
+      "status": "partial",
+      "message": "策略决策完成 - 建议 BUY 100 股 股票",
+      "data": {
+        "action": "BUY",
+        "quantity": 100,
+        "price_limit": 152.0,
+        "strategy": "momentum_trading",
+        "risk_level": "medium"
+      }
+    },
+    "step_risk_compliance": {
+      "status": "partial",
+      "message": "风控检查完成 - 风险评分: 15.0%, 状态: 通过",
+      "data": {
+        "approved": true,
+        "risk_score": 0.15,
+        "max_loss_limit": 1000,
+        "position_limit": 10000,
+        "compliance_rules": [
+          "T+1",
+          "涨跌停限制",
+          "资金充足"
+        ]
+      }
+    },
+    "step_trading_execution": {
+      "status": "partial",
+      "message": "交易执行完成 - 订单 ORD_1756012798 已成交，成交价: $151.80",
+      "data": {
+        "order_id": "ORD_1756012798",
+        "status": "FILLED",
+        "executed_price": 151.8,
+        "executed_quantity": 100,
+        "execution_time": 1756012798.7328846,
+        "commission": 5.5
+      }
+    },
+    "step_monitoring_feedback": {
+      "status": "partial",
+      "message": "监控反馈完成 - 系统健康状态: good, CPU使用率: 45.2%",
+      "data": {
+        "system_health": "good",
+        "cpu_usage": 45.2,
+        "memory_usage": 68.5,
+        "latency": 15.3,
+        "error_rate": 0.02,
+        "throughput": 1250
+      }
+    },
+    "step_business_analytics": {
+      "status": "success",
+      "message": "业务分析完成 - 总交易: 1, 盈亏: $180.00, 夏普比率: 2.15",
+      "data": {
+        "total_trades": 1,
+        "successful_trades": 1,
+        "profit_loss": 180.0,
+        "win_rate": 100.0,
+        "sharpe_ratio": 2.15,
+        "max_drawdown": 5.2,
+        "performance_score": 8.5
+      }
+    }
+  }
+}

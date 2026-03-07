@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RQA2025生产部署报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .status { background: #dc3545; color: white; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; font-size: 24px; }
+        .metric { background: #e9ecef; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .stage { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { border-left: 4px solid #28a745; }
+        .failure { border-left: 4px solid #dc3545; }
+        .steps { background: #d4edda; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .rollback { background: #f8d7da; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RQA2025生产部署报告</h1>
+        <p>部署时间: 2025-12-04T12:35:27.191639</p>
+        <p>总耗时: 0.0 分钟</p>
+    </div>
+
+    <div class="status">
+        <strong>部署失败</strong>
+    </div>
+
+    <div class="metric">
+        <h2>部署概览</h2>
+        <p><strong>总阶段数:</strong> 2</p>
+        <p><strong>成功阶段:</strong> 1</p>
+        <p><strong>失败阶段:</strong> 1</p>
+    </div>
+
+    <h2>阶段执行详情</h2>
+
+    <div class="stage success">
+        <h3>✅ pre_deployment_preparation</h3>
+        <p><strong>耗时:</strong> 0.0秒</p>
+        <p><strong>开始时间:</strong> 2025-12-04 12:35:27.113724</p>
+        <p><strong>结束时间:</strong> 2025-12-04 12:35:27.155544</p>
+        <p><strong>输出:</strong> 部署前准备完成</p>
+</div>
+    <div class="stage failure">
+        <h3>❌ environment_verification</h3>
+        <p><strong>耗时:</strong> 0.0秒</p>
+        <p><strong>开始时间:</strong> 2025-12-04 12:35:27.156551</p>
+        <p><strong>结束时间:</strong> 2025-12-04 12:35:27.191639</p>
+        <p><strong>输出:</strong> production环境验证失败</p>
+<h4>错误信息:</h4><ul><li>配置文件缺少必要配置项: database</li></ul></div>
+    <h2>部署总结</h2>
+    <div class="metric">
+        <h3>状态: Failed</h3>
+<h4>建议:</h4><ul><li>立即执行回滚计划</li><li>分析失败原因并修复</li><li>重新进行部署前检查</li><li>考虑分阶段部署策略</li><li>加强部署前测试覆盖</li></ul></div>
+    <h2>后续步骤</h2>
+    <div class="steps">
+<p>❌ 部署失败 - 立即行动</p><p>🔄 执行回滚计划</p><p>🔍 分析失败原因</p><p>🛠️ 修复发现的问题</p><p>📋 制定改进的部署计划</p><p>📅 长期改进</p><p>🏗️ 加强部署前验证</p><p>🔧 改进部署自动化</p><p>👥 增加部署演练</p><p>📊 完善监控覆盖</p></div>
+    <h2>回滚计划</h2>
+    <div class="rollback">
+        <h3>回滚策略</h3>
+        <p>立即完全回滚</p>
+
+        <h3>回滚步骤</h3>
+        <ol>
+<li>停止新版本服务 (sudo systemctl stop rqa2025)</li><li>恢复上一版本代码 (sudo cp -r /opt/rqa2025_backup/* /opt/rqa2025/)</li><li>重启服务 (sudo systemctl start rqa2025)</li><li>验证服务恢复 (curl -f http://localhost:8000/health)</li>
+        </ol>
+
+        <h3>成功标准</h3>
+        <ul>
+<li>服务成功重启</li><li>健康检查通过</li><li>基本功能恢复</li><li>用户访问正常</li>
+        </ul>
+    </div>
+
+</body>
+</html>

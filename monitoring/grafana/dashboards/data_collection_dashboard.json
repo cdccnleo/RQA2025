@@ -1,0 +1,541 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "RQA2025 数据采集监控面板",
+    "tags": ["rqa2025", "data-collection", "monitoring"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "系统概览",
+        "type": "stat",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "targets": [
+          {
+            "expr": "up{job=\"data-collection-service\"}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "text": "DOWN",
+                    "color": "red"
+                  },
+                  "1": {
+                    "text": "UP",
+                    "color": "green"
+                  }
+                },
+                "type": "value"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "采集性能指标",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "targets": [
+          {
+            "expr": "rate(data_collection_requests_total[5m])",
+            "legendFormat": "请求率",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(data_collection_duration_seconds_bucket[5m]))",
+            "legendFormat": "95%响应时间",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(data_collection_errors_total[5m]) / rate(data_collection_requests_total[5m]) * 100",
+            "legendFormat": "错误率%",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "数据质量指标",
+        "type": "bargauge",
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 8
+        },
+        "targets": [
+          {
+            "expr": "avg_over_time(data_quality_score[1h])",
+            "legendFormat": "平均质量分数",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 0.7
+                },
+                {
+                  "color": "green",
+                  "value": 0.9
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "存储使用情况",
+        "type": "bargauge",
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 8
+        },
+        "targets": [
+          {
+            "expr": "timescale_db_size_bytes / timescale_db_capacity_bytes * 100",
+            "legendFormat": "TimescaleDB使用率",
+            "refId": "A"
+          },
+          {
+            "expr": "redis_memory_usage_percent",
+            "legendFormat": "Redis内存使用率",
+            "refId": "B"
+          },
+          {
+            "expr": "minio_storage_usage_percent",
+            "legendFormat": "MinIO存储使用率",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "工作流执行状态",
+        "type": "table",
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 8
+        },
+        "targets": [
+          {
+            "expr": "workflow_status{status=\"running\"}",
+            "legendFormat": "{{workflow_id}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "color-text"
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "系统资源监控",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        },
+        "targets": [
+          {
+            "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "CPU使用率",
+            "refId": "A"
+          },
+          {
+            "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+            "legendFormat": "内存使用率",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(node_disk_io_time_seconds_total[5m]) * 100",
+            "legendFormat": "磁盘I/O",
+            "refId": "C"
+          },
+          {
+            "expr": "rate(node_network_receive_bytes_total[5m]) * 8 / 1024 / 1024",
+            "legendFormat": "网络接收(Mbps)",
+            "refId": "D"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "数据采集趋势",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        },
+        "targets": [
+          {
+            "expr": "increase(data_collection_records_total[1h])",
+            "legendFormat": "采集记录数",
+            "refId": "A"
+          },
+          {
+            "expr": "increase(data_collection_bytes_total[1h]) / 1024 / 1024",
+            "legendFormat": "采集数据量(MB)",
+            "refId": "B"
+          },
+          {
+            "expr": "avg_over_time(data_quality_score[1h])",
+            "legendFormat": "平均质量分数",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "错误统计",
+        "type": "table",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 24
+        },
+        "targets": [
+          {
+            "expr": "increase(data_collection_errors_total{error_type=~\".+\"}[1h])",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "color-text"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 5
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "AI优化器性能",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 24
+        },
+        "targets": [
+          {
+            "expr": "rate(ai_optimizer_predictions_total[5m])",
+            "legendFormat": "预测请求率",
+            "refId": "A"
+          },
+          {
+            "expr": "ai_optimizer_prediction_accuracy",
+            "legendFormat": "预测准确率",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(ai_optimizer_prediction_duration_seconds_bucket[5m]))",
+            "legendFormat": "95%预测响应时间",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "实时数据流监控",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 32
+        },
+        "targets": [
+          {
+            "expr": "rate(realtime_events_received_total[5m])",
+            "legendFormat": "接收事件率",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(realtime_events_processed_total[5m])",
+            "legendFormat": "处理事件率",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(realtime_events_failed_total[5m])",
+            "legendFormat": "失败事件率",
+            "refId": "C"
+          },
+          {
+            "expr": "realtime_processing_latency_seconds{quantile=\"0.95\"}",
+            "legendFormat": "95%处理延迟",
+            "refId": "D"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "分布式调度监控",
+        "type": "table",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 32
+        },
+        "targets": [
+          {
+            "expr": "distributed_scheduler_nodes_active",
+            "legendFormat": "活跃节点数",
+            "refId": "A"
+          },
+          {
+            "expr": "distributed_scheduler_tasks_pending",
+            "legendFormat": "待处理任务",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(distributed_scheduler_tasks_completed_total[5m])",
+            "legendFormat": "任务完成率",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "TimescaleDB 超表统计",
+        "type": "table",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 40
+        },
+        "targets": [
+          {
+            "expr": "pg_stat_database_blks_hit / (pg_stat_database_blks_hit + pg_stat_database_blks_read)",
+            "legendFormat": "缓存命中率",
+            "refId": "A"
+          },
+          {
+            "expr": "timescaledb_hypertables_num_chunks",
+            "legendFormat": "{{hypertable_name}} 分块数",
+            "refId": "B"
+          },
+          {
+            "expr": "timescaledb_hypertables_num_compressed_chunks",
+            "legendFormat": "{{hypertable_name}} 压缩分块数",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "TimescaleDB 存储优化",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 40
+        },
+        "targets": [
+          {
+            "expr": "hypertable_sizes_total_size_bytes / 1024 / 1024",
+            "legendFormat": "{{hypertable_name}} 总大小(MB)",
+            "refId": "A"
+          },
+          {
+            "expr": "timescaledb_compression_before_compression_total_bytes / timescaledb_compression_after_compression_total_bytes",
+            "legendFormat": "{{hypertable_name}} 压缩比率",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(timescaledb_chunks_range_end - timescaledb_chunks_range_start)[1h]",
+            "legendFormat": "{{hypertable_name}} 数据增长率",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "title": "TimescaleDB 性能指标",
+        "type": "graph",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 48
+        },
+        "targets": [
+          {
+            "expr": "rate(pg_stat_database_tup_inserted[5m])",
+            "legendFormat": "插入速率",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(pg_stat_database_tup_fetched[5m])",
+            "legendFormat": "查询速率",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(pg_stat_database_blk_read_time[5m]))",
+            "legendFormat": "95%块读取时间",
+            "refId": "C"
+          },
+          {
+            "expr": "pg_stat_database_numbackends",
+            "legendFormat": "活跃连接数",
+            "refId": "D"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "title": "TimescaleDB 后台作业监控",
+        "type": "table",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 48
+        },
+        "targets": [
+          {
+            "expr": "timescaledb_job_stats_total_runs",
+            "legendFormat": "{{job_id}} 总运行次数",
+            "refId": "A"
+          },
+          {
+            "expr": "timescaledb_job_stats_total_successes / timescaledb_job_stats_total_runs",
+            "legendFormat": "{{job_id}} 成功率",
+            "refId": "B"
+          },
+          {
+            "expr": "timescaledb_jobs_max_runtime",
+            "legendFormat": "{{job_id}} 最大运行时间",
+            "refId": "C"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "datasource",
+          "query": "prometheus",
+          "type": "datasource"
+        },
+        {
+          "name": "instance",
+          "query": "label_values(instance)",
+          "type": "query"
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        },
+        {
+          "datasource": "$datasource",
+          "enable": true,
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "hide": false,
+          "iconColor": "#FF780A",
+          "limit": 100,
+          "name": "Alerts",
+          "showIn": 0,
+          "step": "5m",
+          "tagKeys": "alertname,instance",
+          "tags": [],
+          "titleFormat": "{{alertname}}",
+          "type": "tags"
+        }
+      ]
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+}

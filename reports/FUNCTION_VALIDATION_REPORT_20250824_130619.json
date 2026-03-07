@@ -1,0 +1,176 @@
+{
+  "validation_summary": {
+    "start_time": "2025-08-24T13:06:19.592943",
+    "end_time": "2025-08-24T13:06:19.597943",
+    "duration_seconds": 0.005,
+    "total_layers": 11,
+    "passed_layers": 3,
+    "pass_rate": 27.27272727272727,
+    "total_score": 148,
+    "average_score": 13.454545454545455,
+    "overall_status": "failed"
+  },
+  "layer_results": {
+    "core": {
+      "layer": "core_services",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "核心服务层验证失败: No module named 'src.core'"
+      ]
+    },
+    "infrastructure": {
+      "layer": "infrastructure",
+      "status": "passed",
+      "functionality_score": 48,
+      "tests": [
+        {
+          "test": "module_import",
+          "status": "passed",
+          "details": "基础设施层模块导入成功"
+        },
+        {
+          "test": "config_management",
+          "status": "warning",
+          "details": "配置管理组件待实现"
+        },
+        {
+          "test": "logging_system",
+          "status": "warning",
+          "details": "日志系统组件待实现"
+        },
+        {
+          "test": "health_checker",
+          "status": "warning",
+          "details": "健康检查组件待实现"
+        },
+        {
+          "test": "cache_system",
+          "status": "warning",
+          "details": "缓存系统组件待实现"
+        }
+      ],
+      "issues": []
+    },
+    "data": {
+      "layer": "data_collection",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "数据采集层验证失败: No module named 'src.data'"
+      ]
+    },
+    "gateway": {
+      "layer": "api_gateway",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "API网关层验证失败: No module named 'src.gateway'"
+      ]
+    },
+    "features": {
+      "layer": "feature_processing",
+      "status": "passed",
+      "functionality_score": 50,
+      "tests": [
+        {
+          "test": "module_import",
+          "status": "passed",
+          "details": "Feature Processing层模块导入成功"
+        },
+        {
+          "test": "core_component",
+          "status": "warning",
+          "details": "FeatureProcessor组件待实现"
+        }
+      ],
+      "issues": []
+    },
+    "ml": {
+      "layer": "model_inference",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "model_inference层验证失败: No module named 'src.ml'"
+      ]
+    },
+    "backtest": {
+      "layer": "strategy_decision",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "strategy_decision层验证失败: No module named 'src.backtest'"
+      ]
+    },
+    "risk": {
+      "layer": "risk_compliance",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "risk_compliance层验证失败: No module named 'src.risk'"
+      ]
+    },
+    "trading": {
+      "layer": "trading_execution",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "trading_execution层验证失败: No module named 'src.trading'"
+      ]
+    },
+    "engine": {
+      "layer": "monitoring_feedback",
+      "status": "failed",
+      "functionality_score": 0,
+      "tests": [],
+      "issues": [
+        "monitoring_feedback层验证失败: No module named 'src.engine'"
+      ]
+    },
+    "business_flow": {
+      "layer": "business_flow",
+      "status": "passed",
+      "functionality_score": 50,
+      "tests": [
+        {
+          "test": "module_imports",
+          "status": "passed",
+          "details": "业务流程相关模块导入测试"
+        },
+        {
+          "test": "orchestrator_available",
+          "status": "warning",
+          "details": "业务流程编排器组件待实现"
+        },
+        {
+          "test": "config_available",
+          "status": "warning",
+          "details": "配置管理器组件待实现"
+        },
+        {
+          "test": "data_manager_available",
+          "status": "warning",
+          "details": "数据管理器组件待实现"
+        }
+      ],
+      "issues": []
+    }
+  },
+  "issues": [
+    "核心服务层验证失败: No module named 'src.core'",
+    "数据采集层验证失败: No module named 'src.data'",
+    "API网关层验证失败: No module named 'src.gateway'",
+    "model_inference层验证失败: No module named 'src.ml'",
+    "strategy_decision层验证失败: No module named 'src.backtest'",
+    "risk_compliance层验证失败: No module named 'src.risk'",
+    "trading_execution层验证失败: No module named 'src.trading'",
+    "monitoring_feedback层验证失败: No module named 'src.engine'"
+  ]
+}

@@ -1,0 +1,242 @@
+{
+  "report_generation": {
+    "naming_convention": {
+      "enabled": true,
+      "remove_dates": true,
+      "use_semantic_naming": true,
+      "version_control": true,
+      "forbidden_patterns": [
+        "_\\d{8}_",
+        "_\\d{4}\\d{2}\\d{2}_",
+        "_\\d{4}-\\d{2}-\\d{2}_",
+        "_\\d{4}_\\d{2}_\\d{2}_",
+        "_\\d{10,}"
+      ],
+      "version_suffixes": {
+        "latest": "最新版本",
+        "v1": "版本1",
+        "v2": "版本2",
+        "final": "最终版本",
+        "draft": "草稿版本"
+      }
+    },
+    "quantity_control": {
+      "enabled": true,
+      "max_reports_per_directory": 10,
+      "archive_days": 30,
+      "auto_archive": true,
+      "merge_similar_reports": true,
+      "cleanup_temp_files": true
+    },
+    "categories": {
+      "project": {
+        "max_files": 10,
+        "subcategories": ["progress", "completion", "architecture", "deployment"]
+      },
+      "technical": {
+        "max_files": 10,
+        "subcategories": ["testing", "performance", "security", "quality", "optimization"]
+      },
+      "business": {
+        "max_files": 10,
+        "subcategories": ["analytics", "trading", "backtest", "compliance"]
+      },
+      "operational": {
+        "max_files": 10,
+        "subcategories": ["monitoring", "deployment", "notification", "maintenance"]
+      },
+      "research": {
+        "max_files": 10,
+        "subcategories": ["ml_integration", "deep_learning", "reinforcement_learning", "continuous_optimization"]
+      }
+    },
+    "archiving": {
+      "enabled": true,
+      "archive_structure": {
+        "root": "archive",
+        "deprecated": "archive/deprecated",
+        "by_year": "archive/{year}",
+        "by_category": "archive/{category}"
+      },
+      "retention_policy": {
+        "important_reports": "permanent",
+        "temporary_reports": "30_days",
+        "test_reports": "7_days",
+        "draft_reports": "14_days"
+      }
+    },
+    "templates": {
+      "markdown": {
+        "enabled": true,
+        "template_file": "assets/templates/report_template.md"
+      },
+      "json": {
+        "enabled": true,
+        "template_file": "assets/templates/report_template.json"
+      },
+      "html": {
+        "enabled": false,
+        "template_file": "assets/templates/report_template.html"
+      }
+    },
+    "indexing": {
+      "auto_update": true,
+      "index_file": "INDEX.md",
+      "include_metadata": true,
+      "include_summary": true
+    },
+    "validation": {
+      "enabled": true,
+      "check_naming_convention": true,
+      "check_content_quality": true,
+      "check_file_size": true,
+      "max_file_size_mb": 10
+    },
+    "notifications": {
+      "enabled": true,
+      "report_generated": true,
+      "report_archived": true,
+      "naming_violation": true,
+      "quantity_limit_reached": true
+    }
+  },
+  "report_types": {
+    "project": {
+      "progress": {
+        "description": "项目进度报告",
+        "template": "project_progress",
+        "frequency": "weekly",
+        "retention": "30_days"
+      },
+      "completion": {
+        "description": "项目完成报告",
+        "template": "project_completion",
+        "frequency": "on_completion",
+        "retention": "permanent"
+      },
+      "architecture": {
+        "description": "架构设计报告",
+        "template": "project_architecture",
+        "frequency": "on_change",
+        "retention": "permanent"
+      },
+      "deployment": {
+        "description": "部署报告",
+        "template": "project_deployment",
+        "frequency": "on_deployment",
+        "retention": "90_days"
+      }
+    },
+    "technical": {
+      "testing": {
+        "description": "测试报告",
+        "template": "technical_testing",
+        "frequency": "on_test",
+        "retention": "30_days"
+      },
+      "performance": {
+        "description": "性能报告",
+        "template": "technical_performance",
+        "frequency": "weekly",
+        "retention": "60_days"
+      },
+      "security": {
+        "description": "安全报告",
+        "template": "technical_security",
+        "frequency": "monthly",
+        "retention": "permanent"
+      },
+      "quality": {
+        "description": "质量报告",
+        "template": "technical_quality",
+        "frequency": "weekly",
+        "retention": "30_days"
+      },
+      "optimization": {
+        "description": "优化报告",
+        "template": "technical_optimization",
+        "frequency": "on_optimization",
+        "retention": "60_days"
+      }
+    },
+    "business": {
+      "analytics": {
+        "description": "分析报告",
+        "template": "business_analytics",
+        "frequency": "daily",
+        "retention": "30_days"
+      },
+      "trading": {
+        "description": "交易报告",
+        "template": "business_trading",
+        "frequency": "daily",
+        "retention": "90_days"
+      },
+      "backtest": {
+        "description": "回测报告",
+        "template": "business_backtest",
+        "frequency": "on_backtest",
+        "retention": "permanent"
+      },
+      "compliance": {
+        "description": "合规报告",
+        "template": "business_compliance",
+        "frequency": "monthly",
+        "retention": "permanent"
+      }
+    },
+    "operational": {
+      "monitoring": {
+        "description": "监控报告",
+        "template": "operational_monitoring",
+        "frequency": "daily",
+        "retention": "30_days"
+      },
+      "deployment": {
+        "description": "部署报告",
+        "template": "operational_deployment",
+        "frequency": "on_deployment",
+        "retention": "60_days"
+      },
+      "notification": {
+        "description": "通知报告",
+        "template": "operational_notification",
+        "frequency": "on_event",
+        "retention": "14_days"
+      },
+      "maintenance": {
+        "description": "维护报告",
+        "template": "operational_maintenance",
+        "frequency": "on_maintenance",
+        "retention": "90_days"
+      }
+    },
+    "research": {
+      "ml_integration": {
+        "description": "机器学习集成报告",
+        "template": "research_ml_integration",
+        "frequency": "on_integration",
+        "retention": "permanent"
+      },
+      "deep_learning": {
+        "description": "深度学习报告",
+        "template": "research_deep_learning",
+        "frequency": "on_experiment",
+        "retention": "permanent"
+      },
+      "reinforcement_learning": {
+        "description": "强化学习报告",
+        "template": "research_reinforcement_learning",
+        "frequency": "on_experiment",
+        "retention": "permanent"
+      },
+      "continuous_optimization": {
+        "description": "持续优化报告",
+        "template": "research_continuous_optimization",
+        "frequency": "weekly",
+        "retention": "60_days"
+      }
+    }
+  }
+}
+

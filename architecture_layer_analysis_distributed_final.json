@@ -1,0 +1,110 @@
+================================================================================
+🎯 AI智能化代码分析报告 - src/distributed
+================================================================================
+
+📊 总体统计
+   📁 文件数量: 3
+   📝 总代码行数: 2599
+   🔄 总复杂度: 572.60
+   📈 平均可维护性: 73.00
+
+🚨 问题统计
+   MEDIUM: 3
+   LOW: 7
+
+   maintainability: 6
+   best_practices: 4
+
+📋 文件详情
+   📄 src\distributed\coordinator.py
+      代码行数: 1330
+      🔄 复杂度: 285.80
+      📈 可维护性: 73.00
+      问题数量: 7
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+         - [LOW] 过长代码行
+
+   📄 src\distributed\cache_consistency.py
+      代码行数: 637
+      🔄 复杂度: 142.90
+      📈 可维护性: 73.00
+      问题数量: 2
+         - [MEDIUM] 方法过长
+         - [LOW] 过多魔法数字
+
+   📄 src\distributed\service_discovery.py
+      代码行数: 632
+      🔄 复杂度: 143.90
+      📈 可维护性: 73.00
+      问题数量: 1
+         - [LOW] 过多魔法数字
+
+🔍 详细问题列表
+   📍 [MEDIUM] src\distributed\cache_consistency.py:190
+      💡 方法过长
+      📝 方法'replicate_operation'过长: 53行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\distributed\coordinator.py:1016
+      💡 方法过长
+      📝 方法'_schedule_pending_tasks'过长: 56行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [MEDIUM] src\distributed\coordinator.py:1103
+      💡 方法过长
+      📝 方法'_execute_preemption'过长: 61行
+      💡 考虑将方法拆分为更小的函数
+
+   📍 [LOW] src\distributed\cache_consistency.py:1
+      💡 过多魔法数字
+      📝 检测到8个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\distributed\coordinator.py:197
+      💡 过长代码行
+      📝 代码行长度超过120字符: 123
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def _select_best_node_for_priority(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+      ```
+
+   📍 [LOW] src\distributed\coordinator.py:508
+      💡 过长代码行
+      📝 代码行长度超过120字符: 136
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      self.strategy = "adaptive"  # adaptive, round_robin, weighted_round_robin, least_loaded, capability_based, random, response_time
+      ```
+
+   📍 [LOW] src\distributed\coordinator.py:584
+      💡 过长代码行
+      📝 代码行长度超过120字符: 130
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def _least_loaded_selection(self, task: Optional[DistributedTask] = None, nodes: Optional[Dict[str, NodeInfo]] = None) -> str:
+      ```
+
+   📍 [LOW] src\distributed\coordinator.py:1533
+      💡 过长代码行
+      📝 代码行长度超过120字符: 125
+      💡 将长行拆分为多行以提高可读性
+      ```python
+      def update_node_status(self, node_id: str, status: NodeStatus, additional_info: Optional[Dict[str, Any]] = None) -> bool:
+      ```
+
+   📍 [LOW] src\distributed\coordinator.py:1
+      💡 过多魔法数字
+      📝 检测到35个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+   📍 [LOW] src\distributed\service_discovery.py:1
+      💡 过多魔法数字
+      📝 检测到13个可能的魔法数字
+      💡 将魔法数字定义为常量
+
+🏗️ 架构建议
+   ⚠️ 系统复杂度较高，建议模块化拆分
+   💡 建议增加异步处理支持
+
+================================================================================

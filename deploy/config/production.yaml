@@ -1,0 +1,322 @@
+# RQA2025 Production Environment Configuration
+# Deployment Time: 2025-01-20
+# Environment: Production
+# Architecture: 1 Master + 1 Slave (Initial Deployment)
+
+# Infrastructure Configuration
+infrastructure:
+  # Server Configuration
+  servers:
+    api_servers:
+      - host: "192.168.1.20"
+        port: 8000
+        cpu: 8
+        memory: "16GB"
+        disk: "100GB"
+        role: "master"
+      - host: "192.168.1.21"
+        port: 8000
+        cpu: 8
+        memory: "16GB"
+        disk: "100GB"
+        role: "slave"
+    
+    inference_servers:
+      - host: "192.168.1.30"
+        port: 8001
+        cpu: 8
+        memory: "16GB"
+        disk: "100GB"
+        role: "master"
+      - host: "192.168.1.31"
+        port: 8001
+        cpu: 8
+        memory: "16GB"
+        disk: "100GB"
+        role: "slave"
+    
+    redis_servers:
+      - host: "192.168.1.10"
+        port: 6379
+        role: "master"
+      - host: "192.168.1.11"
+        port: 6379
+        role: "slave"
+    
+    database_servers:
+      - host: "192.168.1.40"
+        port: 5432
+        role: "master"
+      - host: "192.168.1.41"
+        port: 5432
+        role: "slave"
+
+# Application Configuration
+application:
+  # API Service Configuration
+  api:
+    name: "rqa2025-api"
+    version: "1.0.0"
+    replicas: 2  # 1 master + 1 slave
+    resources:
+      cpu: "2"
+      memory: "4G"
+    environment:
+      ENVIRONMENT: "production"
+      LOG_LEVEL: "INFO"
+      MAX_WORKERS: "4"
+      REDIS_CLUSTER_HOSTS: "192.168.1.10:6379,192.168.1.11:6379"
+      DATABASE_URL: "postgresql://rqa2025:password@192.168.1.40:5432/rqa2025"
+    health_check:
+      path: "/health"
+      interval: "30s"
+      timeout: "10s"
+      retries: 3
+      start_period: "40s"
+  
+  # Inference Engine Configuration
+  inference:
+    name: "rqa2025-inference"
+    version: "1.0.0"
+    replicas: 2  # 1 master + 1 slave
+    resources:
+      cpu: "4"
+      memory: "8G"
+    environment:
+      ENVIRONMENT: "production"
+      LOG_LEVEL: "INFO"
+      MAX_WORKERS: "4"
+      BATCH_SIZE: "32"
+      ENABLE_CACHE: "true"
+      CACHE_TTL: "3600"
+      REDIS_CLUSTER_HOSTS: "192.168.1.10:6379,192.168.1.11:6379"
+    health_check:
+      path: "/health"
+      interval: "30s"
+      timeout: "10s"
+      retries: 3
+      start_period: "40s"
+
+# Database Configuration
+database:
+  postgresql:
+    version: "13"
+    master:
+      host: "192.168.1.40"
+      port: 5432
+      database: "rqa2025"
+      user: "rqa2025"
+      password: "password"
+    slave:
+      host: "192.168.1.41"
+      port: 5432
+      database: "rqa2025"
+      user: "rqa2025"
+      password: "password"
+    connection_pool:
+      min_connections: 5
+      max_connections: 20
+      timeout: 30
+
+# Cache Configuration
+cache:
+  redis:
+    version: "6.x"
+    cluster:
+      nodes: 2  # 1 master + 1 slave
+      masters: 1
+      slaves: 1
+    connection_pool:
+      max_connections: 50
+      retry_on_timeout: true
+      health_check_interval: 30
+    memory_policy: "allkeys-lru"
+    ttl: 3600
+
+# Load Balancer Configuration
+load_balancer:
+  nginx:
+    version: "1.18+"
+    algorithm: "least_conn"
+    health_check:
+      max_fails: 3
+      fail_timeout: "30s"
+    keepalive: 32
+    timeouts:
+      connect: "30s"
+      send: "30s"
+      read: "30s"
+      inference_connect: "60s"
+      inference_send: "60s"
+      inference_read: "60s"
+
+# Monitoring Configuration
+monitoring:
+  prometheus:
+    version: "2.x"
+    scrape_interval: "15s"
+    evaluation_interval: "15s"
+    retention_time: "200h"
+    targets:
+      - job_name: "rqa2025-api"
+        static_configs:
+          - targets: ["192.168.1.20:8000", "192.168.1.21:8000"]
+        metrics_path: "/metrics"
+        scrape_interval: "10s"
+      - job_name: "inference-engine"
+        static_configs:
+          - targets: ["192.168.1.30:8001", "192.168.1.31:8001"]
+        metrics_path: "/metrics"
+        scrape_interval: "10s"
+      - job_name: "redis-cluster"
+        static_configs:
+          - targets: ["192.168.1.10:6379", "192.168.1.11:6379"]
+        scrape_interval: "30s"
+  
+  grafana:
+    version: "8.x"
+    admin_password: "admin123"
+    dashboards:
+      - name: "RQA2025 Production Dashboard"
+        datasource: "Prometheus"
+    alerting:
+      email: "alerts@rqa2025.com"
+      slack: "https://hooks.slack.com/services/xxx"
+  
+  alertmanager:
+    version: "latest"
+    config:
+      global:
+        smtp_smarthost: "smtp.gmail.com:587"
+        smtp_from: "alerts@rqa2025.com"
+      route:
+        group_by: ["alertname"]
+        group_wait: "10s"
+        group_interval: "10s"
+        repeat_interval: "1h"
+        receiver: "web.hook"
+      receivers:
+        - name: "web.hook"
+          webhook_configs:
+            - url: "http://127.0.0.1:5001/"
+
+# Logging Configuration
+logging:
+  elasticsearch:
+    version: "7.17.0"
+    memory: "512m"
+    indices:
+      pattern: "rqa2025-%{+YYYY.MM.dd}"
+      shards: 1
+      replicas: 0
+  
+  logstash:
+    version: "7.17.0"
+    input:
+      beats:
+        port: 5044
+    filter:
+      grok:
+        match: "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{GREEDYDATA:message}"
+    output:
+      elasticsearch:
+        hosts: ["192.168.1.50:9200"]
+        index: "rqa2025-%{+YYYY.MM.dd}"
+  
+  kibana:
+    version: "7.17.0"
+    port: 5601
+    elasticsearch:
+      hosts: ["192.168.1.50:9200"]
+
+# Security Configuration
+security:
+  firewall:
+    rules:
+      - port: 22
+        protocol: "tcp"
+        description: "SSH"
+      - port: 80
+        protocol: "tcp"
+        description: "HTTP"
+      - port: 443
+        protocol: "tcp"
+        description: "HTTPS"
+      - port: 5432
+        protocol: "tcp"
+        description: "PostgreSQL"
+      - port: 6379
+        protocol: "tcp"
+        description: "Redis"
+      - port: 9090
+        protocol: "tcp"
+        description: "Prometheus"
+      - port: 3000
+        protocol: "tcp"
+        description: "Grafana"
+      - port: 9093
+        protocol: "tcp"
+        description: "AlertManager"
+      - port: 9200
+        protocol: "tcp"
+        description: "Elasticsearch"
+  
+  ssl:
+    certificate: "/etc/ssl/certs/rqa2025.crt"
+    private_key: "/etc/ssl/private/rqa2025.key"
+    ca_certificate: "/etc/ssl/certs/ca.crt"
+  
+  authentication:
+    api_key: true
+    jwt_secret: "your-jwt-secret-key"
+    session_timeout: 3600
+
+# Performance Configuration
+performance:
+  limits:
+    cpu_usage: 80
+    memory_usage: 85
+    disk_usage: 90
+    network_latency: 50
+  
+  targets:
+    api_response_time: 200
+    inference_latency: 500
+    cache_hit_rate: 80
+    error_rate: 0.1
+    availability: 99.9
+
+# Backup Configuration
+backup:
+  database:
+    schedule: "0 2 * * *"
+    retention: 30
+    location: "/backup/database"
+  
+  logs:
+    schedule: "0 3 * * *"
+    retention: 90
+    location: "/backup/logs"
+  
+  models:
+    schedule: "0 4 * * *"
+    retention: 7
+    location: "/backup/models"
+
+# Deployment Configuration
+deployment:
+  strategy: "blue-green"
+  rollback:
+    enabled: true
+    max_versions: 5
+  
+  health_check:
+    enabled: true
+    interval: "30s"
+    timeout: "10s"
+    retries: 3
+  
+  monitoring:
+    enabled: true
+    metrics_interval: "15s"
+    alerting: true 

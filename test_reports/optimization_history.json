@@ -1,0 +1,485 @@
+[
+  {
+    "timestamp": "2025-12-17T18:17:11.340275",
+    "test_statistics": {
+      "total_tests": 0,
+      "error": "unsupported operand type(s) for +: 'NoneType' and 'str'"
+    },
+    "coverage_analysis": {
+      "area_coverage": {
+        "infrastructure": 0,
+        "ml_core": 0,
+        "risk_management": 0,
+        "data_processing": 0,
+        "trading_engine": 0,
+        "integration": 0,
+        "performance": 0,
+        "advanced": 0
+      },
+      "total_covered_tests": 0,
+      "coverage_balance": {
+        "balance_score": 0,
+        "most_covered": [
+          "infrastructure",
+          0
+        ],
+        "least_covered": [
+          "infrastructure",
+          0
+        ],
+        "coverage_std": 0.0,
+        "coverage_mean": 0.0
+      }
+    },
+    "weak_areas": [
+      {
+        "area": "unit_tests",
+        "issue": "单元测试比例过低",
+        "severity": "high",
+        "current_value": 0,
+        "recommended_min": 60
+      },
+      {
+        "area": "integration_tests",
+        "issue": "集成测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 20
+      },
+      {
+        "area": "coverage_balance",
+        "issue": "测试覆盖不平衡",
+        "severity": "medium",
+        "current_value": 0,
+        "most_covered": [
+          "infrastructure",
+          0
+        ],
+        "least_covered": [
+          "infrastructure",
+          0
+        ]
+      },
+      {
+        "area": "module_infrastructure",
+        "issue": "infrastructure模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_ml_core",
+        "issue": "ml_core模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_risk_management",
+        "issue": "risk_management模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_data_processing",
+        "issue": "data_processing模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_trading_engine",
+        "issue": "trading_engine模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_integration",
+        "issue": "integration模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_performance",
+        "issue": "performance模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      },
+      {
+        "area": "module_advanced",
+        "issue": "advanced模块测试覆盖不足",
+        "severity": "medium",
+        "current_value": 0,
+        "recommended_min": 5
+      }
+    ],
+    "optimization_suggestions": [
+      {
+        "category": "test_structure",
+        "priority": "high",
+        "title": "增加单元测试覆盖",
+        "description": "当前单元测试比例为0.0%，建议增加到60%以上",
+        "actions": [
+          "识别未充分测试的核心函数",
+          "为边界条件添加更多测试用例",
+          "实现参数化测试以覆盖更多场景",
+          "添加mock测试以隔离外部依赖"
+        ],
+        "estimated_effort": "2-3周",
+        "expected_impact": "提高代码质量和回归检测能力",
+        "implementation_order": 1
+      },
+      {
+        "category": "integration_testing",
+        "priority": "medium",
+        "title": "加强集成测试",
+        "description": "当前集成测试比例为0.0%，建议增加到20%以上",
+        "actions": [
+          "设计端到端业务流程测试",
+          "测试模块间数据流完整性",
+          "验证系统组件协同工作",
+          "添加跨服务集成测试场景"
+        ],
+        "estimated_effort": "2-4周",
+        "expected_impact": "确保系统整体功能正确性",
+        "implementation_order": 2
+      },
+      {
+        "category": "balance_optimization",
+        "priority": "medium",
+        "title": "优化测试覆盖平衡",
+        "description": "infrastructure模块测试过多(0)，infrastructure模块测试过少(0)",
+        "actions": [
+          "为infrastructure模块增加更多测试用例",
+          "检查infrastructure模块是否有冗余测试",
+          "重新评估测试优先级和资源分配",
+          "实施基于风险的测试策略"
+        ],
+        "estimated_effort": "1-2周",
+        "expected_impact": "提高测试效率和资源利用率",
+        "implementation_order": 3
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强infrastructure模块测试",
+        "description": "infrastructure模块测试用例过少(0)",
+        "actions": [
+          "分析infrastructure模块的核心功能",
+          "识别infrastructure模块的关键路径",
+          "为infrastructure模块添加边界条件测试",
+          "验证infrastructure模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高infrastructure模块的测试覆盖率",
+        "implementation_order": 5
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强ml_core模块测试",
+        "description": "ml_core模块测试用例过少(0)",
+        "actions": [
+          "分析ml_core模块的核心功能",
+          "识别ml_core模块的关键路径",
+          "为ml_core模块添加边界条件测试",
+          "验证ml_core模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高ml_core模块的测试覆盖率",
+        "implementation_order": 6
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强risk_management模块测试",
+        "description": "risk_management模块测试用例过少(0)",
+        "actions": [
+          "分析risk_management模块的核心功能",
+          "识别risk_management模块的关键路径",
+          "为risk_management模块添加边界条件测试",
+          "验证risk_management模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高risk_management模块的测试覆盖率",
+        "implementation_order": 7
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强data_processing模块测试",
+        "description": "data_processing模块测试用例过少(0)",
+        "actions": [
+          "分析data_processing模块的核心功能",
+          "识别data_processing模块的关键路径",
+          "为data_processing模块添加边界条件测试",
+          "验证data_processing模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高data_processing模块的测试覆盖率",
+        "implementation_order": 8
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强trading_engine模块测试",
+        "description": "trading_engine模块测试用例过少(0)",
+        "actions": [
+          "分析trading_engine模块的核心功能",
+          "识别trading_engine模块的关键路径",
+          "为trading_engine模块添加边界条件测试",
+          "验证trading_engine模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高trading_engine模块的测试覆盖率",
+        "implementation_order": 9
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强integration模块测试",
+        "description": "integration模块测试用例过少(0)",
+        "actions": [
+          "分析integration模块的核心功能",
+          "识别integration模块的关键路径",
+          "为integration模块添加边界条件测试",
+          "验证integration模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高integration模块的测试覆盖率",
+        "implementation_order": 10
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强performance模块测试",
+        "description": "performance模块测试用例过少(0)",
+        "actions": [
+          "分析performance模块的核心功能",
+          "识别performance模块的关键路径",
+          "为performance模块添加边界条件测试",
+          "验证performance模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高performance模块的测试覆盖率",
+        "implementation_order": 11
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强advanced模块测试",
+        "description": "advanced模块测试用例过少(0)",
+        "actions": [
+          "分析advanced模块的核心功能",
+          "识别advanced模块的关键路径",
+          "为advanced模块添加边界条件测试",
+          "验证advanced模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高advanced模块的测试覆盖率",
+        "implementation_order": 12
+      },
+      {
+        "category": "automation",
+        "priority": "medium",
+        "title": "完善测试自动化",
+        "description": "建立完整的CI/CD测试自动化流程",
+        "actions": [
+          "配置自动化测试执行环境",
+          "实现测试结果自动报告",
+          "设置质量门禁和自动告警",
+          "建立测试用例的版本控制"
+        ],
+        "estimated_effort": "2-3周",
+        "expected_impact": "提高测试执行效率和一致性",
+        "implementation_order": 4
+      },
+      {
+        "category": "performance",
+        "priority": "low",
+        "title": "优化测试性能",
+        "description": "减少测试执行时间，提高开发效率",
+        "actions": [
+          "实施并行测试执行",
+          "优化测试数据准备",
+          "减少不必要的测试等待",
+          "实施增量测试策略"
+        ],
+        "estimated_effort": "1-2周",
+        "expected_impact": "缩短反馈周期，提高开发效率",
+        "implementation_order": 13
+      },
+      {
+        "category": "maintainability",
+        "priority": "low",
+        "title": "提高测试可维护性",
+        "description": "改善测试代码质量和可维护性",
+        "actions": [
+          "重构重复的测试代码",
+          "建立测试工具和辅助函数库",
+          "完善测试文档和注释",
+          "实施测试代码审查机制"
+        ],
+        "estimated_effort": "1-2周",
+        "expected_impact": "降低测试维护成本，提高代码质量",
+        "implementation_order": 14
+      }
+    ],
+    "priority_actions": [
+      {
+        "category": "test_structure",
+        "priority": "high",
+        "title": "增加单元测试覆盖",
+        "description": "当前单元测试比例为0.0%，建议增加到60%以上",
+        "actions": [
+          "识别未充分测试的核心函数",
+          "为边界条件添加更多测试用例",
+          "实现参数化测试以覆盖更多场景",
+          "添加mock测试以隔离外部依赖"
+        ],
+        "estimated_effort": "2-3周",
+        "expected_impact": "提高代码质量和回归检测能力",
+        "implementation_order": 1
+      },
+      {
+        "category": "integration_testing",
+        "priority": "medium",
+        "title": "加强集成测试",
+        "description": "当前集成测试比例为0.0%，建议增加到20%以上",
+        "actions": [
+          "设计端到端业务流程测试",
+          "测试模块间数据流完整性",
+          "验证系统组件协同工作",
+          "添加跨服务集成测试场景"
+        ],
+        "estimated_effort": "2-4周",
+        "expected_impact": "确保系统整体功能正确性",
+        "implementation_order": 2
+      },
+      {
+        "category": "balance_optimization",
+        "priority": "medium",
+        "title": "优化测试覆盖平衡",
+        "description": "infrastructure模块测试过多(0)，infrastructure模块测试过少(0)",
+        "actions": [
+          "为infrastructure模块增加更多测试用例",
+          "检查infrastructure模块是否有冗余测试",
+          "重新评估测试优先级和资源分配",
+          "实施基于风险的测试策略"
+        ],
+        "estimated_effort": "1-2周",
+        "expected_impact": "提高测试效率和资源利用率",
+        "implementation_order": 3
+      },
+      {
+        "category": "automation",
+        "priority": "medium",
+        "title": "完善测试自动化",
+        "description": "建立完整的CI/CD测试自动化流程",
+        "actions": [
+          "配置自动化测试执行环境",
+          "实现测试结果自动报告",
+          "设置质量门禁和自动告警",
+          "建立测试用例的版本控制"
+        ],
+        "estimated_effort": "2-3周",
+        "expected_impact": "提高测试执行效率和一致性",
+        "implementation_order": 4
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强infrastructure模块测试",
+        "description": "infrastructure模块测试用例过少(0)",
+        "actions": [
+          "分析infrastructure模块的核心功能",
+          "识别infrastructure模块的关键路径",
+          "为infrastructure模块添加边界条件测试",
+          "验证infrastructure模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高infrastructure模块的测试覆盖率",
+        "implementation_order": 5
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强ml_core模块测试",
+        "description": "ml_core模块测试用例过少(0)",
+        "actions": [
+          "分析ml_core模块的核心功能",
+          "识别ml_core模块的关键路径",
+          "为ml_core模块添加边界条件测试",
+          "验证ml_core模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高ml_core模块的测试覆盖率",
+        "implementation_order": 6
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强risk_management模块测试",
+        "description": "risk_management模块测试用例过少(0)",
+        "actions": [
+          "分析risk_management模块的核心功能",
+          "识别risk_management模块的关键路径",
+          "为risk_management模块添加边界条件测试",
+          "验证risk_management模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高risk_management模块的测试覆盖率",
+        "implementation_order": 7
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强data_processing模块测试",
+        "description": "data_processing模块测试用例过少(0)",
+        "actions": [
+          "分析data_processing模块的核心功能",
+          "识别data_processing模块的关键路径",
+          "为data_processing模块添加边界条件测试",
+          "验证data_processing模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高data_processing模块的测试覆盖率",
+        "implementation_order": 8
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强trading_engine模块测试",
+        "description": "trading_engine模块测试用例过少(0)",
+        "actions": [
+          "分析trading_engine模块的核心功能",
+          "识别trading_engine模块的关键路径",
+          "为trading_engine模块添加边界条件测试",
+          "验证trading_engine模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高trading_engine模块的测试覆盖率",
+        "implementation_order": 9
+      },
+      {
+        "category": "module_specific",
+        "priority": "low",
+        "title": "加强integration模块测试",
+        "description": "integration模块测试用例过少(0)",
+        "actions": [
+          "分析integration模块的核心功能",
+          "识别integration模块的关键路径",
+          "为integration模块添加边界条件测试",
+          "验证integration模块与其他模块的集成"
+        ],
+        "estimated_effort": "1周",
+        "expected_impact": "提高integration模块的测试覆盖率",
+        "implementation_order": 10
+      }
+    ]
+  }
+]

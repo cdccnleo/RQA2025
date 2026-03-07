@@ -1,0 +1,53 @@
+"""
+格式化和显示相关常量定义
+"""
+
+
+class FormatConstants:
+    """格式化相关常量"""
+    
+    # 分隔符长度
+    SEPARATOR_LENGTH_SHORT = 40
+    SEPARATOR_LENGTH_MEDIUM = 50
+    SEPARATOR_LENGTH_LONG = 60
+    SEPARATOR_LENGTH_FULL = 80
+    SEPARATOR_LENGTH_WIDE = 100
+    
+    # 分隔符字符
+    SEPARATOR_CHAR_DASH = '-'
+    SEPARATOR_CHAR_EQUAL = '='
+    SEPARATOR_CHAR_STAR = '*'
+    SEPARATOR_CHAR_HASH = '#'
+    
+    # 缩进
+    INDENT_LEVEL_0 = 0
+    INDENT_LEVEL_1 = 2
+    INDENT_LEVEL_2 = 4
+    INDENT_LEVEL_3 = 6
+    INDENT_LEVEL_4 = 8
+    
+    # JSON格式化
+    JSON_INDENT = 2
+    JSON_SEPARATORS = (',', ': ')
+    JSON_ENSURE_ASCII = False
+    
+    # 日志格式
+    LOG_MAX_MESSAGE_LENGTH = 1000
+    LOG_MAX_STACKTRACE_DEPTH = 10
+    
+    # 表格显示
+    TABLE_COLUMN_WIDTH_SMALL = 10
+    TABLE_COLUMN_WIDTH_MEDIUM = 20
+    TABLE_COLUMN_WIDTH_LARGE = 30
+    TABLE_COLUMN_WIDTH_XLARGE = 50
+    
+    # 截断长度
+    TRUNCATE_LENGTH_SHORT = 50
+    TRUNCATE_LENGTH_MEDIUM = 100
+    TRUNCATE_LENGTH_LONG = 200
+    TRUNCATE_SUFFIX = '...'
+    
+    # 编码
+    DEFAULT_ENCODING = 'utf-8'
+    FALLBACK_ENCODING = 'latin-1'
+

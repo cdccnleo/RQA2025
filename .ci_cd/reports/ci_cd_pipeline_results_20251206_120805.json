@@ -1,0 +1,114 @@
+{
+  "pipeline_id": "ci_cd_20251206_120201",
+  "timestamp": "2025-12-06T12:02:01.148470",
+  "stages": {
+    "environment": {
+      "status": "completed",
+      "python_version": "3.9.23",
+      "installed_packages": {
+        "pytest": true,
+        "pytest-cov": true,
+        "pytest-xdist": true,
+        "black": true,
+        "flake8": true
+      },
+      "directory_structure": {
+        "src": true,
+        "tests": true,
+        "scripts": true,
+        "docs": true
+      },
+      "all_requirements_met": true
+    },
+    "quality": {
+      "status": "completed",
+      "checks": {
+        "format_check": {
+          "passed": false,
+          "issues": 521715
+        },
+        "quality_check": {
+          "passed": false,
+          "issues": 10774
+        },
+        "complexity_check": {
+          "passed": false,
+          "complex_functions": 0
+        }
+      },
+      "quality_score": 0.0,
+      "overall_passed": false
+    },
+    "unit_tests": {
+      "status": "completed",
+      "execution_time": 29.788542985916138,
+      "passed": false,
+      "error": ""
+    },
+    "integration_tests": {
+      "status": "completed",
+      "passed": false,
+      "execution_time": 21.1546573638916,
+      "error": ""
+    },
+    "security": {
+      "status": "completed",
+      "passed": true,
+      "vulnerabilities_found": 541,
+      "execution_time": 60.10726761817932,
+      "error": null
+    }
+  },
+  "quality_gates": {
+    "code_quality": "failed",
+    "unit_tests": "failed",
+    "integration_tests": "failed",
+    "e2e_tests": "passed",
+    "performance": "passed",
+    "security": "failed",
+    "coverage": "passed",
+    "overall": "failed"
+  },
+  "metrics": {
+    "total_stages": 5,
+    "passed_stages": 1,
+    "failed_stages": 2,
+    "total_execution_time": 111.05046796798706,
+    "quality_score": 0.0,
+    "test_coverage": 0.0,
+    "vulnerabilities": 541,
+    "stage_success_rate": 20.0
+  },
+  "artifacts": [
+    {
+      "name": "unit_test_results",
+      "path": "ci_cd_artifacts/unit_test_results.json",
+      "type": "test_report"
+    },
+    {
+      "name": "integration_test_results",
+      "path": "ci_cd_artifacts/integration_test_results.json",
+      "type": "test_report"
+    },
+    {
+      "name": "security_report",
+      "path": "ci_cd_artifacts/security_report.json",
+      "type": "security_report"
+    },
+    {
+      "name": "pipeline_results",
+      "path": "C:\\PythonProject\\RQA2025\\.ci_cd\\reports\\pipeline_results_20251206_120805.json",
+      "type": "pipeline_report"
+    }
+  ],
+  "notifications": [
+    {
+      "type": "alert",
+      "priority": "high",
+      "title": "🚨 CI/CD流水线失败",
+      "message": "CI/CD流水线执行失败，存在阻塞性问题需要立即处理",
+      "details": "失败阶段数: 2, 成功率: 20.0%"
+    }
+  ],
+  "overall_status": "failed"
+}

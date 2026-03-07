@@ -1,0 +1,194 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2026-config
+  namespace: rqa2026
+data:
+  # 应用配置
+  app-config.yaml: |
+    app:
+      name: "RQA2026"
+      version: "1.0.0"
+      environment: "production"
+      log_level: "INFO"
+
+    # API配置
+    api:
+      host: "0.0.0.0"
+      port: 8000
+      cors_origins:
+        - "https://app.rqa2026.com"
+        - "https://api.rqa2026.com"
+      rate_limit: 1000
+      timeout: 30
+
+    # 数据库配置
+    database:
+      host: "postgresql"
+      port: 5432
+      database: "rqa2026"
+      pool_size: 20
+      max_overflow: 30
+      pool_timeout: 30
+
+    # 缓存配置
+    cache:
+      redis:
+        host: "redis"
+        port: 6379
+        db: 0
+        password: ""
+        ttl: 3600
+
+    # 对象存储配置
+    storage:
+      minio:
+        endpoint: "minio:9000"
+        access_key: "rqa2026"
+        secret_key: "rqa2026secret"
+        bucket: "rqa2026-data"
+        secure: false
+
+    # 量子计算配置
+    quantum:
+      backend: "aer_simulator"
+      optimization_level: 2
+      shots: 1024
+      max_circuit_depth: 50
+      timeout: 300
+
+    # AI配置
+    ai:
+      model_cache_size: "10GB"
+      transformers_cache: "/models"
+      gpu_memory_fraction: 0.8
+      batch_size: 32
+      confidence_threshold: 0.7
+      max_sequence_length: 512
+
+    # BMI配置
+    bmi:
+      sampling_rate: 250.0
+      channels: 32
+      buffer_size: 1000
+      quality_threshold: 0.8
+      artifact_rejection: true
+      real_time_processing: true
+
+    # 监控配置
+    monitoring:
+      prometheus:
+        enabled: true
+        path: "/metrics"
+        histogram_buckets: [0.1, 0.5, 1.0, 2.5, 5.0, 10.0]
+      jaeger:
+        enabled: true
+        service_name: "rqa2026"
+        sampler_type: "probabilistic"
+        sampler_param: 0.1
+
+    # 安全配置
+    security:
+      jwt_secret_key: "change-this-in-production"
+      jwt_algorithm: "HS256"
+      jwt_expiration: 3600
+      cors_allow_credentials: true
+      session_timeout: 7200
+
+  # 日志配置
+  logging-config.yaml: |
+    version: 1
+    disable_existing_loggers: false
+    formatters:
+      detailed:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+      json:
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+        format: '%(asctime)s %(name)s %(levelname)s %(message)s'
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: detailed
+        stream: ext://sys.stdout
+
+      file:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: json
+        filename: /app/logs/rqa2026.log
+        maxBytes: 10485760  # 10MB
+        backupCount: 5
+
+      error_file:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: json
+        filename: /app/logs/rqa2026_error.log
+        maxBytes: 10485760
+        backupCount: 5
+
+    loggers:
+      rqa2026:
+        level: INFO
+        handlers: [console, file, error_file]
+        propagate: no
+
+      quantum:
+        level: INFO
+        handlers: [console, file]
+        propagate: no
+
+      ai:
+        level: INFO
+        handlers: [console, file]
+        propagate: no
+
+      bmi:
+        level: INFO
+        handlers: [console, file]
+        propagate: no
+
+    root:
+      level: INFO
+      handlers: [console]
+
+  # 健康检查配置
+  health-config.yaml: |
+    health_checks:
+      database:
+        enabled: true
+        timeout: 5
+        interval: 30
+
+      redis:
+        enabled: true
+        timeout: 5
+        interval: 30
+
+      minio:
+        enabled: true
+        timeout: 10
+        interval: 60
+
+      quantum_backend:
+        enabled: true
+        timeout: 30
+        interval: 300
+
+    readiness_checks:
+      dependencies: true
+      database: true
+      cache: true
+
+    liveness_checks:
+      memory_usage: 0.9  # 90%
+      cpu_usage: 0.95    # 95%
+      thread_count: 100
+
+
+
+

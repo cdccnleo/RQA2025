@@ -1,0 +1,100 @@
+{
+  "version": "1.0",
+  "description": "RQA2025项目质量门禁配置",
+
+  "quality_gates": {
+    "clone_count_gate": {
+      "name": "克隆组数量门禁",
+      "description": "限制代码中允许的最大克隆组数量",
+      "threshold": 50,
+      "operator": "<=",
+      "severity": "high",
+      "enabled": true
+    },
+
+    "exact_clone_gate": {
+      "name": "精确克隆门禁",
+      "description": "不允许存在精确克隆（相似度>95%）",
+      "threshold": 0,
+      "operator": "==",
+      "severity": "critical",
+      "enabled": true
+    },
+
+    "quality_score_gate": {
+      "name": "质量评分门禁",
+      "description": "最低允许的代码质量综合评分",
+      "threshold": 0.7,
+      "operator": ">=",
+      "severity": "medium",
+      "enabled": true
+    },
+
+    "complexity_gate": {
+      "name": "复杂度门禁",
+      "description": "限制高复杂度代码文件数量",
+      "threshold": 5,
+      "operator": "<=",
+      "severity": "medium",
+      "enabled": true
+    },
+
+    "large_file_gate": {
+      "name": "大文件门禁",
+      "description": "限制单个文件最大行数",
+      "threshold": 1000,
+      "operator": "<=",
+      "severity": "low",
+      "enabled": false
+    }
+  },
+
+  "check_configuration": {
+    "duplicate_check": {
+      "enabled": true,
+      "preset": "quality",
+      "fail_on_error": true
+    },
+
+    "complexity_analysis": {
+      "enabled": true,
+      "max_cyclomatic_complexity": 10,
+      "max_cognitive_complexity": 15,
+      "max_nesting_depth": 5
+    },
+
+    "style_check": {
+      "enabled": true,
+      "tools": ["flake8", "black"],
+      "max_line_length": 100,
+      "ignore_patterns": ["__pycache__", ".git", "node_modules"]
+    },
+
+    "test_coverage": {
+      "enabled": false,
+      "min_coverage": 80,
+      "fail_on_low_coverage": false
+    }
+  },
+
+  "reporting": {
+    "output_formats": ["json", "html", "console"],
+    "generate_trend_report": true,
+    "notify_on_failure": true,
+    "report_retention_days": 30
+  },
+
+  "ci_cd_integration": {
+    "fail_pipeline_on_gate_failure": true,
+    "block_merge_on_critical_issues": true,
+    "require_review_on_warnings": false,
+    "auto_fix_enabled": false
+  },
+
+  "notifications": {
+    "slack_webhook": "",
+    "email_recipients": [],
+    "notify_on_improvement": true,
+    "notify_on_regression": true
+  }
+}

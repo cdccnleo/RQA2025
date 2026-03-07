@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="23" time="97.798" timestamp="2025-11-17T02:25:08.833236+08:00" hostname="AIPC"><testcase classname="unit.ml.core.test_ml_core_unit" name="test_initialization_fallback" time="0.860"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_initialization_without_model_cache_flag_applies_defaults" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_train_and_predict_linear_model" time="1.928"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_d2a7cc46
+INFO     src.ml.core.ml_core:ml_core.py:211 模型 model_d2a7cc46 预测完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_d2a7cc46
+INFO:src.ml.core.ml_core:模型 model_d2a7cc46 预测完成
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_model_invalid_type" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:288 创建模型失败 unsupported: 不支持的模型类型: unsupported
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:创建模型失败 unsupported: 不支持的模型类型: unsupported
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_get_feature_importance_with_importances" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_save_load_and_delete_model" time="0.101"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_c266a050
+INFO     src.ml.core.ml_core:ml_core.py:389 模型 model_c266a050 已保存到 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4058\popen-gw0\test_save_load_and_delete_mode0\model.pkl
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:405 模型已从 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4058\popen-gw0\test_save_load_and_delete_mode0\model.pkl 加载，ID: model_c266a050
+INFO     src.ml.core.ml_core:ml_core.py:371 模型 model_c266a050 已删除
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_c266a050
+INFO:src.ml.core.ml_core:模型 model_c266a050 已保存到 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4058\popen-gw0\test_save_load_and_delete_mode0\model.pkl
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:模型已从 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4058\popen-gw0\test_save_load_and_delete_mode0\model.pkl 加载，ID: model_c266a050
+INFO:src.ml.core.ml_core:模型 model_c266a050 已删除
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_cross_validate_returns_metrics" time="0.040"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:567 交叉验证完成: 平均分数=1.5146
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:交叉验证完成: 平均分数=1.5146
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_feature_processor_workflow" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:450 特征处理器创建成功: processor_standard_model_5bce6888
+INFO     src.ml.core.ml_core:ml_core.py:468 特征处理器 processor_standard_model_5bce6888 拟合完成
+INFO     src.ml.core.ml_core:ml_core.py:485 特征转换完成，形状: (4, 2)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:特征处理器创建成功: processor_standard_model_5bce6888
+INFO:src.ml.core.ml_core:特征处理器 processor_standard_model_5bce6888 拟合完成
+INFO:src.ml.core.ml_core:特征转换完成，形状: (4, 2)
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_initialization_force_fallback_and_null_adapters" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_train_model_exception_path" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+ERROR    src.ml.core.ml_core:ml_core.py:152 模型训练失败: model creation failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+ERROR:src.ml.core.ml_core:模型训练失败: model creation failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_prepare_features_else_branch" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_predict_model_not_found" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_predict_exception_handling" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_a35d03b1
+ERROR    src.ml.core.ml_core:ml_core.py:214 模型预测失败: prediction failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_a35d03b1
+ERROR:src.ml.core.ml_core:模型预测失败: prediction failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_evaluate_model_exception_handling" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_4629b7a5
+ERROR    src.ml.core.ml_core:ml_core.py:241 模型评估失败: prediction failed in evaluate
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_4629b7a5
+ERROR:src.ml.core.ml_core:模型评估失败: prediction failed in evaluate
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_model_rf_type" time="0.494"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_model_xgb_with_import_error" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+WARNING  src.ml.core.ml_core:ml_core.py:275 XGBoost未安装，使用随机森林作为替代
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+WARNING:src.ml.core.ml_core:XGBoost未安装，使用随机森林作为替代
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_simple_neural_network_with_import_error" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+WARNING  src.ml.core.ml_core:ml_core.py:307 MLPRegressor不可用，使用线性回归作为替代
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+WARNING:src.ml.core.ml_core:MLPRegressor不可用，使用线性回归作为替代
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_preprocess_features_exception_path" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:325 特征预处理失败: fillna failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:特征预处理失败: fillna failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_calculate_metrics_exception_path" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:350 计算评估指标失败: No module named 'sklearn.metrics'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:计算评估指标失败: No module named 'sklearn.metrics'
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_feature_processor_exception_path" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:454 创建特征处理器失败: No module named 'sklearn.preprocessing'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:创建特征处理器失败: No module named 'sklearn.preprocessing'
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_fit_feature_processor_exception_paths" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:471 拟合特征处理器失败: 特征处理器 nonexistent 不存在
+INFO     src.ml.core.ml_core:ml_core.py:450 特征处理器创建成功: processor_standard_model_7b9a3d58
+ERROR    src.ml.core.ml_core:ml_core.py:471 拟合特征处理器失败: fit failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:拟合特征处理器失败: 特征处理器 nonexistent 不存在
+INFO:src.ml.core.ml_core:特征处理器创建成功: processor_standard_model_7b9a3d58
+ERROR:src.ml.core.ml_core:拟合特征处理器失败: fit failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_transform_features_exception_paths" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:489 特征转换失败: 特征处理器 nonexistent 不存在
+INFO     src.ml.core.ml_core:ml_core.py:450 特征处理器创建成功: processor_standard_model_c891072f
+INFO     src.ml.core.ml_core:ml_core.py:468 特征处理器 processor_standard_model_c891072f 拟合完成
+ERROR    src.ml.core.ml_core:ml_core.py:489 特征转换失败: transform failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:特征转换失败: 特征处理器 nonexistent 不存在
+INFO:src.ml.core.ml_core:特征处理器创建成功: processor_standard_model_c891072f
+INFO:src.ml.core.ml_core:特征处理器 processor_standard_model_c891072f 拟合完成
+ERROR:src.ml.core.ml_core:特征转换失败: transform failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_get_feature_importance_branches" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase></testsuite></testsuites>

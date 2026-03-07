@@ -1,0 +1,1869 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="70" time="133.917" timestamp="2025-11-17T06:32:04.373270+08:00" hostname="AIPC"><testcase classname="unit.data.integration.test_enhanced_integration_manager_unit" name="test_stream_lifecycle_and_callbacks" time="3.023"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:28 统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: s1
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: s1
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: s1
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: s1
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-17 06:33:23,754 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+2025-11-17 06:33:23,786 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: s1
+INFO:enhanced_integration_manager:启动实时数据流: s1
+INFO:enhanced_integration_manager:停止实时数据流: s1
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: s1
+2025-11-17 06:33:24,804 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:24,811 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:24,812 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:24,812 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:24,813 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:24,813 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:24,813 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_metric_stats_empty" time="0.521"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_stream_lifecycle_and_callbacks_no_raise" time="3.039"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:28 统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: test_stream_1763332403
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: test_stream_1763332403
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: test_stream_1763332403
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: test_stream_1763332403
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-17 06:33:23,777 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+2025-11-17 06:33:23,807 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: test_stream_1763332403
+INFO:enhanced_integration_manager:启动实时数据流: test_stream_1763332403
+INFO:enhanced_integration_manager:停止实时数据流: test_stream_1763332403
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: test_stream_1763332403
+2025-11-17 06:33:24,820 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:24,826 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:24,826 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:24,827 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:24,827 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:24,827 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:24,828 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_metric_stats_single_value" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_metric_stats_multiple_values" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_metrics_truncation" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_all_metrics_empty" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_all_metrics_multiple" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_clear_metrics" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_cache_efficiency_no_data" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_cache_efficiency_with_data" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_average_load_time_no_data" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_average_load_time_with_data" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_current_metric_no_data" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_current_metric_with_data" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_export_metrics_json" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_export_metrics_other_format" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_recent_alerts_low_rate" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_recent_alerts_warning_rate" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_recent_alerts_normal_rate" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_alert_manager_trigger_alert_not_found" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_alert_manager_trigger_alert_below_threshold" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_alert_manager_trigger_alert_cooldown" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:260 邮件告警 [warning]: Value: 100.0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:enhanced_integration_manager:邮件告警 [warning]: Value: 100.0
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_alert_manager_trigger_alert_after_cooldown" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:260 邮件告警 [warning]: Value: 100.0
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:260 邮件告警 [warning]: Value: 100.0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:enhanced_integration_manager:邮件告警 [warning]: Value: 100.0
+INFO:enhanced_integration_manager:邮件告警 [warning]: Value: 100.0
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_alert_manager_send_alert_channel_error" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    enhanced_integration_manager:enhanced_integration_manager.py:255 发送告警失败 email: email send failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:enhanced_integration_manager:发送告警失败 email: email send failed
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_alert_manager_clear_history" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:260 邮件告警 [warning]: Value: 100.0
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:260 邮件告警 [warning]: Value: 100.0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:enhanced_integration_manager:邮件告警 [warning]: Value: 100.0
+INFO:enhanced_integration_manager:邮件告警 [warning]: Value: 100.0
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_start_stop_monitoring" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges2" name="test_performance_monitor_get_performance_report" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_unit" name="test_distributed_load_local_and_metrics" time="1.365"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+ERROR    root:exceptions.py:33 基础设施异常: DATA_LOADER_ERROR - Loader not found for data type: stock - Loader class 'stock' not registered
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:25,224 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+ERROR:root:基础设施异常: DATA_LOADER_ERROR - Loader not found for data type: stock - Loader class 'stock' not registered
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:26,240 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:26,245 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:26,246 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:26,246 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:26,247 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:26,247 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:26,248 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_performance_metrics_and_alert_history_resilient" time="1.336"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:25,226 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:26,240 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:26,245 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:26,245 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:26,246 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:26,246 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:26,247 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:26,247 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_metrics_error_paths_and_shutdown_resilient" time="0.254"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: s1
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: s1
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:733 关闭线程池失败: tp
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:741 关闭进程池失败: pp
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:749 关闭缓存管理器失败: cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:26,572 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: s1
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: s1
+WARNING:enhanced_integration_manager:关闭线程池失败: tp
+WARNING:enhanced_integration_manager:关闭进程池失败: pp
+WARNING:enhanced_integration_manager:关闭缓存管理器失败: cache
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_unit" name="test_alert_history_empty_and_shutdown_idempotent" time="1.279"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:26,584 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:27,593 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:27,594 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:27,594 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:27,594 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:27,594 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:27,594 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:27,594 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_init_fallback_paths" time="1.178"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:26,830 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:27,842 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:27,843 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:27,843 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:27,843 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:27,843 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:27,843 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:27,844 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_flow_control_branches" time="1.125"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: flow_test_1763332408
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: flow_test_1763332408
+ERROR    enhanced_integration_manager:enhanced_integration_manager.py:133 数据流回调执行失败: callback error
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:135 数据队列已满，丢弃数据: flow_test_1763332408
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: flow_test_1763332408
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: flow_test_1763332408
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:28,006 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: flow_test_1763332408
+INFO:enhanced_integration_manager:启动实时数据流: flow_test_1763332408
+ERROR:enhanced_integration_manager:数据流回调执行失败: callback error
+WARNING:enhanced_integration_manager:数据队列已满，丢弃数据: flow_test_1763332408
+INFO:enhanced_integration_manager:停止实时数据流: flow_test_1763332408
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: flow_test_1763332408
+2025-11-17 06:33:29,013 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:29,014 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:29,014 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:29,014 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:29,014 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:29,014 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:29,015 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_aggregation_and_node_status_paths" time="1.153"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:29,135 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:30,136 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:30,137 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:30,137 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:30,137 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:30,137 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:30,137 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:30,137 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_trigger_branches" time="1.137"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:30,297 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:31,305 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:31,306 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:31,306 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:31,306 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:31,306 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:31,306 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:31,306 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_distributed_load_fallback_paths" time="1.149"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:31,433 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:32,435 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:32,436 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:32,436 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:32,436 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:32,436 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:32,436 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:32,436 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_node_and_stream_info_error_paths" time="1.198"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:153 注册节点: node1 (localhost:8080)
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: info_test_1763332412
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: info_test_1763332412
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:32,586 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:注册节点: node1 (localhost:8080)
+INFO:enhanced_integration_manager:创建数据流: info_test_1763332412
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: info_test_1763332412
+2025-11-17 06:33:33,602 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:33,603 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:33,603 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:33,603 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:33,603 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:33,603 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:33,604 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_quality_report_path" time="1.370"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:33,788 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:34,799 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:34,803 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:34,803 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:34,804 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:34,804 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:34,805 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:34,805 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_shutdown_component_order_details" time="1.346"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: shutdown_test_1763332415
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: shutdown_test_1763332415
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: shutdown_test_1763332415
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:756 清空告警历史失败: clear alert
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:762 清空性能指标失败: clear perf
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:768 清空节点失败: clear nodes
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:35,174 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: shutdown_test_1763332415
+INFO:enhanced_integration_manager:启动实时数据流: shutdown_test_1763332415
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: shutdown_test_1763332415
+2025-11-17 06:33:36,186 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:36,191 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:36,191 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:36,191 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:36,193 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:36,193 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:36,193 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+WARNING:enhanced_integration_manager:清空告警历史失败: clear alert
+WARNING:enhanced_integration_manager:清空性能指标失败: clear perf
+WARNING:enhanced_integration_manager:清空节点失败: clear nodes
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_distributed_load_deeper_fallback" time="1.194"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:153 注册节点: node1 (localhost:8080)
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:36,524 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:注册节点: node1 (localhost:8080)
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:37,526 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:37,528 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:37,529 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:37,529 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:37,529 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:37,529 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:37,530 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_performance_alert_trigger_condition" time="1.186"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:153 注册节点: node1 (localhost:8080)
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:260 邮件告警 [warning]: 数据加载性能下降: 6.00秒
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:37,722 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:注册节点: node1 (localhost:8080)
+INFO:enhanced_integration_manager:邮件告警 [warning]: 数据加载性能下降: 6.00秒
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:38,736 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:38,737 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:38,737 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:38,738 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:38,738 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:38,738 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:38,738 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_history_exception_paths" time="1.162"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+ERROR    enhanced_integration_manager:enhanced_integration_manager.py:709 获取告警历史失败: alert_history access fail
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:756 清空告警历史失败: 'BadIterable' object has no attribute 'clear'
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:38,913 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+ERROR:enhanced_integration_manager:获取告警历史失败: alert_history access fail
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:39,918 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:39,920 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:39,920 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:39,920 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:39,920 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:39,921 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:39,921 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+WARNING:enhanced_integration_manager:清空告警历史失败: 'BadIterable' object has no attribute 'clear'
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_config_not_found_path" time="1.170"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:40,078 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:41,087 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:41,088 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:41,088 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:41,090 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:41,090 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:41,090 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:41,090 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_cooldown_and_threshold_paths" time="1.424"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:41,255 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:42,268 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:42,272 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:42,273 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:42,274 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:42,274 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:42,275 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:42,275 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_performance_monitor_metrics_truncation" time="1.382"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:42,696 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:43,703 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:43,708 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:43,709 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:43,709 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:43,710 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:43,710 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:43,711 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_performance_monitor_empty_metrics_path" time="1.378"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:44,092 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:45,108 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:45,114 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:45,115 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:45,115 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:45,116 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:45,116 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:45,117 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_get_performance_metrics_exception_wrapper" time="1.329"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+ERROR    enhanced_integration_manager:enhanced_integration_manager.py:687 获取性能指标失败: get_all_metrics fail
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:45,477 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+ERROR:enhanced_integration_manager:获取性能指标失败: get_all_metrics fail
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:46,492 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:46,496 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:46,496 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:46,497 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:46,497 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:46,497 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:46,498 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_get_recent_alerts_cache_rate_paths" time="1.273"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:46,816 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:47,821 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:47,825 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:47,826 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:47,827 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:47,827 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:47,827 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:47,828 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_performance_monitor_methods_coverage" time="1.358"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:48,098 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:49,100 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:49,105 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:49,105 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:49,106 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:49,106 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:49,106 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:49,107 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_export_metrics_format_paths" time="1.395"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:49,469 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:50,471 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:50,476 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:50,477 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:50,478 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:50,478 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:50,478 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:50,479 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_send_exception_catching" time="1.357"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:50,880 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:51,892 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:51,897 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:51,898 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:51,898 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:51,898 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:51,899 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:51,899 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_shutdown_stream_stop_exception" time="1.504"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: shutdown_stream_exc_1763332432
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: shutdown_stream_exc_1763332432
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:724 停止数据流失败: stream stop fail
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:52,241 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: shutdown_stream_exc_1763332432
+INFO:enhanced_integration_manager:启动实时数据流: shutdown_stream_exc_1763332432
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+WARNING:enhanced_integration_manager:停止数据流失败: stream stop fail
+2025-11-17 06:33:53,258 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:53,264 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:53,265 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:53,265 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:53,266 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:53,267 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:53,267 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_shutdown_outer_exception_handler" time="1.275"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:53,751 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:54,759 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:54,763 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:54,764 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:54,764 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:54,765 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:54,765 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:54,766 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_send_methods_direct_call" time="1.335"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:55,034 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:56,051 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:56,056 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:56,057 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:56,057 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:56,058 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:56,058 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:56,058 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_trigger_all_conditions_precise" time="1.258"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:56,380 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:33:57,392 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:57,397 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:57,397 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:57,397 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:57,398 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:57,398 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:57,398 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_stream_queue_empty_exception" time="1.361"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: queue_empty_test_1763332437
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: queue_empty_test_1763332437
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: queue_empty_test_1763332437
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: queue_empty_test_1763332437
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:57,646 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: queue_empty_test_1763332437
+INFO:enhanced_integration_manager:启动实时数据流: queue_empty_test_1763332437
+INFO:enhanced_integration_manager:停止实时数据流: queue_empty_test_1763332437
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: queue_empty_test_1763332437
+2025-11-17 06:33:58,653 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:33:58,657 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:33:58,657 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:58,657 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:33:58,659 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:33:58,659 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:33:58,659 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_stream_not_running_path" time="1.383"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: not_running_test_1763332439
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: not_running_test_1763332439
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:33:59,021 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: not_running_test_1763332439
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: not_running_test_1763332439
+2025-11-17 06:34:00,027 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:00,032 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:00,034 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:00,034 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:00,034 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:00,035 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:00,035 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_unregister_node_path" time="1.456"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:153 注册节点: test_unregister_node (localhost:8080)
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:160 注销节点: test_unregister_node
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:00,416 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:注册节点: test_unregister_node (localhost:8080)
+INFO:enhanced_integration_manager:注销节点: test_unregister_node
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:01,429 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:01,434 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:01,436 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:01,436 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:01,437 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:01,437 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:01,437 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_send_channel_specific_paths" time="1.226"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:01,887 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:02,892 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:02,896 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:02,897 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:02,897 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:02,898 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:02,898 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:02,899 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_get_least_loaded_node_no_available" time="1.299"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:03,114 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:04,127 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:04,129 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:04,131 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:04,131 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:04,132 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:04,132 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:04,132 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_queue_empty_break_path" time="1.231"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: empty_break_test_1763332444
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: empty_break_test_1763332444
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: empty_break_test_1763332444
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: empty_break_test_1763332444
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: empty_break_test_1763332444
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:04,424 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: empty_break_test_1763332444
+INFO:enhanced_integration_manager:启动实时数据流: empty_break_test_1763332444
+INFO:enhanced_integration_manager:停止实时数据流: empty_break_test_1763332444
+INFO:enhanced_integration_manager:停止实时数据流: empty_break_test_1763332444
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: empty_break_test_1763332444
+2025-11-17 06:34:05,434 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:05,437 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:05,437 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:05,437 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:05,437 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:05,437 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:05,438 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_queue_empty_exception_break_precise" time="1.347"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: empty_break_precise_1763332445
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: empty_break_precise_1763332445
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: empty_break_precise_1763332445
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: empty_break_precise_1763332445
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:05,662 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: empty_break_precise_1763332445
+INFO:enhanced_integration_manager:启动实时数据流: empty_break_precise_1763332445
+INFO:enhanced_integration_manager:停止实时数据流: empty_break_precise_1763332445
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: empty_break_precise_1763332445
+2025-11-17 06:34:06,669 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:06,674 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:06,674 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:06,675 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:06,675 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:06,676 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:06,677 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_alert_send_exception_per_channel" time="1.362"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:07,027 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:08,038 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:08,043 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:08,044 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:08,044 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:08,045 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:08,045 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:08,045 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_trigger_alert_config_not_found_isolated" time="1.366"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:08,402 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:09,410 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:09,415 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:09,415 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:09,416 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:09,416 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:09,417 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:09,417 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_trigger_alert_cooldown_check_isolated" time="1.319"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:09,775 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:10,785 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:10,788 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:10,789 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:10,789 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:10,789 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:10,790 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:10,790 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_trigger_alert_threshold_check_isolated" time="1.253"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:11,105 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:12,109 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:12,110 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:12,111 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:12,111 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:12,111 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:12,111 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:12,111 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_get_performance_metrics_node_info_exception" time="1.167"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:153 注册节点: test_node_exc (localhost:8080)
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:666 获取节点信息失败: nodes access fail
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:12,369 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:注册节点: test_node_exc (localhost:8080)
+WARNING:enhanced_integration_manager:获取节点信息失败: nodes access fail
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-17 06:34:13,380 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:13,381 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:13,381 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:13,381 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:13,381 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:13,383 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:13,383 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_get_performance_metrics_stream_info_exception" time="1.172"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: stream_exc_test_1763332453
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: stream_exc_test_1763332453
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:678 获取流信息失败: queue size fail
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: stream_exc_test_1763332453
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:13,535 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: stream_exc_test_1763332453
+INFO:enhanced_integration_manager:启动实时数据流: stream_exc_test_1763332453
+WARNING:enhanced_integration_manager:获取流信息失败: queue size fail
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: stream_exc_test_1763332453
+2025-11-17 06:34:14,550 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-17 06:34:14,551 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-17 06:34:14,551 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:14,551 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-17 06:34:14,551 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-17 06:34:14,551 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-17 06:34:14,551 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_shutdown_outer_exception_precise" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: shutdown_exc_test_1763332454
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: shutdown_exc_test_1763332454
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:153 注册节点: test_node_shutdown (localhost:8080)
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: shutdown_exc_test_1763332454
+ERROR    enhanced_integration_manager:enhanced_integration_manager.py:774 关闭管理器时发生错误: streams clear fail
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:714 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: shutdown_exc_test_1763332454
+ERROR    enhanced_integration_manager:enhanced_integration_manager.py:774 关闭管理器时发生错误: streams clear fail
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:776 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:34:14,710 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: shutdown_exc_test_1763332454
+INFO:enhanced_integration_manager:启动实时数据流: shutdown_exc_test_1763332454
+INFO:enhanced_integration_manager:注册节点: test_node_shutdown (localhost:8080)
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: shutdown_exc_test_1763332454
+ERROR:enhanced_integration_manager:关闭管理器时发生错误: streams clear fail
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: shutdown_exc_test_1763332454
+ERROR:enhanced_integration_manager:关闭管理器时发生错误: streams clear fail
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase></testsuite></testsuites>

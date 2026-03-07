@@ -1,0 +1,52 @@
+============================================================
+简化监控反馈层部署报告
+============================================================
+部署时间: 2025-08-11 16:40:07
+配置文件: config\monitoring.json
+
+配置信息:
+------------------------------
+health_check:
+  enabled: True
+  interval: 30
+  timeout: 10
+  endpoints: ['http://localhost:8000/health', 'http://localhost:8001/health', 'http://localhost:8002/health']
+alerting:
+  enabled: True
+  channels: ['email', 'webhook', 'slack']
+  cooldown: 300
+  email: {'smtp_server': 'smtp.gmail.com', 'smtp_port': 587, 'username': 'alerts@company.com', 'password': '', 'recipients': ['admin@company.com', 'ops@company.com']}
+  webhook: {'url': 'https://hooks.slack.com/services/xxx/yyy/zzz', 'timeout': 10}
+  slack: {'webhook_url': 'https://hooks.slack.com/services/xxx/yyy/zzz', 'channel': '#alerts'}
+prometheus:
+  enabled: True
+  port: 9090
+  metrics_path: /metrics
+  collectors: ['cpu', 'memory', 'disk', 'network', 'trading', 'risk']
+grafana:
+  enabled: True
+  url: http://localhost:3000
+  api_key: 
+  dashboards: {'system': {'title': '系统监控', 'panels': [{'title': 'CPU使用率', 'type': 'graph', 'targets': ['cpu_usage']}, {'title': '内存使用率', 'type': 'graph', 'targets': ['memory_usage']}, {'title': '磁盘使用率', 'type': 'graph', 'targets': ['disk_usage']}, {'title': '网络流量', 'type': 'graph', 'targets': ['network_io']}]}, 'business': {'title': '业务监控', 'panels': [{'title': '交易量', 'type': 'graph', 'targets': ['trading_volume']}, {'title': '错误率', 'type': 'graph', 'targets': ['error_rate']}, {'title': '响应时间', 'type': 'graph', 'targets': ['response_time']}, {'title': '活跃用户', 'type': 'stat', 'targets': ['active_users']}]}, 'trading': {'title': '交易监控', 'panels': [{'title': '订单数量', 'type': 'graph', 'targets': ['order_count']}, {'title': '成交率', 'type': 'graph', 'targets': ['fill_rate']}, {'title': '延迟分布', 'type': 'histogram', 'targets': ['latency']}, {'title': '风险评分', 'type': 'graph', 'targets': ['risk_score']}]}}
+performance:
+  enabled: True
+  sampling_rate: 0.1
+  retention_days: 30
+  metrics: ['response_time', 'throughput', 'error_rate', 'resource_usage']
+  thresholds: {'response_time': {'warning': 1000, 'critical': 5000}, 'error_rate': {'warning': 1.0, 'critical': 5.0}, 'cpu_usage': {'warning': 80, 'critical': 95}, 'memory_usage': {'warning': 85, 'critical': 95}}
+logging:
+  level: INFO
+  format: %(asctime)s - %(name)s - %(levelname)s - %(message)s
+  handlers: ['console', 'file', 'syslog']
+  file: {'path': 'logs/monitoring.log', 'max_size': '100MB', 'backup_count': 5}
+security:
+  authentication: {'enabled': True, 'type': 'jwt', 'secret_key': '', 'expiration': 3600}
+  authorization: {'enabled': True, 'roles': ['admin', 'operator', 'viewer']}
+  ssl: {'enabled': False, 'cert_file': '', 'key_file': ''}
+
+部署状态:
+------------------------------
+健康监控服务: ✅ 已部署
+Prometheus导出器: ✅ 已部署
+
+============================================================

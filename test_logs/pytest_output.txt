@@ -1,0 +1,97 @@
+
+============================== warnings summary ===============================
+tests\unit\infrastructure\monitoring\test_monitoring_system_comprehensive.py:21
+  C:\PythonProject\RQA2025\tests\unit\infrastructure\monitoring\test_monitoring_system_comprehensive.py:21: PytestCollectionWarning: cannot collect test class 'TestableMetricsCollector' because it has a __init__ constructor (from: unit/infrastructure/monitoring/test_monitoring_system_comprehensive.py)
+    class TestableMetricsCollector:
+
+tests\unit\infrastructure\monitoring\test_monitoring_system_comprehensive.py:226
+  C:\PythonProject\RQA2025\tests\unit\infrastructure\monitoring\test_monitoring_system_comprehensive.py:226: PytestCollectionWarning: cannot collect test class 'TestableAlertManager' because it has a __init__ constructor (from: unit/infrastructure/monitoring/test_monitoring_system_comprehensive.py)
+    class TestableAlertManager:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.9.23-final-0 -----------
+Name                                                                                Stmts   Miss  Cover
+-------------------------------------------------------------------------------------------------------
+src\infrastructure\monitoring\__init__.py                                              16      4    75%
+src\infrastructure\monitoring\alert_system.py                                          13     10    23%
+src\infrastructure\monitoring\application\__init__.py                                  14      2    86%
+src\infrastructure\monitoring\application\application_monitor.py                      110     85    23%
+src\infrastructure\monitoring\application\logger_pool_monitor.py                      237    128    46%
+src\infrastructure\monitoring\application\logger_pool_monitor_refactored.py            83     83     0%
+src\infrastructure\monitoring\application\production_monitor.py                        13     13     0%
+src\infrastructure\monitoring\application_monitor.py                                    9      6    33%
+src\infrastructure\monitoring\components\__init__.py                                   17      0   100%
+src\infrastructure\monitoring\components\adaptive_configurator.py                     239    196    18%
+src\infrastructure\monitoring\components\alert_condition_evaluator.py                  68     53    22%
+src\infrastructure\monitoring\components\alert_manager.py                             165    141    15%
+src\infrastructure\monitoring\components\alert_processor.py                           132     74    44%
+src\infrastructure\monitoring\components\alert_rule_manager.py                        104     49    53%
+src\infrastructure\monitoring\components\baseline_manager.py                          193    145    25%
+src\infrastructure\monitoring\components\configuration_rule_manager.py                127    101    20%
+src\infrastructure\monitoring\components\data_persistence.py                           63     48    24%
+src\infrastructure\monitoring\components\data_persistor.py                            163    142    13%
+src\infrastructure\monitoring\components\logger_pool_alert_manager.py                  94     57    39%
+src\infrastructure\monitoring\components\logger_pool_metrics_exporter.py               73     45    38%
+src\infrastructure\monitoring\components\logger_pool_monitoring_loop.py                93     38    59%
+src\infrastructure\monitoring\components\logger_pool_stats_collector.py                89     46    48%
+src\infrastructure\monitoring\components\metrics_collector.py                         103     75    27%
+src\infrastructure\monitoring\components\metrics_exporter.py                          101     79    22%
+src\infrastructure\monitoring\components\monitoring_coordinator.py                    133    100    25%
+src\infrastructure\monitoring\components\optimization_engine.py                        69     55    20%
+src\infrastructure\monitoring\components\performance_evaluator.py                     143    143     0%
+src\infrastructure\monitoring\components\performance_monitor.py                       200     77    62%
+src\infrastructure\monitoring\components\production_alert_manager.py                   76     59    22%
+src\infrastructure\monitoring\components\production_data_manager.py                    90     74    18%
+src\infrastructure\monitoring\components\production_health_evaluator.py               122    104    15%
+src\infrastructure\monitoring\components\production_system_metrics_collector.py        78     59    24%
+src\infrastructure\monitoring\components\rule_types.py                                 26      0   100%
+src\infrastructure\monitoring\components\stats_collector.py                            84     66    21%
+src\infrastructure\monitoring\core\__init__.py                                          0      0   100%
+src\infrastructure\monitoring\core\component_bus.py                                   247    160    35%
+src\infrastructure\monitoring\core\component_instance_manager.py                      206    172    17%
+src\infrastructure\monitoring\core\component_registrar.py                             127    100    21%
+src\infrastructure\monitoring\core\component_registry.py                              251    201    20%
+src\infrastructure\monitoring\core\concurrency_optimizer.py                           177    139    21%
+src\infrastructure\monitoring\core\constants.py                                       118      0   100%
+src\infrastructure\monitoring\core\dependency_resolver.py                             161    138    14%
+src\infrastructure\monitoring\core\exceptions.py                                      161    117    27%
+src\infrastructure\monitoring\core\integration_test_framework.py                      248    192    23%
+src\infrastructure\monitoring\core\message_router.py                                  156    110    29%
+src\infrastructure\monitoring\core\parameter_objects.py                               266     24    91%
+src\infrastructure\monitoring\core\performance_monitor.py                             193    138    28%
+src\infrastructure\monitoring\core\smart_cache.py                                     199    144    28%
+src\infrastructure\monitoring\core\state_persistor.py                                 245    205    16%
+src\infrastructure\monitoring\core\subscription_manager.py                            161    133    17%
+src\infrastructure\monitoring\core\unified_exception_handler.py                       128     79    38%
+src\infrastructure\monitoring\handlers\__init__.py                                     13     13     0%
+src\infrastructure\monitoring\handlers\component_monitor.py                           189    189     0%
+src\infrastructure\monitoring\handlers\exception_monitoring_alert.py                  219    219     0%
+src\infrastructure\monitoring\infrastructure\__init__.py                               10      5    50%
+src\infrastructure\monitoring\infrastructure\disaster_monitor.py                       98     58    41%
+src\infrastructure\monitoring\infrastructure\storage_monitor.py                       146     94    36%
+src\infrastructure\monitoring\infrastructure\system_monitor.py                         59     38    36%
+src\infrastructure\monitoring\services\__init__.py                                     20      6    70%
+src\infrastructure\monitoring\services\alert_processor.py                             168    130    23%
+src\infrastructure\monitoring\services\alert_service.py                               424    291    31%
+src\infrastructure\monitoring\services\continuous_monitoring_core.py                  252    195    23%
+src\infrastructure\monitoring\services\continuous_monitoring_demo.py                   58     58     0%
+src\infrastructure\monitoring\services\continuous_monitoring_service.py                 2      0   100%
+src\infrastructure\monitoring\services\continuous_monitoring_system_refactored.py     168    168     0%
+src\infrastructure\monitoring\services\intelligent_alert_system_refactored.py         226    174    23%
+src\infrastructure\monitoring\services\metrics_collector.py                           150    112    25%
+src\infrastructure\monitoring\services\monitoring_coordinator.py                      125     96    23%
+src\infrastructure\monitoring\services\monitoring_runtime.py                           67     53    21%
+src\infrastructure\monitoring\services\optional_components.py                          18      3    83%
+src\infrastructure\monitoring\services\test_automation_optimizer.py                    16      7    56%
+src\infrastructure\monitoring\services\unified_monitoring_service.py                   64     48    25%
+src\infrastructure\monitoring\system_monitor.py                                         9      6    33%
+src\infrastructure\monitoring\unified_monitoring.py                                     8      8     0%
+-------------------------------------------------------------------------------------------------------
+TOTAL                                                                                8893   6380    28%
+Coverage JSON written to file test_logs/monitoring_coverage.json
+
+=========================== short test summary info ===========================
+ERROR tests\unit\infrastructure\monitoring\services\test_continuous_monitoring_service.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+2 warnings, 1 error in 15.94s

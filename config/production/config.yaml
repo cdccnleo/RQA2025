@@ -1,0 +1,232 @@
+# RQA2025 生产环境主配置文件
+# 版本: 1.0.0
+# 创建日期: 2025-01-27
+
+# 应用基本信息
+app:
+  name: "RQA2025"
+  version: "1.0.0"
+  environment: "production"
+  debug: false
+  log_level: "INFO"
+  
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8080
+  workers: 4
+  max_connections: 1000
+  timeout: 30
+  keep_alive: 60
+  
+# 数据库配置
+database:
+  type: "postgresql"
+  host: "${DB_HOST:localhost}"
+  port: "${DB_PORT:5432}"
+  name: "${DB_NAME:rqa2025_prod}"
+  username: "${DB_USERNAME:rqa_user}"
+  password: "${DB_PASSWORD:}"
+  pool_size: 20
+  max_overflow: 30
+  pool_timeout: 30
+  pool_recycle: 3600
+  
+# Redis缓存配置
+cache:
+  redis:
+    host: "${REDIS_HOST:localhost}"
+    port: "${REDIS_PORT:6379}"
+    password: "${REDIS_PASSWORD:}"
+    db: 0
+    pool_size: 10
+    socket_timeout: 5
+    socket_connect_timeout: 5
+    retry_on_timeout: true
+    
+  memory:
+    max_size: 1000
+    ttl: 3600
+    
+# 监控配置
+monitoring:
+  enabled: true
+  prometheus:
+    port: 9090
+    path: "/metrics"
+    
+  grafana:
+    enabled: true
+    url: "${GRAFANA_URL:http://localhost:3000}"
+    
+  alerting:
+    enabled: true
+    webhook_url: "${ALERT_WEBHOOK_URL:}"
+    email:
+      smtp_host: "${SMTP_HOST:}"
+      smtp_port: "${SMTP_PORT:587}"
+      username: "${SMTP_USERNAME:}"
+      password: "${SMTP_PASSWORD:}"
+      from_email: "${FROM_EMAIL:alerts@rqa2025.com}"
+      
+# 日志配置
+logging:
+  level: "INFO"
+  format: "json"
+  handlers:
+    file:
+      enabled: true
+      filename: "/var/log/rqa2025/app.log"
+      max_bytes: 10485760  # 10MB
+      backup_count: 5
+      encoding: "utf-8"
+      
+    console:
+      enabled: false
+      
+    syslog:
+      enabled: true
+      host: "localhost"
+      port: 514
+      facility: "local0"
+      
+  filters:
+    sensitive_fields: ["password", "token", "secret"]
+    
+# 安全配置
+security:
+  ssl:
+    enabled: true
+    cert_file: "/etc/ssl/certs/rqa2025.crt"
+    key_file: "/etc/ssl/private/rqa2025.key"
+    
+  cors:
+    enabled: true
+    allowed_origins: ["https://rqa2025.com", "https://www.rqa2025.com"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allowed_headers: ["Content-Type", "Authorization"]
+    max_age: 86400
+    
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 1000
+    burst_size: 200
+    
+  authentication:
+    enabled: true
+    jwt_secret: "${JWT_SECRET:}"
+    jwt_expiration: 3600
+    refresh_token_expiration: 86400
+    
+# 性能配置
+performance:
+  cache:
+    enabled: true
+    default_ttl: 3600
+    max_size: 10000
+    
+  async:
+    enabled: true
+    max_workers: 8
+    queue_size: 1000
+    timeout: 30
+    
+  resource_management:
+    enabled: true
+    memory_limit: "2GB"
+    cpu_limit: 80
+    gc_interval: 300
+    
+# 部署配置
+deployment:
+  strategy: "blue-green"
+  health_check:
+    enabled: true
+    interval: 30
+    timeout: 10
+    retries: 3
+    
+  rollback:
+    enabled: true
+    max_versions: 5
+    
+  scaling:
+    auto_scaling: true
+    min_instances: 2
+    max_instances: 10
+    cpu_threshold: 70
+    memory_threshold: 80
+    
+# 备份配置
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  retention_days: 30
+  storage:
+    type: "s3"
+    bucket: "${BACKUP_BUCKET:rqa2025-backups}"
+    region: "${BACKUP_REGION:us-east-1}"
+    
+# 通知配置
+notifications:
+  email:
+    enabled: true
+    smtp_host: "${NOTIFICATION_SMTP_HOST:}"
+    smtp_port: "${NOTIFICATION_SMTP_PORT:587}"
+    username: "${NOTIFICATION_SMTP_USERNAME:}"
+    password: "${NOTIFICATION_SMTP_PASSWORD:}"
+    
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL:}"
+    channel: "#alerts"
+    
+  dingtalk:
+    enabled: true
+    webhook_url: "${DINGTALK_WEBHOOK_URL:}"
+    
+# 外部服务配置
+external_services:
+  data_providers:
+    - name: "alpha_vantage"
+      api_key: "${ALPHA_VANTAGE_API_KEY:}"
+      base_url: "https://www.alphavantage.co/query"
+      rate_limit: 5  # requests per minute
+      
+    - name: "yahoo_finance"
+      base_url: "https://query1.finance.yahoo.com"
+      rate_limit: 100
+      
+  storage:
+    s3:
+      bucket: "${S3_BUCKET:rqa2025-data}"
+      region: "${S3_REGION:us-east-1}"
+      access_key: "${S3_ACCESS_KEY:}"
+      secret_key: "${S3_SECRET_KEY:}"
+      
+# 开发工具配置
+development:
+  hot_reload: false
+  debug_toolbar: false
+  profiling: false
+  
+# 测试配置
+testing:
+  enabled: false
+  coverage:
+    enabled: false
+    threshold: 80
+    
+# 环境特定配置
+environment:
+  production: true
+  staging: false
+  development: false
+  
+# 功能开关
+features:
+  advanced_monitoring: true
+  performance_optimization: true
+  security_enhancement: true
+  backup_automation: true
+  notification_system: true

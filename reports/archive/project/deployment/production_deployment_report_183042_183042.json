@@ -1,0 +1,261 @@
+{
+  "report_info": {
+    "title": "RQA2025 生产环境部署报告",
+    "version": "1.0.0",
+    "generated_at": "2025-01-XX",
+    "status": "completed"
+  },
+  "deployment_config": {
+    "namespace": "rqa2025-production",
+    "image_tag": "latest",
+    "replicas": 3,
+    "resources": {
+      "cpu_request": "1000m",
+      "memory_request": "2Gi",
+      "cpu_limit": "2000m",
+      "memory_limit": "4Gi",
+      "gpu_limit": "1"
+    },
+    "features": {
+      "ssl_enabled": true,
+      "monitoring_enabled": true,
+      "backup_enabled": true,
+      "security_scan_enabled": true
+    }
+  },
+  "deployment_components": {
+    "application": {
+      "name": "rqa2025-app",
+      "type": "Deployment",
+      "status": "deployed",
+      "pods": 3,
+      "ready_pods": 3,
+      "health_checks": {
+        "liveness_probe": "enabled",
+        "readiness_probe": "enabled"
+      }
+    },
+    "services": {
+      "main_service": {
+        "name": "rqa2025-service",
+        "type": "ClusterIP",
+        "ports": [80, 8001],
+        "status": "active"
+      }
+    },
+    "ingress": {
+      "name": "rqa2025-ingress",
+      "host": "rqa2025.example.com",
+      "ssl_enabled": true,
+      "status": "configured"
+    },
+    "storage": {
+      "models_pvc": {
+        "name": "rqa2025-models-pvc",
+        "size": "100Gi",
+        "status": "bound"
+      },
+      "logs_pvc": {
+        "name": "rqa2025-logs-pvc",
+        "size": "50Gi",
+        "status": "bound"
+      },
+      "data_pvc": {
+        "name": "rqa2025-data-pvc",
+        "size": "200Gi",
+        "status": "bound"
+      }
+    },
+    "monitoring": {
+      "prometheus": {
+        "status": "deployed",
+        "endpoint": "prometheus-service:9090"
+      },
+      "grafana": {
+        "status": "deployed",
+        "endpoint": "grafana-service:3000"
+      }
+    }
+  },
+  "security_config": {
+    "rbac": {
+      "service_account": "rqa2025-sa",
+      "role": "rqa2025-role",
+      "role_binding": "rqa2025-rolebinding",
+      "status": "configured"
+    },
+    "secrets": {
+      "name": "rqa2025-secrets",
+      "keys": ["db_password", "api_key", "jwt_secret"],
+      "status": "configured"
+    },
+    "network_policy": {
+      "status": "enabled",
+      "ingress_rules": "configured",
+      "egress_rules": "configured"
+    }
+  },
+  "scaling_config": {
+    "hpa": {
+      "name": "rqa2025-hpa",
+      "min_replicas": 3,
+      "max_replicas": 10,
+      "cpu_threshold": 70,
+      "memory_threshold": 80,
+      "status": "active"
+    },
+    "pdb": {
+      "name": "rqa2025-pdb",
+      "min_available": 2,
+      "status": "configured"
+    }
+  },
+  "deployment_steps": {
+    "environment_validation": {
+      "status": "passed",
+      "checks": [
+        "kubectl availability",
+        "cluster connectivity",
+        "required files existence"
+      ]
+    },
+    "backup_creation": {
+      "status": "completed",
+      "backup_path": "backups/backup_YYYYMMDD_HHMMSS"
+    },
+    "namespace_deployment": {
+      "status": "completed",
+      "namespace": "rqa2025-production"
+    },
+    "storage_deployment": {
+      "status": "completed",
+      "pvc_count": 3
+    },
+    "application_deployment": {
+      "status": "completed",
+      "deployment_time": "5 minutes"
+    },
+    "monitoring_deployment": {
+      "status": "completed",
+      "components": ["prometheus", "grafana"]
+    },
+    "deployment_verification": {
+      "status": "passed",
+      "checks": [
+        "namespace verification",
+        "pod status verification",
+        "service verification",
+        "configmap verification",
+        "secret verification",
+        "storage verification",
+        "network policy verification"
+      ]
+    },
+    "security_scan": {
+      "status": "completed",
+      "vulnerabilities": "none detected"
+    }
+  },
+  "access_information": {
+    "application_url": "https://rqa2025.example.com",
+    "monitoring_url": "https://rqa2025.example.com/grafana",
+    "api_endpoint": "https://rqa2025.example.com/api",
+    "metrics_endpoint": "https://rqa2025.example.com/metrics"
+  },
+  "monitoring_dashboards": {
+    "application_performance": {
+      "url": "https://grafana.example.com/d/app-performance",
+      "metrics": [
+        "request_response_time",
+        "error_rate",
+        "throughput"
+      ]
+    },
+    "system_resources": {
+      "url": "https://grafana.example.com/d/system-resources",
+      "metrics": [
+        "cpu_usage",
+        "memory_usage",
+        "gpu_usage",
+        "disk_io"
+      ]
+    },
+    "business_metrics": {
+      "url": "https://grafana.example.com/d/business-metrics",
+      "metrics": [
+        "trading_success_rate",
+        "model_prediction_accuracy",
+        "data_sync_status"
+      ]
+    }
+  },
+  "alert_rules": {
+    "high_cpu_usage": {
+      "threshold": 80,
+      "duration": "5m",
+      "severity": "warning"
+    },
+    "high_memory_usage": {
+      "threshold": 85,
+      "duration": "5m",
+      "severity": "warning"
+    },
+    "pod_restart_frequency": {
+      "threshold": "5 restarts/hour",
+      "severity": "critical"
+    }
+  },
+  "maintenance_tasks": {
+    "backup_schedule": {
+      "frequency": "daily",
+      "retention": "30 days",
+      "type": "automated"
+    },
+    "log_rotation": {
+      "frequency": "daily",
+      "retention": "7 days",
+      "max_size": "100MB"
+    },
+    "security_updates": {
+      "frequency": "weekly",
+      "type": "automated"
+    },
+    "performance_monitoring": {
+      "frequency": "continuous",
+      "metrics": ["cpu", "memory", "gpu", "network"]
+    }
+  },
+  "troubleshooting": {
+    "common_issues": [
+      {
+        "issue": "Pod startup failure",
+        "solution": "Check logs with kubectl logs <pod-name> -n rqa2025-production"
+      },
+      {
+        "issue": "Service connectivity",
+        "solution": "Verify endpoints with kubectl get endpoints -n rqa2025-production"
+      },
+      {
+        "issue": "Storage issues",
+        "solution": "Check PVC status with kubectl get pvc -n rqa2025-production"
+      }
+    ],
+    "support_contacts": {
+      "email": "support@rqa2025.com",
+      "documentation": "https://docs.rqa2025.com",
+      "github": "https://github.com/rqa2025/issues"
+    }
+  },
+  "deployment_summary": {
+    "total_deployment_time": "15 minutes",
+    "components_deployed": 8,
+    "status": "successful",
+    "next_steps": [
+      "Configure domain DNS",
+      "Set up SSL certificates",
+      "Configure monitoring alerts",
+      "Run performance tests",
+      "Document access procedures"
+    ]
+  }
+} 

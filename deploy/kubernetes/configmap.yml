@@ -1,0 +1,198 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-config
+  namespace: rqa2025-production
+data:
+  # 应用配置
+  app-config.yaml: |
+    # RQA2025应用配置
+    app:
+      name: "RQA2025"
+      version: "1.0.0"
+      environment: "production"
+    
+    # 日志配置
+    logging:
+      level: "INFO"
+      format: "json"
+      output: "file"
+      file_path: "/app/logs/app.log"
+      max_size: "100MB"
+      max_files: 10
+    
+    # 数据库配置
+    database:
+      type: "sqlite"
+      path: "/app/data/rqa2025.db"
+      pool_size: 10
+      timeout: 30
+    
+    # 缓存配置
+    cache:
+      type: "redis"
+      host: "redis-service"
+      port: 6379
+      db: 0
+      timeout: 5
+    
+    # 监控配置
+    monitoring:
+      enabled: true
+      metrics_port: 9090
+      health_check_interval: 30
+      prometheus_endpoint: "/metrics"
+    
+    # 安全配置
+    security:
+      jwt_secret: "your-jwt-secret"
+      session_timeout: 3600
+      rate_limit: 1000
+      cors_origins: ["*"]
+    
+    # 业务配置
+    business:
+      backtest:
+        max_workers: 4
+        timeout: 300
+        memory_limit: "2GB"
+      trading:
+        risk_limit: 0.02
+        position_limit: 1000000
+        order_timeout: 30
+      data:
+        cache_ttl: 3600
+        batch_size: 1000
+        retry_attempts: 3
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-engine-config
+  namespace: rqa2025-production
+data:
+  # 引擎服务配置
+  engine-config.yaml: |
+    # 引擎层配置
+    engine:
+      # 日志记录系统
+      logging:
+        unified_logger_enabled: true
+        correlation_tracking: true
+        structured_format: true
+        performance_logging: true
+      
+      # 文档同步系统
+      documentation:
+        auto_sync_enabled: true
+        sync_interval: 300
+        quality_check_enabled: true
+        version_control: true
+      
+      # 测试数据管理
+      testing:
+        data_manager_enabled: true
+        auto_cleanup: true
+        cache_enabled: true
+        validation_enabled: true
+      
+      # 性能优化
+      performance:
+        async_processing: true
+        connection_pooling: true
+        caching_strategy: "lru"
+        memory_optimization: true
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-infrastructure-config
+  namespace: rqa2025-production
+data:
+  # 基础设施配置
+  infrastructure-config.yaml: |
+    # 基础设施层配置
+    infrastructure:
+      # 监控系统
+      monitoring:
+        prometheus_enabled: true
+        grafana_enabled: true
+        alerting_enabled: true
+        metrics_retention: "7d"
+      
+      # 缓存系统
+      cache:
+        redis_enabled: true
+        memory_cache_enabled: true
+        cache_strategy: "write-through"
+        ttl_default: 3600
+      
+      # 数据库系统
+      database:
+        connection_pool_size: 20
+        query_timeout: 30
+        retry_attempts: 3
+        backup_enabled: true
+      
+      # 安全系统
+      security:
+        authentication_enabled: true
+        authorization_enabled: true
+        encryption_enabled: true
+        audit_logging: true
+      
+      # 错误处理
+      error_handling:
+        circuit_breaker_enabled: true
+        retry_policy_enabled: true
+        fallback_enabled: true
+        graceful_degradation: true
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-business-config
+  namespace: rqa2025-production
+data:
+  # 业务层配置
+  business-config.yaml: |
+    # 业务层配置
+    business:
+      # 回测服务
+      backtest:
+        max_concurrent_jobs: 10
+        memory_limit_per_job: "1GB"
+        timeout_per_job: 600
+        result_cache_ttl: 86400
+      
+      # 数据服务
+      data:
+        data_sources:
+          - name: "stock"
+            type: "csv"
+            path: "/app/data/stock"
+          - name: "index"
+            type: "csv"
+            path: "/app/data/index"
+          - name: "news"
+            type: "csv"
+            path: "/app/data/news"
+        validation_enabled: true
+        cache_enabled: true
+      
+      # 分析服务
+      analysis:
+        technical_analysis_enabled: true
+        fundamental_analysis_enabled: true
+        sentiment_analysis_enabled: true
+        risk_analysis_enabled: true
+      
+      # 交易服务
+      trading:
+        order_management_enabled: true
+        risk_management_enabled: true
+        position_management_enabled: true
+        execution_engine_enabled: true 

@@ -1,0 +1,212 @@
+{
+  "check_time": "2026-01-09T07:41:35.262243",
+  "frontend": {
+    "modules": {
+      "modules": {
+        "statistics_cards": {
+          "check": "统计卡片模块",
+          "status": "passed",
+          "elements": {
+            "running-jobs": true,
+            "gpu-usage": true,
+            "avg-accuracy": true,
+            "avg-training-time": true
+          }
+        },
+        "job_list": {
+          "check": "训练任务列表模块",
+          "status": "passed",
+          "elements": {
+            "table_body": true,
+            "render_function": true
+          }
+        },
+        "charts": {
+          "check": "训练图表模块",
+          "status": "passed",
+          "elements": {
+            "loss_chart": true,
+            "accuracy_chart": true,
+            "chart_init": true
+          }
+        },
+        "resource_usage": {
+          "check": "资源使用情况模块",
+          "status": "passed",
+          "elements": {
+            "gpu_usage": true,
+            "cpu_usage": true,
+            "memory_usage": true,
+            "update_function": true
+          }
+        },
+        "hyperparameters": {
+          "check": "超参数优化模块",
+          "status": "passed",
+          "elements": {
+            "chart": true
+          }
+        }
+      }
+    },
+    "functions": {
+      "functions": {
+        "create_job": {
+          "check": "创建任务功能",
+          "status": "passed",
+          "functions": {
+            "createTrainingJob": true,
+            "submitCreateJob": true,
+            "closeCreateJobModal": true
+          },
+          "api_call": true
+        },
+        "stop_job": {
+          "check": "停止任务功能",
+          "status": "passed",
+          "functions": {
+            "stopJob": true,
+            "api_call": true
+          }
+        },
+        "view_details": {
+          "check": "查看任务详情功能",
+          "status": "passed",
+          "functions": {
+            "viewJobDetails": true,
+            "api_call": true
+          }
+        },
+        "websocket": {
+          "check": "WebSocket实时更新",
+          "status": "passed",
+          "functions": {
+            "connect": true,
+            "endpoint": true,
+            "reconnect": true
+          }
+        }
+      }
+    }
+  },
+  "backend": {
+    "apis": {
+      "endpoints": {
+        "get_jobs": {
+          "check": "任务列表API",
+          "status": "passed",
+          "endpoint": true,
+          "method": true,
+          "service_call": true
+        },
+        "create_job": {
+          "check": "创建任务API",
+          "status": "passed",
+          "endpoint": true,
+          "persistence": true
+        },
+        "stop_job": {
+          "check": "停止任务API",
+          "status": "passed",
+          "endpoint": true,
+          "persistence": true
+        },
+        "get_job_details": {
+          "check": "任务详情API",
+          "status": "passed",
+          "endpoint": true,
+          "method": true
+        },
+        "get_metrics": {
+          "check": "训练指标API",
+          "status": "passed",
+          "endpoint": true,
+          "method": true,
+          "service_call": true
+        }
+      }
+    },
+    "websocket": {
+      "check": [
+        "WebSocket端点"
+      ],
+      "status": [
+        "passed"
+      ],
+      "endpoint": true
+    }
+  },
+  "persistence": {
+    "persistence": {
+      "module": {
+        "check": "持久化模块",
+        "status": "passed",
+        "functions": {
+          "save_training_job": true,
+          "load_training_job": true,
+          "list_training_jobs": true,
+          "update_training_job": true,
+          "delete_training_job": true
+        },
+        "storage": {
+          "filesystem": true,
+          "postgresql": true
+        }
+      },
+      "service_integration": {
+        "check": "服务层集成",
+        "status": "passed",
+        "integration": {
+          "loads_from_persistence": true,
+          "saves_to_persistence": true
+        }
+      },
+      "storage_verification": {
+        "check": "数据存储验证",
+        "status": "passed",
+        "filesystem": {
+          "directory_exists": true,
+          "directory_path": "C:\\PythonProject\\RQA2025\\data\\training_jobs"
+        }
+      }
+    }
+  },
+  "data_flow": {
+    "flows": {
+      "create_job": {
+        "check": "任务创建流程",
+        "status": "passed",
+        "flow": {
+          "api_endpoint": true,
+          "persistence": true,
+          "filesystem": true,
+          "postgresql": true
+        }
+      },
+      "query_jobs": {
+        "check": "任务查询流程",
+        "status": "passed",
+        "flow": {
+          "api_endpoint": true,
+          "service_layer": true,
+          "persistence": true
+        }
+      },
+      "update_job": {
+        "check": "任务更新流程",
+        "status": "passed",
+        "flow": {
+          "api_endpoint": true,
+          "persistence": true
+        }
+      }
+    }
+  },
+  "issues": [],
+  "summary": {
+    "total_checks": 20,
+    "passed": 20,
+    "failed": 0,
+    "warnings": 0
+  }
+}

@@ -1,0 +1,82 @@
+alert_rules:
+- annotations:
+    description: 系统CPU使用率持续超过80%，可能影响性能
+    summary: CPU使用率超过80%
+  condition: cpu_usage > 80
+  description: CPU使用率过高
+  duration: 5m
+  labels:
+    component: system
+    service: rqa2025
+  name: high_cpu_usage
+  severity: warning
+- annotations:
+    description: 系统内存使用率持续超过85%，可能导致性能下降
+    summary: 内存使用率超过85%
+  condition: memory_usage > 85
+  description: 内存使用率过高
+  duration: 5m
+  labels:
+    component: system
+    service: rqa2025
+  name: high_memory_usage
+  severity: warning
+- annotations:
+    description: 磁盘使用率超过90%，需要立即处理
+    summary: 磁盘空间不足
+  condition: disk_usage > 90
+  description: 磁盘空间不足
+  duration: 2m
+  labels:
+    component: storage
+    service: rqa2025
+  name: disk_space_low
+  severity: critical
+- annotations:
+    description: 关键服务停止运行，需要立即检查
+    summary: 服务不可用
+  condition: service_status != 'running'
+  description: 服务不可用
+  duration: 1m
+  labels:
+    component: service
+    service: rqa2025
+  name: service_down
+  severity: critical
+- annotations:
+    description: 应用错误率持续超过5%，需要关注
+    summary: 错误率超过5%
+  condition: error_rate > 5
+  description: 错误率过高
+  duration: 3m
+  labels:
+    component: application
+    service: rqa2025
+  name: high_error_rate
+  severity: warning
+notification_channels:
+- config:
+    password: ${SMTP_PASSWORD}
+    recipients:
+    - admin@rqa2025.com
+    smtp_port: 587
+    smtp_server: smtp.gmail.com
+    subject_template: '[{severity}] {alert_name} - {summary}'
+    username: alerts@rqa2025.com
+  name: email_admin
+  type: email
+- config:
+    channel: '#alerts'
+    icon_emoji: ':warning:'
+    username: RQA2025 Alert Bot
+    webhook_url: ${SLACK_WEBHOOK_URL}
+  name: slack_alerts
+  type: slack
+- config:
+    headers:
+      Content-Type: application/json
+    method: POST
+    timeout: 30
+    url: ${WEBHOOK_URL}
+  name: webhook_custom
+  type: webhook

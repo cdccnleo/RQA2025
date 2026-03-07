@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="9" time="81.629" timestamp="2025-11-16T23:10:09.016168+08:00" hostname="AIPC"><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_stream_lifecycle_and_callbacks_no_raise" time="2.967"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:28 统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: test_stream_1763305886
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:95 启动实时数据流: test_stream_1763305886
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: test_stream_1763305886
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:681 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: test_stream_1763305886
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:743 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用降级方案: cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 23:11:26,027 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+2025-11-16 23:11:26,065 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: test_stream_1763305886
+INFO:enhanced_integration_manager:启动实时数据流: test_stream_1763305886
+INFO:enhanced_integration_manager:停止实时数据流: test_stream_1763305886
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: test_stream_1763305886
+2025-11-16 23:11:27,080 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-16 23:11:27,086 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-16 23:11:27,086 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-16 23:11:27,087 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-16 23:11:27,087 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-16 23:11:27,088 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-16 23:11:27,088 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_version_manager_positive_flow_with_mock_parquet" time="0.852"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_positive_0\vc_pos
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_231125_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_231125_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_231125_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_231125_1
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_231125_2
+INFO     __name__:version_manager.py:462 Loaded version: v_20251116_231125_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_231125_3
+INFO     __name__:version_manager.py:674 Rolled back to version v_20251116_231125_1, new version: v_20251116_231125_3
+INFO     __name__:version_manager.py:700 Exported version v_20251116_231125_2 to C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_positive_0\export.parquet
+ERROR    __name__:version_manager.py:719 Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_positive_0\v_20251116_231125_1.parquet does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_positive_0\vc_pos
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_231125_1
+INFO:__name__:Loaded version: v_20251116_231125_1
+INFO:__name__:Created new version: v_20251116_231125_2
+INFO:__name__:Loaded version: v_20251116_231125_1
+INFO:__name__:Loaded version: v_20251116_231125_2
+INFO:__name__:Loaded version: v_20251116_231125_1
+INFO:__name__:Created new version: v_20251116_231125_3
+INFO:__name__:Rolled back to version v_20251116_231125_1, new version: v_20251116_231125_3
+INFO:__name__:Exported version v_20251116_231125_2 to C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_positive_0\export.parquet
+ERROR:__name__:Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_positive_0\v_20251116_231125_1.parquet does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_version_manager_negative_paths" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_negative_0\vc
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:656 Version nonexistent does not exist
+ERROR    __name__:version_manager.py:694 Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_negative_0\vc\nonexistent.parquet does not exist
+ERROR    __name__:version_manager.py:719 Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_negative_0\missing.parquet does not exist
+ERROR    __name__:version_manager.py:768 Version nonexistent does not exist
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - Version nonexistent does not exist
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v1, v2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_negative_0\vc
+INFO:__name__:Current version: None
+ERROR:__name__:Version nonexistent does not exist
+ERROR:__name__:Version file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_negative_0\vc\nonexistent.parquet does not exist
+ERROR:__name__:Import file C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_version_manager_negative_0\missing.parquet does not exist
+ERROR:__name__:Version nonexistent does not exist
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - Version nonexistent does not exist
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v1, v2
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_update_metadata_save_failure" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_update_metadata_save_fail0\vc_meta
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:768 Version nonexistent does not exist
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_update_metadata_save_fail0\vc_meta
+INFO:__name__:Current version: None
+ERROR:__name__:Version nonexistent does not exist
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_create_version_write_failure_rollback" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_create_version_write_fail0\vc_write_fail
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:392 Failed to create version: to_parquet fail
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - Failed to create version: to_parquet fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_create_version_write_fail0\vc_write_fail
+INFO:__name__:Current version: None
+ERROR:__name__:Failed to create version: to_parquet fail
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - Failed to create version: to_parquet fail
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_import_version_read_failure" time="0.033"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_import_version_read_failu0\vc_import
+INFO     __name__:version_manager.py:157 Current version: None
+ERROR    __name__:version_manager.py:753 Failed to import version: read fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_import_version_read_failu0\vc_import
+INFO:__name__:Current version: None
+ERROR:__name__:Failed to import version: read fail
+
+</system-err></testcase><testcase classname="unit.data.version_control.test_version_manager_edges" name="test_compare_versions_alignment_failure" time="0.338"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     __name__:version_manager.py:156 VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_compare_versions_alignmen0\vc_cmp
+INFO     __name__:version_manager.py:157 Current version: None
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_231125_1
+INFO     __name__:version_manager.py:385 Created new version: v_20251116_231125_2
+ERROR    __name__:version_manager.py:465 Failed to load version v_20251116_231125_1: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR    __name__:version_manager.py:465 Failed to load version v_20251116_231125_2: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR    root:exceptions.py:33 基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v_20251116_231125_1, v_20251116_231125_2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:__name__:VersionManager initialized with directory: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3992\popen-gw0\test_compare_versions_alignmen0\vc_cmp
+INFO:__name__:Current version: None
+INFO:__name__:Created new version: v_20251116_231125_1
+INFO:__name__:Created new version: v_20251116_231125_2
+ERROR:__name__:Failed to load version v_20251116_231125_1: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR:__name__:Failed to load version v_20251116_231125_2: Could not open Parquet input source '&lt;Buffer&gt;': Parquet file size is 0 bytes
+ERROR:root:基础设施异常: DATA_VERSION_ERROR - One or both versions do not exist: v_20251116_231125_1, v_20251116_231125_2
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_performance_metrics_and_alert_history_resilient" time="1.127"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:681 关闭增强版数据集成管理器
+INFO     disk_cache:disk_cache.py:76 DiskCache closed
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     disk_cache:disk_cache.py:76 正在停止磁盘缓存...
+INFO     disk_cache:disk_cache.py:76 磁盘缓存已停止
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:743 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-16 23:11:27,471 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+2025-11-16 23:11:28,483 - disk_cache - INFO - DiskCache closed
+INFO:disk_cache:DiskCache closed
+2025-11-16 23:11:28,484 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-16 23:11:28,484 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-16 23:11:28,484 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+2025-11-16 23:11:28,484 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-16 23:11:28,484 - disk_cache - INFO - 正在停止磁盘缓存...
+INFO:disk_cache:正在停止磁盘缓存...
+2025-11-16 23:11:28,484 - disk_cache - INFO - 磁盘缓存已停止
+INFO:disk_cache:磁盘缓存已停止
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase><testcase classname="unit.data.integration.test_enhanced_integration_manager_edges" name="test_metrics_error_paths_and_shutdown_resilient" time="0.115"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 增强版数据集成管理器初始化完成
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:555 创建数据流: s1
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:681 关闭增强版数据集成管理器
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:107 停止实时数据流: s1
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:700 关闭线程池失败: tp
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:708 关闭进程池失败: pp
+WARNING  enhanced_integration_manager:enhanced_integration_manager.py:716 关闭缓存管理器失败: cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:743 增强版数据集成管理器已关闭
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-16 23:11:28,596 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:增强版数据集成管理器初始化完成
+INFO:enhanced_integration_manager:创建数据流: s1
+INFO:enhanced_integration_manager:关闭增强版数据集成管理器
+INFO:enhanced_integration_manager:停止实时数据流: s1
+WARNING:enhanced_integration_manager:关闭线程池失败: tp
+WARNING:enhanced_integration_manager:关闭进程池失败: pp
+WARNING:enhanced_integration_manager:关闭缓存管理器失败: cache
+INFO:enhanced_integration_manager:增强版数据集成管理器已关闭
+
+</system-err></testcase></testsuite></testsuites>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 量化策略开发流程监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mobile-optimization.css">
+    <script src="mobile-utils.js"></script>
+    <script src="ux-optimization.js"></script>
+    <style>
+        .gradient-bg-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .stage-card {
+            transition: all 0.3s ease;
+        }
+        .stage-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .stage-active {
+            border-left: 4px solid #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+        }
+        .stage-completed {
+            border-left: 4px solid #22c55e;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+        }
+        .stage-error {
+            border-left: 4px solid #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        }
+        .stage-warning {
+            border-left: 4px solid #f97316;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05));
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .progress-ring-circle {
+            transition: stroke-dasharray 0.3s ease;
+            stroke-linecap: round;
+        }
+        .flow-connector {
+            position: relative;
+        }
+        .flow-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 20px;
+            background: #d1d5db;
+        }
+        .metric-trend {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+        .trend-up {
+            color: #22c55e;
+        }
+        .trend-down {
+            color: #ef4444;
+        }
+        .trend-stable {
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg mobile-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16 flex-wrap">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center touch-target">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2 xs-nav-icon"></i>
+                            <span class="text-xl font-bold text-indigo-600 nav-brand xs-nav-brand">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
+                    <span class="text-sm text-gray-600 hidden sm:inline">策略开发流程监控</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-blue-600 font-medium hidden sm:inline">3个策略开发中</span>
+                        <span class="text-xs text-blue-600 font-medium sm:hidden">开发中</span>
+                    </div>
+                    <button onclick="refreshAll()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition duration-300 mobile-btn touch-target">
+                        <i class="fas fa-sync-alt mr-1 sm:mr-2"></i>
+                        <span class="hidden sm:inline">刷新</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-4 sm:py-6 px-3 sm:px-4 mobile-container">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-flask text-indigo-600 mr-3"></i>
+                量化策略开发流程监控
+            </h1>
+            <p class="text-gray-600">从策略构思到部署的全流程实时监控和性能分析</p>
+        </div>
+
+        <!-- Development Overview -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 mobile-grid-1">
+            <div class="bg-white rounded-lg p-6 shadow-lg stage-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">活跃策略</dt>
+                        <dd class="text-2xl font-semibold text-blue-600" id="active-strategies">3</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg stage-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">成功部署</dt>
+                        <dd class="text-2xl font-semibold text-green-600" id="successful-deployments">12</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg stage-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">平均开发周期</dt>
+                        <dd class="text-2xl font-semibold text-orange-600" id="avg-development-time">5.2天</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg stage-card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">策略表现</dt>
+                        <dd class="text-2xl font-semibold text-purple-600 flex items-center">
+                            <span id="strategy-performance">+8.5%</span>
+                            <i class="fas fa-arrow-up ml-1 trend-up"></i>
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Development Flow -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-route text-indigo-600 mr-2"></i>
+                策略开发流程状态
+            </h2>
+
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mobile-grid-2">
+                <!-- Strategy Conception -->
+                <div class="stage-card rounded-lg p-4" id="stage-conception">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-lightbulb text-blue-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">策略构思</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-xs text-green-600 font-medium">活跃</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">活跃设计器</span>
+                            <span class="font-semibold text-blue-600" id="conception-designers">3</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">模板使用率</span>
+                            <span class="font-semibold text-green-600" id="conception-templates">78%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">创新指数</span>
+                            <span class="font-semibold text-purple-600" id="conception-innovation">8.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Collection -->
+                <div class="stage-card rounded-lg p-4" id="stage-data">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-database text-indigo-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">数据收集</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                            <span class="text-xs text-blue-600 font-medium">进行中</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">数据源状态</span>
+                            <span class="font-semibold text-green-600" id="data-sources">正常</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">数据质量</span>
+                            <span class="font-semibold text-green-600" id="data-quality">96%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">采集进度</span>
+                            <span class="font-semibold text-blue-600" id="data-progress">68%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Engineering -->
+                <div class="stage-card rounded-lg p-4" id="stage-features">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-cogs text-purple-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">特征工程</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                            <span class="text-xs text-yellow-600 font-medium">处理中</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">特征任务</span>
+                            <span class="font-semibold text-blue-600" id="feature-tasks">5</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">特征质量</span>
+                            <span class="font-semibold text-green-600" id="feature-quality">89%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">处理延迟</span>
+                            <span class="font-semibold text-orange-600" id="feature-latency">2.3s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Training -->
+                <div class="stage-card rounded-lg p-4" id="stage-training">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-brain text-red-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">模型训练</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                            <span class="text-xs text-red-600 font-medium">训练中</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">训练任务</span>
+                            <span class="font-semibold text-blue-600" id="training-jobs">2</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">GPU使用率</span>
+                            <span class="font-semibold text-orange-600" id="gpu-usage">78%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">模型性能</span>
+                            <span class="font-semibold text-green-600" id="model-performance">91%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy Backtest -->
+                <div class="stage-card rounded-lg p-4" id="stage-backtest">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-bar text-green-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">策略回测</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-xs text-green-600 font-medium">完成</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">回测任务</span>
+                            <span class="font-semibold text-blue-600" id="backtest-jobs">8</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">回测进度</span>
+                            <span class="font-semibold text-green-600" id="backtest-progress">100%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">夏普比率</span>
+                            <span class="font-semibold text-purple-600" id="sharpe-ratio">1.8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Evaluation -->
+                <div class="stage-card rounded-lg p-4" id="stage-evaluation">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-balance-scale text-teal-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">性能评估</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-teal-500 rounded-full"></div>
+                            <span class="text-xs text-teal-600 font-medium">评估中</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">评估指标</span>
+                            <span class="font-semibold text-blue-600" id="eval-metrics">12</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">风险评估</span>
+                            <span class="font-semibold text-yellow-600" id="risk-assessment">中</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">评估得分</span>
+                            <span class="font-semibold text-green-600" id="eval-score">8.2/10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy Deployment -->
+                <div class="stage-card rounded-lg p-4" id="stage-deployment">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-rocket text-indigo-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">策略部署</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                            <span class="text-xs text-indigo-600 font-medium">部署中</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">部署状态</span>
+                            <span class="font-semibold text-blue-600" id="deploy-status">灰度发布</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">版本管理</span>
+                            <span class="font-semibold text-green-600" id="version-control">v2.1.4</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">部署进度</span>
+                            <span class="font-semibold text-purple-600" id="deploy-progress">45%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring & Optimization -->
+                <div class="stage-card rounded-lg p-4" id="stage-monitoring">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-eye text-gray-600 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">监控优化</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600 font-medium">待开始</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">实时性能</span>
+                            <span class="font-semibold text-blue-600" id="realtime-performance">监控中</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">优化建议</span>
+                            <span class="font-semibold text-orange-600" id="optimization-suggestions">3项</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-600">自动调优</span>
+                            <span class="font-semibold text-green-600" id="auto-tuning">启用</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Analytics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8 mobile-grid-1">
+            <!-- Strategy Performance Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 mobile-card">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center mobile-card-title">
+                    <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
+                    策略性能趋势
+                </h3>
+                <div class="mobile-chart">
+                    <canvas id="strategy-performance-chart" width="400" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- Development Timeline -->
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 mobile-card">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center mobile-card-title">
+                    <i class="fas fa-calendar-alt text-green-600 mr-2"></i>
+                    开发时间线
+                </h3>
+                <div class="mobile-chart">
+                    <canvas id="development-timeline-chart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Details Table -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-table text-blue-600 mr-2"></i>
+                    策略详情
+                </h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">当前阶段</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">进度</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">性能指标</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategy-details-table" class="bg-white divide-y divide-gray-200">
+                        <!-- Strategy details will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // API基础URL生成函数
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        let performanceChart = null;
+        let timelineChart = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化移动端优化
+            MobileUtils.init();
+
+            // 初始化用户体验优化
+            UXOptimization.init();
+
+            loadStrategyOverview();
+            loadStrategyCharts();
+            loadStrategyDetails();
+
+            // 使用自适应刷新频率
+            const refreshInterval = MobileUtils.getAdaptiveRefreshInterval();
+            const refreshTimer = setInterval(() => {
+                loadStrategyOverview();
+                updateCharts();
+            }, refreshInterval);
+
+            // 监听刷新间隔变化
+            document.addEventListener('refreshIntervalChanged', (e) => {
+                clearInterval(refreshTimer);
+                setInterval(() => {
+                    loadStrategyOverview();
+                    updateCharts();
+                }, e.detail.interval);
+            });
+        });
+
+        async function loadStrategyOverview() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/development/overview'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStrategyOverview(data);
+                    updateStageStatuses(data);
+                }
+            } catch (error) {
+                console.error('加载策略概览失败:', error);
+            }
+        }
+
+        function updateStrategyOverview(data) {
+            // Update overview metrics
+            document.getElementById('active-strategies').textContent = data.active_strategies || 3;
+            document.getElementById('successful-deployments').textContent = data.successful_deployments || 12;
+            document.getElementById('avg-development-time').textContent = data.avg_development_time || '5.2天';
+
+            const performanceElement = document.getElementById('strategy-performance');
+            const performance = data.strategy_performance || '+8.5%';
+            performanceElement.textContent = performance;
+
+            // Update trend indicator
+            const trendIcon = performanceElement.nextElementSibling;
+            if (performance.includes('+')) {
+                trendIcon.className = 'fas fa-arrow-up ml-1 trend-up';
+            } else if (performance.includes('-')) {
+                trendIcon.className = 'fas fa-arrow-down ml-1 trend-down';
+            } else {
+                trendIcon.className = 'fas fa-minus ml-1 trend-stable';
+            }
+        }
+
+        function updateStageStatuses(data) {
+            const stages = data.stages || {};
+
+            // Update each stage with real data
+            updateStageData('conception', stages.conception);
+            updateStageData('data', stages.data);
+            updateStageData('features', stages.features);
+            updateStageData('training', stages.training);
+            updateStageData('backtest', stages.backtest);
+            updateStageData('evaluation', stages.evaluation);
+            updateStageData('deployment', stages.deployment);
+            updateStageData('monitoring', stages.monitoring);
+        }
+
+        function updateStageData(stageId, stageData) {
+            if (!stageData) return;
+
+            const stageElement = document.getElementById(`stage-${stageId}`);
+
+            // Update status indicator
+            const statusIndicator = stageElement.querySelector('.w-2');
+            const statusText = stageElement.querySelector('.font-medium:last-child');
+
+            statusIndicator.className = `w-2 h-2 rounded-full ${getStatusColor(stageData.status)}`;
+            statusText.textContent = getStatusText(stageData.status);
+            statusText.className = `text-xs ${getStatusTextColor(stageData.status)} font-medium`;
+
+            // Update metrics
+            const metrics = stageElement.querySelectorAll('.font-semibold');
+            if (metrics.length >= 3) {
+                const metricKeys = getStageMetricKeys(stageId);
+                metricKeys.forEach((key, index) => {
+                    if (metrics[index] && stageData[key]) {
+                        metrics[index].textContent = stageData[key];
+                    }
+                });
+            }
+        }
+
+        function loadStrategyCharts() {
+            // Strategy Performance Chart
+            const performanceCtx = document.getElementById('strategy-performance-chart');
+            if (performanceCtx) {
+                performanceChart = new Chart(performanceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                        datasets: [{
+                            label: '策略收益',
+                            data: [2.1, 3.2, 1.8, 4.5, 3.9, 5.2, 4.8],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: '基准收益',
+                            data: [1.5, 2.1, 1.2, 3.2, 2.8, 3.8, 3.2],
+                            borderColor: 'rgb(156, 163, 175)',
+                            backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '收益率 (%)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Development Timeline Chart
+            const timelineCtx = document.getElementById('development-timeline-chart');
+            if (timelineCtx) {
+                timelineChart = new Chart(timelineCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['构思', '数据收集', '特征工程', '模型训练', '回测', '评估', '部署', '监控'],
+                        datasets: [{
+                            label: '平均耗时 (小时)',
+                            data: [8, 24, 16, 48, 12, 6, 4, 2],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(147, 51, 234, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(34, 197, 94, 0.8)',
+                                'rgba(20, 184, 166, 0.8)',
+                                'rgba(99, 102, 241, 0.8)',
+                                'rgba(107, 114, 128, 0.8)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '耗时 (小时)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        async function loadStrategyDetails() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/development/details'));
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderStrategyDetailsTable(data.strategies || []);
+                }
+            } catch (error) {
+                console.error('加载策略详情失败:', error);
+            }
+        }
+
+        function renderStrategyDetailsTable(strategies) {
+            const tbody = document.getElementById('strategy-details-table');
+
+            if (strategies.length === 0) {
+                // Default strategies if no data
+                strategies = [
+                    {
+                        name: '动量策略v2.1',
+                        stage: '模型训练',
+                        progress: 78,
+                        performance: '夏普比率: 1.8, 最大回撤: 8.2%',
+                        status: '进行中'
+                    },
+                    {
+                        name: '均值回归策略v1.4',
+                        stage: '策略部署',
+                        progress: 45,
+                        performance: '夏普比率: 1.5, 最大回撤: 12.1%',
+                        status: '灰度发布'
+                    },
+                    {
+                        name: '统计套利策略v3.0',
+                        stage: '性能评估',
+                        progress: 92,
+                        performance: '夏普比率: 2.1, 最大回撤: 6.8%',
+                        status: '评估完成'
+                    }
+                ];
+            }
+
+            const html = strategies.map(strategy => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${strategy.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${strategy.stage}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${strategy.progress}%"></div>
+                            </div>
+                            <span class="text-sm text-gray-600">${strategy.progress}%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${strategy.performance}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStrategyStatusClass(strategy.status)}">
+                            ${strategy.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <button class="text-indigo-600 hover:text-indigo-900 mr-2" onclick="viewStrategyDetails('${strategy.name}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="text-gray-600 hover:text-gray-900" onclick="editStrategy('${strategy.name}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            tbody.innerHTML = html;
+        }
+
+        function updateCharts() {
+            // Update chart data with new values
+            if (performanceChart) {
+                performanceChart.data.datasets[0].data = [
+                    Math.random() * 6 + 1,
+                    Math.random() * 6 + 1,
+                    Math.random() * 6 + 1,
+                    Math.random() * 6 + 1,
+                    Math.random() * 6 + 1,
+                    Math.random() * 6 + 1,
+                    Math.random() * 6 + 1
+                ];
+                performanceChart.update();
+            }
+
+            if (timelineChart) {
+                timelineChart.data.datasets[0].data = [
+                    Math.random() * 12 + 4,
+                    Math.random() * 30 + 15,
+                    Math.random() * 20 + 10,
+                    Math.random() * 60 + 30,
+                    Math.random() * 15 + 5,
+                    Math.random() * 10 + 2,
+                    Math.random() * 8 + 2,
+                    Math.random() * 4 + 1
+                ];
+                timelineChart.update();
+            }
+        }
+
+        function refreshAll() {
+            loadStrategyOverview();
+            loadStrategyDetails();
+            updateCharts();
+
+            // Visual feedback
+            const btn = event.target;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>刷新中...';
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 1000);
+        }
+
+        // Helper functions
+        function getStatusColor(status) {
+            switch(status) {
+                case 'active': return 'bg-green-500 animate-pulse';
+                case 'processing': return 'bg-blue-500 animate-pulse';
+                case 'training': return 'bg-red-500 animate-pulse';
+                case 'completed': return 'bg-green-500';
+                case 'evaluating': return 'bg-teal-500';
+                case 'deploying': return 'bg-indigo-500';
+                case 'pending': return 'bg-gray-500';
+                default: return 'bg-gray-500';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'active': return '活跃';
+                case 'processing': return '进行中';
+                case 'training': return '训练中';
+                case 'completed': return '完成';
+                case 'evaluating': return '评估中';
+                case 'deploying': return '部署中';
+                case 'pending': return '待开始';
+                default: return '未知';
+            }
+        }
+
+        function getStatusTextColor(status) {
+            switch(status) {
+                case 'active': return 'text-green-600';
+                case 'processing': return 'text-blue-600';
+                case 'training': return 'text-red-600';
+                case 'completed': return 'text-green-600';
+                case 'evaluating': return 'text-teal-600';
+                case 'deploying': return 'text-indigo-600';
+                case 'pending': return 'text-gray-600';
+                default: return 'text-gray-600';
+            }
+        }
+
+        function getStageMetricKeys(stageId) {
+            switch(stageId) {
+                case 'conception': return ['designers', 'templates', 'innovation'];
+                case 'data': return ['sources', 'quality', 'progress'];
+                case 'features': return ['tasks', 'quality', 'latency'];
+                case 'training': return ['jobs', 'gpu_usage', 'performance'];
+                case 'backtest': return ['jobs', 'progress', 'sharpe_ratio'];
+                case 'evaluation': return ['metrics', 'risk_assessment', 'score'];
+                case 'deployment': return ['status', 'version', 'progress'];
+                case 'monitoring': return ['performance', 'suggestions', 'tuning'];
+                default: return [];
+            }
+        }
+
+        function getStrategyStatusClass(status) {
+            switch(status) {
+                case '进行中': return 'bg-blue-100 text-blue-800';
+                case '灰度发布': return 'bg-yellow-100 text-yellow-800';
+                case '评估完成': return 'bg-green-100 text-green-800';
+                case '部署完成': return 'bg-green-100 text-green-800';
+                case '暂停': return 'bg-red-100 text-red-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Action functions
+        function viewStrategyDetails(strategyName) {
+            console.log('查看策略详情:', strategyName);
+            // TODO: Implement strategy details modal
+        }
+
+        function editStrategy(strategyName) {
+            console.log('编辑策略:', strategyName);
+            // TODO: Implement strategy editing
+        }
+    </script>
+</body>
+</html>

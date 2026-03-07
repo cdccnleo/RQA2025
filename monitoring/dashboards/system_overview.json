@@ -1,0 +1,64 @@
+{
+  "name": "system_overview",
+  "description": "系统整体状态监控仪表板",
+  "panels": [
+    {
+      "title": "CPU使用率",
+      "type": "graph",
+      "metrics": [
+        "cpu_usage_percent"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "内存使用率",
+      "type": "graph",
+      "metrics": [
+        "memory_usage_percent"
+      ],
+      "layout": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "磁盘使用率",
+      "type": "graph",
+      "metrics": [
+        "disk_usage_percent"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 4,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "网络连接数",
+      "type": "graph",
+      "metrics": [
+        "network_connections"
+      ],
+      "layout": {
+        "x": 6,
+        "y": 4,
+        "w": 6,
+        "h": 4
+      }
+    }
+  ],
+  "refresh_interval": "30s",
+  "tags": [
+    "system",
+    "overview",
+    "infrastructure"
+  ]
+}

@@ -1,0 +1,374 @@
+# 云原生测试平台配置文件
+
+# 平台类型配置
+platform:
+  # 默认平台类型: docker, kubernetes, openshift, aws_ecs, azure_aks, gcp_gke
+  default_type: "docker"
+  
+  # 平台特定配置
+  docker:
+    # Docker守护进程配置
+    daemon:
+      host: "unix:///var/run/docker.sock"
+      timeout: 30
+      max_retries: 3
+    
+    # 容器默认配置
+    container:
+      default_restart_policy: "unless-stopped"
+      default_network: "bridge"
+      default_user: "1000:1000"
+      health_check_timeout: 30
+      log_driver: "json-file"
+      log_options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # 镜像配置
+    image:
+      registry: "docker.io"
+      pull_policy: "if-not-present"
+      cache_cleanup_interval: 3600  # 秒
+      max_cache_size: "10GB"
+  
+  kubernetes:
+    # kubectl配置
+    kubectl:
+      config_path: "~/.kube/config"
+      context: ""
+      namespace: "default"
+      timeout: 60
+    
+    # 部署配置
+    deployment:
+      default_replicas: 1
+      default_strategy: "RollingUpdate"
+      max_surge: "25%"
+      max_unavailable: "25%"
+      progress_deadline: 600
+      revision_history_limit: 10
+    
+    # 服务配置
+    service:
+      default_type: "ClusterIP"
+      session_affinity: "None"
+      session_affinity_timeout: 10800
+    
+    # 资源配置
+    resources:
+      default_limits:
+        cpu: "500m"
+        memory: "512Mi"
+        ephemeral-storage: "1Gi"
+      default_requests:
+        cpu: "250m"
+        memory: "256Mi"
+        ephemeral-storage: "512Mi"
+    
+    # 命名空间配置
+    namespace:
+      default_labels:
+        environment: "test"
+        managed-by: "cloud-native-test-platform"
+      resource_quotas:
+        enabled: true
+        default_limits:
+          requests.cpu: "4"
+          requests.memory: "8Gi"
+          limits.cpu: "8"
+          limits.memory: "16Gi"
+
+# 微服务测试配置
+microservice_testing:
+  # 健康检查配置
+  health_check:
+    timeout: 30
+    retry_count: 3
+    retry_interval: 5
+    success_threshold: 1
+    failure_threshold: 3
+  
+  # 负载测试配置
+  load_test:
+    default_concurrent_users: 10
+    default_duration: 60  # 秒
+    max_concurrent_users: 1000
+    max_duration: 3600  # 秒
+    ramp_up_time: 10  # 秒
+    think_time: 1  # 秒
+    
+    # 性能阈值
+    thresholds:
+      response_time_p95: 1000  # 毫秒
+      response_time_p99: 2000  # 毫秒
+      error_rate: 0.05  # 5%
+      throughput_min: 100  # 请求/秒
+  
+  # 集成测试配置
+  integration_test:
+    timeout: 300  # 秒
+    parallel_execution: true
+    max_parallel_tests: 5
+    retry_failed_tests: true
+    max_retries: 2
+    
+    # 测试环境配置
+    environments:
+      dev:
+        base_url: "http://localhost:8080"
+        timeout: 60
+        retry_count: 1
+      staging:
+        base_url: "https://staging.example.com"
+        timeout: 120
+        retry_count: 2
+      integration:
+        base_url: "https://integration.example.com"
+        timeout: 180
+        retry_count: 3
+
+# 容器镜像配置
+container_images:
+  # 常用测试镜像
+  test_images:
+    nginx:
+      image: "nginx"
+      tag: "alpine"
+      ports: ["80:80"]
+      health_check: "curl -f http://localhost/ || exit 1"
+    
+    httpbin:
+      image: "kennethreitz/httpbin"
+      tag: "latest"
+      ports: ["80:80"]
+      health_check: "curl -f http://localhost/ || exit 1"
+    
+    postgres:
+      image: "postgres"
+      tag: "13-alpine"
+      ports: ["5432:5432"]
+      environment:
+        POSTGRES_PASSWORD: "test123"
+        POSTGRES_DB: "testdb"
+      health_check: "pg_isready -U postgres"
+    
+    redis:
+      image: "redis"
+      tag: "6-alpine"
+      ports: ["6379:6379"]
+      health_check: "redis-cli ping"
+    
+    elasticsearch:
+      image: "elasticsearch"
+      tag: "7.17.0"
+      ports: ["9200:9200"]
+      environment:
+        discovery.type: "single-node"
+        xpack.security.enabled: "false"
+      health_check: "curl -f http://localhost:9200/_cluster/health || exit 1"
+
+# 网络配置
+networking:
+  # Docker网络配置
+  docker_networks:
+    default: "bridge"
+    custom_networks:
+      - name: "test-network"
+        driver: "bridge"
+        subnet: "172.20.0.0/16"
+        gateway: "172.20.0.1"
+  
+  # Kubernetes网络配置
+  kubernetes_networks:
+    service_mesh: false
+    ingress_controller: "nginx"
+    load_balancer_type: "ClusterIP"
+    
+    # 网络策略
+    network_policies:
+      enabled: true
+      default_policy: "deny-all"
+      allowed_ports: [80, 443, 8080, 8443]
+
+# 监控和日志配置
+monitoring:
+  # 容器监控
+  container_monitoring:
+    enabled: true
+    metrics_collection_interval: 30  # 秒
+    resource_metrics:
+      - cpu_usage
+      - memory_usage
+      - disk_usage
+      - network_io
+    
+    # 日志收集
+    log_collection:
+      enabled: true
+      log_drivers: ["json-file", "syslog"]
+      log_retention_days: 30
+      log_rotation_size: "100MB"
+  
+  # Kubernetes监控
+  kubernetes_monitoring:
+    enabled: true
+    metrics_server: true
+    prometheus_integration: false
+    grafana_integration: false
+    
+    # 资源监控
+    resource_monitoring:
+      - pods
+      - deployments
+      - services
+      - nodes
+      - namespaces
+
+# 安全配置
+security:
+  # 容器安全
+  container_security:
+    # 镜像安全扫描
+    image_scanning:
+      enabled: true
+      scan_before_deploy: true
+      vulnerability_threshold: "medium"
+    
+    # 运行时安全
+    runtime_security:
+      read_only_root_filesystem: true
+      no_new_privileges: true
+      drop_capabilities:
+        - "ALL"
+      add_capabilities: []
+    
+    # 资源限制
+    resource_limits:
+      max_memory: "1Gi"
+      max_cpu: "1"
+      max_processes: 100
+  
+  # Kubernetes安全
+  kubernetes_security:
+    # RBAC配置
+    rbac:
+      enabled: true
+      create_service_accounts: true
+      default_service_account: "default"
+    
+    # 安全上下文
+    security_context:
+      run_as_non_root: true
+      run_as_user: 1000
+      run_as_group: 1000
+      fs_group: 1000
+    
+    # Pod安全策略
+    pod_security_policies:
+      enabled: false
+      default_policy: "restricted"
+
+# 备份和恢复配置
+backup_recovery:
+  # 配置备份
+  config_backup:
+    enabled: true
+    backup_interval: 3600  # 秒
+    retention_days: 30
+    backup_path: "./backups"
+  
+  # 数据备份
+  data_backup:
+    enabled: false
+    backup_schedule: "0 2 * * *"  # 每天凌晨2点
+    retention_days: 7
+    backup_storage: "local"
+
+# 性能优化配置
+performance:
+  # 容器性能
+  container_performance:
+    # 资源优化
+    resource_optimization:
+      cpu_quota: true
+      memory_swappiness: 0
+      io_scheduler: "cfq"
+    
+    # 网络优化
+    network_optimization:
+      tcp_congestion_control: "bbr"
+      tcp_window_scaling: true
+      tcp_timestamps: true
+  
+  # Kubernetes性能
+  kubernetes_performance:
+    # 调度优化
+    scheduler_optimization:
+      enable_affinity: true
+      enable_anti_affinity: true
+      enable_pod_topology_spread: true
+    
+    # 资源优化
+    resource_optimization:
+      enable_hpa: true
+      enable_vpa: false
+      enable_ca: false
+
+# 故障恢复配置
+fault_tolerance:
+  # 自动恢复
+  auto_recovery:
+    enabled: true
+    max_retry_attempts: 3
+    retry_interval: 30  # 秒
+    recovery_timeout: 300  # 秒
+  
+  # 故障转移
+  failover:
+    enabled: false
+    health_check_interval: 10  # 秒
+    failure_threshold: 3
+    success_threshold: 1
+  
+  # 数据一致性
+  data_consistency:
+    enabled: true
+    consistency_check_interval: 60  # 秒
+    max_inconsistency_duration: 300  # 秒
+
+# 扩展配置
+scaling:
+  # 自动扩缩容
+  auto_scaling:
+    enabled: true
+    min_replicas: 1
+    max_replicas: 10
+    target_cpu_utilization: 70
+    target_memory_utilization: 80
+    scale_up_cooldown: 300  # 秒
+    scale_down_cooldown: 300  # 秒
+  
+  # 手动扩缩容
+  manual_scaling:
+    enabled: true
+    max_replicas: 50
+    step_size: 1
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "json"
+  output: "console"
+  file:
+    enabled: true
+    path: "./logs/cloud_native_platform.log"
+    max_size: "100MB"
+    max_files: 5
+  
+  # 结构化日志
+  structured_logging:
+    enabled: true
+    include_timestamp: true
+    include_level: true
+    include_module: true
+    include_function: true

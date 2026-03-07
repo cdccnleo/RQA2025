@@ -1,0 +1,12 @@
+groups:
+- name: rqa_alerts
+  rules:
+  - alert: HighNetworkLatency
+    annotations:
+      description: '网络延迟超过100ms (阈值: 100.0)'
+      summary: 网络延迟超过100ms
+    expr: network_latency > 100
+    for: 5m
+    labels:
+      service: rqa
+      severity: warning

@@ -1,0 +1,76 @@
+[tool:pytest]
+# 测试配置优化 - E2E效率优化专项
+testpaths = tests
+python_files = test_*.py *_test.py
+python_classes = Test*
+python_functions = test_*
+
+# E2E测试执行效率优化配置
+addopts =
+    --strict-markers
+    --strict-config
+    --disable-warnings
+    --tb=short
+    --durations=5
+    --durations-min=1.0
+    --maxfail=3
+    -ra
+    --asyncio-mode=strict
+    --asyncio-default-fixture-loop-scope=function
+    -n auto
+    --dist=loadscope
+
+# E2E测试效率优化标记
+markers =
+    unit: 单元测试
+    integration: 集成测试
+    e2e: 端到端测试
+    performance: 性能测试
+    concurrent: 并发测试
+    error: 错误处理测试
+    boundary: 边界条件测试
+    protocol: Protocol接口测试
+    mixin: Mixin模式测试
+    monitoring: 监控系统测试
+    distributed: 分布式缓存测试
+    multi_level: 多级缓存测试
+    base_components: 基础组件测试
+    utils: 工具函数测试
+    interfaces: 接口定义测试
+    business: 业务流程测试
+    slow: 慢速测试 (需要优化)
+    flaky: 不稳定测试 (需要修复)
+
+# 过滤配置 - E2E测试稳定性优化
+filterwarnings =
+    ignore::DeprecationWarning
+    ignore::PendingDeprecationWarning
+    ignore::UserWarning
+    ignore::ResourceWarning
+    ignore::pytest.PytestUnraisableExceptionWarning
+
+# 缓存配置 - 提高测试执行效率
+cache_dir = .pytest_cache
+
+# 输出配置 - 优化日志显示
+log_cli = true
+log_cli_level = WARNING
+log_cli_format = %(asctime)s [%(levelname)8s] %(name)s: %(message)s
+log_cli_date_format = %Y-%m-%d %H:%M:%S
+
+# JUnit XML输出 - CI/CD集成优化
+junit_family = xunit2
+junit_logging = all
+junit_suite_name = RQA2025_Test_Suite
+
+# 覆盖率配置 - E2E测试覆盖率优化
+# 注意：覆盖率配置通过命令行 --cov 参数指定
+
+# E2E测试执行超时配置
+timeout = 300
+timeout_method = thread
+
+# 环境变量配置
+env =
+    PYTHONIOENCODING=utf-8
+    PYTHONPATH=C:\PythonProject\RQA2025

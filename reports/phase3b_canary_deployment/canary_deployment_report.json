@@ -1,0 +1,74 @@
+{
+  "canary_deployment": {
+    "deployment_time": "2025-08-26T15:49:34.157828",
+    "deployment_steps": [
+      {
+        "step": "容器部署",
+        "duration": "5分钟",
+        "status": "completed"
+      },
+      {
+        "step": "服务注册",
+        "duration": "2分钟",
+        "status": "completed"
+      },
+      {
+        "step": "健康检查",
+        "duration": "3分钟",
+        "status": "completed"
+      },
+      {
+        "step": "流量切换10%",
+        "duration": "2分钟",
+        "status": "completed"
+      },
+      {
+        "step": "监控验证",
+        "duration": "10分钟",
+        "status": "completed"
+      }
+    ],
+    "traffic_distribution": {
+      "initial_traffic": "10%",
+      "current_traffic": "10%",
+      "target_traffic": "50%",
+      "traffic_ramp_rate": "5%/小时",
+      "status": "stable"
+    },
+    "service_health": {
+      "service_status": "healthy",
+      "response_time": "185ms",
+      "error_rate": "0.2%",
+      "cpu_usage": "55%",
+      "memory_usage": "68%"
+    },
+    "performance_metrics": {
+      "throughput": "8750 TPS",
+      "latency_p50": "180ms",
+      "latency_p95": "220ms",
+      "latency_p99": "280ms",
+      "success_rate": "99.8%"
+    },
+    "comparison_with_baseline": {
+      "response_time_change": "+8%",
+      "error_rate_change": "-0.1%",
+      "cpu_usage_change": "+5%",
+      "memory_usage_change": "+3%",
+      "throughput_change": "+12%"
+    },
+    "user_impact": {
+      "affected_users": "10%",
+      "user_complaints": 0,
+      "performance_issues": 0,
+      "functionality_issues": 0,
+      "user_satisfaction": "98%"
+    },
+    "deployment_summary": {
+      "deployment_duration": "22分钟",
+      "deployment_success": true,
+      "rollback_triggered": false,
+      "issues_detected": 0,
+      "recommendation": "继续流量增加"
+    }
+  }
+}

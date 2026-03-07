@@ -1,0 +1,182 @@
+{
+  "data_collection_monitoring": {
+    "pools": {
+      "core_universe": {
+        "name": "核心交易池",
+        "description": "上证50 + 沪深300成分股，约800只股票",
+        "update_frequency": "10次/分钟",
+        "batch_size": 30,
+        "metrics": {
+          "data_freshness_threshold": 300,
+          "data_completeness_threshold": 0.999,
+          "collection_success_rate_threshold": 0.995
+        },
+        "alerts": {
+          "data_freshness": {
+            "enabled": true,
+            "threshold": 300,
+            "severity": "HIGH",
+            "message": "核心池数据新鲜度过低: {value}秒 > {threshold}秒"
+          },
+          "data_completeness": {
+            "enabled": true,
+            "threshold": 0.999,
+            "severity": "HIGH",
+            "message": "核心池数据完整性不足: {value} < {threshold}"
+          },
+          "collection_failure_rate": {
+            "enabled": true,
+            "threshold": 0.005,
+            "severity": "MEDIUM",
+            "message": "核心池采集失败率过高: {value} > {threshold}"
+          }
+        }
+      },
+      "extended_universe": {
+        "name": "扩展观察池",
+        "description": "中证500 + 创业板指成分股，约1000只股票",
+        "update_frequency": "5次/分钟",
+        "batch_size": 50,
+        "metrics": {
+          "data_freshness_threshold": 900,
+          "data_completeness_threshold": 0.995,
+          "collection_success_rate_threshold": 0.98
+        },
+        "alerts": {
+          "data_freshness": {
+            "enabled": true,
+            "threshold": 900,
+            "severity": "MEDIUM",
+            "message": "扩展池数据新鲜度过低: {value}秒 > {threshold}秒"
+          },
+          "data_completeness": {
+            "enabled": true,
+            "threshold": 0.995,
+            "severity": "MEDIUM",
+            "message": "扩展池数据完整性不足: {value} < {threshold}"
+          },
+          "collection_failure_rate": {
+            "enabled": true,
+            "threshold": 0.02,
+            "severity": "LOW",
+            "message": "扩展池采集失败率过高: {value} > {threshold}"
+          }
+        }
+      },
+      "full_market": {
+        "name": "全市场监控池",
+        "description": "全部A股，5000+只股票",
+        "update_frequency": "1次/分钟",
+        "batch_size": 100,
+        "metrics": {
+          "data_freshness_threshold": 3600,
+          "data_completeness_threshold": 0.95,
+          "collection_success_rate_threshold": 0.9
+        },
+        "alerts": {
+          "data_freshness": {
+            "enabled": true,
+            "threshold": 3600,
+            "severity": "LOW",
+            "message": "全市场数据新鲜度过低: {value}秒 > {threshold}秒"
+          },
+          "data_completeness": {
+            "enabled": true,
+            "threshold": 0.95,
+            "severity": "LOW",
+            "message": "全市场数据完整性不足: {value} < {threshold}"
+          },
+          "collection_failure_rate": {
+            "enabled": true,
+            "threshold": 0.1,
+            "severity": "LOW",
+            "message": "全市场采集失败率过高: {value} > {threshold}"
+          }
+        }
+      }
+    },
+    "system_metrics": {
+      "cpu_usage": {
+        "warning_threshold": 70,
+        "critical_threshold": 85,
+        "alert_enabled": true
+      },
+      "memory_usage": {
+        "warning_threshold": 75,
+        "critical_threshold": 90,
+        "alert_enabled": true
+      },
+      "disk_usage": {
+        "warning_threshold": 80,
+        "critical_threshold": 95,
+        "alert_enabled": true
+      },
+      "api_response_time": {
+        "warning_threshold": 200,
+        "critical_threshold": 1000,
+        "alert_enabled": true
+      }
+    },
+    "alert_channels": {
+      "email": {
+        "enabled": true,
+        "recipients": ["quant_ops@company.com"],
+        "high_priority_only": true
+      },
+      "slack": {
+        "enabled": false,
+        "webhook_url": "",
+        "channel": "#quant-alerts"
+      },
+      "wechat": {
+        "enabled": false,
+        "webhook_url": "",
+        "mentioned_users": []
+      }
+    },
+    "data_quality_checks": {
+      "price_validation": {
+        "enabled": true,
+        "rules": {
+          "price_positive": true,
+          "volume_positive": true,
+          "price_change_reasonable": true,
+          "trading_volume_normal": true
+        }
+      },
+      "data_consistency": {
+        "enabled": true,
+        "checks": {
+          "time_series_continuity": true,
+          "price_sequence_valid": true,
+          "volume_sequence_valid": true
+        }
+      },
+      "market_data_validation": {
+        "enabled": true,
+        "rules": {
+          "trading_hours_only": true,
+          "price_limits_check": true,
+          "circuit_breaker_check": true
+        }
+      }
+    },
+    "performance_targets": {
+      "collection_latency": {
+        "target": 5000,
+        "unit": "milliseconds",
+        "description": "单次数据采集耗时目标"
+      },
+      "throughput": {
+        "target": 1000,
+        "unit": "records/minute",
+        "description": "数据处理吞吐量目标"
+      },
+      "error_rate": {
+        "target": 0.001,
+        "unit": "percentage",
+        "description": "采集错误率目标"
+      }
+    }
+  }
+}

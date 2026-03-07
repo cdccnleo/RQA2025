@@ -1,0 +1,24 @@
+{
+  "monitoring": {
+    "enabled": true,
+    "metrics_interval": 60,
+    "alert_check_interval": 30,
+    "max_metrics_history": 1000
+  },
+  "persistence": {
+    "enabled": true,
+    "config_file": "monitoring/persistence_config.json"
+  },
+  "alerts": {
+    "enabled": true,
+    "notification_channels": [
+      "log",
+      "file"
+    ],
+    "severity_levels": [
+      "HIGH",
+      "MEDIUM",
+      "LOW"
+    ]
+  }
+}

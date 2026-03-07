@@ -1,0 +1,37 @@
+{
+  "services": {
+    "user-service": {
+      "url": "http://localhost",
+      "port": 8081,
+      "health_check": "/health",
+      "dependencies": [],
+      "environment": {
+        "NODE_ENV": "test"
+      }
+    },
+    "order-service": {
+      "url": "http://localhost",
+      "port": 8082,
+      "health_check": "/health",
+      "dependencies": [
+        "user-service"
+      ],
+      "environment": {
+        "NODE_ENV": "test"
+      }
+    },
+    "payment-service": {
+      "url": "http://localhost",
+      "port": 8083,
+      "health_check": "/health",
+      "dependencies": [
+        "order-service"
+      ],
+      "environment": {
+        "NODE_ENV": "test"
+      }
+    }
+  },
+  "contracts_file": "test_contracts.json",
+  "integration_tests_file": "integration_tests.json"
+}

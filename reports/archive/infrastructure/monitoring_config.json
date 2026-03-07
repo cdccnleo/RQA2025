@@ -1,0 +1,69 @@
+{
+  "prometheus_config": {
+    "global": {
+      "scrape_interval": "15s",
+      "evaluation_interval": "15s"
+    },
+    "rule_files": [
+      "rules/infrastructure_alerts.yml"
+    ],
+    "scrape_configs": [
+      {
+        "job_name": "infrastructure",
+        "static_configs": [
+          {
+            "targets": [
+              "localhost:8000"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "grafana_dashboards": {
+    "infrastructure_overview": {
+      "title": "基础设施概览",
+      "panels": [
+        "CPU使用率",
+        "内存使用率",
+        "磁盘使用率",
+        "网络流量",
+        "服务健康状态"
+      ]
+    },
+    "application_performance": {
+      "title": "应用性能",
+      "panels": [
+        "响应时间",
+        "吞吐量",
+        "错误率",
+        "活跃连接数"
+      ]
+    }
+  },
+  "alertmanager_config": {
+    "global": {
+      "smtp_smarthost": "localhost:587",
+      "smtp_from": "alertmanager@example.com"
+    },
+    "route": {
+      "group_by": [
+        "alertname"
+      ],
+      "group_wait": "10s",
+      "group_interval": "10s",
+      "repeat_interval": "1h",
+      "receiver": "web.hook"
+    },
+    "receivers": [
+      {
+        "name": "web.hook",
+        "webhook_configs": [
+          {
+            "url": "http://127.0.0.1:5001/"
+          }
+        ]
+      }
+    ]
+  }
+}

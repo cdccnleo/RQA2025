@@ -1,0 +1,239 @@
+# RQA2025 生产环境数据库配置文件
+# 版本: 1.0.0
+# 创建日期: 2025-01-27
+
+# 主数据库配置
+primary:
+  type: "postgresql"
+  host: "${DB_HOST:localhost}"
+  port: "${DB_PORT:5432}"
+  name: "${DB_NAME:rqa2025_prod}"
+  username: "${DB_USERNAME:rqa_user}"
+  password: "${DB_PASSWORD:}"
+  
+  # 连接池配置
+  pool:
+    size: 20
+    max_overflow: 30
+    timeout: 30
+    recycle: 3600
+    pre_ping: true
+    
+  # 性能配置
+  performance:
+    statement_timeout: 30000  # 30秒
+    idle_in_transaction_timeout: 60000  # 60秒
+    max_connections: 100
+    
+  # SSL配置
+  ssl:
+    enabled: true
+    mode: "require"
+    cert_file: "/etc/ssl/certs/db-client.crt"
+    key_file: "/etc/ssl/private/db-client.key"
+    ca_file: "/etc/ssl/certs/db-ca.crt"
+    
+# 只读副本配置
+read_replicas:
+  - name: "replica-1"
+    host: "${DB_REPLICA1_HOST:localhost}"
+    port: "${DB_REPLICA1_PORT:5432}"
+    name: "${DB_REPLICA1_NAME:rqa2025_prod}"
+    username: "${DB_REPLICA1_USERNAME:rqa_readonly}"
+    password: "${DB_REPLICA1_PASSWORD:}"
+    pool:
+      size: 10
+      max_overflow: 15
+    ssl:
+      enabled: true
+      mode: "require"
+      
+  - name: "replica-2"
+    host: "${DB_REPLICA2_HOST:localhost}"
+    port: "${DB_REPLICA2_PORT:5432}"
+    name: "${DB_REPLICA2_NAME:rqa2025_prod}"
+    username: "${DB_REPLICA2_USERNAME:rqa_readonly}"
+    password: "${DB_REPLICA2_PASSWORD:}"
+    pool:
+      size: 10
+      max_overflow: 15
+    ssl:
+      enabled: true
+      mode: "require"
+      
+# 缓存数据库配置
+cache_db:
+  type: "redis"
+  host: "${REDIS_HOST:localhost}"
+  port: "${REDIS_PORT:6379}"
+  password: "${REDIS_PASSWORD:}"
+  db: 0
+  
+  # 连接池配置
+  pool:
+    size: 10
+    max_connections: 50
+    timeout: 5
+    
+  # 集群配置
+  cluster:
+    enabled: false
+    nodes:
+      - host: "redis-node-1"
+        port: 6379
+      - host: "redis-node-2"
+        port: 6379
+      - host: "redis-node-3"
+        port: 6379
+        
+# 时序数据库配置
+timeseries_db:
+  type: "influxdb"
+  host: "${INFLUXDB_HOST:localhost}"
+  port: "${INFLUXDB_PORT:8086}"
+  database: "${INFLUXDB_DATABASE:rqa2025_metrics}"
+  username: "${INFLUXDB_USERNAME:rqa_user}"
+  password: "${INFLUXDB_PASSWORD:}"
+  
+  # 连接配置
+  connection:
+    timeout: 10
+    retries: 3
+    
+  # 数据保留策略
+  retention:
+    default: "30d"
+    metrics: "90d"
+    logs: "7d"
+    
+# 搜索引擎配置
+search_db:
+  type: "elasticsearch"
+  hosts:
+    - host: "${ES_HOST1:localhost}"
+      port: 9200
+    - host: "${ES_HOST2:localhost}"
+      port: 9200
+    - host: "${ES_HOST3:localhost}"
+      port: 9200
+      
+  # 认证配置
+  auth:
+    username: "${ES_USERNAME:elastic}"
+    password: "${ES_PASSWORD:}"
+    
+  # 索引配置
+  indices:
+    data: "rqa2025_data"
+    logs: "rqa2025_logs"
+    metrics: "rqa2025_metrics"
+    
+  # 分片配置
+  sharding:
+    number_of_shards: 3
+    number_of_replicas: 1
+    
+# 备份配置
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  retention_days: 30
+  
+  # 存储配置
+  storage:
+    type: "s3"
+    bucket: "${BACKUP_BUCKET:rqa2025-backups}"
+    region: "${BACKUP_REGION:us-east-1}"
+    path: "database/"
+    
+  # 备份类型
+  types:
+    full: true
+    incremental: true
+    wal_archiving: true
+    
+# 监控配置
+monitoring:
+  enabled: true
+  
+  # 性能指标
+  metrics:
+    connection_pool: true
+    query_performance: true
+    slow_queries: true
+    deadlocks: true
+    
+  # 告警阈值
+  alerts:
+    connection_usage: 80
+    query_timeout: 30
+    slow_query_threshold: 1000  # 1秒
+    deadlock_threshold: 1
+    
+# 迁移配置
+migrations:
+  enabled: true
+  auto_migrate: false
+  backup_before_migrate: true
+  
+  # 迁移脚本路径
+  scripts_path: "/app/migrations"
+  
+  # 版本控制
+  version_table: "schema_migrations"
+  
+# 数据清理配置
+cleanup:
+  enabled: true
+  schedule: "0 3 * * *"  # 每天凌晨3点
+  
+  # 清理策略
+  strategies:
+    old_logs: "7d"
+    old_metrics: "90d"
+    old_backups: "30d"
+    temp_data: "1d"
+    
+# 安全配置
+security:
+  # 数据加密
+  encryption:
+    enabled: true
+    algorithm: "AES-256-GCM"
+    
+  # 访问控制
+  access_control:
+    enabled: true
+    ip_whitelist:
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"
+      - "192.168.0.0/16"
+      
+  # 审计日志
+  audit:
+    enabled: true
+    log_queries: false
+    log_connections: true
+    log_privileges: true
+    
+# 性能优化配置
+optimization:
+  # 查询优化
+  query_optimization:
+    enabled: true
+    max_parallel_workers: 4
+    work_mem: "64MB"
+    shared_buffers: "256MB"
+    
+  # 索引优化
+  index_optimization:
+    enabled: true
+    auto_vacuum: true
+    auto_analyze: true
+    
+  # 连接优化
+  connection_optimization:
+    enabled: true
+    tcp_keepalives_idle: 600
+    tcp_keepalives_interval: 60
+    tcp_keepalives_count: 3

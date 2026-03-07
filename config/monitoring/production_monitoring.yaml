@@ -1,0 +1,141 @@
+# 生产环境监控配置
+monitoring:
+  # 监控系统配置
+  system:
+    enabled: true
+    collection_interval: 30  # 秒
+    retention_days: 30
+    max_metrics: 10000
+  
+  # 指标收集配置
+  metrics:
+    # 系统指标
+    system:
+      cpu_usage: true
+      memory_usage: true
+      disk_usage: true
+      network_io: true
+      process_count: true
+    
+    # 应用指标
+    application:
+      response_time: true
+      throughput: true
+      error_rate: true
+      active_connections: true
+      queue_length: true
+    
+    # 业务指标
+    business:
+      task_completion_rate: true
+      cache_hit_rate: true
+      component_health: true
+      deployment_status: true
+  
+  # 告警配置
+  alerts:
+    enabled: true
+    channels:
+      - email
+      - slack
+      - webhook
+    
+    # 告警规则
+    rules:
+      # 系统告警
+      system:
+        cpu_high:
+          condition: "cpu_usage > 80"
+          severity: "warning"
+          message: "CPU使用率过高: {value}%"
+        
+        memory_high:
+          condition: "memory_usage > 80"
+          severity: "warning"
+          message: "内存使用率过高: {value}%"
+        
+        disk_full:
+          condition: "disk_usage > 90"
+          severity: "critical"
+          message: "磁盘空间不足: {value}%"
+      
+      # 应用告警
+      application:
+        response_slow:
+          condition: "response_time > 100"
+          severity: "warning"
+          message: "响应时间过长: {value}ms"
+        
+        error_rate_high:
+          condition: "error_rate > 5"
+          severity: "critical"
+          message: "错误率过高: {value}%"
+        
+        queue_full:
+          condition: "queue_length > 1000"
+          severity: "warning"
+          message: "任务队列已满: {value}"
+      
+      # 组件告警
+      components:
+        component_unhealthy:
+          condition: "component_health == false"
+          severity: "critical"
+          message: "组件 {component} 不健康"
+        
+        deployment_failed:
+          condition: "deployment_status == 'failed'"
+          severity: "critical"
+          message: "部署失败"
+  
+  # 仪表板配置
+  dashboard:
+    enabled: true
+    refresh_interval: 30  # 秒
+    max_widgets: 20
+    
+    # 默认仪表板
+    default:
+      - title: "系统概览"
+        type: "overview"
+        metrics: ["cpu_usage", "memory_usage", "disk_usage"]
+      
+      - title: "应用性能"
+        type: "performance"
+        metrics: ["response_time", "throughput", "error_rate"]
+      
+      - title: "组件状态"
+        type: "status"
+        metrics: ["component_health", "deployment_status"]
+      
+      - title: "任务调度"
+        type: "scheduler"
+        metrics: ["task_completion_rate", "queue_length"]
+  
+  # 存储配置
+  storage:
+    type: "influxdb"  # 或 "prometheus", "elasticsearch"
+    connection:
+      host: "localhost"
+      port: 8086
+      database: "rqa2025_metrics"
+      username: "admin"
+      password: "password"
+    
+    # 数据保留策略
+    retention:
+      raw_data: "7d"
+      hourly_data: "30d"
+      daily_data: "1y"
+  
+  # 导出配置
+  export:
+    prometheus:
+      enabled: true
+      port: 9090
+      path: "/metrics"
+    
+    grafana:
+      enabled: true
+      datasource: "influxdb"
+      dashboards: true

@@ -1,0 +1,195 @@
+{
+  "phase": "Phase 2",
+  "title": "核心模块深度覆盖",
+  "execution_date": "2025-09-14 20:10:12",
+  "objectives": {
+    "target_coverage": 65.0,
+    "improvement_goal": 15.55,
+    "focus_modules": [
+      "trading",
+      "strategy",
+      "risk",
+      "data"
+    ]
+  },
+  "results": {
+    "validation": [
+      {
+        "file": "tests/unit/strategy/test_strategy_component_1.py",
+        "exists": true,
+        "success": true,
+        "execution_time": 2.0360958576202393
+      },
+      {
+        "file": "tests/unit/strategy/test_strategy_component_2.py",
+        "exists": true,
+        "success": true,
+        "execution_time": 2.505044937133789
+      },
+      {
+        "file": "tests/unit/strategy/test_strategy_component_3.py",
+        "exists": true,
+        "success": true,
+        "execution_time": 2.336235761642456
+      },
+      {
+        "file": "tests/unit/strategy/test_strategy_component_4.py",
+        "exists": true,
+        "success": true,
+        "execution_time": 2.319019317626953
+      },
+      {
+        "file": "tests/unit/risk/test_risk_component_1.py",
+        "exists": true,
+        "success": true,
+        "execution_time": 2.0563230514526367
+      }
+    ],
+    "trading": [
+      {
+        "module": "trading",
+        "path": "tests/unit/trading/",
+        "success": false,
+        "execution_time": 7.266545295715332
+      },
+      {
+        "module": "trading",
+        "path": "tests/integration/trading/",
+        "success": false,
+        "execution_time": 9.614088535308838
+      }
+    ],
+    "strategy": [
+      {
+        "module": "strategy",
+        "path": "tests/unit/strategy/",
+        "success": false,
+        "execution_time": 9.314790487289429
+      }
+    ],
+    "risk": [
+      {
+        "module": "risk",
+        "path": "tests/unit/risk/",
+        "success": false,
+        "execution_time": 10.12325668334961
+      },
+      {
+        "module": "risk",
+        "path": "tests/integration/risk/",
+        "success": false,
+        "execution_time": 10.181203603744507
+      }
+    ],
+    "data": [
+      {
+        "module": "data",
+        "path": "tests/unit/data/",
+        "success": false,
+        "execution_time": 8.752477169036865
+      }
+    ],
+    "mock_optimization": [
+      {
+        "file": "tests/unit/trading/test_execution_engine.py",
+        "optimized": true,
+        "mock_strategy": "depth_mock"
+      },
+      {
+        "file": "tests/unit/strategy/test_strategy_execution.py",
+        "optimized": true,
+        "mock_strategy": "depth_mock"
+      },
+      {
+        "file": "tests/unit/risk/test_risk_calculation_engine.py",
+        "optimized": true,
+        "mock_strategy": "depth_mock"
+      }
+    ],
+    "parametrized_tests": [
+      {
+        "module": "trading",
+        "test_type": "order_validation",
+        "parameters": [
+          "valid_orders",
+          "invalid_orders",
+          "edge_cases"
+        ],
+        "implemented": true
+      },
+      {
+        "module": "strategy",
+        "test_type": "signal_generation",
+        "parameters": [
+          "bull_market",
+          "bear_market",
+          "sideways_market"
+        ],
+        "implemented": true
+      },
+      {
+        "module": "risk",
+        "test_type": "exposure_calculation",
+        "parameters": [
+          "high_risk",
+          "medium_risk",
+          "low_risk"
+        ],
+        "implemented": true
+      },
+      {
+        "module": "data",
+        "test_type": "data_transformation",
+        "parameters": [
+          "clean_data",
+          "noisy_data",
+          "missing_data"
+        ],
+        "implemented": true
+      }
+    ],
+    "integration_tests": [
+      {
+        "name": "trading_strategy_integration",
+        "description": "交易执行与策略生成的集成测试",
+        "components": [
+          "trading_engine",
+          "strategy_engine",
+          "risk_engine"
+        ],
+        "implemented": true
+      },
+      {
+        "name": "data_processing_pipeline",
+        "description": "数据采集到处理的完整管道测试",
+        "components": [
+          "data_loader",
+          "data_processor",
+          "data_validator"
+        ],
+        "implemented": true
+      },
+      {
+        "name": "risk_monitoring_system",
+        "description": "风险监控与告警系统的集成测试",
+        "components": [
+          "risk_calculator",
+          "monitoring_system",
+          "alert_system"
+        ],
+        "implemented": true
+      },
+      {
+        "name": "market_data_flow",
+        "description": "市场数据流转的端到端测试",
+        "components": [
+          "data_source",
+          "data_pipeline",
+          "data_consumer"
+        ],
+        "implemented": true
+      }
+    ],
+    "coverage_measurement": null
+  }
+}

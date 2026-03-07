@@ -1,0 +1,55 @@
+{
+  "ai_config": {
+    "api_base": "http://localhost:11434",
+    "model": "deepseek-coder",
+    "temperature": 0.3,
+    "max_tokens": 4000,
+    "timeout": 120
+  },
+  "coverage_targets": {
+    "infrastructure": 90.0,
+    "data": 85.0,
+    "features": 85.0,
+    "models": 85.0,
+    "trading": 85.0,
+    "backtest": 85.0
+  },
+  "automation": {
+    "schedule_time": "02:00",
+    "run_immediately": false,
+    "max_modules_per_layer": 5,
+    "cache_enabled": true,
+    "health_check_interval": 60
+  },
+  "priority_modules": {
+    "critical": [
+      "config/config_manager.py",
+      "m_logging/logger.py",
+      "cache/cache_manager.py",
+      "database/database_manager.py",
+      "monitoring/system_monitor.py"
+    ],
+    "high": [
+      "data_loader.py",
+      "feature_engine.py",
+      "trading_engine.py",
+      "model_manager.py"
+    ],
+    "medium": [
+      "utils/helpers.py",
+      "validators/validator.py",
+      "analyzers/analyzer.py"
+    ]
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/ai_coverage_automation.log",
+    "max_size": "10MB",
+    "backup_count": 5
+  },
+  "reports": {
+    "output_dir": "reports/testing",
+    "coverage_report": "ai_coverage_automation_report.md",
+    "status_report": "continuous_ai_coverage_status.md"
+  }
+} 

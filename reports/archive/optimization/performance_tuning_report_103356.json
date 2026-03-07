@@ -1,0 +1,87 @@
+{
+  "tuning_info": {
+    "timestamp": "2025-08-04T10:33:56.814854",
+    "target_cpu_usage": 70.0,
+    "target_memory_usage": 80.0,
+    "target_response_time": 100.0,
+    "target_throughput": 1000.0,
+    "max_error_rate": 1.0
+  },
+  "bottlenecks_found": 5,
+  "tuning_actions": 5,
+  "successful_tunings": 5,
+  "failed_tunings": 0,
+  "tuning_history": [
+    {
+      "timestamp": "2025-08-04T10:33:51.767717",
+      "bottleneck": {
+        "type": "cpu",
+        "severity": "medium",
+        "services": 1,
+        "avg_cpu": 74.14005685963733,
+        "action": "scale_up"
+      },
+      "action_taken": "scale_up",
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-08-04T10:33:52.779541",
+      "bottleneck": {
+        "type": "memory",
+        "severity": "medium",
+        "services": 1,
+        "avg_memory": 80.36950249533015,
+        "action": "optimize_memory"
+      },
+      "action_taken": "optimize_memory",
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-08-04T10:33:53.784450",
+      "bottleneck": {
+        "type": "response_time",
+        "severity": "medium",
+        "services": 4,
+        "avg_response_time": 150.40173054615167,
+        "action": "optimize_cache"
+      },
+      "action_taken": "optimize_cache",
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-08-04T10:33:55.798164",
+      "bottleneck": {
+        "type": "throughput",
+        "severity": "medium",
+        "services": 4,
+        "avg_throughput": 812.1314194572799,
+        "action": "scale_out"
+      },
+      "action_taken": "scale_out",
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-08-04T10:33:56.809845",
+      "bottleneck": {
+        "type": "error_rate",
+        "severity": "medium",
+        "services": 3,
+        "avg_error_rate": 1.6735797161829593,
+        "action": "improve_error_handling"
+      },
+      "action_taken": "improve_error_handling",
+      "status": "success"
+    }
+  ],
+  "configuration": {
+    "target_cpu_usage": 70.0,
+    "target_memory_usage": 80.0,
+    "target_response_time": 100.0,
+    "target_throughput": 1000.0,
+    "max_error_rate": 1.0,
+    "tuning_interval": 60,
+    "enable_auto_scaling": true,
+    "enable_cache_optimization": true,
+    "enable_database_optimization": true
+  }
+}

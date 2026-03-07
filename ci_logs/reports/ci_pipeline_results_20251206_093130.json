@@ -1,0 +1,62 @@
+{
+  "pipeline_id": "ci_20251206_092549",
+  "timestamp": "2025-12-06T09:25:49.027290",
+  "stages": {
+    "quality": {
+      "status": "failed",
+      "error": "'NoneType' object has no attribute 'split'"
+    },
+    "unit_tests": {
+      "status": "failed",
+      "return_code": 4,
+      "execution_time": 1764984602.5423872,
+      "stdout": "",
+      "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --json-report --json-report-file=test_logs/unit_test_results.json\n  inifile: C:\\PythonProject\\RQA2025\\tests\\pytest.ini\n  rootdir: C:\\PythonProject\\RQA2025\\tests\n\n"
+    },
+    "integration_tests": {
+      "status": "failed",
+      "return_code": 4,
+      "execution_time": 1764984609.5430775,
+      "stdout": "",
+      "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --json-report --json-report-file=test_logs/integration_test_results.json\n  inifile: C:\\PythonProject\\RQA2025\\tests\\pytest.ini\n  rootdir: C:\\PythonProject\\RQA2025\\tests\n\n"
+    },
+    "e2e_tests": {
+      "status": "failed",
+      "return_code": 4,
+      "execution_time": 1764984613.2932336,
+      "stdout": "",
+      "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --json-report --json-report-file=test_logs/e2e_test_results.json\n  inifile: C:\\PythonProject\\RQA2025\\tests\\pytest.ini\n  rootdir: C:\\PythonProject\\RQA2025\\tests\n\n"
+    },
+    "performance": {
+      "status": "failed",
+      "error": "'NoneType' object is not subscriptable"
+    },
+    "security": {
+      "status": "completed",
+      "return_code": 1,
+      "execution_time": 1764984690.4319954,
+      "issues_found": true,
+      "stdout": "Working... ---------------------------------------- 100% 0:01:06\n",
+      "stderr": "[main]\tINFO\tprofile include tests: None\n[main]\tINFO\tprofile exclude tests: None\n[main]\tINFO\tcli include tests: None\n[main]\tINFO\tcli exclude tests: None\n[json]\tINFO\tJSON output written to file: test_logs/security_report.json\n"
+    }
+  },
+  "overall_status": "warning",
+  "quality_gates": {
+    "code_quality": "unknown",
+    "unit_tests": "failed",
+    "integration_tests": "failed",
+    "e2e_tests": "passed",
+    "performance": "failed",
+    "security": "passed",
+    "overall": "failed"
+  },
+  "notifications": [
+    {
+      "type": "warning",
+      "priority": "medium",
+      "title": "⚠️ CI流水线警告",
+      "message": "CI流水线完成但存在质量问题需要关注",
+      "details": "警告的门禁: ['unit_tests', 'integration_tests', 'performance', 'overall']"
+    }
+  ]
+}

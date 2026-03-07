@@ -1,0 +1,167 @@
+{
+  "complement_priority": {
+    "enabled": true,
+    "max_queue_size": 1000,
+    "max_concurrent_batches": 2,
+    "priority_levels": {
+      "CRITICAL": {
+        "score_base": 1000,
+        "max_concurrent": 3,
+        "time_bonus_multiplier": 1.0,
+        "failure_penalty": 50,
+        "importance_bonus_max": 200,
+        "description": "核心交易数据，优先级最高"
+      },
+      "HIGH": {
+        "score_base": 750,
+        "max_concurrent": 2,
+        "time_bonus_multiplier": 0.9,
+        "failure_penalty": 40,
+        "importance_bonus_max": 150,
+        "description": "重要市场数据，高优先级"
+      },
+      "MEDIUM": {
+        "score_base": 500,
+        "max_concurrent": 1,
+        "time_bonus_multiplier": 0.8,
+        "failure_penalty": 30,
+        "importance_bonus_max": 100,
+        "description": "常规业务数据，中等优先级"
+      },
+      "LOW": {
+        "score_base": 250,
+        "max_concurrent": 1,
+        "time_bonus_multiplier": 0.7,
+        "failure_penalty": 20,
+        "importance_bonus_max": 50,
+        "description": "辅助分析数据，低优先级"
+      }
+    },
+    "data_source_priorities": {
+      "core_stocks": {
+        "base_priority": "CRITICAL",
+        "importance_weight": 1.0,
+        "estimated_records_per_day": 1,
+        "business_value": "交易决策核心数据",
+        "complement_modes": ["MONTHLY", "QUARTERLY"],
+        "emergency_enabled": true
+      },
+      "major_indices": {
+        "base_priority": "HIGH",
+        "importance_weight": 0.9,
+        "estimated_records_per_day": 1,
+        "business_value": "市场基准和策略参考",
+        "complement_modes": ["WEEKLY", "MONTHLY"],
+        "emergency_enabled": true
+      },
+      "all_stocks": {
+        "base_priority": "MEDIUM",
+        "importance_weight": 0.7,
+        "estimated_records_per_day": 1,
+        "business_value": "市场全景和选股分析",
+        "complement_modes": ["QUARTERLY", "SEMI_ANNUAL"],
+        "emergency_enabled": false
+      },
+      "macro_data": {
+        "base_priority": "LOW",
+        "importance_weight": 0.5,
+        "estimated_records_per_day": 0.1,
+        "business_value": "宏观环境和政策分析",
+        "complement_modes": ["SEMI_ANNUAL"],
+        "emergency_enabled": false
+      },
+      "news_data": {
+        "base_priority": "LOW",
+        "importance_weight": 0.6,
+        "estimated_records_per_day": 10,
+        "business_value": "市场情绪和事件分析",
+        "complement_modes": ["MONTHLY", "QUARTERLY"],
+        "emergency_enabled": false
+      },
+      "bond_data": {
+        "base_priority": "MEDIUM",
+        "importance_weight": 0.6,
+        "estimated_records_per_day": 0.5,
+        "business_value": "固定收益投资分析",
+        "complement_modes": ["QUARTERLY"],
+        "emergency_enabled": false
+      },
+      "futures_data": {
+        "base_priority": "HIGH",
+        "importance_weight": 0.8,
+        "estimated_records_per_day": 2,
+        "business_value": "衍生品交易分析",
+        "complement_modes": ["WEEKLY", "MONTHLY"],
+        "emergency_enabled": true
+      },
+      "forex_data": {
+        "base_priority": "MEDIUM",
+        "importance_weight": 0.6,
+        "estimated_records_per_day": 5,
+        "business_value": "外汇市场分析",
+        "complement_modes": ["DAILY", "WEEKLY"],
+        "emergency_enabled": false
+      },
+      "crypto_data": {
+        "base_priority": "MEDIUM",
+        "importance_weight": 0.7,
+        "estimated_records_per_day": 10,
+        "business_value": "加密货币市场分析",
+        "complement_modes": ["DAILY", "WEEKLY"],
+        "emergency_enabled": false
+      }
+    },
+    "complement_schedules": {
+      "MONTHLY": {
+        "interval_days": 30,
+        "complement_window_days": 30,
+        "min_gap_days": 25,
+        "description": "每月补全最近30天数据"
+      },
+      "WEEKLY": {
+        "interval_days": 7,
+        "complement_window_days": 7,
+        "min_gap_days": 5,
+        "description": "每周补全最近7天数据"
+      },
+      "QUARTERLY": {
+        "interval_days": 90,
+        "complement_window_days": 90,
+        "min_gap_days": 80,
+        "description": "每季度补全最近90天数据"
+      },
+      "SEMI_ANNUAL": {
+        "interval_days": 180,
+        "complement_window_days": 180,
+        "min_gap_days": 150,
+        "description": "每半年补全最近180天数据"
+      },
+      "FULL_HISTORY": {
+        "interval_days": 365,
+        "complement_window_days": 3650,
+        "min_gap_days": 330,
+        "description": "每年补全完整历史数据"
+      }
+    },
+    "batch_processing": {
+      "default_batch_size_days": 7,
+      "min_batch_size_days": 1,
+      "max_batch_size_days": 30,
+      "adaptive_batch_sizing": true,
+      "system_load_threshold": 0.8,
+      "progress_check_interval": 30
+    },
+    "emergency_handling": {
+      "enabled": true,
+      "emergency_priority_score": -2000,
+      "max_emergency_tasks": 5,
+      "emergency_timeout_minutes": 60
+    },
+    "monitoring": {
+      "queue_size_alert_threshold": 800,
+      "old_task_cleanup_days": 7,
+      "performance_tracking_enabled": true,
+      "statistics_update_interval": 300
+    }
+  }
+}

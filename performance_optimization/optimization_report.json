@@ -1,0 +1,310 @@
+{
+  "report_generated": "2025-12-03T17:09:50.528995",
+  "optimization_results": {
+    "optimization_summary": {
+      "total_optimization_time": 0.2820420265197754,
+      "memory_optimized": true,
+      "computation_optimized": true,
+      "io_optimized": true,
+      "database_optimized": true
+    },
+    "memory_optimization": {
+      "memory_stats": {
+        "rss": 80.87890625,
+        "vms": 793.97265625,
+        "shared": 0.0,
+        "text": 0.0,
+        "data": 0.0
+      },
+      "gc_stats": {
+        "collections": [
+          35,
+          0,
+          0
+        ],
+        "objects": [
+          34,
+          0,
+          0
+        ],
+        "stats": [
+          {
+            "collections": 173,
+            "collected": 451,
+            "uncollectable": 0
+          },
+          {
+            "collections": 15,
+            "collected": 22,
+            "uncollectable": 0
+          },
+          {
+            "collections": 2,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "optimizations": [],
+      "memory_saved": 24.263671875
+    },
+    "computation_optimization": {
+      "task_analysis": {
+        "total_tasks": 20,
+        "avg_task_time": 0.14500000000000002,
+        "cpu_bound": true,
+        "io_bound": false,
+        "recommended_strategy": "process_pool"
+      },
+      "optimized_results": [
+        {
+          "task_id": 0,
+          "result": "Task 0 completed",
+          "execution_time": 0.05
+        },
+        {
+          "task_id": 1,
+          "result": "Task 1 completed",
+          "execution_time": 0.060000000000000005
+        },
+        {
+          "task_id": 2,
+          "result": "Task 2 completed",
+          "execution_time": 0.07
+        },
+        {
+          "task_id": 3,
+          "result": "Task 3 completed",
+          "execution_time": 0.08
+        },
+        {
+          "task_id": 4,
+          "result": "Task 4 completed",
+          "execution_time": 0.09
+        },
+        {
+          "task_id": 5,
+          "result": "Task 5 completed",
+          "execution_time": 0.1
+        },
+        {
+          "task_id": 6,
+          "result": "Task 6 completed",
+          "execution_time": 0.11
+        },
+        {
+          "task_id": 7,
+          "result": "Task 7 completed",
+          "execution_time": 0.12000000000000001
+        },
+        {
+          "task_id": 8,
+          "result": "Task 8 completed",
+          "execution_time": 0.13
+        },
+        {
+          "task_id": 9,
+          "result": "Task 9 completed",
+          "execution_time": 0.14
+        },
+        {
+          "task_id": 10,
+          "result": "Task 10 completed",
+          "execution_time": 0.15000000000000002
+        },
+        {
+          "task_id": 11,
+          "result": "Task 11 completed",
+          "execution_time": 0.16
+        },
+        {
+          "task_id": 12,
+          "result": "Task 12 completed",
+          "execution_time": 0.16999999999999998
+        },
+        {
+          "task_id": 13,
+          "result": "Task 13 completed",
+          "execution_time": 0.18
+        },
+        {
+          "task_id": 14,
+          "result": "Task 14 completed",
+          "execution_time": 0.19
+        },
+        {
+          "task_id": 15,
+          "result": "Task 15 completed",
+          "execution_time": 0.2
+        },
+        {
+          "task_id": 16,
+          "result": "Task 16 completed",
+          "execution_time": 0.21000000000000002
+        },
+        {
+          "task_id": 17,
+          "result": "Task 17 completed",
+          "execution_time": 0.22000000000000003
+        },
+        {
+          "task_id": 18,
+          "result": "Task 18 completed",
+          "execution_time": 0.22999999999999998
+        },
+        {
+          "task_id": 19,
+          "result": "Task 19 completed",
+          "execution_time": 0.24
+        }
+      ],
+      "performance_gain": {
+        "speedup": 1.0,
+        "efficiency": 0.03125,
+        "time_saved": 0.0,
+        "parallel_efficiency": 0.03125
+      },
+      "optimization_strategy": "process_pool"
+    },
+    "io_optimization": {
+      "io_stats": {
+        "disk": {
+          "read_count": 2655552,
+          "write_count": 15768674,
+          "read_bytes": 173461362176,
+          "write_bytes": 271731585024,
+          "read_time": 981,
+          "write_time": 4416
+        },
+        "network": {
+          "bytes_sent": 8442492457,
+          "bytes_recv": 6618949777,
+          "packets_sent": 13813762,
+          "packets_recv": 12129711
+        }
+      },
+      "optimizations": [
+        {
+          "type": "disk_io",
+          "target": "write_operations",
+          "recommendation": "使用异步写入和批量操作",
+          "potential_improvement": "40-60%"
+        }
+      ],
+      "performance_improvements": {
+        "disk_read_improvement": 0.4,
+        "disk_write_improvement": 0.5,
+        "network_latency_improvement": 0.3,
+        "overall_io_efficiency": 0.45
+      }
+    },
+    "database_optimization": {
+      "query_analysis": {
+        "slow_queries": [
+          {
+            "query": "SELECT * FROM large_table",
+            "avg_time": 2.5,
+            "call_count": 150
+          },
+          {
+            "query": "JOIN multiple_tables",
+            "avg_time": 1.8,
+            "call_count": 89
+          }
+        ],
+        "frequent_queries": [
+          {
+            "query": "SELECT user_data",
+            "call_count": 1250,
+            "avg_time": 0.02
+          },
+          {
+            "query": "UPDATE portfolio",
+            "call_count": 890,
+            "avg_time": 0.05
+          }
+        ]
+      },
+      "index_analysis": {
+        "missing_indexes": [
+          {
+            "table": "transactions",
+            "column": "timestamp"
+          },
+          {
+            "table": "portfolios",
+            "column": "user_id"
+          }
+        ],
+        "unused_indexes": [
+          {
+            "table": "logs",
+            "index": "old_index_1"
+          }
+        ]
+      },
+      "optimizations": [
+        {
+          "type": "query_optimization",
+          "target": "SELECT * FROM large_table",
+          "recommendation": "添加适当索引或重写查询",
+          "potential_improvement": "60-80%"
+        },
+        {
+          "type": "query_optimization",
+          "target": "JOIN multiple_tables",
+          "recommendation": "添加适当索引或重写查询",
+          "potential_improvement": "60-80%"
+        },
+        {
+          "type": "index_creation",
+          "target": "transactions.timestamp",
+          "recommendation": "创建复合索引以提升查询性能",
+          "potential_improvement": "70-90%"
+        },
+        {
+          "type": "index_creation",
+          "target": "portfolios.user_id",
+          "recommendation": "创建复合索引以提升查询性能",
+          "potential_improvement": "70-90%"
+        }
+      ],
+      "estimated_improvements": {
+        "query_performance_improvement": 0.75,
+        "index_efficiency_improvement": 0.85,
+        "overall_database_performance": 0.8
+      }
+    },
+    "overall_improvements": {
+      "memory_efficiency": 24.263671875,
+      "computation_speed": 1.0,
+      "io_performance": 0.45,
+      "database_performance": 0.8,
+      "overall_system_performance": 5.4652343750000005
+    }
+  },
+  "recommendations": [
+    "I/O优化: 使用异步写入和批量操作 (预计提升: 40-60%)",
+    "数据库优化: 添加适当索引或重写查询 (预计提升: 60-80%)",
+    "数据库优化: 添加适当索引或重写查询 (预计提升: 60-80%)",
+    "数据库优化: 创建复合索引以提升查询性能 (预计提升: 70-90%)",
+    "数据库优化: 创建复合索引以提升查询性能 (预计提升: 70-90%)"
+  ],
+  "implementation_priority": {
+    "high_priority": [
+      "实现内存池管理",
+      "优化数据库查询",
+      "添加智能缓存策略"
+    ],
+    "medium_priority": [
+      "改进并发处理",
+      "优化I/O操作",
+      "增强监控指标"
+    ],
+    "low_priority": [
+      "微调算法参数",
+      "优化日志记录",
+      "改进错误处理"
+    ]
+  }
+}

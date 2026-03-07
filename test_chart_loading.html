@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js 加载测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Chart.js 多CDN备用加载系统 - 增强版
+        window.chartJSLoaded = false;
+        window.chartJSLoading = false;
+
+        // 显示加载状态提示
+        function showChartLoadingStatus(message, type = 'info') {
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'chart-loading-status';
+            statusDiv.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                type === 'warning' ? 'bg-yellow-500 text-black' :
+                'bg-blue-500 text-white'
+            }`;
+            statusDiv.innerHTML = `<i class="fas fa-chart-line mr-2"></i>${message}`;
+
+            // 移除已存在的状态提示
+            const existing = document.getElementById('chart-loading-status');
+            if (existing) existing.remove();
+
+            document.body.appendChild(statusDiv);
+
+            // 5秒后自动移除（错误消息保留10秒）
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.remove();
+                }
+            }, type === 'error' ? 10000 : 5000);
+        }
+
+        function loadChartJS() {
+            if (window.Chart) {
+                window.chartJSLoaded = true;
+                showChartLoadingStatus('✅ Chart.js 已加载', 'success');
+                return;
+            }
+
+            if (window.chartJSLoading) {
+                console.log('Chart.js 正在加载中...');
+                return;
+            }
+
+            window.chartJSLoading = true;
+            showChartLoadingStatus('📊 正在加载图表库...', 'info');
+
+            // 多CDN备用源配置
+            const cdnSources = [
+                {
+                    name: 'BootCDN',
+                    url: 'https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.0/chart.umd.js',
+                    timeout: 8000
+                },
+                {
+                    name: 'jsDelivr',
+                    url: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js',
+                    timeout: 8000
+                },
+                {
+                    name: 'unpkg',
+                    url: 'https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js',
+                    timeout: 8000
+                },
+                {
+                    name: 'CDNJS',
+                    url: 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js',
+                    timeout: 8000
+                }
+            ];
+
+            let loaded = false;
+            let attemptedSources = 0;
+
+            function tryLoadFromCDN(sourceIndex = 0) {
+                if (loaded || sourceIndex >= cdnSources.length) {
+                    if (!loaded) {
+                        console.error('所有Chart.js CDN源都加载失败');
+                        showChartLoadingStatus('❌ 图表库加载失败，使用简化模式', 'error');
+                        // 创建简化版Chart构造函数
+                        createFallbackChart();
+                    }
+                    return;
+                }
+
+                const source = cdnSources[sourceIndex];
+                attemptedSources++;
+
+                console.log(`尝试从 ${source.name} 加载Chart.js (${attemptedSources}/${cdnSources.length})`);
+                showChartLoadingStatus(`🔄 尝试 ${source.name}... (${attemptedSources}/${cdnSources.length})`, 'info');
+
+                const script = document.createElement('script');
+                script.src = source.url;
+
+                // 设置超时
+                const timeoutId = setTimeout(() => {
+                    console.warn(`${source.name} 加载超时，尝试下一个源...`);
+                    script.remove();
+                    tryLoadFromCDN(sourceIndex + 1);
+                }, source.timeout);
+
+                script.onload = function() {
+                    clearTimeout(timeoutId);
+                    if (!loaded) {
+                        loaded = true;
+                        window.chartJSLoaded = true;
+                        console.log(`✅ Chart.js 从 ${source.name} 加载成功`);
+                        showChartLoadingStatus(`✅ 图表库加载成功 (${source.name})`, 'success');
+
+                        // 初始化待处理的图表
+                        if (window.pendingChartsInit) {
+                            setTimeout(() => {
+                                window.pendingChartsInit();
+                                window.pendingChartsInit = null;
+                            }, 100);
+                        }
+                    }
+                };
+
+                script.onerror = function() {
+                    clearTimeout(timeoutId);
+                    console.warn(`${source.name} 加载失败，尝试下一个源...`);
+                    tryLoadFromCDN(sourceIndex + 1);
+                };
+
+                document.head.appendChild(script);
+            }
+
+            // 并行尝试前两个最快的CDN
+            tryLoadFromCDN(0);
+
+            // 如果前两个都失败，1秒后开始顺序尝试其他源
+            setTimeout(() => {
+                if (!loaded) {
+                    console.log('开始顺序尝试备用CDN...');
+                    tryLoadFromCDN(2);
+                }
+            }, 2000);
+        }
+
+        function createFallbackChart() {
+            console.log('创建Chart.js备用版本...');
+
+            // 创建一个功能受限但能工作的Chart构造函数
+            window.Chart = function(canvas, config) {
+                console.log('📊 使用Chart.js备用版本');
+
+                this.canvas = canvas;
+                this.config = config;
+                this.ctx = canvas.getContext('2d');
+
+                // 绘制简单的占位符
+                this.renderPlaceholder = function() {
+                    const ctx = this.ctx;
+                    const canvas = this.canvas;
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 绘制背景
+                    ctx.fillStyle = '#f8f9fa';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // 绘制边框
+                    ctx.strokeStyle = '#dee2e6';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+                    // 绘制标题
+                    ctx.fillStyle = '#6c757d';
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('图表库加载失败', canvas.width / 2, canvas.height / 2 - 20);
+                    ctx.fillText('显示简化模式', canvas.width / 2, canvas.height / 2 + 10);
+
+                    // 显示重新加载按钮的提示
+                    ctx.font = '12px Arial';
+                    ctx.fillText('请刷新页面重试', canvas.width / 2, canvas.height / 2 + 40);
+                };
+
+                // 初始渲染
+                this.renderPlaceholder();
+
+                return {
+                    update: () => {
+                        console.log('备用图表更新');
+                        this.renderPlaceholder();
+                    },
+                    destroy: () => {
+                        console.log('备用图表销毁');
+                        const ctx = this.ctx;
+                        const canvas = this.canvas;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
+                };
+            };
+
+            // 标记为已加载
+            window.chartJSLoaded = true;
+
+            // 通知用户
+            setTimeout(() => {
+                showChartLoadingStatus('⚠️ 使用图表简化模式，功能受限', 'warning');
+            }, 1000);
+        }
+
+        // 页面加载完成后开始加载Chart.js
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadChartJS);
+        } else {
+            loadChartJS();
+        }
+
+        // 导出函数供外部调用
+        window.loadChartJS = loadChartJS;
+        window.retryChartJSLoad = () => {
+            window.chartJSLoaded = false;
+            window.chartJSLoading = false;
+            showChartLoadingStatus('🔄 重新加载图表库...', 'info');
+            loadChartJS();
+        };
+
+        // 测试Chart.js加载状态的函数
+        window.testChartJSStatus = () => {
+            const status = {
+                loaded: window.chartJSLoaded,
+                loading: window.chartJSLoading,
+                chartAvailable: typeof window.Chart !== 'undefined',
+                chartVersion: window.Chart ? 'Available' : 'Not Available'
+            };
+
+            console.log('Chart.js状态:', status);
+            alert(`Chart.js状态:\n加载完成: ${status.loaded}\n正在加载: ${status.loading}\nChart对象: ${status.chartAvailable}\n版本: ${status.chartVersion}`);
+
+            return status;
+        };
+
+        // 初始化测试图表
+        window.pendingChartsInit = function() {
+            console.log('初始化测试图表...');
+
+            const canvas = document.getElementById('testChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            try {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                        datasets: [{
+                            label: '测试数据',
+                            data: [12, 19, 3, 5, 2, 3],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Chart.js 加载测试成功！'
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('chartStatus').innerHTML = '<span class="text-green-600">✅ 图表加载成功</span>';
+            } catch (error) {
+                console.error('图表初始化失败:', error);
+                document.getElementById('chartStatus').innerHTML = '<span class="text-red-600">❌ 图表初始化失败</span>';
+            }
+        };
+    </script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">Chart.js 多CDN加载测试</h1>
+
+        <!-- 状态信息 -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">加载状态</h2>
+            <div id="chartStatus" class="text-lg">
+                <span class="text-blue-600">⏳ 正在加载Chart.js...</span>
+            </div>
+        </div>
+
+        <!-- 图表容器 -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">测试图表</h2>
+            <div class="h-64">
+                <canvas id="testChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">控制面板</h2>
+            <div class="flex space-x-4">
+                <button onclick="testChartJSStatus()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <i class="fas fa-info-circle mr-2"></i>检查状态
+                </button>
+                <button onclick="retryChartJSLoad()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                    <i class="fas fa-redo mr-2"></i>重新加载
+                </button>
+                <button onclick="console.log('Chart.js对象:', window.Chart)" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
+                    <i class="fas fa-terminal mr-2"></i>控制台输出
+                </button>
+            </div>
+        </div>
+
+        <!-- CDN信息 -->
+        <div class="bg-white rounded-lg shadow p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4">CDN备用源列表</h2>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-medium mb-2">主要CDN:</h3>
+                    <ul class="space-y-1 text-gray-600">
+                        <li>• BootCDN (8秒超时)</li>
+                        <li>• jsDelivr (8秒超时)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-medium mb-2">备用CDN:</h3>
+                    <ul class="space-y-1 text-gray-600">
+                        <li>• unpkg (8秒超时)</li>
+                        <li>• CDNJS (8秒超时)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                <p class="text-sm text-yellow-800">
+                    <strong>注意:</strong> 如果所有CDN都失败，将使用简化的图表占位符模式，功能受限但页面仍能正常工作。
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

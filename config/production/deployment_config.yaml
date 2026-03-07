@@ -1,0 +1,87 @@
+# 生产环境部署配置
+deployment:
+  # 部署类型
+  type: "blue_green"  # 蓝绿部署
+  
+  # 环境信息
+  environment: "production"
+  version: "1.0.0"
+  
+  # 部署策略
+  strategy:
+    rollback_enabled: true
+    monitoring_enabled: true
+    health_check_interval: 30  # 秒
+    deployment_timeout: 300    # 秒
+    max_retries: 3
+  
+  # 组件配置
+  components:
+    factory_pattern:
+      enabled: true
+      priority: 1
+      health_check: true
+      config:
+        max_instances: 100
+        timeout: 30
+    
+    unified_infrastructure:
+      enabled: true
+      priority: 2
+      health_check: true
+      config:
+        singleton_mode: true
+        auto_recovery: true
+    
+    task_scheduler:
+      enabled: true
+      priority: 3
+      health_check: true
+      config:
+        max_workers: 8
+        queue_size: 1000
+        task_timeout: 3600
+    
+    infrastructure_core:
+      enabled: true
+      priority: 4
+      health_check: true
+      config:
+        cache_enabled: true
+        monitoring_enabled: true
+  
+  # 监控配置
+  monitoring:
+    enabled: true
+    metrics_collection: true
+    alerting: true
+    dashboard: true
+    
+    # 告警阈值
+    thresholds:
+      cpu_usage: 80.0
+      memory_usage: 80.0
+      disk_usage: 80.0
+      response_time: 100  # ms
+      error_rate: 5.0     # %
+  
+  # 日志配置
+  logging:
+    level: "INFO"
+    file_rotation: true
+    max_file_size: "100MB"
+    backup_count: 5
+    
+  # 备份配置
+  backup:
+    enabled: true
+    auto_backup: true
+    backup_retention: 7  # 天
+    backup_location: "backup/production"
+  
+  # 安全配置
+  security:
+    ssl_enabled: true
+    authentication_required: true
+    rate_limiting: true
+    max_connections: 1000

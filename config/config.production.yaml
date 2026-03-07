@@ -1,0 +1,216 @@
+# RQA2025 生产环境配置
+# 此配置仅用于生产环境，覆盖主配置中的默认值
+# 注意：敏感信息（如密码）应通过环境变量设置
+
+environment: production
+debug: false
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  timeout: 60
+  max_requests: 100000
+
+# 数据库配置
+database:
+  timescale:
+    host: ${RQA_DATABASE_TIMESCALE_HOST}
+    port: ${RQA_DATABASE_TIMESCALE_PORT:5432}
+    database: ${RQA_DATABASE_TIMESCALE_DATABASE:rqa2025}
+    user: ${RQA_DATABASE_TIMESCALE_USER}
+    password: ${RQA_DATABASE_TIMESCALE_PASSWORD}
+    ssl_mode: "require"
+    pool:
+      min_size: 10
+      max_size: 50
+      command_timeout: 60.0
+      max_inactive_time: 300.0
+      max_queries: 50000
+      max_lifetime: 3600.0
+    
+  redis:
+    host: ${RQA_DATABASE_REDIS_HOST}
+    port: ${RQA_DATABASE_REDIS_PORT:6379}
+    db: 0
+    password: ${RQA_DATABASE_REDIS_PASSWORD}
+    ssl: true
+    connection_pool:
+      max_connections: 100
+      timeout: 5.0
+
+# 安全配置
+security:
+  secret_key: ${RQA_SECURITY_SECRET_KEY}
+  jwt_algorithm: "HS256"
+  access_token_expire_minutes: 30
+  refresh_token_expire_days: 7
+  password_min_length: 12
+  max_login_attempts: 5
+  lockout_duration_minutes: 30
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "json"
+  output: "file"
+  file:
+    enabled: true
+    path: "/var/log/rqa2025/app.log"
+    max_size: 104857600  # 100MB
+    max_backups: 30
+    max_age: 90  # 90天
+
+# 市场数据配置
+market_data:
+  use_mock: false
+  fallback_to_mock: false
+  cache_duration: 60  # 1分钟
+  
+  sources:
+    - name: "tushare"
+      enabled: true
+      priority: 1
+      token: ${RQA_MARKET_DATA_TUSHARE_TOKEN}
+      rate_limit: 500
+      
+    - name: "akshare"
+      enabled: true
+      priority: 2
+      rate_limit: 200
+
+# 交易执行配置
+trading:
+  enabled: true
+  mode: "live"  # 生产环境使用实盘交易
+  
+  order_management:
+    max_pending_orders: 1000
+    order_timeout_seconds: 300
+    auto_cancel_on_error: true
+
+# 风控配置
+risk:
+  enabled: true
+  check_interval_seconds: 5
+  
+  default_rules:
+    position_limit:
+      enabled: true
+      max_position_value: 10000000
+      max_position_ratio: 0.2
+      
+    loss_limit:
+      enabled: true
+      daily_loss_limit: 500000
+      daily_loss_ratio: 0.05
+      
+    drawdown_limit:
+      enabled: true
+      max_drawdown: 0.10
+      
+    concentration_limit:
+      enabled: true
+      max_single_position_ratio: 0.1
+      max_sector_ratio: 0.3
+
+# 分布式配置
+distributed:
+  enabled: true
+  
+  coordinator:
+    enabled: true
+    heartbeat_interval: 10
+    task_timeout: 3600
+    max_retry_attempts: 3
+
+# 监控告警配置
+monitoring:
+  enabled: true
+  
+  metrics:
+    enabled: true
+    interval: 60
+    retention_days: 90
+    
+  alerting:
+    enabled: true
+    channels:
+      - type: "email"
+        enabled: true
+        recipients: ${RQA_ALERTING_EMAIL_RECIPIENTS}
+      - type: "webhook"
+        enabled: true
+        url: ${RQA_ALERTING_WEBHOOK_URL}
+      - type: "sms"
+        enabled: false
+        phone_numbers: []
+
+# API配置
+api:
+  rate_limit:
+    enabled: true
+    requests_per_minute: 1000
+    burst_size: 100
+    
+  cors:
+    enabled: true
+    allow_origins: ${RQA_API_CORS_ALLOW_ORIGINS}
+    allow_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_headers: ["Authorization", "Content-Type", "X-Request-ID"]
+
+# WebSocket配置
+websocket:
+  enabled: true
+  max_connections: 10000
+  heartbeat_interval: 30
+  message_size_limit: 1048576  # 1MB
+
+# 存储配置
+storage:
+  object_storage:
+    type: "s3"
+    endpoint: ${RQA_STORAGE_S3_ENDPOINT}
+    access_key: ${RQA_STORAGE_S3_ACCESS_KEY}
+    secret_key: ${RQA_STORAGE_S3_SECRET_KEY}
+    bucket: ${RQA_STORAGE_S3_BUCKET}
+    secure: true
+    
+  file_storage:
+    path: "/data/rqa2025"
+    max_size: 107374182400  # 100GB
+
+# 通知配置
+notifications:
+  email:
+    enabled: true
+    smtp_host: ${RQA_NOTIFICATIONS_EMAIL_SMTP_HOST}
+    smtp_port: ${RQA_NOTIFICATIONS_EMAIL_SMTP_PORT:587}
+    smtp_user: ${RQA_NOTIFICATIONS_EMAIL_SMTP_USER}
+    smtp_password: ${RQA_NOTIFICATIONS_EMAIL_SMTP_PASSWORD}
+    from_address: ${RQA_NOTIFICATIONS_EMAIL_FROM}
+    
+  wechat_work:
+    enabled: true
+    webhook_url: ${RQA_NOTIFICATIONS_WECHAT_WEBHOOK_URL}
+
+# 性能优化
+performance:
+  cache:
+    enabled: true
+    type: "redis"
+    ttl: 300  # 5分钟
+    
+  connection_pool:
+    database:
+      min_size: 10
+      max_size: 50
+    redis:
+      min_size: 5
+      max_size: 20
+      
+  batch_processing:
+    enabled: true
+    batch_size: 5000
+    flush_interval: 10  # 秒

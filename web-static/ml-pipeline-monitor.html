@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>ML自动化训练管道监控 | RQA2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .pipeline-stage { transition: all 0.3s ease; }
+        .pipeline-stage:hover { transform: scale(1.02); }
+        .stage-connector { position: relative; }
+        .stage-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            width: 20px;
+            height: 2px;
+            background: #e5e7eb;
+        }
+        .stage-connector:last-child::after { display: none; }
+        .progress-bar { transition: width 0.5s ease; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            animation: pulse-ring 1.5s ease-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">ML自动化训练管道</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                    <button onclick="executePipeline()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-play mr-2"></i>执行管道
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-project-diagram text-indigo-600 mr-3"></i>
+                ML自动化训练管道监控
+            </h1>
+            <p class="text-gray-600">端到端自动化模型训练、验证和部署管道</p>
+        </div>
+
+        <!-- Pipeline Status Overview -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-stream text-blue-500 mr-2"></i>管道状态概览
+            </h2>
+            <div class="flex flex-wrap items-center justify-between gap-4" id="pipeline-stages">
+                <!-- 8个管道阶段将通过JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play-circle text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">运行中管道</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="running-pipelines">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">成功执行</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="success-count">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">失败次数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="failure-count">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">平均执行时间</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="avg-duration">--</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Pipelines -->
+        <div class="bg-white rounded-lg shadow-lg mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-tasks text-indigo-500 mr-2"></i>活跃管道
+                </h2>
+                <div class="flex space-x-2">
+                    <select id="status-filter" onchange="filterPipelines()" class="border border-gray-300 rounded-lg px-3 py-1 text-sm">
+                        <option value="all">全部状态</option>
+                        <option value="running">运行中</option>
+                        <option value="completed">已完成</option>
+                        <option value="failed">失败</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">管道ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">当前阶段</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">进度</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">开始时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="pipeline-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pipeline Execution History -->
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-history text-gray-500 mr-2"></i>执行历史
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4" id="execution-history">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pipeline Detail Modal -->
+    <div id="pipeline-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900" id="modal-title">管道详情</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modal-content" class="max-h-96 overflow-y-auto">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/common/api_client.js"></script>
+    <script src="/common/websocket_manager.js"></script>
+    <script>
+        // 管道阶段定义
+        const PIPELINE_STAGES = [
+            { id: 'data_preparation', name: '数据准备', icon: 'fa-database' },
+            { id: 'feature_engineering', name: '特征工程', icon: 'fa-cogs' },
+            { id: 'model_training', name: '模型训练', icon: 'fa-brain' },
+            { id: 'model_evaluation', name: '模型评估', icon: 'fa-chart-bar' },
+            { id: 'model_validation', name: '模型验证', icon: 'fa-check-double' },
+            { id: 'canary_deployment', name: '金丝雀部署', icon: 'fa-dove' },
+            { id: 'full_deployment', name: '全量部署', icon: 'fa-rocket' },
+            { id: 'monitoring', name: '持续监控', icon: 'fa-heartbeat' }
+        ];
+
+        let currentPipelines = [];
+        let wsConnection = null;
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePipelineStages();
+            loadPipelineData();
+            connectWebSocket();
+            setInterval(loadPipelineData, 30000); // 每30秒刷新
+        });
+
+        /**
+         * 初始化管道阶段显示
+         */
+        function initializePipelineStages() {
+            const container = document.getElementById('pipeline-stages');
+            container.innerHTML = PIPELINE_STAGES.map((stage, index) => `
+                <div class="pipeline-stage stage-connector flex flex-col items-center p-3 rounded-lg bg-gray-50 cursor-pointer" 
+                     onclick="showStageDetails('${stage.id}')">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2 stage-icon" id="stage-${stage.id}">
+                        <i class="fas ${stage.icon} text-gray-500"></i>
+                    </div>
+                    <span class="text-xs font-medium text-gray-600">${stage.name}</span>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * 加载管道数据
+         */
+        async function loadPipelineData() {
+            try {
+                // 加载管道列表
+                const pipelines = await apiGet('/pipeline');
+                currentPipelines = pipelines;
+                updatePipelineTable(pipelines);
+                updateStatistics(pipelines);
+                updateStageStatus(pipelines);
+                
+                // 加载执行历史
+                const history = await apiGet('/pipeline/history?limit=10');
+                updateExecutionHistory(history);
+            } catch (error) {
+                console.error('加载管道数据失败:', error);
+                showNotification('加载数据失败', 'error');
+            }
+        }
+
+        /**
+         * 更新管道表格
+         */
+        function updatePipelineTable(pipelines) {
+            const tbody = document.getElementById('pipeline-table');
+            const filter = document.getElementById('status-filter').value;
+            
+            const filtered = filter === 'all' ? pipelines : pipelines.filter(p => p.status === filter);
+            
+            tbody.innerHTML = filtered.map(pipeline => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
+                        <a href="#" onclick="showPipelineDetail('${pipeline.pipeline_id}'); return false;">
+                            ${pipeline.pipeline_id.substring(0, 8)}...
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${pipeline.strategy_id || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            ${getStageName(pipeline.current_stage)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-indigo-600 h-2.5 rounded-full progress-bar" style="width: ${pipeline.progress}%"></div>
+                        </div>
+                        <span class="text-xs mt-1">${pipeline.progress.toFixed(1)}%</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(pipeline.status)}">
+                            ${getStatusText(pipeline.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formatDate(pipeline.started_at)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        ${getActionButtons(pipeline)}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        /**
+         * 更新统计信息
+         */
+        function updateStatistics(pipelines) {
+            const running = pipelines.filter(p => p.status === 'running').length;
+            const success = pipelines.filter(p => p.status === 'completed').length;
+            const failed = pipelines.filter(p => p.status === 'failed').length;
+            
+            // 计算平均执行时间
+            const completed = pipelines.filter(p => p.status === 'completed' && p.duration);
+            const avgDuration = completed.length > 0 
+                ? completed.reduce((sum, p) => sum + p.duration, 0) / completed.length 
+                : 0;
+            
+            document.getElementById('running-pipelines').textContent = running;
+            document.getElementById('success-count').textContent = success;
+            document.getElementById('failure-count').textContent = failed;
+            document.getElementById('avg-duration').textContent = formatDuration(avgDuration);
+        }
+
+        /**
+         * 更新阶段状态
+         */
+        function updateStageStatus(pipelines) {
+            PIPELINE_STAGES.forEach(stage => {
+                const stageElement = document.getElementById(`stage-${stage.id}`);
+                const activeInStage = pipelines.filter(p => p.current_stage === stage.id && p.status === 'running');
+                const completedInStage = pipelines.filter(p => {
+                    const stageIndex = PIPELINE_STAGES.findIndex(s => s.id === stage.id);
+                    const currentIndex = PIPELINE_STAGES.findIndex(s => s.id === p.current_stage);
+                    return currentIndex > stageIndex || p.status === 'completed';
+                });
+                
+                if (activeInStage.length > 0) {
+                    stageElement.className = 'w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mb-2 pulse-ring relative';
+                    stageElement.innerHTML = `<i class="fas ${stage.icon} text-white"></i>`;
+                } else if (completedInStage.length > 0) {
+                    stageElement.className = 'w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mb-2';
+                    stageElement.innerHTML = `<i class="fas ${stage.icon} text-white"></i>`;
+                } else {
+                    stageElement.className = 'w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2';
+                    stageElement.innerHTML = `<i class="fas ${stage.icon} text-gray-500"></i>`;
+                }
+            });
+        }
+
+        /**
+         * 更新执行历史
+         */
+        function updateExecutionHistory(history) {
+            const container = document.getElementById('execution-history');
+            container.innerHTML = history.map(item => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full ${item.status === 'success' ? 'bg-green-100' : 'bg-red-100'} flex items-center justify-center">
+                            <i class="fas ${item.status === 'success' ? 'fa-check text-green-600' : 'fa-times text-red-600'}"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">${item.strategy_id || '通用训练'}</p>
+                            <p class="text-xs text-gray-500">${formatDate(item.timestamp)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">耗时: ${formatDuration(item.duration)}</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${item.status === 'success' ? '成功' : '失败'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * 获取操作按钮
+         */
+        function getActionButtons(pipeline) {
+            if (pipeline.status === 'running') {
+                return `
+                    <button onclick="cancelPipeline('${pipeline.pipeline_id}')" class="text-red-600 hover:text-red-900 mr-3">
+                        <i class="fas fa-stop"></i> 取消
+                    </button>
+                    <button onclick="showPipelineDetail('${pipeline.pipeline_id}')" class="text-indigo-600 hover:text-indigo-900">
+                        <i class="fas fa-eye"></i> 详情
+                    </button>
+                `;
+            }
+            return `
+                <button onclick="showPipelineDetail('${pipeline.pipeline_id}')" class="text-indigo-600 hover:text-indigo-900">
+                    <i class="fas fa-eye"></i> 详情
+                </button>
+            `;
+        }
+
+        /**
+         * 执行管道
+         */
+        async function executePipeline() {
+            const strategyId = prompt('请输入策略ID（可选，留空执行通用训练）:');
+            
+            try {
+                const response = await apiPost('/pipeline/execute', {
+                    strategy_id: strategyId || null,
+                    config: {}
+                });
+                showNotification('管道执行已启动', 'success');
+                loadPipelineData();
+            } catch (error) {
+                console.error('启动管道失败:', error);
+                showNotification('启动管道失败', 'error');
+            }
+        }
+
+        /**
+         * 取消管道
+         */
+        async function cancelPipeline(pipelineId) {
+            if (!confirm('确定要取消此管道执行吗？')) return;
+            
+            try {
+                await apiPost(`/pipeline/${pipelineId}/cancel`, {});
+                showNotification('管道已取消', 'success');
+                loadPipelineData();
+            } catch (error) {
+                console.error('取消管道失败:', error);
+                showNotification('取消管道失败', 'error');
+            }
+        }
+
+        /**
+         * 显示管道详情
+         */
+        async function showPipelineDetail(pipelineId) {
+            try {
+                const detail = await apiGet(`/pipeline/${pipelineId}`);
+                document.getElementById('modal-title').textContent = `管道详情: ${pipelineId.substring(0, 16)}...`;
+                document.getElementById('modal-content').innerHTML = `
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-3 rounded">
+                                <span class="text-sm text-gray-500">状态</span>
+                                <p class="font-medium ${getStatusClass(detail.status)}">${getStatusText(detail.status)}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded">
+                                <span class="text-sm text-gray-500">当前阶段</span>
+                                <p class="font-medium">${getStageName(detail.current_stage)}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded">
+                                <span class="text-sm text-gray-500">进度</span>
+                                <p class="font-medium">${detail.progress?.toFixed(1)}%</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded">
+                                <span class="text-sm text-gray-500">策略ID</span>
+                                <p class="font-medium">${detail.strategy_id || 'N/A'}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">阶段详情</h4>
+                            ${renderStageDetails(detail.stages)}
+                        </div>
+                        ${detail.error ? `
+                            <div class="bg-red-50 border border-red-200 p-3 rounded">
+                                <h4 class="font-medium text-red-800 mb-1">错误信息</h4>
+                                <p class="text-sm text-red-600">${detail.error}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                document.getElementById('pipeline-modal').classList.remove('hidden');
+            } catch (error) {
+                console.error('加载管道详情失败:', error);
+                showNotification('加载详情失败', 'error');
+            }
+        }
+
+        /**
+         * 渲染阶段详情
+         */
+        function renderStageDetails(stages) {
+            if (!stages || stages.length === 0) return '<p class="text-gray-500">暂无阶段信息</p>';
+            
+            return stages.map(stage => `
+                <div class="flex items-center justify-between p-2 border-b border-gray-100">
+                    <span class="text-sm">${getStageName(stage.stage_id)}</span>
+                    <span class="text-xs ${getStatusClass(stage.status)}">${getStatusText(stage.status)}</span>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * 关闭模态框
+         */
+        function closeModal() {
+            document.getElementById('pipeline-modal').classList.add('hidden');
+        }
+
+        /**
+         * 过滤管道
+         */
+        function filterPipelines() {
+            updatePipelineTable(currentPipelines);
+        }
+
+        /**
+         * 刷新数据
+         */
+        function refreshData() {
+            loadPipelineData();
+            showNotification('数据已刷新', 'success');
+        }
+
+        /**
+         * 连接WebSocket
+         */
+        function connectWebSocket() {
+            if (typeof WebSocketManager !== 'undefined') {
+                wsConnection = new WebSocketManager('ws://localhost:8000/ws/pipeline');
+                wsConnection.onMessage = function(data) {
+                    if (data.type === 'pipeline_update') {
+                        loadPipelineData();
+                    }
+                };
+                wsConnection.connect();
+            }
+        }
+
+        /**
+         * 显示通知
+         */
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // 辅助函数
+        function getStageName(stageId) {
+            const stage = PIPELINE_STAGES.find(s => s.id === stageId);
+            return stage ? stage.name : stageId;
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'running': 'bg-blue-100 text-blue-800',
+                'completed': 'bg-green-100 text-green-800',
+                'failed': 'bg-red-100 text-red-800',
+                'pending': 'bg-gray-100 text-gray-800',
+                'cancelled': 'bg-yellow-100 text-yellow-800',
+                'success': 'bg-green-100 text-green-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'running': '运行中',
+                'completed': '已完成',
+                'failed': '失败',
+                'pending': '等待中',
+                'cancelled': '已取消',
+                'success': '成功'
+            };
+            return texts[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN');
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds || seconds === 0) return '--';
+            const hours = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            if (hours > 0) return `${hours}h ${mins}m`;
+            if (mins > 0) return `${mins}m ${secs}s`;
+            return `${secs}s`;
+        }
+    </script>
+</body>
+</html>

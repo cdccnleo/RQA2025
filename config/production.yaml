@@ -1,0 +1,23 @@
+# RQA2025 Production Environment Deployment Configuration Template
+# Please fill in the parameters according to your actual production environment
+
+servers:
+  - cpu_cores: 16
+    memory_gb: 64
+    gpu_count: 2
+    fpga_count: 0
+    storage_tb: 2
+  # You can add more server nodes
+  # - cpu_cores: ...
+  #   memory_gb: ...
+  #   ...
+
+network:
+  bandwidth_gbps: 10
+  latency_us: 100
+  redundancy: true
+
+requirements:
+  min_cpu_cores: 16
+  min_memory_gb: 64
+  max_latency_us: 200 

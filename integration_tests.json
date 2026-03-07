@@ -1,0 +1,53 @@
+[
+  {
+    "name": "complete_order_flow",
+    "services": [
+      "user-service",
+      "order-service",
+      "payment-service"
+    ],
+    "timeout": 300,
+    "retries": 3,
+    "steps": [
+      {
+        "type": "http_request",
+        "service": "user-service",
+        "method": "POST",
+        "path": "/users",
+        "body": {
+          "name": "Test User",
+          "email": "test@example.com"
+        }
+      },
+      {
+        "type": "http_request",
+        "service": "order-service",
+        "method": "POST",
+        "path": "/orders",
+        "body": {
+          "user_id": 1,
+          "items": [
+            {
+              "product_id": 1,
+              "quantity": 2
+            }
+          ]
+        }
+      },
+      {
+        "type": "http_request",
+        "service": "payment-service",
+        "method": "POST",
+        "path": "/payments",
+        "body": {
+          "order_id": 1,
+          "amount": 100.0
+        }
+      },
+      {
+        "type": "assert",
+        "condition": "payment_status == 'completed'"
+      }
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+elasticsearch:
+  host: localhost
+  index_prefix: rqa2025
+  password: changeme
+  port: 9200
+  replicas: 0
+  shards: 1
+  username: elastic
+kibana:
+  elasticsearch_url: http://localhost:9200
+  host: localhost
+  port: 5601
+log_patterns:
+  access_logs: logs/access_*.log
+  application_logs: logs/*.log
+  error_logs: logs/error_*.log
+  system_logs: logs/system_*.log
+logstash:
+  batch_delay: 50
+  batch_size: 125
+  host: localhost
+  pipeline_workers: 2
+  port: 5044
+retention_policy:
+  cold_data_days: 90
+  delete_after_days: 365
+  hot_data_days: 7
+  warm_data_days: 30

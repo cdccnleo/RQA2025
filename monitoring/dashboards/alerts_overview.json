@@ -1,0 +1,51 @@
+{
+  "name": "alerts_overview",
+  "description": "告警状态总览仪表板",
+  "panels": [
+    {
+      "title": "活跃告警",
+      "type": "table",
+      "metrics": [
+        "active_alerts"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 6
+      }
+    },
+    {
+      "title": "告警趋势 (24h)",
+      "type": "graph",
+      "metrics": [
+        "alerts_per_hour"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "告警严重程度分布",
+      "type": "pie",
+      "metrics": [
+        "alerts_by_severity"
+      ],
+      "layout": {
+        "x": 6,
+        "y": 6,
+        "w": 6,
+        "h": 4
+      }
+    }
+  ],
+  "refresh_interval": "30s",
+  "tags": [
+    "alerts",
+    "incidents",
+    "overview"
+  ]
+}

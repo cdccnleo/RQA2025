@@ -1,0 +1,331 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2026-api-gateway
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: api-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa2026
+      component: api-gateway
+  template:
+    metadata:
+      labels:
+        app: rqa2026
+        component: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: rqa2026/api-gateway:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: RQA_ENV
+          value: "production"
+        - name: RQA_SERVICE
+          value: "api-gateway"
+        - name: QUANTUM_ENGINE_URL
+          value: "http://rqa2026-quantum-engine:8001"
+        - name: AI_ENGINE_URL
+          value: "http://rqa2026-ai-engine:8002"
+        - name: BMI_ENGINE_URL
+          value: "http://rqa2026-bmi-engine:8003"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: rqa2026-config
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2026-quantum-engine
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: quantum-engine
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa2026
+      component: quantum-engine
+  template:
+    metadata:
+      labels:
+        app: rqa2026
+        component: quantum-engine
+    spec:
+      containers:
+      - name: quantum-engine
+        image: rqa2026/quantum-engine:latest
+        ports:
+        - containerPort: 8001
+          name: http
+        env:
+        - name: RQA_ENV
+          value: "production"
+        - name: RQA_SERVICE
+          value: "quantum-engine"
+        - name: IBM_QUANTUM_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: rqa2026-secrets
+              key: ibm-quantum-token
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2026-ai-engine
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: ai-engine
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa2026
+      component: ai-engine
+  template:
+    metadata:
+      labels:
+        app: rqa2026
+        component: ai-engine
+    spec:
+      containers:
+      - name: ai-engine
+        image: rqa2026/ai-engine:latest
+        ports:
+        - containerPort: 8002
+          name: http
+        env:
+        - name: RQA_ENV
+          value: "production"
+        - name: RQA_SERVICE
+          value: "ai-engine"
+        - name: TRANSFORMERS_CACHE
+          value: "/models"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        volumeMounts:
+        - name: model-storage
+          mountPath: /models
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: rqa2026-models-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2026-bmi-engine
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: bmi-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rqa2026
+      component: bmi-engine
+  template:
+    metadata:
+      labels:
+        app: rqa2026
+        component: bmi-engine
+    spec:
+      containers:
+      - name: bmi-engine
+        image: rqa2026/bmi-engine:latest
+        ports:
+        - containerPort: 8003
+          name: http
+        env:
+        - name: RQA_ENV
+          value: "production"
+        - name: RQA_SERVICE
+          value: "bmi-engine"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2026-service-registry
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: service-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rqa2026
+      component: service-registry
+  template:
+    metadata:
+      labels:
+        app: rqa2026
+        component: service-registry
+    spec:
+      containers:
+      - name: service-registry
+        image: rqa2026/service-registry:latest
+        ports:
+        - containerPort: 8500
+          name: http
+        env:
+        - name: RQA_ENV
+          value: "production"
+        - name: RQA_SERVICE
+          value: "service-registry"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2026-config-center
+  namespace: rqa2026
+  labels:
+    app: rqa2026
+    component: config-center
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rqa2026
+      component: config-center
+  template:
+    metadata:
+      labels:
+        app: rqa2026
+        component: config-center
+    spec:
+      containers:
+      - name: config-center
+        image: rqa2026/config-center:latest
+        ports:
+        - containerPort: 8501
+          name: http
+        env:
+        - name: RQA_ENV
+          value: "production"
+        - name: RQA_SERVICE
+          value: "config-center"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: config-storage
+          mountPath: /app/config
+      volumes:
+      - name: config-storage
+        persistentVolumeClaim:
+          claimName: rqa2026-config-pvc
+
+
+
+

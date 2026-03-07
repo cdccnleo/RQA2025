@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-app-dev
+  namespace: rqa2025-dev
+  labels:
+    app: rqa2025
+    component: app
+    environment: development
+spec:
+  replicas: 1  # 开发环境单副本
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: app
+      environment: development
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: app
+        environment: development
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:dev  # 开发专用镜像
+        command: ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/src"]
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "development"
+        - name: RQA_ENV
+          value: "development"
+        - name: PYTHONPATH
+          value: "/app:/app/src"
+        - name: REDIS_URL
+          value: "redis://redis-service.rqa2025-data:6379"
+        - name: DB_URL
+          value: "postgresql://user:password@postgres-service.rqa2025-data:5432/rqa2025_dev"
+        # 开发环境资源配置
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        # 开发环境禁用健康检查，启用热重载
+        livenessProbe:
+          exec:
+            command: ["python", "-c", "import requests; requests.get('http://localhost:8000/health').raise_for_status()"]
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command: ["python", "-c", "import requests; requests.get('http://localhost:8000/ready').raise_for_status()"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        # 挂载代码目录 - 开发模式
+        volumeMounts:
+        - name: source-code
+          mountPath: /app/src
+        - name: main-code
+          mountPath: /app/main.py
+          subPath: main.py
+        - name: debug-script
+          mountPath: /app/debug_container.py
+          subPath: debug_container.py
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: data-volume
+          mountPath: /app/data
+      volumes:
+      # 挂载宿主机代码目录
+      - name: source-code
+        hostPath:
+          path: /path/to/your/RQA2025/src  # 修改为实际路径
+          type: Directory
+      - name: main-code
+        hostPath:
+          path: /path/to/your/RQA2025/main.py  # 修改为实际路径
+          type: File
+      - name: debug-script
+        hostPath:
+          path: /path/to/your/RQA2025/debug_container.py  # 修改为实际路径
+          type: File
+      - name: logs-volume
+        hostPath:
+          path: /path/to/your/RQA2025/logs
+          type: DirectoryOrCreate
+      - name: data-volume
+        hostPath:
+          path: /path/to/your/RQA2025/data
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-app-dev-service
+  namespace: rqa2025-dev
+  labels:
+    app: rqa2025
+    component: app
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: rqa2025
+    component: app
+    environment: development

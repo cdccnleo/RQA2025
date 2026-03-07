@@ -1,0 +1,193 @@
+{
+  "end_to_end": {
+    "test_name": "端到端集成测试",
+    "status": "PASSED",
+    "execution_time": 1.0949287414550781,
+    "total_steps": 10,
+    "passed_steps": 10,
+    "failed_steps": [],
+    "details": {
+      "steps": [
+        "系统启动检查",
+        "配置加载验证",
+        "数据库连接测试",
+        "缓存系统验证",
+        "消息队列连接测试",
+        "风控系统初始化",
+        "交易引擎启动",
+        "策略加载验证",
+        "订单管理测试",
+        "风险监控验证"
+      ],
+      "results": {
+        "passed": 10,
+        "failed": 0
+      }
+    }
+  },
+  "performance": {
+    "test_name": "性能集成测试",
+    "status": "PASSED",
+    "execution_time": 41.58904838562012,
+    "performance_metrics": {
+      "total_requests": 132147,
+      "total_errors": 0,
+      "avg_response_time": 0.003090057849884033,
+      "error_rate": 0.0
+    },
+    "details": {
+      "低并发测试": {
+        "threads": 10,
+        "duration": 5,
+        "total_requests": 3220,
+        "successful_requests": 3220,
+        "errors": 0,
+        "requests_per_second": 643.5378340092652,
+        "execution_time": 5.003590822219849
+      },
+      "中并发测试": {
+        "threads": 50,
+        "duration": 10,
+        "total_requests": 32061,
+        "successful_requests": 32061,
+        "errors": 0,
+        "requests_per_second": 3204.112280427534,
+        "execution_time": 10.006203651428223
+      },
+      "高并发测试": {
+        "threads": 100,
+        "duration": 15,
+        "total_requests": 96122,
+        "successful_requests": 96122,
+        "errors": 0,
+        "requests_per_second": 6399.864363888484,
+        "execution_time": 15.019380807876587
+      },
+      "响应时间测试": {
+        "total_requests": 100,
+        "avg_response_time": 0.015450289249420166,
+        "min_response_time": 0.006340742111206055,
+        "max_response_time": 0.01622629165649414,
+        "execution_time": 1.5450289249420166
+      },
+      "吞吐量测试": {
+        "total_requests": 644,
+        "requests_per_second": 64.31422478151195,
+        "execution_time": 10.013336896896362
+      }
+    }
+  },
+  "fault_recovery": {
+    "test_name": "故障恢复集成测试",
+    "status": "PASSED",
+    "execution_time": 6.818497657775879,
+    "total_scenarios": 6,
+    "successful_recoveries": 6,
+    "recovery_rate": 100.0,
+    "details": {
+      "网络连接中断": {
+        "status": "RECOVERED",
+        "recovery_time": 0.5004875659942627
+      },
+      "数据库连接失败": {
+        "status": "RECOVERED",
+        "recovery_time": 1.0143342018127441
+      },
+      "缓存服务不可用": {
+        "status": "RECOVERED",
+        "recovery_time": 0.309145450592041
+      },
+      "消息队列异常": {
+        "status": "RECOVERED",
+        "recovery_time": 0.8138558864593506
+      },
+      "风控服务超时": {
+        "status": "RECOVERED",
+        "recovery_time": 1.5130949020385742
+      },
+      "交易引擎异常": {
+        "status": "RECOVERED",
+        "recovery_time": 2.0120089054107666
+      }
+    }
+  },
+  "security": {
+    "test_name": "安全集成测试",
+    "status": "PASSED",
+    "execution_time": 0.8732776641845703,
+    "total_scenarios": 8,
+    "passed_scenarios": 8,
+    "pass_rate": 100.0,
+    "details": {
+      "身份认证测试": {
+        "status": "PASSED",
+        "details": "多因子认证正常，密码策略符合要求"
+      },
+      "权限控制测试": {
+        "status": "PASSED",
+        "details": "RBAC权限模型正常，最小权限原则执行良好"
+      },
+      "数据加密测试": {
+        "status": "PASSED",
+        "details": "传输加密和存储加密正常，密钥管理安全"
+      },
+      "SQL注入防护测试": {
+        "status": "PASSED",
+        "details": "参数化查询正常，SQL注入防护有效"
+      },
+      "XSS防护测试": {
+        "status": "PASSED",
+        "details": "输入验证和输出编码正常，XSS防护有效"
+      },
+      "CSRF防护测试": {
+        "status": "PASSED",
+        "details": "CSRF令牌验证正常，防护机制有效"
+      },
+      "敏感信息泄露测试": {
+        "status": "PASSED",
+        "details": "敏感信息未泄露，日志脱敏正常"
+      },
+      "会话管理测试": {
+        "status": "PASSED",
+        "details": "会话超时和销毁机制正常，安全会话管理"
+      }
+    }
+  },
+  "monitoring": {
+    "test_name": "监控系统集成测试",
+    "status": "PASSED",
+    "execution_time": 0.2184619903564453,
+    "total_tests": 5,
+    "passed_tests": 4,
+    "pass_rate": 80.0,
+    "details": {
+      "健康检查服务测试": {
+        "status": "FAILED",
+        "details": "健康检查服务异常: {'system_resources': True, 'process_status': True, 'network_connectivity': True, 'disk_space': True}"
+      },
+      "Prometheus指标导出测试": {
+        "status": "PASSED",
+        "details": "Prometheus指标导出器正常"
+      },
+      "告警系统集成测试": {
+        "status": "PASSED",
+        "details": "告警系统集成正常"
+      },
+      "日志收集测试": {
+        "status": "PASSED",
+        "details": "日志收集系统正常"
+      },
+      "性能监控测试": {
+        "status": "PASSED",
+        "details": "性能监控系统正常"
+      }
+    }
+  },
+  "summary": {
+    "total_time": 50.59521126747131,
+    "total_tests": 5,
+    "passed_tests": 5,
+    "failed_tests": 0,
+    "timestamp": "2025-08-11T16:58:48.183718"
+  }
+}

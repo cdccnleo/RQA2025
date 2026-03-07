@@ -1,0 +1,42 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\cache\test_enhanced_cache_manager_edges.py::test_set_invalid_inputs_raise PASSED [ 10%]
+tests\unit\data\cache\test_enhanced_cache_manager_edges.py::test_set_disk_write_failure_returns_false 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:16:44 [   ERROR] src.data.cache.enhanced_cache_manager: Error storing to disk cache: disk readonly
+FAILED                                                                   [ 20%]
+tests\unit\data\cache\test_enhanced_cache_manager_edges.py::test_get_expired_item_returns_none_and_counts_miss PASSED [ 30%]
+tests\unit\data\cache\test_enhanced_cache_manager_edges.py::test_promote_from_disk_and_clear_prefix PASSED [ 40%]
+tests\unit\data\sources\test_intelligent_source_manager_edges.py::test_no_available_sources_raises PASSED [ 50%]
+tests\unit\data\sources\test_intelligent_source_manager_edges.py::test_fallback_second_source_success_and_health_records 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:16:51 [ WARNING] intelligent_source_manager: 浠庢暟鎹簮 s1 鍔犺浇澶辫触: loader-fail
+PASSED                                                                   [ 60%]
+tests\unit\data\sources\test_intelligent_source_manager_edges.py::test_all_sources_fail_raise 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:16:56 [ WARNING] intelligent_source_manager: 浠庢暟鎹簮 s1 鍔犺浇澶辫触: loader-fail
+2025-11-17 00:16:56 [ WARNING] intelligent_source_manager: 浠庢暟鎹簮 s2 鍔犺浇澶辫触: loader-fail
+PASSED                                                                   [ 70%]
+tests\unit\data\sources\test_intelligent_source_manager_edges.py::test_enable_disable_affects_best_source PASSED [ 80%]
+tests\unit\data\sources\test_intelligent_source_manager_edges.py::test_load_data_best_source_then_fallback_and_all_fail 
+-------------------------------- live log call --------------------------------
+2025-11-17 00:17:06 [ WARNING] intelligent_source_manager: 浠庢暟鎹簮 s1 鍔犺浇澶辫触: boom
+2025-11-17 00:17:06 [ WARNING] intelligent_source_manager: 浠庢暟鎹簮 s1 鍔犺浇澶辫触: boom
+PASSED                                                                   [ 90%]
+tests\unit\data\sources\test_intelligent_source_manager_edges.py::test_health_monitor_update_and_best_source PASSED [100%]
+
+================================== FAILURES ===================================
+__________________ test_set_disk_write_failure_returns_false __________________
+tests\unit\data\cache\test_enhanced_cache_manager_edges.py:35: in test_set_disk_write_failure_returns_false
+    assert ok is False  # 鍐呭瓨鍙兘鎴愬姛锛屼絾纾佺洏澶辫触瀵艰嚧 set 杩斿洖 False锛堝疄鐜伴€夋嫨浜?memory 鎴?disk 浠讳竴鎴愬姛鍗?True锛涙澶勭‘淇濊矾寰勮鐩栫鐩樺け璐ュ垎鏀級
+E   assert True is False
+---------------------------- Captured stderr call -----------------------------
+INFO:src.data.cache.enhanced_cache_manager:EnhancedCacheManager initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3998\test_set_disk_write_failure_re0
+ERROR:src.data.cache.enhanced_cache_manager:Error storing to disk cache: disk readonly
+------------------------------ Captured log call ------------------------------
+INFO     src.data.cache.enhanced_cache_manager:enhanced_cache_manager.py:81 EnhancedCacheManager initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3998\test_set_disk_write_failure_re0
+ERROR    src.data.cache.enhanced_cache_manager:enhanced_cache_manager.py:245 Error storing to disk cache: disk readonly
+=========================== short test summary info ===========================
+FAILED tests\unit\data\cache\test_enhanced_cache_manager_edges.py::test_set_disk_write_failure_returns_false
+======================== 1 failed, 9 passed in 34.35s =========================

@@ -1,0 +1,224 @@
+/* RQA2025 移动端优化样式 */
+
+/* 移动端基础响应式设计 */
+@media (max-width: 768px) {
+    /* 导航栏移动端优化 */
+    .mobile-nav {
+        padding: 0.5rem;
+        height: auto;
+        min-height: 3.5rem;
+    }
+
+    .mobile-nav .nav-brand {
+        font-size: 1.25rem;
+    }
+
+    .mobile-nav .nav-status {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    /* 容器优化 */
+    .mobile-container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* 卡片网格布局优化 */
+    .mobile-grid-1 {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .mobile-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .mobile-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    /* 卡片内容优化 */
+    .mobile-card {
+        padding: 1rem 0.75rem;
+    }
+
+    .mobile-card-title {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .mobile-card-value {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .mobile-card-label {
+        font-size: 0.75rem;
+    }
+
+    /* 图表容器优化 */
+    .mobile-chart {
+        height: 200px;
+        margin-bottom: 1rem;
+    }
+
+    /* 表格优化 */
+    .mobile-table {
+        font-size: 0.75rem;
+    }
+
+    .mobile-table th,
+    .mobile-table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    /* 标签页优化 */
+    .mobile-tabs {
+        flex-wrap: wrap;
+    }
+
+    .mobile-tab {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
+
+    /* 按钮优化 */
+    .mobile-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    /* 隐藏桌面端专用元素 */
+    .desktop-only {
+        display: none !important;
+    }
+
+    /* 移动端专用元素 */
+    .mobile-only {
+        display: block !important;
+    }
+}
+
+/* 平板端优化 (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .tablet-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tablet-chart {
+        height: 250px;
+    }
+}
+
+/* 超小屏幕优化 (< 480px) */
+@media (max-width: 480px) {
+    .xs-mobile-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .xs-mobile-card {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .xs-mobile-title {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .xs-mobile-value {
+        font-size: 1.25rem;
+    }
+
+    .xs-mobile-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 简化导航 */
+    .xs-nav-brand {
+        font-size: 1.125rem;
+    }
+
+    .xs-nav-icon {
+        font-size: 1.25rem;
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+    /* 移除悬停效果，优化触摸体验 */
+    .card-hover:hover {
+        transform: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* 增加触摸目标大小 */
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* 优化按钮间距 */
+    .touch-spacing {
+        margin: 0.25rem;
+    }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+    .high-contrast {
+        border: 2px solid;
+    }
+}
+
+/* 减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .dark-mode-text {
+        color: #e5e7eb;
+    }
+
+    .dark-mode-bg {
+        background-color: #1f2937;
+    }
+}
+
+/* 横屏模式优化 */
+@media (orientation: landscape) and (max-height: 500px) {
+    .landscape-nav {
+        height: 3rem;
+    }
+
+    .landscape-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .landscape-chart {
+        height: 150px;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .print-break {
+        page-break-before: always;
+    }
+}

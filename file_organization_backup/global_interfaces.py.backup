@@ -1,0 +1,40 @@
+"""
+全局接口定义文件
+
+统一导入所有测试中需要的接口，避免NameError
+"""
+
+# 缓存相关接口
+
+# 数据相关接口 - 使用本地定义以避免跨模块依赖
+from .interfaces import ICacheStrategy, CacheEvictionStrategy, ICacheManager, IConfigStorage
+from enum import Enum
+
+class PartitionStrategy(Enum):
+    """数据分区策略枚举"""
+    DATE = "date"
+    HASH = "hash"
+    CUSTOM = "custom"
+    RANGE = "range"
+
+class RepairStrategy(Enum):
+    """数据修复策略枚举"""
+    FILL_FORWARD = "fill_forward"
+    FILL_BACKWARD = "fill_backward"
+    FILL_MEAN = "fill_mean"
+    FILL_MEDIAN = "fill_median"
+    FILL_MODE = "fill_mode"
+    REMOVE_OUTLIERS = "remove_outliers"
+    DROP = "drop"
+    LOG_TRANSFORM = "log_transform"
+    INTERPOLATE = "interpolate"
+
+# 导出所有接口
+__all__ = [
+    'ICacheStrategy',
+    'CacheEvictionStrategy',
+    'ICacheManager',
+    'IConfigStorage',
+    'PartitionStrategy',
+    'RepairStrategy'
+]

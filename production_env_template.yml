@@ -1,0 +1,72 @@
+# RQA2025 生产环境变量模板
+# Production Environment Variables Template for RQA2025
+
+# ==========================================
+# 数据库配置 / Database Configuration
+# ==========================================
+DB_USER: "rqa2025_prod_user"
+DB_PASSWORD: "CHANGE_THIS_STRONG_PASSWORD"
+
+# ==========================================
+# Redis配置 / Redis Configuration
+# ==========================================
+REDIS_PASSWORD: "CHANGE_THIS_STRONG_PASSWORD"
+
+# ==========================================
+# 安全配置 / Security Configuration
+# ==========================================
+JWT_SECRET: "CHANGE_THIS_JWT_SECRET_KEY_32_CHARS_MIN"
+SENTRY_DSN: "https://your-sentry-dsn-here@sentry.io/project-id"
+
+# ==========================================
+# 备份配置 / Backup Configuration
+# ==========================================
+BACKUP_ENCRYPTION_KEY: "CHANGE_THIS_ENCRYPTION_KEY_32_CHARS"
+
+# ==========================================
+# AWS配置 (用于备份) / AWS Configuration (for backups)
+# ==========================================
+AWS_ACCESS_KEY_ID: "your-aws-access-key-id"
+AWS_SECRET_ACCESS_KEY: "your-aws-secret-access-key"
+S3_BUCKET: "rqa2025-prod-backups"
+
+# ==========================================
+# Grafana配置 / Grafana Configuration
+# ==========================================
+GRAFANA_ADMIN_PASSWORD: "CHANGE_THIS_GRAFANA_ADMIN_PASSWORD"
+
+# ==========================================
+# 监控配置 / Monitoring Configuration
+# ==========================================
+PROMETHEUS_RETENTION_TIME: "200h"
+GRAFANA_ADMIN_USER: "admin"
+
+# ==========================================
+# 应用配置 / Application Configuration
+# ==========================================
+ENVIRONMENT: "production"
+HOST: "0.0.0.0"
+PORT: 8000
+WORKERS: 8
+
+# ==========================================
+# 日志配置 / Logging Configuration
+# ==========================================
+LOG_LEVEL: "INFO"
+LOG_FORMAT: "json"
+
+# ==========================================
+# 性能配置 / Performance Configuration
+# ==========================================
+MAX_REQUEST_SIZE: "100MB"
+CACHE_TTL: 300
+BATCH_SIZE: 1000
+MAX_CONCURRENT_REQUESTS: 100
+
+# ==========================================
+# 健康检查配置 / Health Check Configuration
+# ==========================================
+HEALTH_CHECK_INTERVAL: 30
+HEALTH_CHECK_TIMEOUT: 10
+HEALTH_CHECK_RETRIES: 3
+

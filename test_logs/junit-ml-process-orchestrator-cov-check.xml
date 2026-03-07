@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="32" time="94.538" timestamp="2025-11-17T06:06:49.932374+08:00" hostname="AIPC"><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_success_updates_stats" time="0.950"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: load
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: train
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:289 ML业务流程执行完成: test-process (状态: completed)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: load
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: train
+INFO:src.ml.core.process_orchestrator:ML业务流程执行完成: test-process (状态: completed)
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_additional" name="test_submit_requires_running" time="0.961"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_worker" name="test_process_worker_executes_pending_process" time="0.970"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 Thread-3 已启动
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 Thread-3 已启动
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_failure_records_error" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: fail
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:329 ML业务流程步骤执行失败: fail, 错误: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: fail
+ERROR:src.ml.core.process_orchestrator:ML业务流程步骤执行失败: fail, 错误: boom
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_additional" name="test_start_and_stop_idempotent" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 1
+WARNING  src.ml.core.process_orchestrator:process_orchestrator.py:183 ML业务流程编排器已在运行中
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:202 ML业务流程编排器未运行
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 1
+WARNING:src.ml.core.process_orchestrator:ML业务流程编排器已在运行中
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器未运行
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_worker" name="test_stop_cleans_state_and_invokes_executor_shutdown" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_steps_detects_dependency_cycle" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:335 ML业务流程存在无法执行的步骤: test-process
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:ML业务流程存在无法执行的步骤: test-process
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_submit_process_enqueues_when_running" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:226 已提交ML业务流程: test-process (ID: model_training_1763330898100)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已提交ML业务流程: test-process (ID: model_training_1763330898100)
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_additional" name="test_process_executes_steps_and_updates_stats" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:226 已提交ML业务流程: test (ID: process_2)
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:289 ML业务流程执行完成: test (状态: completed)
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已提交ML业务流程: test (ID: process_2)
+INFO:src.ml.core.process_orchestrator:ML业务流程执行完成: test (状态: completed)
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_stop_noop_when_not_running" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:202 ML业务流程编排器未运行
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器未运行
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_additional" name="test_process_failure_marks_failed" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:226 已提交ML业务流程: test (ID: process_1)
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:329 ML业务流程步骤执行失败: s1, 错误: boom
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已提交ML业务流程: test (ID: process_1)
+ERROR:src.ml.core.process_orchestrator:ML业务流程步骤执行失败: s1, 错误: boom
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_start_warns_when_already_running" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+WARNING  src.ml.core.process_orchestrator:process_orchestrator.py:183 ML业务流程编排器已在运行中
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+WARNING:src.ml.core.process_orchestrator:ML业务流程编排器已在运行中
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_additional" name="test_callbacks_triggered" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:226 已提交ML业务流程: test (ID: process_1)
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:289 ML业务流程执行完成: test (状态: completed)
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已提交ML业务流程: test (ID: process_1)
+INFO:src.ml.core.process_orchestrator:ML业务流程执行完成: test (状态: completed)
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_start_initializes_workers_and_resets_event" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 2
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 2
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 2
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_additional" name="test_get_process_status_and_cancel" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:226 已提交ML业务流程: test (ID: process_1)
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:289 ML业务流程执行完成: test (状态: completed)
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 MLProcessWorker-1 已启动
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已提交ML业务流程: test (ID: process_1)
+INFO:src.ml.core.process_orchestrator:ML业务流程执行完成: test (状态: completed)
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_stop_sets_shutdown_flag_and_invokes_executor" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_get_process_status_summary" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_get_process_status_returns_none_when_missing" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_register_default_executors_is_idempotent" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_pause_and_resume_process" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:432 已暂停ML业务流程: test-process
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:442 已恢复ML业务流程: test-process
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已暂停ML业务流程: test-process
+INFO:src.ml.core.process_orchestrator:已恢复ML业务流程: test-process
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_add_process_callback_registers_and_triggers" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_trigger_callbacks_logs_exceptions" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:461 ML业务流程回调执行失败: on_complete, 错误: callback boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:ML业务流程回调执行失败: on_complete, 错误: callback boom
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_process_worker_logs_exception_and_exits" time="0.089"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_process_worker_executes_active_process" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 Thread-19 已启动
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 Thread-19 已启动
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_step_records_metrics_and_context" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_step_raises_when_executor_missing" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_step_raises_when_validation_fails" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: bad
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: bad
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_cancel_process_moves_to_completed" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:421 已取消ML业务流程: test-process
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已取消ML业务流程: test-process
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_cancel_process_returns_false_when_missing" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_get_statistics_reports_runtime" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_handles_unexpected_exception" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:300 ML业务流程执行异常: test-process, 错误: explode
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:ML业务流程执行异常: test-process, 错误: explode
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_global_helper_functions" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

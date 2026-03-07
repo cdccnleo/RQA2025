@@ -1,0 +1,103 @@
+{
+  "timestamp": "2025-08-06T15:17:17.222145",
+  "memory_usage": {
+    "system_total": 67880980480,
+    "system_available": 58277695488,
+    "system_percent": 14.1,
+    "process_rss": 21389312,
+    "process_vms": 11415552,
+    "process_percent": 0.03151002217226666,
+    "gc_stats": [
+      {
+        "collections": 30,
+        "collected": 392,
+        "uncollectable": 0
+      },
+      {
+        "collections": 2,
+        "collected": 0,
+        "uncollectable": 0
+      },
+      {
+        "collections": 0,
+        "collected": 0,
+        "uncollectable": 0
+      }
+    ],
+    "gc_count": [
+      119,
+      8,
+      2
+    ]
+  },
+  "memory_leaks": [
+    {
+      "module": "src.infrastructure.logging",
+      "file": "  File \"<frozen importlib._bootstrap_external>\", line 647",
+      "size_diff": 4766353,
+      "size_diff_mb": 4.545548439025879
+    },
+    {
+      "module": "src.infrastructure.config",
+      "file": "  File \"<frozen importlib._bootstrap_external>\", line 647",
+      "size_diff": 16023513,
+      "size_diff_mb": 15.28121280670166
+    },
+    {
+      "module": "src.infrastructure.config",
+      "file": "  File \"<frozen importlib._bootstrap>\", line 228",
+      "size_diff": 4994231,
+      "size_diff_mb": 4.762869834899902
+    },
+    {
+      "module": "src.infrastructure.monitoring",
+      "file": "  File \"<frozen importlib._bootstrap>\", line 228",
+      "size_diff": 2741332,
+      "size_diff_mb": 2.614337921142578
+    },
+    {
+      "module": "src.infrastructure.monitoring",
+      "file": "  File \"<frozen importlib._bootstrap_external>\", line 647",
+      "size_diff": 2456473,
+      "size_diff_mb": 2.34267520904541
+    },
+    {
+      "module": "src.infrastructure.database",
+      "file": "  File \"<frozen importlib._bootstrap_external>\", line 647",
+      "size_diff": 7514620,
+      "size_diff_mb": 7.166500091552734
+    }
+  ],
+  "performance_issues": [
+    "循环引用: C:\\PythonProject\\RQA2025\\src\\infrastructure\\logging\\unified_logging_interface.py",
+    "循环引用: C:\\PythonProject\\RQA2025\\src\\infrastructure\\logging\\enhanced_log_manager.py",
+    "优化: garbage_collection",
+    "优化: lazy_import_check"
+  ],
+  "fixes_applied": [
+    {
+      "type": "logger_recursion_fix",
+      "file": "C:\\PythonProject\\RQA2025\\src\\infrastructure\\logging\\infrastructure_logger.py",
+      "backup": "C:\\PythonProject\\RQA2025\\src\\infrastructure\\logging\\infrastructure_logger.py.backup",
+      "status": "fixed"
+    },
+    {
+      "type": "monitoring_metrics_limit",
+      "file": "C:\\PythonProject\\RQA2025\\src\\infrastructure\\monitoring\\automation_monitor.py",
+      "backup": "C:\\PythonProject\\RQA2025\\src\\infrastructure\\monitoring\\automation_monitor.py.backup",
+      "status": "added"
+    }
+  ],
+  "recommendations": [
+    "定期运行垃圾回收: gc.collect()",
+    "使用延迟导入减少启动内存",
+    "限制缓存大小和TTL",
+    "避免循环引用",
+    "使用弱引用处理回调",
+    "定期清理临时文件",
+    "监控内存使用趋势",
+    "使用内存分析工具",
+    "优化数据结构",
+    "实现内存泄漏检测"
+  ]
+}

@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="65" time="70.349" timestamp="2025-11-16T17:33:59.360704+08:00" hostname="AIPC"><testcase classname="unit.data.distributed.test_load_balancer" name="test_round_robin_selection_cycles_through_nodes" time="0.705"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.load_balancer:load_balancer.py:48 LoadBalancer initialized with strategy: round_robin
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.load_balancer:LoadBalancer initialized with strategy: round_robin
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader_edges" name="test_select_node_no_available_raises" time="0.736"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task e3bef936-a98e-480d-95ef-dbc0fa86233e for data source ds
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Created task e3bef936-a98e-480d-95ef-dbc0fa86233e for data source ds
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai2_strategies_stats" name="test_round_robin_assigns_tasks_to_different_nodes_when_capacity_allows" time="2.784"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task b8d37215-9cf6-4c79-a641-6e1668c5c842 for data source s1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task b8d37215-9cf6-4c79-a641-6e1668c5c842
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task b8d37215-9cf6-4c79-a641-6e1668c5c842 to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task b8d37215-9cf6-4c79-a641-6e1668c5c842 completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.04s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 575520ac-cf88-4073-af07-f33d4ea400cd for data source s2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n2 for task 575520ac-cf88-4073-af07-f33d4ea400cd
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 575520ac-cf88-4073-af07-f33d4ea400cd to node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 575520ac-cf88-4073-af07-f33d4ea400cd completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.01s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task b8d37215-9cf6-4c79-a641-6e1668c5c842 for data source s1
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task b8d37215-9cf6-4c79-a641-6e1668c5c842
+INFO:src.data.distributed.distributed_data_loader:Assigned task b8d37215-9cf6-4c79-a641-6e1668c5c842 to node n1
+INFO:src.data.distributed.distributed_data_loader:Task b8d37215-9cf6-4c79-a641-6e1668c5c842 completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.04s
+INFO:src.data.distributed.distributed_data_loader:Created task 575520ac-cf88-4073-af07-f33d4ea400cd for data source s2
+INFO:src.data.distributed.distributed_data_loader:Selected node n2 for task 575520ac-cf88-4073-af07-f33d4ea400cd
+INFO:src.data.distributed.distributed_data_loader:Assigned task 575520ac-cf88-4073-af07-f33d4ea400cd to node n2
+INFO:src.data.distributed.distributed_data_loader:Task 575520ac-cf88-4073-af07-f33d4ea400cd completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.01s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_create_task_registers_in_queue" time="0.722"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 471ac369-667e-4c4c-b26a-3c4b6b8faeba for data source market
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Created task 471ac369-667e-4c4c-b26a-3c4b6b8faeba for data source market
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai2_monitoring_failure" name="test_monitor_thread_exits_quickly_when_no_nodes_and_shutdown_is_fast" time="0.745"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai_concurrency" name="test_two_concurrent_tasks_distributed_to_two_nodes_and_counters_released" time="1.813"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task d4930a11-0bac-47b4-b03f-7e466c6845ed for data source s1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task d4930a11-0bac-47b4-b03f-7e466c6845ed
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task d4930a11-0bac-47b4-b03f-7e466c6845ed to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd for data source s2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n2 for task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd to node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task d4930a11-0bac-47b4-b03f-7e466c6845ed completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.05s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.05s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task d4930a11-0bac-47b4-b03f-7e466c6845ed for data source s1
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task d4930a11-0bac-47b4-b03f-7e466c6845ed
+INFO:src.data.distributed.distributed_data_loader:Assigned task d4930a11-0bac-47b4-b03f-7e466c6845ed to node n1
+INFO:src.data.distributed.distributed_data_loader:Created task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd for data source s2
+INFO:src.data.distributed.distributed_data_loader:Selected node n2 for task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd
+INFO:src.data.distributed.distributed_data_loader:Assigned task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd to node n2
+INFO:src.data.distributed.distributed_data_loader:Task d4930a11-0bac-47b4-b03f-7e466c6845ed completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.05s
+INFO:src.data.distributed.distributed_data_loader:Task 23c8b8f2-ae0c-4f40-87a1-9605dad7d6bd completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.05s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_load_balancer" name="test_least_connections_prefers_lowest_active_tasks" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.load_balancer:load_balancer.py:48 LoadBalancer initialized with strategy: least_connections
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.load_balancer:LoadBalancer initialized with strategy: least_connections
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_load_balancer" name="test_weighted_round_robin_prefers_lower_usage_nodes" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.load_balancer:load_balancer.py:48 LoadBalancer initialized with strategy: weighted_round_robin
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.load_balancer:LoadBalancer initialized with strategy: weighted_round_robin
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader_edges" name="test_end_to_end_load_with_fast_sleep" time="0.096"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 03d31f97-80e5-4108-860f-f667bdd2be41 for data source market_ds
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task 03d31f97-80e5-4108-860f-f667bdd2be41
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 03d31f97-80e5-4108-860f-f667bdd2be41 to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 03d31f97-80e5-4108-860f-f667bdd2be41 completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 0.07s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Created task 03d31f97-80e5-4108-860f-f667bdd2be41 for data source market_ds
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task 03d31f97-80e5-4108-860f-f667bdd2be41
+INFO:src.data.distributed.distributed_data_loader:Assigned task 03d31f97-80e5-4108-860f-f667bdd2be41 to node n1
+INFO:src.data.distributed.distributed_data_loader:Task 03d31f97-80e5-4108-860f-f667bdd2be41 completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 0.07s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai_basic" name="test_basic_success_flow_updates_stats_and_task_states" time="1.795"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 10be35cd-92ce-42bd-9529-77baa8c676e8 for data source ds
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task 10be35cd-92ce-42bd-9529-77baa8c676e8
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 10be35cd-92ce-42bd-9529-77baa8c676e8 to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 10be35cd-92ce-42bd-9529-77baa8c676e8 completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.03s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task 10be35cd-92ce-42bd-9529-77baa8c676e8 for data source ds
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task 10be35cd-92ce-42bd-9529-77baa8c676e8
+INFO:src.data.distributed.distributed_data_loader:Assigned task 10be35cd-92ce-42bd-9529-77baa8c676e8 to node n1
+INFO:src.data.distributed.distributed_data_loader:Task 10be35cd-92ce-42bd-9529-77baa8c676e8 completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.03s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai_errors" name="test_select_node_raises_when_no_available_nodes" time="0.792"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task e5afd81b-a187-4252-b594-7ab4bf407ba5 for data source ds
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Created task e5afd81b-a187-4252-b594-7ab4bf407ba5 for data source ds
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_register_node_updates_stats" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-1
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_get_cluster_status_reflects_nodes_and_tasks" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-A
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 37d34f0c-abc4-438d-a401-cff7538ab1a5 for data source source
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-A
+INFO:src.data.distributed.distributed_data_loader:Created task 37d34f0c-abc4-438d-a401-cff7538ab1a5 for data source source
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_load_balancer" name="test_least_response_time_prefers_faster_node" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.load_balancer:load_balancer.py:48 LoadBalancer initialized with strategy: least_response_time
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.load_balancer:LoadBalancer initialized with strategy: least_response_time
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai2_monitoring_failure" name="test_handle_task_failure_releases_node_counter_and_not_negative" time="1.063"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe for data source s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe to node n1
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe failed: df-boom-2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Created task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe for data source s
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe
+INFO:src.data.distributed.distributed_data_loader:Assigned task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe to node n1
+ERROR:src.data.distributed.distributed_data_loader:Task 57ee264d-75d6-46ed-b9e9-b2c061c85dfe failed: df-boom-2
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_cluster_manager" name="test_register_and_unregister_updates_resources" time="0.792"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:79 ClusterManager initialized for cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:107 Registered node node-1 to cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:107 Registered node node-2 to cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:123 Unregistered node node-2 from cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:123 Unregistered node node-1 from cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.cluster_manager:ClusterManager initialized for cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO:src.data.distributed.cluster_manager:Registered node node-1 to cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO:src.data.distributed.cluster_manager:Registered node node-2 to cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO:src.data.distributed.cluster_manager:Unregistered node node-2 from cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+INFO:src.data.distributed.cluster_manager:Unregistered node node-1 from cluster 8dc434a9-8d0c-4114-bcd2-d1d076480be2
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_load_balancer" name="test_random_strategy_uses_secrets_choice" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.load_balancer:load_balancer.py:48 LoadBalancer initialized with strategy: random
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.load_balancer:LoadBalancer initialized with strategy: random
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_hash_based_sharding_respects_parameters" time="0.835"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:117 Created 3 hash - based shards for orders
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+INFO:src.data.distributed.sharding_manager:Created 3 hash - based shards for orders
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_cluster_manager" name="test_update_status_and_get_status_summary" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:79 ClusterManager initialized for cluster ed1fa214-c14d-4208-8b86-e1b2d2891aa6
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:128 Updated cluster status to maintenance
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.cluster_manager:ClusterManager initialized for cluster ed1fa214-c14d-4208-8b86-e1b2d2891aa6
+INFO:src.data.distributed.cluster_manager:Updated cluster status to maintenance
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_load_balancer" name="test_update_and_reset_node_stats" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.load_balancer:load_balancer.py:48 LoadBalancer initialized with strategy: round_robin
+INFO     src.data.distributed.load_balancer:load_balancer.py:191 Reset stats for node node-a
+INFO     src.data.distributed.load_balancer:load_balancer.py:194 Reset all node stats
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.load_balancer:LoadBalancer initialized with strategy: round_robin
+INFO:src.data.distributed.load_balancer:Reset stats for node node-a
+INFO:src.data.distributed.load_balancer:Reset all node stats
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_load_data_distributed_completes_with_stubs" time="0.043"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 16310ba5-e2e1-4f94-94b5-c2ab6db0a4c4 for data source test
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 0.00s
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-1
+INFO:src.data.distributed.distributed_data_loader:Created task 16310ba5-e2e1-4f94-94b5-c2ab6db0a4c4 for data source test
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 0.00s
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_multiprocess_data_loader" name="test_distribute_load_uses_configured_pool" time="0.779"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai_errors" name="test_execute_task_failure_path_updates_stats" time="1.037"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task eef7f718-b640-440c-b47e-143466ea087a for data source ds
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task eef7f718-b640-440c-b47e-143466ea087a
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task eef7f718-b640-440c-b47e-143466ea087a to node n1
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task eef7f718-b640-440c-b47e-143466ea087a failed: df-boom
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Created task eef7f718-b640-440c-b47e-143466ea087a for data source ds
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task eef7f718-b640-440c-b47e-143466ea087a
+INFO:src.data.distributed.distributed_data_loader:Assigned task eef7f718-b640-440c-b47e-143466ea087a to node n1
+ERROR:src.data.distributed.distributed_data_loader:Task eef7f718-b640-440c-b47e-143466ea087a failed: df-boom
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_multiprocess_data_loader" name="test_aggregate_results_supports_custom_function" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_multiprocess_data_loader" name="test_load_distributed_builds_expected_tasks" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_cluster_manager" name="test_cluster_stats_handles_zero_nodes" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.cluster_manager:cluster_manager.py:79 ClusterManager initialized for cluster 86f33398-91f7-4442-b691-159418c8d3da
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.cluster_manager:ClusterManager initialized for cluster 86f33398-91f7-4442-b691-159418c8d3da
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_handle_task_failure_marks_task" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-fail
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 510f3211-5edd-47db-92f2-31697784c4ed for data source fail_source
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task 510f3211-5edd-47db-92f2-31697784c4ed failed: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-fail
+INFO:src.data.distributed.distributed_data_loader:Created task 510f3211-5edd-47db-92f2-31697784c4ed for data source fail_source
+ERROR:src.data.distributed.distributed_data_loader:Task 510f3211-5edd-47db-92f2-31697784c4ed failed: boom
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_range_based_sharding_uses_default_ranges" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:149 Created 4 range - based shards for history
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+INFO:src.data.distributed.sharding_manager:Created 4 range - based shards for history
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader_edges" name="test_handle_task_failure_and_stats" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 6e5c02a5-c271-4342-b321-c5abf77d5ee9 for data source ds
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 6e5c02a5-c271-4342-b321-c5abf77d5ee9 to node n1
+ERROR    src.data.distributed.distributed_data_loader:distributed_data_loader.py:307 Task 6e5c02a5-c271-4342-b321-c5abf77d5ee9 failed: boom
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Created task 6e5c02a5-c271-4342-b321-c5abf77d5ee9 for data source ds
+INFO:src.data.distributed.distributed_data_loader:Assigned task 6e5c02a5-c271-4342-b321-c5abf77d5ee9 to node n1
+ERROR:src.data.distributed.distributed_data_loader:Task 6e5c02a5-c271-4342-b321-c5abf77d5ee9 failed: boom
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_multiprocess_data_loader" name="test_get_node_info_reports_worker_metadata" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_time_based_sharding_generates_monthly_segments" time="0.069"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:198 Created 3 time - based shards for ticks
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+INFO:src.data.distributed.sharding_manager:Created 3 time - based shards for ticks
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader_edges" name="test_load_balancer_strategies_selection" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_multiprocess_data_loader" name="test_get_cluster_status_exposes_basic_stats" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_select_node_round_robin" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 3fc93a4f-6b4c-47ee-ac44-8ce495ce0a21 for data source src
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node node-1 for task 3fc93a4f-6b4c-47ee-ac44-8ce495ce0a21
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node node-2 for task 3fc93a4f-6b4c-47ee-ac44-8ce495ce0a21
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-1
+INFO:src.data.distributed.distributed_data_loader:Registered node node-2
+INFO:src.data.distributed.distributed_data_loader:Created task 3fc93a4f-6b4c-47ee-ac44-8ce495ce0a21 for data source src
+INFO:src.data.distributed.distributed_data_loader:Selected node node-1 for task 3fc93a4f-6b4c-47ee-ac44-8ce495ce0a21
+INFO:src.data.distributed.distributed_data_loader:Selected node node-2 for task 3fc93a4f-6b4c-47ee-ac44-8ce495ce0a21
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader_edges" name="test_monitor_thread_exits_without_nodes" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_select_node_without_available_nodes_raises" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task b323b270-c4af-4cd0-ac38-fa725563f5c4 for data source src
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Created task b323b270-c4af-4cd0-ac38-fa725563f5c4 for data source src
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_time_based_sharding_quarterly_and_yearly_support" time="0.031"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:198 Created 1 time - based shards for ticks
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:198 Created 2 time - based shards for ticks
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+INFO:src.data.distributed.sharding_manager:Created 1 time - based shards for ticks
+INFO:src.data.distributed.sharding_manager:Created 2 time - based shards for ticks
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_assign_task_updates_node_state" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-assign
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 18918b4d-bd96-4122-a2e4-5e45f5b9d863 for data source assign_src
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 18918b4d-bd96-4122-a2e4-5e45f5b9d863 to node node-assign
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-assign
+INFO:src.data.distributed.distributed_data_loader:Created task 18918b4d-bd96-4122-a2e4-5e45f5b9d863 for data source assign_src
+INFO:src.data.distributed.distributed_data_loader:Assigned task 18918b4d-bd96-4122-a2e4-5e45f5b9d863 to node node-assign
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_time_based_sharding_falls_back_for_unknown_period" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:198 Created 1 time - based shards for ticks
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+INFO:src.data.distributed.sharding_manager:Created 1 time - based shards for ticks
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_execute_task_success_updates_stats" time="0.064"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-run
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 514034fa-9717-4c68-8e9b-7cc764aa0509 for data source exec
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 514034fa-9717-4c68-8e9b-7cc764aa0509 completed successfully
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-run
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:Created task 514034fa-9717-4c68-8e9b-7cc764aa0509 for data source exec
+INFO:src.data.distributed.distributed_data_loader:Task 514034fa-9717-4c68-8e9b-7cc764aa0509 completed successfully
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_get_shard_by_key_is_deterministic" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_register_and_unregister_shard_records_metadata" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:215 Registered shard shard-1
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:221 Unregistered shard shard-1
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:215 Registered shard shard-1
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:221 Unregistered shard shard-1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+INFO:src.data.distributed.sharding_manager:Registered shard shard-1
+INFO:src.data.distributed.sharding_manager:Unregistered shard shard-1
+INFO:src.data.distributed.sharding_manager:Registered shard shard-1
+INFO:src.data.distributed.sharding_manager:Unregistered shard shard-1
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_execute_task_failure_triggers_handler" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node node-failure
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 37f50e2d-8662-4265-9af7-4c21792fed92 for data source exec_fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node node-failure
+INFO:src.data.distributed.distributed_data_loader:Created task 37f50e2d-8662-4265-9af7-4c21792fed92 for data source exec_fail
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_sharding_manager" name="test_create_shards_rejects_unsupported_strategy" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.sharding_manager:sharding_manager.py:71 DataShardingManager initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.sharding_manager:DataShardingManager initialized
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_update_stats_computes_average_and_throughput" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_check_node_health_marks_offline" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node stale
+WARNING  src.data.distributed.distributed_data_loader:distributed_data_loader.py:416 Node stale heartbeat timeout
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node stale
+WARNING:src.data.distributed.distributed_data_loader:Node stale heartbeat timeout
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_update_monitoring_stats_counts_active_nodes" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_start_monitoring_thread_invokes_checks" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node monitor-node
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node monitor-node
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_shutdown_joins_monitor_thread" time="0.127"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_load_balancer_strategies" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_load_balancer_stats_tracking" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_loader_init_handles_logger_failure" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_loader_del_swallows_shutdown_error" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_create_distributed_data_loader_factory" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_convenience_load_data_function" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_monitoring_thread_handles_internal_exception" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node monitor-node
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node monitor-node
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_check_node_health_no_nodes" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_check_node_health_handles_logger_warning_failure" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node stale
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node stale
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_shutdown_handles_join_and_logger_errors" time="0.117"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai_basic" name="test_health_check_marks_offline_on_heartbeat_timeout" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+WARNING  src.data.distributed.distributed_data_loader:distributed_data_loader.py:416 Node n1 heartbeat timeout
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+WARNING:src.data.distributed.distributed_data_loader:Node n1 heartbeat timeout
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_load_balancer_select_node_handles_no_nodes" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_distributed_data_loader" name="test_load_balancer_get_stats_without_updates" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai2_strategies_stats" name="test_least_connections_prefers_lower_active_tasks_node" time="1.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef for data source s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n2 for task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef to node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.01s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef for data source s
+INFO:src.data.distributed.distributed_data_loader:Selected node n2 for task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef
+INFO:src.data.distributed.distributed_data_loader:Assigned task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef to node n2
+INFO:src.data.distributed.distributed_data_loader:Task c7e2e9eb-44a2-4ba6-ae6b-04688a03d2ef completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.01s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai2_strategies_stats" name="test_weighted_round_robin_prefers_higher_weight_node" time="1.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc for data source s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n2 for task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc to node n2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.01s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Registered node n2
+INFO:src.data.distributed.distributed_data_loader:Created task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc for data source s
+INFO:src.data.distributed.distributed_data_loader:Selected node n2 for task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc
+INFO:src.data.distributed.distributed_data_loader:Assigned task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc to node n2
+INFO:src.data.distributed.distributed_data_loader:Task f2f85909-bbf2-4bef-aa33-c1a2900e7ebc completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.01s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase><testcase classname="unit.data.distributed.test_ddl_ai2_strategies_stats" name="test_update_stats_average_and_throughput_changes_after_multiple_tasks" time="3.027"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:134 DistributedDataLoader initialized
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:330 Registered node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task e63c38ea-75d6-41b3-8b92-7f2018ec1eac for data source s0
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task e63c38ea-75d6-41b3-8b92-7f2018ec1eac
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task e63c38ea-75d6-41b3-8b92-7f2018ec1eac to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task e63c38ea-75d6-41b3-8b92-7f2018ec1eac completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.00s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 259e8b37-c14c-4013-8b7d-2ea61ed86f58 for data source s1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task 259e8b37-c14c-4013-8b7d-2ea61ed86f58
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 259e8b37-c14c-4013-8b7d-2ea61ed86f58 to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 259e8b37-c14c-4013-8b7d-2ea61ed86f58 completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.01s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:204 Created task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a for data source s2
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:219 Selected node n1 for task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:234 Assigned task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a to node n1
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:283 Task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a completed successfully
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:176 Distributed data loading completed in 1.01s
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+INFO     src.data.distributed.distributed_data_loader:distributed_data_loader.py:448 DistributedDataLoader shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader initialized
+INFO:src.data.distributed.distributed_data_loader:Registered node n1
+INFO:src.data.distributed.distributed_data_loader:Created task e63c38ea-75d6-41b3-8b92-7f2018ec1eac for data source s0
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task e63c38ea-75d6-41b3-8b92-7f2018ec1eac
+INFO:src.data.distributed.distributed_data_loader:Assigned task e63c38ea-75d6-41b3-8b92-7f2018ec1eac to node n1
+INFO:src.data.distributed.distributed_data_loader:Task e63c38ea-75d6-41b3-8b92-7f2018ec1eac completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.00s
+INFO:src.data.distributed.distributed_data_loader:Created task 259e8b37-c14c-4013-8b7d-2ea61ed86f58 for data source s1
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task 259e8b37-c14c-4013-8b7d-2ea61ed86f58
+INFO:src.data.distributed.distributed_data_loader:Assigned task 259e8b37-c14c-4013-8b7d-2ea61ed86f58 to node n1
+INFO:src.data.distributed.distributed_data_loader:Task 259e8b37-c14c-4013-8b7d-2ea61ed86f58 completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.01s
+INFO:src.data.distributed.distributed_data_loader:Created task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a for data source s2
+INFO:src.data.distributed.distributed_data_loader:Selected node n1 for task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a
+INFO:src.data.distributed.distributed_data_loader:Assigned task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a to node n1
+INFO:src.data.distributed.distributed_data_loader:Task 30432be0-2ffa-49fd-a2a9-b1efedb34b9a completed successfully
+INFO:src.data.distributed.distributed_data_loader:Distributed data loading completed in 1.01s
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+INFO:src.data.distributed.distributed_data_loader:DistributedDataLoader shutdown
+
+</system-err></testcase></testsuite></testsuites>

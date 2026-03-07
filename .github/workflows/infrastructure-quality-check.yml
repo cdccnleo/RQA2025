@@ -1,0 +1,124 @@
+name: 基础设施层代码质量检查
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/infrastructure/**'
+      - 'tests/test_infrastructure/**'
+      - '.github/workflows/infrastructure-quality-check.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/infrastructure/**'
+      - 'tests/test_infrastructure/**'
+
+jobs:
+  quality-check:
+    name: 代码质量检查
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout代码
+      uses: actions/checkout@v3
+    
+    - name: 设置Python环境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pre-commit flake8 mypy bandit pytest pytest-cov pytest-xdist
+    
+    - name: 运行pre-commit检查
+      run: |
+        pre-commit run --all-files --show-diff-on-failure
+      continue-on-error: false
+    
+    - name: 运行flake8代码风格检查
+      run: |
+        flake8 src/infrastructure/ --max-line-length=120 --extend-ignore=E203,E501,W503 --max-complexity=15 --statistics
+      continue-on-error: false
+    
+    - name: 运行mypy类型检查
+      run: |
+        mypy src/infrastructure/ --ignore-missing-imports --no-strict-optional --warn-return-any
+      continue-on-error: true  # mypy可能有误报，不阻止流程
+    
+    - name: 运行bandit安全检查
+      run: |
+        bandit -r src/infrastructure/ -c .bandit.yaml -f json -o reports/bandit_report.json
+        bandit -r src/infrastructure/ -c .bandit.yaml
+      continue-on-error: false
+    
+    - name: 运行单元测试
+      run: |
+        pytest tests/test_infrastructure/ -v --cov=src/infrastructure --cov-report=xml --cov-report=html --cov-report=term -n auto
+      continue-on-error: false
+    
+    - name: 检查测试覆盖率
+      run: |
+        python -c "import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); root = tree.getroot(); coverage = float(root.attrib['line-rate']) * 100; print(f'测试覆盖率: {coverage:.2f}%'); exit(0 if coverage >= 75 else 1)"
+      continue-on-error: true  # 覆盖率不足时警告，不阻止流程
+    
+    - name: 上传测试覆盖率报告
+      uses: codecov/codecov-action@v3
+      if: always()
+      with:
+        file: ./coverage.xml
+        flags: infrastructure
+        name: infrastructure-coverage
+    
+    - name: 上传测试报告
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-reports
+        path: |
+          reports/
+          htmlcov/
+    
+    - name: 质量门禁检查
+      run: |
+        echo "==============================================="
+        echo "           质量门禁检查结果                    "
+        echo "==============================================="
+        echo "✅ 代码风格检查通过 (flake8)"
+        echo "✅ 安全检查通过 (bandit)"
+        echo "✅ 单元测试通过 (pytest)"
+        echo "==============================================="
+        echo "🎉 质量门禁检查通过！"
+        echo "==============================================="
+      
+  code-analysis:
+    name: AI代码分析
+    runs-on: windows-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout代码
+      uses: actions/checkout@v3
+    
+    - name: 设置Python环境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: 安装依赖
+      run: |
+        pip install -r requirements.txt
+    
+    - name: 运行AI代码分析器
+      run: |
+        python scripts/ai_intelligent_code_analyzer.py src/infrastructure --deep --output reports/pr_analysis.json
+      continue-on-error: true
+    
+    - name: 生成分析报告
+      run: |
+        python -c "import json; data=json.load(open('reports/pr_analysis.json', encoding='utf-8')); print(f\"📊 AI代码分析结果\n代码质量: {data['quality_score']:.3f}\n组织质量: {data.get('organization_quality', {}).get('score', 0):.3f}\")"
+      continue-on-error: true
+

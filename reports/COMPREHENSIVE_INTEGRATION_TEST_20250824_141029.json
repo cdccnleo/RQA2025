@@ -1,0 +1,296 @@
+{
+  "comprehensive_integration_test": {
+    "project_name": "RQA2025 量化交易系统",
+    "test_date": "2025-08-24T14:10:29.196585",
+    "report_version": "2.0",
+    "overall_status": "failed",
+    "success_rate": 0.25,
+    "test_metrics": {
+      "total_tests": 8,
+      "passed_tests": 2,
+      "failed_tests": 5,
+      "skipped_tests": 1,
+      "execution_time": 0.006003618240356445
+    },
+    "test_results": [
+      {
+        "test_name": "Architecture Layer Integration",
+        "status": "failed",
+        "components_tested": [
+          {
+            "layer": "core",
+            "module": "src.core",
+            "status": "failed",
+            "error": "No module named 'src.core'"
+          },
+          {
+            "layer": "infrastructure",
+            "module": "src.infrastructure",
+            "status": "imported",
+            "attributes": 7
+          },
+          {
+            "layer": "data",
+            "module": "src.data",
+            "status": "failed",
+            "error": "No module named 'src.data'"
+          },
+          {
+            "layer": "gateway",
+            "module": "src.gateway",
+            "status": "failed",
+            "error": "No module named 'src.gateway'"
+          },
+          {
+            "layer": "features",
+            "module": "src.features",
+            "status": "imported",
+            "attributes": 9
+          },
+          {
+            "layer": "ml",
+            "module": "src.ml",
+            "status": "failed",
+            "error": "No module named 'src.ml'"
+          },
+          {
+            "layer": "backtest",
+            "module": "src.backtest",
+            "status": "failed",
+            "error": "No module named 'src.backtest'"
+          },
+          {
+            "layer": "risk",
+            "module": "src.risk",
+            "status": "failed",
+            "error": "No module named 'src.risk'"
+          },
+          {
+            "layer": "trading",
+            "module": "src.trading",
+            "status": "failed",
+            "error": "No module named 'src.trading'"
+          },
+          {
+            "layer": "engine",
+            "module": "src.engine",
+            "status": "failed",
+            "error": "No module named 'src.engine'"
+          }
+        ],
+        "integration_points": [],
+        "issues": [
+          "core_import_error: No module named 'src.core'",
+          "data_import_error: No module named 'src.data'",
+          "gateway_import_error: No module named 'src.gateway'",
+          "ml_import_error: No module named 'src.ml'",
+          "backtest_import_error: No module named 'src.backtest'",
+          "risk_import_error: No module named 'src.risk'",
+          "trading_import_error: No module named 'src.trading'",
+          "engine_import_error: No module named 'src.engine'"
+        ],
+        "success_rate": 0.2,
+        "execution_time": 0.0019998550415039062
+      },
+      {
+        "test_name": "Business Process Integration",
+        "status": "failed",
+        "processes_tested": [
+          {
+            "process": "data_collection_to_processing",
+            "status": "partial",
+            "available_components": 1,
+            "total_components": 2
+          },
+          {
+            "process": "feature_processing_to_ml",
+            "status": "partial",
+            "available_components": 1,
+            "total_components": 2
+          },
+          {
+            "process": "ml_to_strategy",
+            "status": "partial",
+            "available_components": 0,
+            "total_components": 2
+          },
+          {
+            "process": "strategy_to_risk",
+            "status": "partial",
+            "available_components": 0,
+            "total_components": 2
+          },
+          {
+            "process": "risk_to_trading",
+            "status": "partial",
+            "available_components": 0,
+            "total_components": 2
+          }
+        ],
+        "integration_flows": [],
+        "issues": [],
+        "success_rate": 0.0,
+        "execution_time": 0.0
+      },
+      {
+        "test_name": "Cross Module Functionality",
+        "status": "failed",
+        "functionality_tests": [
+          {
+            "scenario": "data_to_feature_pipeline",
+            "status": "modules_unavailable",
+            "available_modules": 1,
+            "required_modules": 2
+          },
+          {
+            "scenario": "ml_model_training",
+            "status": "modules_unavailable",
+            "available_modules": 1,
+            "required_modules": 2
+          },
+          {
+            "scenario": "risk_trading_integration",
+            "status": "modules_unavailable",
+            "available_modules": 0,
+            "required_modules": 2
+          }
+        ],
+        "integration_scenarios": [],
+        "issues": [],
+        "success_rate": 0.0,
+        "execution_time": 0.000997781753540039
+      },
+      {
+        "test_name": "Performance Integration",
+        "status": "passed",
+        "performance_metrics": [
+          {
+            "metric": "src.infrastructure_import_time",
+            "value": 0.0,
+            "unit": "seconds",
+            "status": "good"
+          },
+          {
+            "metric": "average_import_time",
+            "value": 0.0,
+            "unit": "seconds",
+            "status": "good"
+          }
+        ],
+        "bottlenecks": [],
+        "issues": [
+          "Failed to import src.core",
+          "Failed to import src.data"
+        ],
+        "execution_time": 0.0
+      },
+      {
+        "test_name": "End to End Integration",
+        "status": "passed",
+        "e2e_scenarios": [
+          {
+            "scenario": "data_to_decision_pipeline",
+            "status": "passed",
+            "description": "完整的数据到决策管道",
+            "flow": "Data -> Features -> Predictions -> Decisions",
+            "steps_completed": 4,
+            "total_steps": 4
+          },
+          {
+            "scenario": "trading_execution_cycle",
+            "status": "passed",
+            "description": "完整的交易执行周期",
+            "flow": "Decisions -> Risk Check -> Orders -> Execution",
+            "steps_completed": 4,
+            "total_steps": 4
+          }
+        ],
+        "data_flows": [
+          "Data -> Features -> Predictions -> Decisions",
+          "Decisions -> Risk Check -> Orders -> Execution"
+        ],
+        "issues": [],
+        "success_rate": 1.0,
+        "execution_time": 0.0
+      },
+      {
+        "test_name": "Concurrent Operations",
+        "status": "failed",
+        "concurrency_tests": [
+          {
+            "module": "src.core",
+            "status": "failed",
+            "error": "No module named 'src.core'"
+          },
+          {
+            "module": "src.data",
+            "status": "failed",
+            "error": "No module named 'src.data'"
+          },
+          {
+            "module": "src.infrastructure",
+            "status": "success",
+            "import_time": 0.0
+          }
+        ],
+        "thread_safety": [
+          {
+            "aspect": "module_import",
+            "status": "partial",
+            "success_rate": 0.3333333333333333
+          }
+        ],
+        "issues": [],
+        "execution_time": 0.0009996891021728516
+      },
+      {
+        "test_name": "Error Handling Integration",
+        "status": "partial",
+        "error_scenarios": [
+          {
+            "scenario": "import_error_handling",
+            "status": "handled_correctly",
+            "description": "测试导入错误处理"
+          }
+        ],
+        "recovery_mechanisms": [],
+        "issues": [
+          "attribute_error_handling_error: No module named 'src.core'"
+        ],
+        "success_rate": 0.5,
+        "execution_time": 0.001005411148071289
+      },
+      {
+        "test_name": "Data Flow Integration",
+        "status": "failed",
+        "data_flows": [
+          {
+            "flow": "market_data_flow",
+            "status": "partial",
+            "description": "市场数据流",
+            "available_components": 0,
+            "total_components": 2
+          },
+          {
+            "flow": "model_prediction_flow",
+            "status": "partial",
+            "description": "模型预测数据流",
+            "available_components": 0,
+            "total_components": 2
+          }
+        ],
+        "integration_paths": [],
+        "issues": [],
+        "success_rate": 0.0,
+        "execution_time": 0.0
+      }
+    ],
+    "recommendations": [
+      "❌ 集成测试覆盖率不足，需要重点改进",
+      "🚨 优先解决模块导入和基本集成问题",
+      "🔧 完善各模块的__init__.py文件",
+      "📋 重新设计集成测试策略"
+    ],
+    "generated_at": "2025-08-24T14:10:29.203589"
+  }
+}

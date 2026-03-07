@@ -1,0 +1,573 @@
+{
+  "timestamp": "2025-08-07T13:49:10.156079",
+  "overall_status": "failed",
+  "functionality": {
+    "status": "failed",
+    "tests": {
+      "config_management": {
+        "passed": false,
+        "environment": "development",
+        "config_count": 6,
+        "validation_errors": [],
+        "validation_warnings": [],
+        "production_ready": {
+          "security": {
+            "passed": true,
+            "issues": []
+          },
+          "performance": {
+            "passed": true,
+            "issues": []
+          },
+          "monitoring": {
+            "passed": true,
+            "issues": []
+          },
+          "backup": {
+            "passed": false,
+            "issues": [
+              "没有找到备份文件"
+            ]
+          },
+          "overall": false
+        }
+      },
+      "database_connection": {
+        "passed": false,
+        "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused (0x0000274D/10061)\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)\n\tIs the server running on that host and accepting TCP/IP connections?\n"
+      },
+      "redis_connection": {
+        "passed": false,
+        "error": "Error 10061 connecting to localhost:6379. 由于目标计算机积极拒绝，无法连接。."
+      },
+      "application_service": {
+        "passed": false,
+        "error": "'NoneType' object is not iterable"
+      },
+      "api_endpoints": {
+        "passed": false,
+        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001C682B13550>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))"
+      }
+    },
+    "errors": [],
+    "warnings": []
+  },
+  "performance": {
+    "status": "passed",
+    "metrics": {
+      "system": {
+        "cpu_percent": 1.7,
+        "memory_percent": 24.5,
+        "disk_percent": 80.1,
+        "network_sent": 43337375,
+        "network_recv": 317569858,
+        "load_average": null,
+        "timestamp": 1754545763.5717275
+      },
+      "application": {
+        "memory_usage_mb": 110.82421875,
+        "cpu_percent": 0.0,
+        "connections": 105,
+        "threads": 45,
+        "timestamp": 1754545763.5754433
+      }
+    },
+    "thresholds": {
+      "cpu_usage": {
+        "passed": true,
+        "current": 1.7,
+        "threshold": 80.0
+      },
+      "memory_usage": {
+        "passed": true,
+        "current": 24.5,
+        "threshold": 80.0
+      },
+      "disk_usage": {
+        "passed": true,
+        "current": 80.1,
+        "threshold": 85.0
+      },
+      "app_memory_usage": {
+        "passed": true,
+        "current": 110.82421875,
+        "threshold": 1000
+      }
+    },
+    "recommendations": []
+  },
+  "security": {
+    "status": "failed",
+    "checks": {
+      "config_permissions": {
+        "passed": false,
+        "directory_permission": "777",
+        "file_permissions": {
+          "config\\chaos_experiments.yaml": "666",
+          "config\\cloud_native_deployment.yaml": "666",
+          "config\\gpu_config.yaml": "666",
+          "config\\main_config.yaml": "666",
+          "config\\production.yaml": "666",
+          "config\\risk_control_config.yaml": "666",
+          "config\\development\\config.yaml": "666",
+          "config\\production\\config.yaml": "666",
+          "config\\production\\database.yaml": "666",
+          "config\\production\\monitoring.yaml": "666",
+          "config\\alertmanager.yml": "666",
+          "config\\alerts.yml": "666",
+          "config\\elasticsearch.yml": "666",
+          "config\\elk.yml": "666",
+          "config\\kibana.yml": "666",
+          "config\\microservices.yml": "666",
+          "config\\prometheus.yml": "666",
+          "config\\monitoring\\alertmanager.yml": "666",
+          "config\\monitoring\\application_metrics.yml": "666",
+          "config\\monitoring\\enhanced_data_monitoring.yml": "666",
+          "config\\monitoring\\logging.yml": "666",
+          "config\\monitoring\\prometheus.yml": "666",
+          "config\\monitoring\\tracing.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_1.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_2.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_3.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_4.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_5.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_6.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_7.yml": "666",
+          "config\\monitoring\\rules\\alert_rule_8.yml": "666",
+          "config\\monitoring\\rules\\data_layer_alerts.yml": "666"
+        }
+      },
+      "log_permissions": {
+        "passed": false,
+        "file_permissions": {
+          "logs\\ai_coverage_automation.log": "666",
+          "logs\\app.log": "666",
+          "logs\\application.log": "666",
+          "logs\\audit.log": "666",
+          "logs\\audit_logger_correlation_error.log": "666",
+          "logs\\audit_logger_correlation_structured.log": "666",
+          "logs\\BackwardCompatibilityManager_correlation_error.log": "666",
+          "logs\\BackwardCompatibilityManager_correlation_structured.log": "666",
+          "logs\\base_correlation_error.log": "666",
+          "logs\\base_correlation_structured.log": "666",
+          "logs\\business_correlation_error.log": "666",
+          "logs\\business_correlation_structured.log": "666",
+          "logs\\business_logger_correlation_error.log": "666",
+          "logs\\business_logger_correlation_structured.log": "666",
+          "logs\\category_correlation_error.log": "666",
+          "logs\\category_correlation_structured.log": "666",
+          "logs\\china_adapter_correlation_error.log": "666",
+          "logs\\china_adapter_correlation_structured.log": "666",
+          "logs\\comprehensive_error_framework_correlation_error.log": "666",
+          "logs\\comprehensive_error_framework_correlation_structured.log": "666",
+          "logs\\config_center_correlation_error.log": "666",
+          "logs\\config_center_correlation_structured.log": "666",
+          "logs\\config_correlation_error.log": "666",
+          "logs\\config_correlation_structured.log": "666",
+          "logs\\connection_pool_correlation_error.log": "666",
+          "logs\\connection_pool_correlation_structured.log": "666",
+          "logs\\data_dashboard_correlation_error.log": "666",
+          "logs\\data_dashboard_correlation_structured.log": "666",
+          "logs\\data_loader_correlation_error.log": "666",
+          "logs\\data_loader_correlation_structured.log": "666",
+          "logs\\data_manager_correlation_error.log": "666",
+          "logs\\data_manager_correlation_structured.log": "666",
+          "logs\\data_optimizer_correlation_error.log": "666",
+          "logs\\data_optimizer_correlation_structured.log": "666",
+          "logs\\data_performance_monitor_correlation_error.log": "666",
+          "logs\\data_performance_monitor_correlation_structured.log": "666",
+          "logs\\data_preloader_correlation_error.log": "666",
+          "logs\\data_preloader_correlation_structured.log": "666",
+          "logs\\data_registry_correlation_error.log": "666",
+          "logs\\data_registry_correlation_structured.log": "666",
+          "logs\\deployment.log": "666",
+          "logs\\distributed_monitoring_correlation_error.log": "666",
+          "logs\\distributed_monitoring_correlation_structured.log": "666",
+          "logs\\document_sync.log": "666",
+          "logs\\email_alerts.log": "666",
+          "logs\\enhanced_cache_strategy_correlation_error.log": "666",
+          "logs\\enhanced_cache_strategy_correlation_structured.log": "666",
+          "logs\\enhanced_data_integration_correlation_error.log": "666",
+          "logs\\enhanced_data_integration_correlation_structured.log": "666",
+          "logs\\enhanced_integration_manager_correlation_error.log": "666",
+          "logs\\enhanced_integration_manager_correlation_structured.log": "666",
+          "logs\\enhanced_parallel_loader_correlation_error.log": "666",
+          "logs\\enhanced_parallel_loader_correlation_structured.log": "666",
+          "logs\\enhanced_quality_monitor_correlation_error.log": "666",
+          "logs\\enhanced_quality_monitor_correlation_structured.log": "666",
+          "logs\\enterprise_governance_correlation_error.log": "666",
+          "logs\\enterprise_governance_correlation_structured.log": "666",
+          "logs\\error.log": "666",
+          "logs\\errors.log": "666",
+          "logs\\error_handler_correlation_error.log": "666",
+          "logs\\error_handler_correlation_structured.log": "666",
+          "logs\\exception_correlation_error.log": "666",
+          "logs\\exception_correlation_structured.log": "666",
+          "logs\\factory_test.log": "666",
+          "logs\\fix_data_optimization_integration_correlation_error.log": "666",
+          "logs\\fix_data_optimization_integration_correlation_structured.log": "666",
+          "logs\\generic_china_data_adapter_correlation_error.log": "666",
+          "logs\\generic_china_data_adapter_correlation_structured.log": "666",
+          "logs\\health_check.log": "666",
+          "logs\\health_check_manager_correlation_error.log": "666",
+          "logs\\health_check_manager_correlation_structured.log": "666",
+          "logs\\infrastructure.docs.document_version_controller_correlation_error.log": "666",
+          "logs\\infrastructure.docs.document_version_controller_correlation_structured.log": "666",
+          "logs\\key_correlation_error.log": "666",
+          "logs\\key_correlation_structured.log": "666",
+          "logs\\logger1_correlation_error.log": "666",
+          "logs\\logger1_correlation_structured.log": "666",
+          "logs\\logger1_error.log": "666",
+          "logs\\logger1_structured.log": "666",
+          "logs\\logger2_correlation_error.log": "666",
+          "logs\\logger2_correlation_structured.log": "666",
+          "logs\\logger2_error.log": "666",
+          "logs\\logger2_structured.log": "666",
+          "logs\\logger_name_correlation_error.log": "666",
+          "logs\\logger_name_correlation_structured.log": "666",
+          "logs\\module.config_correlation_error.log": "666",
+          "logs\\module.config_correlation_structured.log": "666",
+          "logs\\module.features_monitoring_correlation_error.log": "666",
+          "logs\\module.features_monitoring_correlation_structured.log": "666",
+          "logs\\module.fpga_monitoring_correlation_error.log": "666",
+          "logs\\module.fpga_monitoring_correlation_structured.log": "666",
+          "logs\\module.resource_monitoring_correlation_error.log": "666",
+          "logs\\module.resource_monitoring_correlation_structured.log": "666",
+          "logs\\monitoring.log": "666",
+          "logs\\multi_market_sync_correlation_error.log": "666",
+          "logs\\multi_market_sync_correlation_structured.log": "666",
+          "logs\\name_correlation_error.log": "666",
+          "logs\\name_correlation_structured.log": "666",
+          "logs\\parallel_feature_processor_correlation_error.log": "666",
+          "logs\\parallel_feature_processor_correlation_structured.log": "666",
+          "logs\\performance.log": "666",
+          "logs\\performance_logger_correlation_error.log": "666",
+          "logs\\performance_logger_correlation_structured.log": "666",
+          "logs\\production_deployment.log": "666",
+          "logs\\quant_filter_correlation_error.log": "666",
+          "logs\\quant_filter_correlation_structured.log": "666",
+          "logs\\redis_cache_adapter_correlation_error.log": "666",
+          "logs\\redis_cache_adapter_correlation_structured.log": "666",
+          "logs\\risk.circuit_breaker_correlation_error.log": "666",
+          "logs\\risk.circuit_breaker_correlation_structured.log": "666",
+          "logs\\security.audit_correlation_error.log": "666",
+          "logs\\security.audit_correlation_structured.log": "666",
+          "logs\\security_correlation_error.log": "666",
+          "logs\\security_correlation_structured.log": "666",
+          "logs\\security_logger_correlation_error.log": "666",
+          "logs\\security_logger_correlation_structured.log": "666",
+          "logs\\slow_queries.log": "666",
+          "logs\\slow_query_monitor_correlation_error.log": "666",
+          "logs\\slow_query_monitor_correlation_structured.log": "666",
+          "logs\\src.data.api_correlation_error.log": "666",
+          "logs\\src.data.api_correlation_structured.log": "666",
+          "logs\\src.data.cache.enhanced_cache_manager_correlation_error.log": "666",
+          "logs\\src.data.cache.enhanced_cache_manager_correlation_structured.log": "666",
+          "logs\\src.data.loader.enhanced_data_loader_correlation_error.log": "666",
+          "logs\\src.data.loader.enhanced_data_loader_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.base_module_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.base_module_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.config_module_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.config_module_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.features_module_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.features_module_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.fpga_module_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.fpga_module_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.module_factory_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.module_factory_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.module_registry_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.module_registry_correlation_structured.log": "666",
+          "logs\\src.engine.web.modules.resource_module_correlation_error.log": "666",
+          "logs\\src.engine.web.modules.resource_module_correlation_structured.log": "666",
+          "logs\\src.engine.web.unified_dashboard_correlation_error.log": "666",
+          "logs\\src.engine.web.unified_dashboard_correlation_structured.log": "666",
+          "logs\\src.features.intelligent.auto_feature_selector_correlation_error.log": "666",
+          "logs\\src.features.intelligent.auto_feature_selector_correlation_structured.log": "666",
+          "logs\\src.features.intelligent.intelligent_enhancement_manager_correlation_error.log": "666",
+          "logs\\src.features.intelligent.intelligent_enhancement_manager_correlation_structured.log": "666",
+          "logs\\src.features.intelligent.ml_model_integration_correlation_error.log": "666",
+          "logs\\src.features.intelligent.ml_model_integration_correlation_structured.log": "666",
+          "logs\\src.features.intelligent.smart_alert_system_correlation_error.log": "666",
+          "logs\\src.features.intelligent.smart_alert_system_correlation_structured.log": "666",
+          "logs\\src.features.plugins.base_plugin_correlation_error.log": "666",
+          "logs\\src.features.plugins.base_plugin_correlation_structured.log": "666",
+          "logs\\src.infrastructure.docs.document_version_controller_correlation_error.log": "666",
+          "logs\\src.infrastructure.docs.document_version_controller_correlation_structured.log": "666",
+          "logs\\src.trading.risk.risk_controller.MarketMonitor_correlation_error.log": "666",
+          "logs\\src.trading.risk.risk_controller.MarketMonitor_correlation_structured.log": "666",
+          "logs\\start_ai_coverage_automation.log": "666",
+          "logs\\structured.log": "666",
+          "logs\\system.log": "666",
+          "logs\\system_correlation_error.log": "666",
+          "logs\\system_correlation_structured.log": "666",
+          "logs\\system_logger_correlation_error.log": "666",
+          "logs\\system_logger_correlation_structured.log": "666",
+          "logs\\t1_restriction_correlation_error.log": "666",
+          "logs\\t1_restriction_correlation_structured.log": "666",
+          "logs\\test.log": "666",
+          "logs\\test_component_correlation_error.log": "666",
+          "logs\\test_component_correlation_structured.log": "666",
+          "logs\\test_component_error.log": "666",
+          "logs\\test_component_structured.log": "666",
+          "logs\\test_correlation_error.log": "666",
+          "logs\\test_correlation_structured.log": "666",
+          "logs\\test_error.log": "666",
+          "logs\\test_handler_correlation_error.log": "666",
+          "logs\\test_handler_correlation_structured.log": "666",
+          "logs\\test_logger_correlation_error.log": "666",
+          "logs\\test_logger_correlation_structured.log": "666",
+          "logs\\test_logger_error.log": "666",
+          "logs\\test_logger_structured.log": "666",
+          "logs\\test_structured.log": "666",
+          "logs\\trading_correlation_error.log": "666",
+          "logs\\trading_correlation_structured.log": "666",
+          "logs\\training.log": "666",
+          "logs\\training_notification.log": "666",
+          "logs\\training_start.log": "666",
+          "logs\\unified_logging_interface_correlation_error.log": "666",
+          "logs\\unified_logging_interface_correlation_structured.log": "666",
+          "logs\\__main___correlation_error.log": "666",
+          "logs\\__main___correlation_structured.log": "666",
+          "logs\\__name___correlation_error.log": "666",
+          "logs\\__name___correlation_structured.log": "666"
+        }
+      },
+      "database_security": {
+        "passed": true,
+        "local_connection": true,
+        "non_default_port": false,
+        "config": {
+          "host": "localhost",
+          "port": 5432,
+          "name": "rqa_db",
+          "user": "rqa_user"
+        }
+      },
+      "network_security": {
+        "passed": false,
+        "listening_ports": [
+          {
+            "port": 13688,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49668,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 5040,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49672,
+            "address": "127.0.0.1"
+          },
+          {
+            "port": 49669,
+            "address": "::"
+          },
+          {
+            "port": 4709,
+            "address": "127.0.0.1"
+          },
+          {
+            "port": 49676,
+            "address": "::"
+          },
+          {
+            "port": 49667,
+            "address": "::"
+          },
+          {
+            "port": 139,
+            "address": "172.20.10.13"
+          },
+          {
+            "port": 57305,
+            "address": "::"
+          },
+          {
+            "port": 42050,
+            "address": "::1"
+          },
+          {
+            "port": 57305,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49666,
+            "address": "::"
+          },
+          {
+            "port": 49665,
+            "address": "::"
+          },
+          {
+            "port": 135,
+            "address": "::"
+          },
+          {
+            "port": 49676,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 135,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 11434,
+            "address": "127.0.0.1"
+          },
+          {
+            "port": 445,
+            "address": "::"
+          },
+          {
+            "port": 49665,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49666,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49667,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49669,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 49668,
+            "address": "::"
+          },
+          {
+            "port": 13688,
+            "address": "::"
+          },
+          {
+            "port": 49673,
+            "address": "127.0.0.1"
+          },
+          {
+            "port": 49664,
+            "address": "::"
+          },
+          {
+            "port": 9080,
+            "address": "127.0.0.1"
+          },
+          {
+            "port": 49664,
+            "address": "0.0.0.0"
+          },
+          {
+            "port": 445,
+            "address": "0.0.0.0"
+          }
+        ],
+        "unauthorized_ports": [
+          13688,
+          49668,
+          5040,
+          49672,
+          49669,
+          4709,
+          49676,
+          49667,
+          139,
+          57305,
+          42050,
+          57305,
+          49666,
+          49665,
+          135,
+          49676,
+          135,
+          11434,
+          445,
+          49665,
+          49666,
+          49667,
+          49669,
+          49668,
+          13688,
+          49673,
+          49664,
+          9080,
+          49664,
+          445
+        ]
+      },
+      "ssl_certificate": {
+        "passed": true,
+        "message": "SSL证书检查暂未实现"
+      }
+    },
+    "vulnerabilities": [],
+    "recommendations": []
+  },
+  "monitoring": {
+    "status": "failed",
+    "components": {
+      "monitoring_system": {
+        "passed": false,
+        "status": "stopped",
+        "summary": {
+          "system": {},
+          "application": {},
+          "alerts": {
+            "total_alerts": 0,
+            "active_alerts": 0,
+            "resolved_alerts": 0,
+            "level_counts": {},
+            "category_counts": {}
+          },
+          "status": "stopped"
+        }
+      },
+      "alert_configuration": {
+        "passed": false,
+        "email_configured": false,
+        "webhook_configured": false,
+        "config": {}
+      },
+      "metrics_collection": {
+        "passed": false,
+        "system_metrics": false,
+        "application_metrics": false,
+        "summary": {
+          "system": {},
+          "application": {},
+          "alerts": {
+            "total_alerts": 0,
+            "active_alerts": 0,
+            "resolved_alerts": 0,
+            "level_counts": {},
+            "category_counts": {}
+          },
+          "status": "stopped"
+        }
+      }
+    },
+    "alerts": {},
+    "metrics": {
+      "system": {},
+      "application": {},
+      "alerts": {
+        "total_alerts": 0,
+        "active_alerts": 0,
+        "resolved_alerts": 0,
+        "level_counts": {},
+        "category_counts": {}
+      },
+      "status": "stopped"
+    }
+  },
+  "recommendations": [
+    "检查并修复功能验证失败的项目",
+    "加强安全配置，检查权限设置",
+    "完善监控配置，确保监控系统正常运行"
+  ]
+}

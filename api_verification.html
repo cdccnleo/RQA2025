@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 404错误验证</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .test-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+        .warning { border-left: 4px solid #ffc107; }
+        .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; }
+        .result.success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .result.error { background: #f8d7da; border: 1px solid #f5c6cb; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 API 404错误验证工具</h1>
+            <p>验证数据源指标和样本API是否修复成功</p>
+            <div class="status success" id="overall-status">等待测试...</div>
+        </div>
+
+        <div class="test-section" id="env-section">
+            <h2>🌐 环境信息</h2>
+            <table id="env-table">
+                <tr><th>检查项目</th><th>状态</th><th>详细信息</th></tr>
+                <tr><td>前端服务器</td><td id="frontend-status">检查中...</td><td id="frontend-details">-</td></tr>
+                <tr><td>后端API</td><td id="backend-status">检查中...</td><td id="backend-details">-</td></tr>
+                <tr><td>页面缓存</td><td id="cache-status">检查中...</td><td id="cache-details">-</td></tr>
+            </table>
+        </div>
+
+        <div class="test-section" id="metrics-section">
+            <h2>📊 数据源指标API测试</h2>
+            <p>测试路径: <code>/api/v1/data-sources/metrics</code></p>
+            <button class="btn-primary" onclick="testMetricsAPI()">开始测试</button>
+            <button class="btn-warning" onclick="clearCache()">清除缓存</button>
+            <div id="metrics-result"></div>
+        </div>
+
+        <div class="test-section" id="sample-section">
+            <h2>🔍 数据样本API测试</h2>
+            <p>测试路径: <code>/api/v1/data/sources/sinafinance/sample</code></p>
+            <button class="btn-primary" onclick="testSampleAPI()">开始测试</button>
+            <button class="btn-success" onclick="testBothAPIs()">测试两个API</button>
+            <div id="sample-result"></div>
+        </div>
+
+        <div class="test-section" id="troubleshoot-section">
+            <h2>🔧 故障排除</h2>
+            <h3>如果仍然出现404错误:</h3>
+            <ol>
+                <li>点击"清除缓存"按钮</li>
+                <li>在浏览器中按 <code>Ctrl+F5</code> (Windows) 或 <code>Cmd+Shift+R</code> (Mac) 强制刷新</li>
+                <li>尝试在无痕/隐私模式下访问</li>
+                <li>检查浏览器开发者工具的网络面板</li>
+            </ol>
+
+            <h3>服务重启:</h3>
+            <p>如果API仍然不可用，请重启服务:</p>
+            <pre>taskkill /f /im python.exe
+python scripts/start_production.py
+cd web-static && python -m http.server 8080</pre>
+        </div>
+    </div>
+
+    <script>
+        let testResults = { metrics: null, sample: null };
+
+        // 检查环境
+        async function checkEnvironment() {
+            // 检查前端
+            try {
+                const response = await fetch('/data-sources-config.html', { cache: 'no-cache' });
+                document.getElementById('frontend-status').textContent = '正常';
+                document.getElementById('frontend-status').className = 'status success';
+                document.getElementById('frontend-details').textContent = `状态码: ${response.status}`;
+            } catch (e) {
+                document.getElementById('frontend-status').textContent = '异常';
+                document.getElementById('frontend-status').className = 'status error';
+                document.getElementById('frontend-details').textContent = e.message;
+            }
+
+            // 检查后端
+            try {
+                const response = await fetch('http://localhost:8000/health', { cache: 'no-cache' });
+                if (response.ok) {
+                    document.getElementById('backend-status').textContent = '正常';
+                    document.getElementById('backend-status').className = 'status success';
+                    document.getElementById('backend-details').textContent = `状态码: ${response.status}`;
+                } else {
+                    throw new Error(`状态码: ${response.status}`);
+                }
+            } catch (e) {
+                document.getElementById('backend-status').textContent = '异常';
+                document.getElementById('backend-status').className = 'status error';
+                document.getElementById('backend-details').textContent = e.message;
+            }
+
+            // 检查缓存状态
+            const cacheStatus = navigator.serviceWorker ? 'Service Worker存在' : '无特殊缓存';
+            document.getElementById('cache-status').textContent = '已检查';
+            document.getElementById('cache-status').className = 'status success';
+            document.getElementById('cache-details').textContent = cacheStatus;
+        }
+
+        // 测试指标API
+        async function testMetricsAPI() {
+            const resultDiv = document.getElementById('metrics-result');
+            resultDiv.innerHTML = '<div class="status warning">正在测试...</div>';
+
+            try {
+                const startTime = Date.now();
+                const response = await fetch('http://localhost:8000/api/v1/data-sources/metrics', {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                const endTime = Date.now();
+
+                if (response.ok) {
+                    const data = await response.json();
+                    testResults.metrics = true;
+
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ 测试成功</div>
+                        <div class="result success">
+请求URL: http://localhost:8000/api/v1/data-sources/metrics
+响应时间: ${endTime - startTime}ms
+状态码: ${response.status}
+数据字段: ${Object.keys(data).length} 个
+活跃数据源: ${data.active_sources || 'N/A'}
+                        </div>
+                    `;
+                } else {
+                    testResults.metrics = false;
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ 测试失败</div>
+                        <div class="result error">
+状态码: ${response.status}
+错误信息: ${errorText}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                testResults.metrics = false;
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ 网络错误</div>
+                    <div class="result error">
+错误信息: ${error.message}
+                    </div>
+                `;
+            }
+
+            updateOverallStatus();
+        }
+
+        // 测试样本API
+        async function testSampleAPI() {
+            const resultDiv = document.getElementById('sample-result');
+            resultDiv.innerHTML = '<div class="status warning">正在测试...</div>';
+
+            try {
+                const startTime = Date.now();
+                const response = await fetch('http://localhost:8000/api/v1/data/sources/sinafinance/sample', {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                const endTime = Date.now();
+
+                if (response.ok) {
+                    const data = await response.json();
+                    testResults.sample = true;
+
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ 测试成功</div>
+                        <div class="result success">
+请求URL: http://localhost:8000/api/v1/data/sources/sinafinance/sample
+响应时间: ${endTime - startTime}ms
+状态码: ${response.status}
+数据源: ${data.source_name} (${data.source_id})
+状态: ${data.enabled ? '启用' : '禁用'}
+样本数据: ${data.sample ? '包含' : '无'}
+                        </div>
+                    `;
+                } else {
+                    testResults.sample = false;
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ 测试失败</div>
+                        <div class="result error">
+状态码: ${response.status}
+错误信息: ${errorText}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                testResults.sample = false;
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ 网络错误</div>
+                    <div class="result error">
+错误信息: ${error.message}
+                    </div>
+                `;
+            }
+
+            updateOverallStatus();
+        }
+
+        // 测试两个API
+        async function testBothAPIs() {
+            await testMetricsAPI();
+            setTimeout(() => testSampleAPI(), 500);
+        }
+
+        // 清除缓存
+        function clearCache() {
+            // 清除localStorage和sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // 强制重新加载所有资源
+            window.location.reload(true);
+
+            alert('缓存已清除，页面将重新加载');
+        }
+
+        // 更新总体状态
+        function updateOverallStatus() {
+            const statusDiv = document.getElementById('overall-status');
+
+            if (testResults.metrics === true && testResults.sample === true) {
+                statusDiv.textContent = '✅ 所有API测试通过';
+                statusDiv.className = 'status success';
+            } else if (testResults.metrics === false || testResults.sample === false) {
+                statusDiv.textContent = '❌ 部分API测试失败';
+                statusDiv.className = 'status error';
+            } else {
+                statusDiv.textContent = '🔄 测试中...';
+                statusDiv.className = 'status warning';
+            }
+        }
+
+        // 页面加载时自动检查环境
+        window.onload = function() {
+            checkEnvironment();
+        };
+    </script>
+</body>
+</html>

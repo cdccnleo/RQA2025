@@ -1,0 +1,124 @@
+{
+  "environment": "production",
+  "version": "1.0.0",
+  "deployment_date": "2025-01-27",
+  "services": {
+    "postgres": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "rqa2025",
+      "user": "postgres",
+      "password": "postgres",
+      "max_connections": 100,
+      "connection_timeout": 30
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "password": "",
+      "db": 0,
+      "max_connections": 50,
+      "connection_timeout": 10
+    },
+    "api": {
+      "host": "localhost",
+      "port": 8000,
+      "workers": 4,
+      "timeout": 30,
+      "max_requests": 1000
+    },
+    "inference": {
+      "host": "localhost",
+      "port": 8001,
+      "workers": 2,
+      "timeout": 60,
+      "gpu_enabled": true
+    },
+    "prometheus": {
+      "host": "localhost",
+      "port": 9090,
+      "retention_days": 30,
+      "scrape_interval": "15s"
+    },
+    "grafana": {
+      "host": "localhost",
+      "port": 3000,
+      "admin_user": "admin",
+      "admin_password": "your_grafana_password_here"
+    },
+    "elasticsearch": {
+      "host": "localhost",
+      "port": 9200,
+      "cluster_name": "rqa2025-cluster",
+      "index_prefix": "rqa2025"
+    },
+    "kibana": {
+      "host": "localhost",
+      "port": 5601,
+      "elasticsearch_url": "http://localhost:9200"
+    }
+  },
+  "monitoring": {
+    "health_check_interval": 30,
+    "alert_thresholds": {
+      "cpu_usage": 80,
+      "memory_usage": 85,
+      "disk_usage": 90,
+      "response_time": 5.0
+    },
+    "notification": {
+      "email": "admin@rqa2025.com",
+      "slack_webhook": "your_slack_webhook_url",
+      "pagerduty_key": "your_pagerduty_key"
+    }
+  },
+  "security": {
+    "ssl_enabled": true,
+    "ssl_cert_path": "/path/to/ssl/cert.pem",
+    "ssl_key_path": "/path/to/ssl/key.pem",
+    "allowed_hosts": ["localhost", "your-domain.com"],
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 100,
+      "burst_size": 20
+    }
+  },
+  "backup": {
+    "database": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "retention_days": 30,
+      "backup_path": "/backup/database"
+    },
+    "files": {
+      "enabled": true,
+      "schedule": "0 3 * * *",
+      "retention_days": 7,
+      "backup_path": "/backup/files"
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "file_path": "/logs/rqa2025",
+    "max_size_mb": 100,
+    "backup_count": 5,
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  },
+  "performance": {
+    "cache": {
+      "enabled": true,
+      "ttl_seconds": 3600,
+      "max_size_mb": 1024
+    },
+    "database": {
+      "connection_pool_size": 20,
+      "query_timeout": 30,
+      "enable_query_cache": true
+    },
+    "api": {
+      "enable_compression": true,
+      "enable_caching": true,
+      "cache_headers": true
+    }
+  }
+}

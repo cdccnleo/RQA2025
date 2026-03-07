@@ -1,0 +1,135 @@
+{
+  "validation_timestamp": "2025-12-02T12:08:41.551769",
+  "validation_status": {
+    "config_validation": true,
+    "service_connectivity": false,
+    "dependency_checks": false,
+    "security_validation": true,
+    "performance_baselines": true,
+    "health_checks": true,
+    "overall_success": false
+  },
+  "validation_results": {
+    "config_validation": [
+      {
+        "check": "配置文件格式: database.json",
+        "status": "PASSED",
+        "message": "JSON格式正确"
+      },
+      {
+        "check": "配置文件格式: redis.json",
+        "status": "PASSED",
+        "message": "JSON格式正确"
+      },
+      {
+        "check": "配置文件格式: api.json",
+        "status": "PASSED",
+        "message": "JSON格式正确"
+      },
+      {
+        "check": "配置文件格式: monitoring.json",
+        "status": "PASSED",
+        "message": "JSON格式正确"
+      },
+      {
+        "check": "配置文件格式: logging.json",
+        "status": "PASSED",
+        "message": "JSON格式正确"
+      },
+      {
+        "check": "配置文件格式: security.json",
+        "status": "PASSED",
+        "message": "JSON格式正确"
+      },
+      {
+        "check": "Nginx配置文件",
+        "status": "PASSED",
+        "message": "Nginx配置文件存在"
+      }
+    ],
+    "service_connectivity": [
+      {
+        "check": "数据库连接",
+        "status": "FAILED",
+        "message": "数据库连接失败: localhost:5432"
+      },
+      {
+        "check": "Redis连接",
+        "status": "FAILED",
+        "message": "Redis连接失败: localhost:6379"
+      }
+    ],
+    "dependency_checks": [
+      {
+        "check": "Python可用性",
+        "status": "PASSED",
+        "message": "Python可用: Python 3.9.23"
+      },
+      {
+        "check": "Docker可用性",
+        "status": "PASSED",
+        "message": "Docker可用: Docker version 28.1.1, build 4eba377"
+      },
+      {
+        "check": "Docker Compose可用性",
+        "status": "PASSED",
+        "message": "Docker Compose可用: Docker Compose version v2.35.1-desktop.1"
+      },
+      {
+        "check": "Kubernetes CLI可用性",
+        "status": "PASSED",
+        "message": "Kubernetes CLI可用: Client Version: v1.32.2"
+      },
+      {
+        "check": "Nginx可用性",
+        "status": "FAILED",
+        "message": "Nginx检查失败: [WinError 2] 系统找不到指定的文件。"
+      },
+      {
+        "check": "Nginx配置语法",
+        "status": "PASSED",
+        "message": "Nginx配置语法正确"
+      },
+      {
+        "check": "Docker Compose配置",
+        "status": "PASSED",
+        "message": "Docker Compose配置有效"
+      },
+      {
+        "check": "Kubernetes配置",
+        "status": "PASSED",
+        "message": "Kubernetes配置有效"
+      }
+    ],
+    "security_validation": [
+      {
+        "check": "加密算法配置",
+        "status": "PASSED",
+        "message": "使用安全的加密算法: AES-256-GCM"
+      },
+      {
+        "check": "SSL/TLS配置",
+        "status": "PASSED",
+        "message": "使用安全的TLS版本: TLSv1.2"
+      }
+    ],
+    "performance_baselines": [
+      {
+        "check": "API工作进程配置",
+        "status": "PASSED",
+        "message": "配置了 4 个工作进程，适合生产环境"
+      },
+      {
+        "check": "端口配置",
+        "status": "PASSED",
+        "message": "使用有效端口: 8080"
+      }
+    ]
+  },
+  "summary": {
+    "total_checks": 21,
+    "passed_checks": 18,
+    "failed_checks": 3,
+    "warning_checks": 0
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "integration_test_summary": {
+    "start_time": "2025-08-24T13:46:49.394122",
+    "end_time": "2025-08-24T13:46:49.396124",
+    "duration_seconds": 0.002002,
+    "total_tests": 5,
+    "passed_tests": 0,
+    "partial_tests": 3,
+    "failed_tests": 2,
+    "success_rate": 0.0,
+    "overall_status": "partial"
+  },
+  "test_results": [
+    {
+      "test_name": "infrastructure_integration",
+      "status": "partial",
+      "message": "基础设施层集成测试完成，成功率: 0.0% (0/0组件)",
+      "details": {
+        "components_available": 0,
+        "components_tested": 0,
+        "success_rate": 0.0
+      }
+    },
+    {
+      "test_name": "core_services_integration",
+      "status": "failed",
+      "message": "核心服务层集成测试失败: No module named 'src.core'",
+      "details": {
+        "error": "No module named 'src.core'"
+      }
+    },
+    {
+      "test_name": "data_layer_integration",
+      "status": "failed",
+      "message": "数据层集成测试失败: No module named 'src.data'",
+      "details": {
+        "error": "No module named 'src.data'"
+      }
+    },
+    {
+      "test_name": "business_flow_integration",
+      "status": "partial",
+      "message": "业务流程集成测试完成，集成率: 25.0% (1/4组件)",
+      "details": {
+        "integration_status": {
+          "infrastructure_ready": false,
+          "core_services_ready": false,
+          "data_layer_ready": false,
+          "business_logic_ready": true
+        },
+        "ready_components": 1,
+        "total_components": 4,
+        "integration_rate": 25.0
+      }
+    },
+    {
+      "test_name": "error_handling_integration",
+      "status": "partial",
+      "message": "错误处理集成测试完成，成功率: 0.0% (0/3测试)",
+      "details": {
+        "error_tests": [
+          [
+            "infrastructure_error_handling",
+            false
+          ],
+          [
+            "core_error_handling",
+            false
+          ],
+          [
+            "data_error_handling",
+            false
+          ]
+        ],
+        "successful_tests": 0,
+        "total_tests": 3,
+        "success_rate": 0.0
+      }
+    }
+  ]
+}

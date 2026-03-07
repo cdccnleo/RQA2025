@@ -1,0 +1,220 @@
+name: Coverage Monitoring & Alerting
+
+on:
+  workflow_run:
+    workflows: ["RQA2025 CI/CD Pipeline"]
+    types:
+      - completed
+  schedule:
+    # 每周一早上检查覆盖率趋势
+    - cron: '0 9 * * 1'
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  coverage-monitoring:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests python-dotenv
+
+    - name: Check coverage trends
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        python scripts/check_coverage_trends.py
+
+    - name: Generate coverage alert
+      if: failure()
+      run: |
+        python scripts/generate_coverage_alert.py
+
+  coverage-alerts:
+    runs-on: windows-latest
+    needs: coverage-monitoring
+    if: failure()
+    steps:
+    - name: Send coverage alerts
+      run: |
+        # 根据覆盖率下降发送告警
+        python scripts/send_coverage_alerts.py
+
+  layer-specific-coverage:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Run layer-specific coverage analysis
+      run: |
+        pip install coverage pytest pytest-cov
+
+        # 定义各层的覆盖率阈值
+        declare -A layer_thresholds=(
+          ["infrastructure"]="85"
+          ["data"]="80"
+          ["strategy"]="75"
+          ["risk"]="78"
+          ["ml"]="70"
+          ["async_processor"]="82"
+        )
+
+        # 检查每一层的覆盖率
+        for layer in "${!layer_thresholds[@]}"; do
+          threshold=${layer_thresholds[$layer]}
+
+          echo "Checking coverage for $layer layer (threshold: $threshold%)"
+
+          # 运行该层的测试并生成覆盖率报告
+          pytest tests/unit/$layer/ -v --cov=src.$layer --cov-report=xml --cov-report=term-missing --cov-fail-under=$threshold
+
+          if [ $? -ne 0 ]; then
+            echo "Coverage check failed for $layer layer"
+            exit 1
+          fi
+        done
+
+  quality-metrics-tracking:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Track code quality metrics
+      run: |
+        pip install radon mccabe flake8
+
+        echo "=== Code Quality Metrics ==="
+
+        # 计算代码复杂度
+        echo "Cyclomatic Complexity:"
+        radon cc src -a -s
+
+        # 计算可维护性指数
+        echo "Maintainability Index:"
+        radon mi src
+
+        # 代码统计
+        echo "Code Statistics:"
+        find src -name "*.py" -exec wc -l {} + | tail -1
+
+        # 保存指标到文件
+        radon cc src -a > complexity_report.txt
+        radon mi src > maintainability_report.txt
+
+    - name: Upload quality metrics
+      uses: actions/upload-artifact@v3
+      with:
+        name: quality-metrics
+        path: |
+          complexity_report.txt
+          maintainability_report.txt
+
+  performance-regression-check:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check for performance regressions
+      run: |
+        pip install pytest-benchmark
+
+        # 运行性能基准测试
+        pytest tests/unit/ -k "performance" --benchmark-only --benchmark-save=latest --benchmark-save-data
+
+        # 比较性能回归
+        if [ -f .benchmarks/latest.json ]; then
+          echo "Performance benchmarks completed"
+
+          # 这里可以添加与历史基准的比较逻辑
+          # 如果性能下降超过阈值，则失败
+        fi
+
+  security-vulnerability-scan:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run security vulnerability scan
+      run: |
+        pip install safety bandit
+
+        # 检查已知安全漏洞
+        echo "Checking for known security vulnerabilities..."
+        safety check || true
+
+        # 运行Bandit安全检查
+        echo "Running Bandit security analysis..."
+        bandit -r src -f json -o security_report.json || true
+
+    - name: Upload security report
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-report
+        path: security_report.json
+
+  alert-dispatch:
+    runs-on: windows-latest
+    needs: [coverage-monitoring, layer-specific-coverage, quality-metrics-tracking, performance-regression-check, security-vulnerability-scan]
+    if: always()
+    steps:
+    - name: Dispatch alerts based on check results
+      run: |
+        # 汇总所有检查结果
+        coverage_failed=$([[ "${{ needs.coverage-monitoring.result }}" != "success" ]] && echo "1" || echo "0")
+        layer_coverage_failed=$([[ "${{ needs.layer-specific-coverage.result }}" != "success" ]] && echo "1" || echo "0")
+        quality_failed=$([[ "${{ needs.quality-metrics-tracking.result }}" != "success" ]] && echo "1" || echo "0")
+        performance_failed=$([[ "${{ needs.performance-regression-check.result }}" != "success" ]] && echo "1" || echo "0")
+        security_failed=$([[ "${{ needs.security-vulnerability-scan.result }}" != "success" ]] && echo "1" || echo "0")
+
+        # 根据失败情况发送相应告警
+        alert_message=""
+
+        if [ "$coverage_failed" = "1" ]; then
+          alert_message="${alert_message}🚨 覆盖率下降告警\n"
+        fi
+
+        if [ "$layer_coverage_failed" = "1" ]; then
+          alert_message="${alert_message}🚨 层级覆盖率未达标告警\n"
+        fi
+
+        if [ "$quality_failed" = "1" ]; then
+          alert_message="${alert_message}⚠️ 代码质量指标异常\n"
+        fi
+
+        if [ "$performance_failed" = "1" ]; then
+          alert_message="${alert_message}🚨 性能回归告警\n"
+        fi
+
+        if [ "$security_failed" = "1" ]; then
+          alert_message="${alert_message}🚨 安全漏洞告警\n"
+        fi
+
+        if [ -n "$alert_message" ]; then
+          echo "发送告警通知..."
+          # 这里可以集成各种通知服务
+          echo -e "$alert_message"
+
+          # 创建GitHub Issue用于跟踪
+          if [ -n "${{ secrets.GITHUB_TOKEN }}" ]; then
+            gh issue create \
+              --title "质量监控告警 - $(date +%Y-%m-%d)" \
+              --body "$alert_message" \
+              --label "alert,quality-monitoring"
+          fi
+        else
+          echo "✅ 所有质量检查通过"
+        fi

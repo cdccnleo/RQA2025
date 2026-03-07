@@ -1,0 +1,43 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+16 workers [3 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\ai\test_smart_data_analyzer_unit.py::test_summarize_and_trend 
+[gw0] [ 33%] PASSED tests\unit\data\ai\test_smart_data_analyzer_unit.py::test_summarize_and_trend 
+tests\unit\data\ai\test_smart_data_analyzer_unit.py::test_outliers_and_analyze 
+[gw0] [ 66%] PASSED tests\unit\data\ai\test_smart_data_analyzer_unit.py::test_outliers_and_analyze 
+tests\unit\data\ai\test_smart_data_analyzer_unit.py::test_summarize_type_errors_and_empty 
+[gw0] [100%] PASSED tests\unit\data\ai\test_smart_data_analyzer_unit.py::test_summarize_type_errors_and_empty 
+
+=================================== ERRORS ====================================
+___ ERROR collecting unit/data/distributed/test_ddl_ai2_strategies_stats.py ___
+ImportError while importing test module 'C:\PythonProject\RQA2025\tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests\conftest.py:31: in _import_module_with_patch
+    module = _ORIGINAL_IMPORT_MODULE(name, package)
+tests\conftest.py:31: in _import_module_with_patch
+    module = _ORIGINAL_IMPORT_MODULE(name, package)
+C:\Users\AILeo\miniconda3\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py:11: in <module>
+    from src.data.distributed.distributed_data_loader import (
+src\data\distributed\__init__.py:13: in <module>
+    from .distributed_data_loader import DistributedDataLoader, create_distributed_data_loader, load_data_distributed
+src\data\distributed\distributed_data_loader.py:25: in <module>
+    from ...models import DataModel, SimpleDataModel
+E   ModuleNotFoundError: No module named 'src.models'
+------------------------------- Captured stdout -------------------------------
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+------------------------------- Captured stderr -------------------------------
+WARNING:src.data:Using fallback DataManagerSingleton implementation
+INFO:src.data:Using real DataModel implementation
+WARNING:src.data:LoadBalancingStrategy not available
+WARNING:src.data:PerformanceMonitor not available
+=========================== short test summary info ===========================
+ERROR tests\unit\data\distributed\test_ddl_ai2_strategies_stats.py
+========================= 3 passed, 1 error in 21.66s =========================

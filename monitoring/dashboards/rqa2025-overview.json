@@ -1,0 +1,263 @@
+{
+  "dashboard": {
+    "title": "RQA2025 总览监控面板",
+    "tags": ["rqa2025", "overview"],
+    "timezone": "Asia/Shanghai",
+    "panels": [
+      {
+        "title": "服务状态总览",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=~\"rqa2025-.*\"}",
+            "legendFormat": "{{ job }}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "title": "应用请求率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"rqa2025-app\"}[5m])",
+            "legendFormat": "请求率",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 6,
+          "y": 0
+        }
+      },
+      {
+        "title": "错误率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"rqa2025-app\", status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"rqa2025-app\"}[5m]) * 100",
+            "legendFormat": "错误率(%)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 3
+        }
+      },
+      {
+        "title": "响应时间",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"rqa2025-app\"}[5m]))",
+            "legendFormat": "95分位",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=\"rqa2025-app\"}[5m]))",
+            "legendFormat": "50分位",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 8,
+          "y": 3
+        }
+      },
+      {
+        "title": "CPU使用率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "{{ instance }}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 9
+        }
+      },
+      {
+        "title": "内存使用率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "((node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes) * 100",
+            "legendFormat": "{{ instance }}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 8,
+          "y": 9
+        }
+      },
+      {
+        "title": "磁盘使用率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "(node_filesystem_size_bytes{mountpoint=\"/\"} - node_filesystem_avail_bytes{mountpoint=\"/\"}) / node_filesystem_size_bytes{mountpoint=\"/\"} * 100",
+            "legendFormat": "{{ instance }}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 15
+        }
+      },
+      {
+        "title": "网络流量",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total[5m]) / 1024 / 1024",
+            "legendFormat": "{{ instance }} - 接收",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(node_network_transmit_bytes_total[5m]) / 1024 / 1024",
+            "legendFormat": "{{ instance }} - 发送",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 8,
+          "y": 15
+        }
+      },
+      {
+        "title": "Redis连接数",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "redis_connected_clients{job=\"rqa2025-redis\"}",
+            "legendFormat": "连接数",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 0,
+          "y": 21
+        }
+      },
+      {
+        "title": "PostgreSQL连接数",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "pg_stat_activity_count{job=\"rqa2025-postgres\"}",
+            "legendFormat": "连接数",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 6,
+          "y": 21
+        }
+      },
+      {
+        "title": "业务成功率",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "(rate(rqa2025_business_success_total[5m]) / rate(rqa2025_business_requests_total[5m])) * 100",
+            "legendFormat": "成功率(%)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 95
+                },
+                {
+                  "color": "green",
+                  "value": 99
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 12,
+          "y": 21
+        }
+      },
+      {
+        "title": "告警状态",
+        "type": "alertlist",
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}

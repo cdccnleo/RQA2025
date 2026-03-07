@@ -1,0 +1,173 @@
+# 量化交易ML管道配置示例
+# 这是一个完整的8阶段自动化训练管道配置
+
+pipeline:
+  name: "quant_trading_ml_pipeline"
+  version: "1.0.0"
+  
+  # 全局配置
+  global_config:
+    project_name: "量化交易系统"
+    environment: "production"
+    log_level: "INFO"
+    
+  # 阶段配置
+  stages:
+    # Stage 1: 数据准备
+    - name: "data_preparation"
+      enabled: true
+      config:
+        data_sources:
+          - "market_data"
+          - "fundamental_data"
+        date_range: "last_90_days"
+        quality_checks: true
+        max_missing_threshold: 10.0
+        handle_outliers: true
+      timeout_seconds: 1800
+      retry_count: 3
+      retry_delay_seconds: 60
+      
+    # Stage 2: 特征工程
+    - name: "feature_engineering"
+      enabled: true
+      config:
+        feature_selection: "variance"
+        standardization: "zscore"
+        store_features: true
+      dependencies:
+        - "data_preparation"
+      timeout_seconds: 3600
+      retry_count: 2
+      
+    # Stage 3: 模型训练
+    - name: "model_training"
+      enabled: true
+      config:
+        model_type: "xgboost"
+        hyperparameter_search: true
+        target_col: "target"
+      dependencies:
+        - "feature_engineering"
+      timeout_seconds: 7200
+      retry_count: 2
+      
+    # Stage 4: 模型评估
+    - name: "model_evaluation"
+      enabled: true
+      config:
+        metrics:
+          - "accuracy"
+          - "precision"
+          - "recall"
+          - "f1"
+          - "roc_auc"
+          - "sharpe_ratio"
+          - "max_drawdown"
+        backtest: true
+        min_accuracy: 0.55
+        min_sharpe: 0.5
+        max_drawdown: 0.2
+      dependencies:
+        - "model_training"
+      timeout_seconds: 1800
+      
+    # Stage 5: 模型验证
+    - name: "model_validation"
+      enabled: true
+      config:
+        ab_test: true
+        shadow_mode: true
+        validate_business_rules: true
+        ab_test_days: 7
+        shadow_test_size: 1000
+      dependencies:
+        - "model_evaluation"
+      timeout_seconds: 3600
+      
+    # Stage 6: 金丝雀部署
+    - name: "canary_deployment"
+      enabled: true
+      config:
+        traffic_percentage: 5
+        duration_minutes: 30
+        max_error_rate: 0.05
+        max_latency_ms: 200
+        min_accuracy: 0.55
+      dependencies:
+        - "model_validation"
+      timeout_seconds: 3600
+      
+    # Stage 7: 全面部署
+    - name: "full_deployment"
+      enabled: true
+      config:
+        strategy: "blue_green"  # 可选: rolling, blue_green
+      dependencies:
+        - "canary_deployment"
+      timeout_seconds: 1800
+      
+    # Stage 8: 监控
+    - name: "monitoring"
+      enabled: true
+      config:
+        metrics_interval_seconds: 60
+        drift_detection: true
+        monitoring_duration_minutes: 5
+      dependencies:
+        - "full_deployment"
+      timeout_seconds: 600
+  
+  # 回滚配置
+  rollback:
+    enabled: true
+    strategy: "immediate"  # 可选: immediate, gradual, emergency_stop
+    auto_rollback: true
+    notification_channels:
+      - "email"
+      - "webhook"
+      - "sms"
+    triggers:
+      # 触发器1: 准确率下降超过10%
+      - metric: "accuracy"
+        threshold: 0.1
+        operator: "decrease"
+        duration_minutes: 5
+        
+      # 触发器2: 最大回撤超过15%
+      - metric: "max_drawdown"
+        threshold: 0.15
+        operator: "greater_than"
+        duration_minutes: 5
+        
+      # 触发器3: 数据漂移分数超过0.5
+      - metric: "drift_score"
+        threshold: 0.5
+        operator: "greater_than"
+        duration_minutes: 15
+        
+      # 触发器4: 错误率超过5%
+      - metric: "error_rate"
+        threshold: 0.05
+        operator: "greater_than"
+        duration_minutes: 3
+        
+      # 触发器5: 延迟增加超过50%
+      - metric: "latency_p95"
+        threshold: 0.5
+        operator: "increase"
+        duration_minutes: 5
+  
+  # 监控配置
+  monitoring:
+    enabled: true
+    metrics_interval_seconds: 60
+    drift_detection: true
+    retention_days: 30
+    alert_thresholds:
+      accuracy: 0.55
+      sharpe_ratio: 0.5
+      max_drawdown: 0.15
+      error_rate: 0.05
+      latency_p95: 200
+      drift_score: 0.5

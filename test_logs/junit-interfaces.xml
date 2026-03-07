@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="22" time="88.475" timestamp="2025-11-16T16:56:43.081719+08:00" hostname="AIPC"><testcase classname="unit.data.interfaces.test_api_fastapi_contracts" name="test_health_endpoint_ok" time="0.772"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_models_validation" name="test_data_storage_request_rejects_none_data" time="0.674"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_interfaces_api_health_ready" name="test_health_and_ready_endpoints" time="0.826"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+ERROR    src.data.interfaces.api:api.py:160 就绪检查失败: 'DataManager' object has no attribute 'is_initialized'
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/ready "HTTP/1.1 503 Service Unavailable"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:httpx:HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+ERROR:src.data.interfaces.api:就绪检查失败: 'DataManager' object has no attribute 'is_initialized'
+INFO:httpx:HTTP Request: GET http://testserver/ready "HTTP/1.1 503 Service Unavailable"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_models_validation" name="test_data_storage_request_accepts_valid_payload" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_cache_backend_contract_minimal" name="test_cache_backend_contract_minimal" time="0.680"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_failure_paths" name="test_store_failure_path_returns_500" time="0.828"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.interfaces.api:api.py:254 开始存储数据，类型: database
+ERROR    src.data.interfaces.api:api.py:272 数据存储失败: store failed
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20store "HTTP/1.1 500 Internal Server Error"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.interfaces.api:开始存储数据，类型: database
+ERROR:src.data.interfaces.api:数据存储失败: store failed
+INFO:httpx:HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20store "HTTP/1.1 500 Internal Server Error"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_standard_interfaces_unit" name="test_data_request_auto_request_id_and_defaults" time="0.722"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_models_validation" name="test_data_request_defaults_and_fields" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_validate_endpoint_not_implemented_returns_503" time="0.841"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.interfaces.api:api.py:223 开始验证数据
+ERROR    src.data.interfaces.api:api.py:244 数据验证失败: 503: 数据验证器未实现
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20validate "HTTP/1.1 500 Internal Server Error"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.interfaces.api:开始验证数据
+ERROR:src.data.interfaces.api:数据验证失败: 503: 数据验证器未实现
+INFO:httpx:HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20validate "HTTP/1.1 500 Internal Server Error"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_loader_interfaces_factory_minimal" name="test_loader_factory_and_base_behavior" time="0.723"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_standard_interfaces_unit" name="test_data_response_defaults_and_assignment" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_standard_interfaces_unit" name="test_data_source_type_members" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_fastapi_contracts" name="test_ready_endpoint_ready" time="0.032"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/ready "HTTP/1.1 200 OK"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:httpx:HTTP Request: GET http://testserver/ready "HTTP/1.1 200 OK"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_fastapi_contracts" name="test_ready_endpoint_not_ready" time="0.038"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.interfaces.api:api.py:160 就绪检查失败: 503: 数据管理器未就绪
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/ready "HTTP/1.1 503 Service Unavailable"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.interfaces.api:就绪检查失败: 503: 数据管理器未就绪
+INFO:httpx:HTTP Request: GET http://testserver/ready "HTTP/1.1 503 Service Unavailable"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_validate_endpoint_success_path" time="0.044"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.interfaces.api:api.py:223 开始验证数据
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20validate "HTTP/1.1 200 OK"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.interfaces.api:开始验证数据
+INFO:httpx:HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20validate "HTTP/1.1 200 OK"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_fastapi_contracts" name="test_store_data_success" time="0.042"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.interfaces.api:api.py:254 开始存储数据，类型: cache
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20store "HTTP/1.1 200 OK"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.interfaces.api:开始存储数据，类型: cache
+INFO:httpx:HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20store "HTTP/1.1 200 OK"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_symbols_endpoint_503_when_loader_missing" time="0.034"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.interfaces.api:api.py:285 获取交易对列表失败: 503: 数据加载器未实现
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20symbols "HTTP/1.1 500 Internal Server Error"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.interfaces.api:获取交易对列表失败: 503: 数据加载器未实现
+INFO:httpx:HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20symbols "HTTP/1.1 500 Internal Server Error"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_fastapi_contracts" name="test_fetch_data_loader_not_implemented_returns_503" time="0.045"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.interfaces.api:api.py:170 开始获取数据: AAA, 2024-01-01 - 2024-01-31
+ERROR    src.data.interfaces.api:api.py:213 数据获取失败: 503: 数据加载器未实现
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20fetch "HTTP/1.1 500 Internal Server Error"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.interfaces.api:开始获取数据: AAA, 2024-01-01 - 2024-01-31
+ERROR:src.data.interfaces.api:数据获取失败: 503: 数据加载器未实现
+INFO:httpx:HTTP Request: POST http://testserver/api%20/%20v1%20/%20data%20/%20fetch "HTTP/1.1 500 Internal Server Error"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_sources_endpoint_503_when_loader_missing" time="0.033"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.interfaces.api:api.py:298 获取数据源列表失败: 503: 数据加载器未实现
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20sources "HTTP/1.1 500 Internal Server Error"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.interfaces.api:获取数据源列表失败: 503: 数据加载器未实现
+INFO:httpx:HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20sources "HTTP/1.1 500 Internal Server Error"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_symbols_endpoint_success_with_stub" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20symbols "HTTP/1.1 200 OK"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:httpx:HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20symbols "HTTP/1.1 200 OK"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_sources_endpoint_success_with_stub" time="0.029"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20sources "HTTP/1.1 200 OK"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:httpx:HTTP Request: GET http://testserver/api%20/%20v1%20/%20data%20/%20sources "HTTP/1.1 200 OK"
+
+</system-err></testcase><testcase classname="unit.data.interfaces.test_api_additional_paths" name="test_ready_endpoint_exception_returns_503" time="0.036"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.interfaces.api:api.py:160 就绪检查失败: boom
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/ready "HTTP/1.1 503 Service Unavailable"
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.interfaces.api:就绪检查失败: boom
+INFO:httpx:HTTP Request: GET http://testserver/ready "HTTP/1.1 503 Service Unavailable"
+
+</system-err></testcase></testsuite></testsuites>

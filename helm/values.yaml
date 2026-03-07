@@ -1,0 +1,248 @@
+# RQA2025 Risk Control Layer - Helm Values
+
+# Global configuration
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  storageClass: ""
+
+# API Gateway configuration
+apiGateway:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: rqa2025/api-gateway
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+    annotations: {}
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  config:
+    port: 8080
+    jwtSecret: "change-in-production"
+    rateLimitEnabled: true
+    corsEnabled: true
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: api.rqa2025.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: api-gateway-tls
+        hosts:
+          - api.rqa2025.local
+
+# Risk Calculation Service
+riskCalculation:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: rqa2025/risk-calculation
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8081
+  resources:
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+    requests:
+      cpu: 2000m
+      memory: 4Gi
+  gpu:
+    enabled: false
+    count: 1
+  config:
+    workers: 4
+    timeout: 60
+    cacheSize: "1GB"
+
+# Real-time Risk Monitor
+realtimeMonitor:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: rqa2025/realtime-monitor
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8082
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+
+# Alert System
+alertSystem:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: rqa2025/alert-system
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8083
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  notifications:
+    email:
+      enabled: true
+      smtpHost: "smtp.gmail.com"
+      smtpPort: 587
+    webhook:
+      enabled: true
+      urls: []
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "change-in-production"
+    username: "risk_control"
+    password: "change-in-production"
+    database: "risk_control"
+  primary:
+    persistence:
+      enabled: true
+      size: 50Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+# RabbitMQ configuration
+rabbitmq:
+  enabled: true
+  auth:
+    username: "risk_control"
+    password: "change-in-production"
+  persistence:
+    enabled: true
+    size: 20Gi
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+# Monitoring configuration
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    server:
+      persistentVolume:
+        enabled: true
+        size: 50Gi
+  grafana:
+    enabled: true
+    adminPassword: "admin"
+    persistence:
+      enabled: true
+      size: 10Gi
+    service:
+      type: ClusterIP
+
+# Logging configuration
+logging:
+  enabled: true
+  elasticsearch:
+    enabled: false  # Set to true if you have Elasticsearch
+  fluentbit:
+    enabled: true
+
+# Security configuration
+security:
+  enabled: true
+  podSecurityPolicy:
+    enabled: true
+  networkPolicy:
+    enabled: true
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "risk-control-sa"
+
+# Autoscaling configuration
+autoscaling:
+  enabled: true
+  apiGateway:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  riskCalculation:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  realtimeMonitor:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 85
+
+# Persistence configuration
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 50Gi
+  storageClass: ""
+  annotations: {}
+
+# Node selector and tolerations
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Additional configurations
+extraEnvVars: []
+extraVolumes: []
+extraVolumeMounts: []
+extraConfigMaps: {}
+extraSecrets: {}
+
+# Custom labels and annotations
+commonLabels: {}
+commonAnnotations: {}

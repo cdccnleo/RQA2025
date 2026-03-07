@@ -1,0 +1,779 @@
+#!/usr/bin/env python3
+"""
+分布式缓存一致性管理器
+实现基于Raft协议的强一致性分布式缓存系统，确保在节点故障或数据更新时保持数据一致性
+"""
+
+import logging
+import time
+import threading
+import json
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+import sys
+
+# 添加项目根路径
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root / 'src'))
+
+logger = logging.getLogger(__name__)
+
+
+class ConsistencyLevel(Enum):
+    """一致性级别"""
+    EVENTUAL = "eventual"          # 最终一致性
+    STRONG = "strong"             # 强一致性
+    CAUSAL = "causal"             # 因果一致性
+    SESSION = "session"           # 会话一致性
+
+
+class NodeStatus(Enum):
+    """节点状态"""
+    LEADER = "leader"
+    FOLLOWER = "follower"
+    CANDIDATE = "candidate"
+    DOWN = "down"
+    RECOVERING = "recovering"
+
+
+class OperationType(Enum):
+    """操作类型"""
+    SET = "set"
+    GET = "get"
+    DELETE = "delete"
+    EXPIRE = "expire"
+    CLEAR = "clear"
+
+
+@dataclass
+class CacheEntry:
+    """缓存条目"""
+    key: str
+    value: Any
+    version: int
+    timestamp: float
+    ttl: Optional[float] = None
+    node_id: str = ""
+
+    def is_expired(self) -> bool:
+        """检查是否过期"""
+        if self.ttl is None:
+            return False
+        return time.time() > self.timestamp + self.ttl
+
+    def serialize(self) -> str:
+        """序列化"""
+        return json.dumps({
+            'key': self.key,
+            'value': self.value,
+            'version': self.version,
+            'timestamp': self.timestamp,
+            'ttl': self.ttl,
+            'node_id': self.node_id
+        })
+
+    @classmethod
+    def deserialize(cls, data: str) -> 'CacheEntry':
+        """反序列化"""
+        obj = json.loads(data)
+        return cls(**obj)
+
+
+@dataclass
+class LogEntry:
+    """日志条目"""
+    term: int
+    index: int
+    operation: OperationType
+    key: str
+    value: Any = None
+    ttl: Optional[float] = None
+    timestamp: float = 0.0
+    node_id: str = ""
+
+    def __post_init__(self):
+        if self.timestamp == 0.0:
+            self.timestamp = time.time()
+
+
+@dataclass
+class NodeInfo:
+    """节点信息"""
+    node_id: str
+    host: str
+    port: int
+    status: NodeStatus = NodeStatus.FOLLOWER
+    last_heartbeat: float = 0.0
+    match_index: int = 0
+    next_index: int = 0
+
+    def __post_init__(self):
+        if self.last_heartbeat == 0.0:
+            self.last_heartbeat = time.time()
+
+
+class ConsistencyManager:
+    """一致性管理器 - 基于Raft协议实现"""
+
+    def __init__(self, node_id: str, nodes: List[NodeInfo],
+                 consistency_level: ConsistencyLevel = ConsistencyLevel.STRONG):
+        self.node_id = node_id
+        self.nodes = {node.node_id: node for node in nodes}
+        self.consistency_level = consistency_level
+
+        # Raft状态
+        self.current_term = 0
+        self.voted_for: Optional[str] = None
+        self.log: List[LogEntry] = []
+        self.commit_index = 0
+        self.last_applied = 0
+
+        # 领导者状态
+        self.status = NodeStatus.FOLLOWER
+        self.leader_id: Optional[str] = None
+        self.next_index: Dict[str, int] = {}
+        self.match_index: Dict[str, int] = {}
+
+        # 定时器
+        self.election_timeout = 5.0  # 选举超时时间
+        self.heartbeat_interval = 1.0  # 心跳间隔
+        self.last_heartbeat = time.time()
+
+        # 线程和锁
+        self._lock = threading.RLock()
+        self._running = False
+        self._election_thread: Optional[threading.Thread] = None
+        self._heartbeat_thread: Optional[threading.Thread] = None
+
+        # 一致性配置
+        self.replication_factor = min(3, len(nodes))  # 复制因子
+        self.write_quorum = (self.replication_factor // 2) + 1  # 写仲裁
+        self.read_quorum = 1 if consistency_level == ConsistencyLevel.EVENTUAL else self.write_quorum
+
+        logger.info(f"一致性管理器初始化: {node_id}, 复制因子: {self.replication_factor}")
+
+    def start(self):
+        """启动一致性管理器"""
+        if self._running:
+            return
+
+        self._running = True
+
+        # 启动选举线程
+        self._election_thread = threading.Thread(target=self._election_worker, daemon=True)
+        self._election_thread.start()
+
+        # 启动心跳线程
+        self._heartbeat_thread = threading.Thread(target=self._heartbeat_worker, daemon=True)
+        self._heartbeat_thread.start()
+
+        logger.info(f"一致性管理器已启动: {self.node_id}")
+
+    def stop(self):
+        """停止一致性管理器"""
+        self._running = False
+
+        if self._election_thread:
+            self._election_thread.join(timeout=5)
+
+        if self._heartbeat_thread:
+            self._heartbeat_thread.join(timeout=5)
+
+        logger.info(f"一致性管理器已停止: {self.node_id}")
+
+    def replicate_operation(self, operation: OperationType, key: str,
+                            value: Any = None, ttl: Optional[float] = None) -> bool:
+        """复制操作到其他节点"""
+        if not self.is_leader():
+            logger.warning(f"节点 {self.node_id} 不是领导者，无法复制操作")
+            return False
+
+        try:
+            with self._lock:
+                # 创建日志条目
+                log_entry = LogEntry(
+                    term=self.current_term,
+                    index=len(self.log),
+                    operation=operation,
+                    key=key,
+                    value=value,
+                    ttl=ttl,
+                    node_id=self.node_id
+                )
+
+                # 添加到本地日志
+                self.log.append(log_entry)
+
+                # 如果只有一个节点，直接应用
+                if len(self.nodes) == 1:
+                    self.last_applied = log_entry.index
+                    self.commit_index = log_entry.index
+                    return True
+
+                # 复制到follower节点
+                success_count = 1  # 自己算一个
+
+                for node_id, node in self.nodes.items():
+                    if node_id == self.node_id:
+                        continue
+
+                    if self._replicate_to_node(node, log_entry):
+                        success_count += 1
+
+                # 检查是否达到仲裁
+                if success_count >= self.write_quorum:
+                    self.commit_index = log_entry.index
+                    self._apply_log_entries()
+                    return True
+                else:
+                    # 如果没有达到仲裁，回滚日志
+                    self.log.pop()
+                    logger.warning(f"操作复制失败，未达到写仲裁: {success_count}/{self.write_quorum}")
+                    return False
+
+        except Exception as e:
+            logger.error(f"复制操作失败: {e}")
+            return False
+
+    def read_with_consistency(self, key: str) -> Optional[Any]:
+        """根据一致性级别读取数据"""
+        if self.consistency_level == ConsistencyLevel.EVENTUAL:
+            return self._read_local(key)
+        elif self.consistency_level == ConsistencyLevel.STRONG:
+            return self._read_with_strong_consistency(key)
+        elif self.consistency_level == ConsistencyLevel.CAUSAL:
+            return self._read_with_causal_consistency(key)
+        elif self.consistency_level == ConsistencyLevel.SESSION:
+            return self._read_with_session_consistency(key)
+        else:
+            return self._read_local(key)
+
+    def _read_local(self, key: str) -> Optional[Any]:
+        """本地读取"""
+        # 这里应该从实际的缓存存储中读取
+        # 简化实现，从日志中查找最新值
+        with self._lock:
+            for entry in reversed(self.log):
+                if entry.key == key and entry.index <= self.last_applied:
+                    if entry.operation == OperationType.SET:
+                        return entry.value
+                    elif entry.operation == OperationType.DELETE:
+                        return None
+            return None
+
+    def _read_with_strong_consistency(self, key: str) -> Optional[Any]:
+        """强一致性读取"""
+        if not self.is_leader():
+            # 如果不是领导者，需要从领导者读取
+            if self.leader_id:
+                return self._read_from_leader(key)
+            return None
+
+        # 作为领导者，需要确认自己仍然是领导者
+        if self._confirm_leadership():
+            return self._read_local(key)
+        return None
+
+    def _read_with_causal_consistency(self, key: str) -> Optional[Any]:
+        """因果一致性读取"""
+        # 简化实现：检查本地日志是否包含所有因果相关的操作
+        return self._read_local(key)
+
+    def _read_with_session_consistency(self, key: str) -> Optional[Any]:
+        """会话一致性读取"""
+        # 简化实现：在会话中保证读到自己写入的数据
+        return self._read_local(key)
+
+    def _replicate_to_node(self, node: NodeInfo, log_entry: LogEntry) -> bool:
+        """复制日志条目到指定节点"""
+        try:
+            # 这里应该实现网络通信
+            # 简化实现：假设复制成功
+            time.sleep(0.01)  # 模拟网络延迟
+
+            # 更新节点的匹配索引
+            self.match_index[node.node_id] = log_entry.index
+            self.next_index[node.node_id] = log_entry.index + 1
+
+            return True
+
+        except Exception as e:
+            logger.error(f"复制到节点 {node.node_id} 失败: {e}")
+            return False
+
+    def _apply_log_entries(self):
+        """应用已提交的日志条目"""
+        with self._lock:
+            while self.last_applied < self.commit_index:
+                self.last_applied += 1
+                if self.last_applied < len(self.log):
+                    entry = self.log[self.last_applied]
+                    self._apply_entry(entry)
+
+    def _apply_entry(self, entry: LogEntry):
+        """应用单个日志条目"""
+        try:
+            if entry.operation == OperationType.SET:
+                # 这里应该更新实际的缓存
+                logger.debug(f"应用SET操作: {entry.key} = {entry.value}")
+            elif entry.operation == OperationType.DELETE:
+                # 这里应该删除缓存项
+                logger.debug(f"应用DELETE操作: {entry.key}")
+            elif entry.operation == OperationType.CLEAR:
+                # 这里应该清空缓存
+                logger.debug("应用CLEAR操作")
+
+        except Exception as e:
+            logger.error(f"应用日志条目失败: {e}")
+
+    def _election_worker(self):
+        """选举工作线程"""
+        while self._running:
+            try:
+                if self.status == NodeStatus.FOLLOWER:
+                    # 检查是否需要开始选举
+                    if time.time() - self.last_heartbeat > self.election_timeout:
+                        self._start_election()
+                elif self.status == NodeStatus.CANDIDATE:
+                    # 继续选举过程
+                    self._continue_election()
+
+                time.sleep(0.1)
+
+            except Exception as e:
+                logger.error(f"选举工作线程异常: {e}")
+                time.sleep(1)
+
+    def _heartbeat_worker(self):
+        """心跳工作线程"""
+        while self._running:
+            try:
+                if self.status == NodeStatus.LEADER:
+                    self._send_heartbeats()
+
+                time.sleep(self.heartbeat_interval)
+
+            except Exception as e:
+                logger.error(f"心跳工作线程异常: {e}")
+                time.sleep(1)
+
+    def _start_election(self):
+        """开始选举"""
+        with self._lock:
+            self.status = NodeStatus.CANDIDATE
+            self.current_term += 1
+            self.voted_for = self.node_id
+            self.last_heartbeat = time.time()
+
+            logger.info(f"节点 {self.node_id} 开始选举，任期: {self.current_term}")
+
+            # 给自己投票
+            votes = 1
+
+            # 向其他节点请求投票
+            for node_id, node in self.nodes.items():
+                if node_id == self.node_id:
+                    continue
+
+                if self._request_vote(node):
+                    votes += 1
+
+            # 检查是否获得多数票
+            required_votes = (len(self.nodes) // 2) + 1
+            if votes >= required_votes:
+                self._become_leader()
+            else:
+                self.status = NodeStatus.FOLLOWER
+                self.voted_for = None
+
+    def _continue_election(self):
+        """继续选举过程"""
+        # 检查选举超时
+        if time.time() - self.last_heartbeat > self.election_timeout:
+            self._start_election()
+
+    def _request_vote(self, node: NodeInfo) -> bool:
+        """请求投票"""
+        try:
+            # 这里应该实现网络通信
+            # 简化实现：随机决定是否获得投票
+            import secrets
+            return secrets.random() > 0.3
+
+        except Exception as e:
+            logger.error(f"向节点 {node.node_id} 请求投票失败: {e}")
+            return False
+
+    def _become_leader(self):
+        """成为领导者"""
+        with self._lock:
+            self.status = NodeStatus.LEADER
+            self.leader_id = self.node_id
+
+            # 初始化leader状态
+            for node_id in self.nodes:
+                if node_id != self.node_id:
+                    self.next_index[node_id] = len(self.log)
+                    self.match_index[node_id] = 0
+
+            logger.info(f"节点 {self.node_id} 成为领导者，任期: {self.current_term}")
+
+    def _send_heartbeats(self):
+        """发送心跳"""
+        for node_id, node in self.nodes.items():
+            if node_id == self.node_id:
+                continue
+
+            try:
+                self._send_heartbeat_to_node(node)
+            except Exception as e:
+                logger.error(f"向节点 {node_id} 发送心跳失败: {e}")
+
+    def _send_heartbeat_to_node(self, node: NodeInfo):
+        """向指定节点发送心跳"""
+        # 这里应该实现网络通信
+        # 简化实现：更新节点心跳时间
+        node.last_heartbeat = time.time()
+
+    def _confirm_leadership(self) -> bool:
+        """确认领导者身份"""
+        if not self.is_leader():
+            return False
+
+        # 向majority节点发送心跳确认
+        active_nodes = 1  # 自己
+
+        for node_id, node in self.nodes.items():
+            if node_id == self.node_id:
+                continue
+
+            if time.time() - node.last_heartbeat < self.heartbeat_interval * 2:
+                active_nodes += 1
+
+        required_nodes = (len(self.nodes) // 2) + 1
+        return active_nodes >= required_nodes
+
+    def _read_from_leader(self, key: str) -> Optional[Any]:
+        """从领导者读取数据"""
+        # 这里应该实现网络通信到领导者
+        # 简化实现：返回None
+        return None
+
+    def is_leader(self) -> bool:
+        """检查是否为领导者"""
+        return self.status == NodeStatus.LEADER
+
+    def get_leader_id(self) -> Optional[str]:
+        """获取当前领导者ID"""
+        return self.leader_id
+
+    def get_status(self) -> NodeStatus:
+        """获取节点状态"""
+        return self.status
+
+    def get_metrics(self) -> Dict[str, Any]:
+        """获取指标信息"""
+        with self._lock:
+            return {
+                'node_id': self.node_id,
+                'status': self.status.value,
+                'term': self.current_term,
+                'log_length': len(self.log),
+                'commit_index': self.commit_index,
+                'last_applied': self.last_applied,
+                'leader_id': self.leader_id,
+                'consistency_level': self.consistency_level.value,
+                'replication_factor': self.replication_factor,
+                'write_quorum': self.write_quorum,
+                'read_quorum': self.read_quorum
+            }
+
+
+class DistributedCacheManager:
+    """分布式缓存管理器"""
+
+    def __init__(self, node_id: str, nodes: List[NodeInfo],
+                 consistency_level: ConsistencyLevel = ConsistencyLevel.STRONG):
+        self.node_id = node_id
+        self.consistency_manager = ConsistencyManager(node_id, nodes, consistency_level)
+
+        # 本地缓存
+        self._cache: Dict[str, CacheEntry] = {}
+        self._cache_lock = threading.RLock()
+
+        # 配置
+        self.max_cache_size = 10000
+        self.cleanup_interval = 300  # 5分钟清理一次过期数据
+
+        # 清理线程
+        self._cleanup_thread: Optional[threading.Thread] = None
+        self._running = False
+
+        logger.info(f"分布式缓存管理器初始化: {node_id}")
+
+    def start(self):
+        """启动缓存管理器"""
+        if self._running:
+            return
+
+        self._running = True
+        self.consistency_manager.start()
+
+        # 启动清理线程
+        self._cleanup_thread = threading.Thread(target=self._cleanup_worker, daemon=True)
+        self._cleanup_thread.start()
+
+        logger.info(f"分布式缓存管理器已启动: {self.node_id}")
+
+    def stop(self):
+        """停止缓存管理器"""
+        self._running = False
+        self.consistency_manager.stop()
+
+        if self._cleanup_thread:
+            self._cleanup_thread.join(timeout=5)
+
+        logger.info(f"分布式缓存管理器已停止: {self.node_id}")
+
+    def set(self, key: str, value: Any, ttl: Optional[float] = None) -> bool:
+        """设置缓存值"""
+        try:
+            # 通过一致性管理器复制操作
+            if self.consistency_manager.replicate_operation(
+                OperationType.SET, key, value, ttl
+            ):
+                # 更新本地缓存
+                self._set_local(key, value, ttl)
+                return True
+            else:
+                logger.warning(f"设置缓存失败，一致性复制失败: {key}")
+                return False
+
+        except Exception as e:
+            logger.error(f"设置缓存异常: {e}")
+            return False
+
+    def get(self, key: str) -> Optional[Any]:
+        """获取缓存值"""
+        try:
+            # 根据一致性级别读取
+            return self.consistency_manager.read_with_consistency(key)
+
+        except Exception as e:
+            logger.error(f"获取缓存异常: {e}")
+            return None
+
+    def delete(self, key: str) -> bool:
+        """删除缓存值"""
+        try:
+            # 通过一致性管理器复制操作
+            if self.consistency_manager.replicate_operation(
+                OperationType.DELETE, key
+            ):
+                # 删除本地缓存
+                self._delete_local(key)
+                return True
+            else:
+                logger.warning(f"删除缓存失败，一致性复制失败: {key}")
+                return False
+
+        except Exception as e:
+            logger.error(f"删除缓存异常: {e}")
+            return False
+
+    def clear(self) -> bool:
+        """清空缓存"""
+        try:
+            # 通过一致性管理器复制操作
+            if self.consistency_manager.replicate_operation(
+                OperationType.CLEAR, ""
+            ):
+                # 清空本地缓存
+                self._clear_local()
+                return True
+            else:
+                logger.warning("清空缓存失败，一致性复制失败")
+                return False
+
+        except Exception as e:
+            logger.error(f"清空缓存异常: {e}")
+            return False
+
+    def _set_local(self, key: str, value: Any, ttl: Optional[float] = None):
+        """设置本地缓存"""
+        with self._cache_lock:
+            version = 1
+            if key in self._cache:
+                version = self._cache[key].version + 1
+
+            entry = CacheEntry(
+                key=key,
+                value=value,
+                version=version,
+                timestamp=time.time(),
+                ttl=ttl,
+                node_id=self.node_id
+            )
+
+            self._cache[key] = entry
+
+            # 检查缓存大小限制
+            if len(self._cache) > self.max_cache_size:
+                self._evict_lru()
+
+    def _delete_local(self, key: str):
+        """删除本地缓存"""
+        with self._cache_lock:
+            if key in self._cache:
+                del self._cache[key]
+
+    def _clear_local(self):
+        """清空本地缓存"""
+        with self._cache_lock:
+            self._cache.clear()
+
+    def _evict_lru(self):
+        """LRU淘汰"""
+        with self._cache_lock:
+            if not self._cache:
+                return
+
+            # 找到最老的条目
+            oldest_key = min(self._cache.keys(),
+                             key=lambda k: self._cache[k].timestamp)
+            del self._cache[oldest_key]
+
+    def _cleanup_worker(self):
+        """清理工作线程"""
+        while self._running:
+            try:
+                self._cleanup_expired()
+                time.sleep(self.cleanup_interval)
+            except Exception as e:
+                logger.error(f"清理工作异常: {e}")
+                time.sleep(60)
+
+    def _cleanup_expired(self):
+        """清理过期条目"""
+        with self._cache_lock:
+            expired_keys = [
+                key for key, entry in self._cache.items()
+                if entry.is_expired()
+            ]
+
+            for key in expired_keys:
+                del self._cache[key]
+
+            if expired_keys:
+                logger.info(f"清理过期条目: {len(expired_keys)}")
+
+    def get_cache_statistics(self) -> Dict[str, Any]:
+        """获取缓存统计信息"""
+        with self._cache_lock:
+            total_entries = len(self._cache)
+            expired_entries = sum(
+                1 for entry in self._cache.values()
+                if entry.is_expired()
+            )
+
+            return {
+                'total_entries': total_entries,
+                'expired_entries': expired_entries,
+                'valid_entries': total_entries - expired_entries,
+                'max_cache_size': self.max_cache_size,
+                'cache_usage_ratio': total_entries / self.max_cache_size,
+                'consistency_metrics': self.consistency_manager.get_metrics()
+            }
+
+    def is_healthy(self) -> bool:
+        """检查缓存健康状态"""
+        try:
+            # 检查一致性管理器状态
+            metrics = self.consistency_manager.get_metrics()
+
+            # 如果是follower，检查是否能连接到leader
+            if metrics['status'] == NodeStatus.FOLLOWER.value:
+                return metrics['leader_id'] is not None
+
+            # 如果是leader，检查是否有足够的活跃节点
+            if metrics['status'] == NodeStatus.LEADER.value:
+                return self.consistency_manager._confirm_leadership()
+
+            return True
+
+        except Exception as e:
+            logger.error(f"健康检查失败: {e}")
+            return False
+
+
+# 工具函数
+def create_cache_cluster(node_configs: List[Dict[str, Any]],
+                         consistency_level: ConsistencyLevel = ConsistencyLevel.STRONG) -> List[DistributedCacheManager]:
+    """创建缓存集群"""
+    # 创建节点信息
+    nodes = []
+    for config in node_configs:
+        node = NodeInfo(
+            node_id=config['node_id'],
+            host=config['host'],
+            port=config['port']
+        )
+        nodes.append(node)
+
+    # 创建缓存管理器
+    cache_managers = []
+    for config in node_configs:
+        manager = DistributedCacheManager(
+            config['node_id'],
+            nodes,
+            consistency_level
+        )
+        cache_managers.append(manager)
+
+    return cache_managers
+
+
+if __name__ == "__main__":
+    # 示例用法
+    logging.basicConfig(level=logging.INFO)
+
+    # 创建3节点集群配置
+    node_configs = [
+        {'node_id': 'node1', 'host': 'localhost', 'port': 8001},
+        {'node_id': 'node2', 'host': 'localhost', 'port': 8002},
+        {'node_id': 'node3', 'host': 'localhost', 'port': 8003}
+    ]
+
+    # 创建缓存集群
+    cache_managers = create_cache_cluster(node_configs, ConsistencyLevel.STRONG)
+
+    # 启动集群
+    for manager in cache_managers:
+        manager.start()
+
+    # 测试缓存操作
+    leader_manager = None
+    for manager in cache_managers:
+        if manager.consistency_manager.is_leader():
+            leader_manager = manager
+            break
+
+    if leader_manager:
+        # 设置值
+        success = leader_manager.set("test_key", "test_value", ttl=60)
+        print(f"设置缓存: {success}")
+
+        # 获取值
+        value = leader_manager.get("test_key")
+        print(f"获取缓存: {value}")
+
+        # 获取统计信息
+        stats = leader_manager.get_cache_statistics()
+        print(f"缓存统计: {stats}")
+
+    # 停止集群
+    time.sleep(2)
+    for manager in cache_managers:
+        manager.stop()

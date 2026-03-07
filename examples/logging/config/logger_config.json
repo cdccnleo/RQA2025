@@ -1,0 +1,167 @@
+{
+  "version": "1.0",
+  "manager": {
+    "default_level": "INFO",
+    "default_format": "STRUCTURED",
+    "default_category": "GENERAL",
+    "log_directory": "logs",
+    "enable_async": true,
+    "async_queue_size": 1000,
+    "flush_interval": 1.0,
+    "error_handling": "ignore",
+    "enable_performance_monitoring": true,
+    "enable_statistics": true
+  },
+  "pool": {
+    "enabled": true,
+    "max_size": 100,
+    "initial_size": 10,
+    "idle_timeout": 300,
+    "cleanup_interval": 60,
+    "enable_lru": true,
+    "preload_loggers": ["api.service", "database.operations", "trading.engine"]
+  },
+  "handlers": {
+    "console": {
+      "handler_type": "console",
+      "level": "INFO",
+      "formatter": {
+        "format_type": "SIMPLE",
+        "date_format": "%Y-%m-%d %H:%M:%S",
+        "format_template": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+      }
+    },
+    "file": {
+      "handler_type": "file",
+      "level": "DEBUG",
+      "output_path": "logs/app.log",
+      "max_bytes": 10485760,
+      "backup_count": 5,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "STRUCTURED",
+        "include_fields": ["timestamp", "level", "logger_name", "message", "category"],
+        "custom_fields": {
+          "app_version": "1.0.0",
+          "environment": "production"
+        }
+      }
+    },
+    "business_file": {
+      "handler_type": "file",
+      "level": "INFO",
+      "output_path": "logs/business.log",
+      "max_bytes": 20971520,
+      "backup_count": 7,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "STRUCTURED",
+        "include_fields": ["timestamp", "level", "logger_name", "message", "category", "order_id", "amount"]
+      }
+    },
+    "audit_file": {
+      "handler_type": "file",
+      "level": "WARNING",
+      "output_path": "logs/audit.log",
+      "max_bytes": 52428800,
+      "backup_count": 15,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "JSON"
+      }
+    },
+    "trading_file": {
+      "handler_type": "file",
+      "level": "INFO",
+      "output_path": "logs/trading.log",
+      "max_bytes": 1073741824,
+      "backup_count": 30,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "STRUCTURED",
+        "include_fields": ["timestamp", "level", "logger_name", "message", "trade_id", "symbol", "price"]
+      }
+    },
+    "risk_file": {
+      "handler_type": "file",
+      "level": "WARNING",
+      "output_path": "logs/risk.log",
+      "max_bytes": 52428800,
+      "backup_count": 10,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "STRUCTURED",
+        "include_fields": ["timestamp", "level", "logger_name", "message", "risk_type", "threshold"]
+      }
+    },
+    "performance_file": {
+      "handler_type": "file",
+      "level": "INFO",
+      "output_path": "logs/performance.log",
+      "max_bytes": 20971520,
+      "backup_count": 7,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "STRUCTURED",
+        "include_fields": ["timestamp", "level", "logger_name", "message", "endpoint", "response_time"]
+      }
+    },
+    "database_file": {
+      "handler_type": "file",
+      "level": "INFO",
+      "output_path": "logs/database.log",
+      "max_bytes": 104857600,
+      "backup_count": 15,
+      "encoding": "utf-8",
+      "formatter": {
+        "format_type": "STRUCTURED",
+        "include_fields": ["timestamp", "level", "logger_name", "message", "operation", "table", "query_time"]
+      }
+    }
+  },
+  "loggers": {
+    "business": {
+      "level": "INFO",
+      "category": "BUSINESS",
+      "handlers": ["business_file"],
+      "log_directory": "logs/business"
+    },
+    "audit": {
+      "level": "WARNING",
+      "category": "AUDIT",
+      "handlers": ["audit_file"],
+      "log_directory": "logs/audit"
+    },
+    "trading": {
+      "level": "INFO",
+      "category": "TRADING",
+      "handlers": ["trading_file"],
+      "log_directory": "logs/trading"
+    },
+    "risk": {
+      "level": "WARNING",
+      "category": "RISK",
+      "handlers": ["risk_file"],
+      "log_directory": "logs/risk"
+    },
+    "performance": {
+      "level": "INFO",
+      "category": "PERFORMANCE",
+      "handlers": ["performance_file"],
+      "log_directory": "logs/performance"
+    },
+    "database": {
+      "level": "INFO",
+      "category": "DATABASE",
+      "handlers": ["database_file"],
+      "log_directory": "logs/database"
+    }
+  },
+  "global_config": {
+    "encoding": "utf-8",
+    "timezone": "UTC",
+    "max_log_age_days": 30,
+    "compression": "gzip",
+    "rotation_time": "midnight"
+  }
+}

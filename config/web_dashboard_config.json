@@ -1,0 +1,188 @@
+{
+  "dashboard": {
+    "title": "RQA2025 统一管理平台",
+    "version": "1.0.0",
+    "theme": "modern",
+    "refresh_interval": 30,
+    "max_connections": 100,
+    "enable_websocket": true,
+    "enable_real_time": true,
+    "host": "127.0.0.1",
+    "port": 8080,
+    "auto_port": true,
+    "force_kill": false,
+    "reload": false,
+    "workers": 1,
+    "log_level": "info",
+    "env": "development"
+  },
+  "modules": {
+    "config": {
+      "name": "config",
+      "display_name": "配置管理",
+      "description": "统一配置管理和热重载",
+      "icon": "fas fa-cog",
+      "route": "/config",
+      "enabled": true,
+      "permissions": ["read", "write"],
+      "refresh_interval": 10,
+      "enable_hot_reload": true,
+      "enable_encryption": true,
+      "config_dirs": ["config", "config_versions"],
+      "backup_enabled": true
+    },
+    "fpga_monitoring": {
+      "name": "fpga_monitoring",
+      "display_name": "FPGA监控",
+      "description": "FPGA性能监控和告警管理",
+      "icon": "fas fa-microchip",
+      "route": "/fpga",
+      "enabled": true,
+      "permissions": ["read"],
+      "refresh_interval": 5,
+      "alert_thresholds": {
+        "latency": 1.0,
+        "utilization": 90.0,
+        "temperature": 85.0,
+        "power": 200.0
+      },
+      "enable_alerts": true,
+      "enable_history": true,
+      "history_hours": 24
+    },
+    "resource_monitoring": {
+      "name": "resource_monitoring",
+      "display_name": "资源监控",
+      "description": "系统资源使用情况监控",
+      "icon": "fas fa-server",
+      "route": "/resources",
+      "enabled": true,
+      "permissions": ["read"],
+      "refresh_interval": 5,
+      "alert_thresholds": {
+        "cpu_usage": 90.0,
+        "memory_usage": 85.0,
+        "disk_usage": 90.0,
+        "gpu_memory_usage": 90.0,
+        "gpu_utilization": 95.0,
+        "gpu_temperature": 85.0
+      },
+      "enable_alerts": true,
+      "enable_history": true,
+      "history_hours": 24,
+      "monitor_gpu": true,
+      "monitor_network": true
+    },
+    "features_monitoring": {
+      "name": "features_monitoring",
+      "display_name": "特征监控",
+      "description": "特征工程性能和数据质量监控",
+      "icon": "fas fa-chart-line",
+      "route": "/features",
+      "enabled": true,
+      "permissions": ["read"],
+      "refresh_interval": 5,
+      "enable_real_time_monitoring": true,
+      "enable_data_quality_monitoring": true,
+      "enable_performance_monitoring": true,
+      "enable_config_monitoring": true,
+      "alert_thresholds": {
+        "feature_engineering_time": 1000.0,
+        "data_quality_score": 80.0,
+        "memory_usage": 85.0,
+        "cpu_usage": 90.0,
+        "error_rate": 5.0
+      },
+      "history_hours": 24,
+      "auto_refresh": true,
+      "output_dir": "./features_dashboard"
+    },
+    "system_overview": {
+      "name": "system_overview",
+      "display_name": "系统概览",
+      "description": "系统整体状态监控",
+      "icon": "fas fa-tachometer-alt",
+      "route": "/system",
+      "enabled": true,
+      "permissions": ["read"],
+      "refresh_interval": 10
+    },
+    "strategy_management": {
+      "name": "strategy_management",
+      "display_name": "策略管理",
+      "description": "量化策略配置和监控",
+      "icon": "fas fa-chart-bar",
+      "route": "/strategy",
+      "enabled": true,
+      "permissions": ["read", "write"],
+      "refresh_interval": 15
+    },
+    "data_management": {
+      "name": "data_management",
+      "display_name": "数据管理",
+      "description": "数据源和数据集管理",
+      "icon": "fas fa-database",
+      "route": "/data",
+      "enabled": true,
+      "permissions": ["read", "write"],
+      "refresh_interval": 20
+    },
+    "backtest_management": {
+      "name": "backtest_management",
+      "display_name": "回测管理",
+      "description": "回测配置和结果查看",
+      "icon": "fas fa-history",
+      "route": "/backtest",
+      "enabled": true,
+      "permissions": ["read", "write"],
+      "refresh_interval": 30
+    },
+    "monitoring_alerts": {
+      "name": "monitoring_alerts",
+      "display_name": "监控告警",
+      "description": "系统监控和告警管理",
+      "icon": "fas fa-bell",
+      "route": "/monitoring",
+      "enabled": true,
+      "permissions": ["read", "write"],
+      "refresh_interval": 5
+    },
+    "user_management": {
+      "name": "user_management",
+      "display_name": "用户管理",
+      "description": "用户权限和访问控制",
+      "icon": "fas fa-users",
+      "route": "/users",
+      "enabled": true,
+      "permissions": ["admin"],
+      "refresh_interval": 60
+    }
+  },
+  "security": {
+    "enable_auth": true,
+    "enable_ssl": false,
+    "session_timeout": 3600,
+    "max_login_attempts": 5,
+    "password_policy": {
+      "min_length": 8,
+      "require_uppercase": true,
+      "require_lowercase": true,
+      "require_numbers": true,
+      "require_special": true
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file": "logs/web_dashboard.log",
+    "max_size": "10MB",
+    "backup_count": 5
+  },
+  "performance": {
+    "enable_caching": true,
+    "cache_ttl": 300,
+    "enable_compression": true,
+    "max_request_size": "10MB",
+    "timeout": 30
+  }
+} 

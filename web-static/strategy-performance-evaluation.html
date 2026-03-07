@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>RQA2025 策略性能评估</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .performance-score {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .score-excellent { color: #10b981; }
+        .score-good { color: #3b82f6; }
+        .score-warning { color: #f59e0b; }
+        .score-poor { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">策略性能评估</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-chart-bar text-indigo-600 mr-3"></i>
+                策略性能评估
+            </h1>
+            <p class="text-gray-600">策略回测结果对比、性能指标分析和策略排名</p>
+        </div>
+
+        <!-- Strategy Comparison -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">策略对比</h3>
+                    <select id="comparisonFilter" onchange="filterStrategies()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option value="all">全部策略</option>
+                        <option value="active">活跃策略</option>
+                        <option value="top10">前10名</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">排名</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">策略名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">总收益率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">夏普比率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">最大回撤</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">年化收益</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">胜率</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategyComparisonBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">收益曲线对比</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="returnCurveChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">风险收益散点图</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="riskReturnChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">性能指标详情</h3>
+            </div>
+            <div class="p-6">
+                <div id="performanceMetrics" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- 将通过JavaScript填充 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Ranking -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">策略排名</h3>
+            </div>
+            <div class="p-6">
+                <canvas id="rankingChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let returnCurveChart, riskReturnChart, rankingChart;
+        let webSocket;
+        let reconnectInterval;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        function getWebSocketUrl() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const hostname = window.location.hostname;
+            // 使用当前页面的端口，如果没有则默认使用8000（开发环境）
+            const port = window.location.port || '8000';
+            return `${protocol}//${hostname}:${port}/ws`;
+        }
+
+        // WebSocket功能暂时禁用，使用HTTP轮询代替
+        // 后端没有 /ws 端点，只有 /ws/dashboard-metrics 等具体端点
+        function connectWebSocket() {
+            console.log('WebSocket功能已禁用，使用HTTP轮询获取数据');
+            // 启动HTTP轮询，每30秒刷新一次数据
+            startHttpPolling();
+        }
+        
+        let pollingInterval;
+        function startHttpPolling() {
+            // 立即加载一次数据
+            loadPerformanceData();
+            
+            // 每30秒刷新一次
+            pollingInterval = setInterval(() => {
+                console.log('HTTP轮询：刷新性能数据');
+                loadPerformanceData();
+            }, 30000);
+        }
+        
+        function stopHttpPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        }
+
+        function handleStrategyPerformanceUpdate(data) {
+            try {
+                const { comparison, metrics } = data;
+                
+                if (comparison && Array.isArray(comparison)) {
+                    renderStrategyComparison(comparison);
+                }
+                
+                if (metrics) {
+                    renderPerformanceMetrics(metrics);
+                    updateCharts(metrics);
+                }
+            } catch (error) {
+                console.error('处理策略性能数据更新失败:', error);
+            }
+        }
+
+        function disconnectWebSocket() {
+            // 停止HTTP轮询
+            stopHttpPolling();
+        }
+
+        // 缓存管理
+        const CACHE_KEYS = {
+            STRATEGIES: 'strategy_comparison_data',
+            METRICS: 'strategy_performance_metrics',
+            CACHE_DURATION: 5 * 60 * 1000 // 5分钟缓存
+        };
+
+        function getCache(key) {
+            try {
+                const cached = localStorage.getItem(key);
+                if (!cached) return null;
+                
+                const parsed = JSON.parse(cached);
+                const now = Date.now();
+                
+                if (now - parsed.timestamp > CACHE_KEYS.CACHE_DURATION) {
+                    localStorage.removeItem(key);
+                    return null;
+                }
+                
+                return parsed.data;
+            } catch (error) {
+                console.error('读取缓存失败:', error);
+                return null;
+            }
+        }
+
+        function setCache(key, data) {
+            try {
+                const cacheData = {
+                    data,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(key, JSON.stringify(cacheData));
+            } catch (error) {
+                console.error('写入缓存失败:', error);
+            }
+        }
+
+        function clearCache() {
+            Object.values(CACHE_KEYS).forEach(key => {
+                if (typeof key === 'string' && key !== 'CACHE_DURATION') {
+                    localStorage.removeItem(key);
+                }
+            });
+        }
+
+        async function loadPerformanceData() {
+            try {
+                // 尝试从缓存加载
+                const cachedStrategies = getCache(CACHE_KEYS.STRATEGIES);
+                const cachedMetrics = getCache(CACHE_KEYS.METRICS);
+                
+                if (cachedStrategies) {
+                    renderStrategyComparison(cachedStrategies.strategies || []);
+                }
+                
+                if (cachedMetrics) {
+                    renderPerformanceMetrics(cachedMetrics);
+                    updateCharts(cachedMetrics);
+                }
+                
+                // 首先加载策略列表
+                const strategiesRes = await fetch(getApiBaseUrl('/strategy/conceptions'));
+                if (!strategiesRes.ok) {
+                    console.error('加载策略列表失败');
+                    return;
+                }
+                
+                const strategiesData = await strategiesRes.json();
+                const strategies = strategiesData.conceptions || [];
+                
+                if (strategies.length === 0) {
+                    console.log('没有可用的策略');
+                    return;
+                }
+                
+                // 为每个策略加载性能数据
+                const strategiesWithPerformance = [];
+                for (const strategy of strategies) {
+                    try {
+                        // 调用 /performance/latest 获取最新性能数据（不是 /performance/metrics）
+                        const [latestRes, historyRes] = await Promise.all([
+                            fetch(getApiBaseUrl(`/strategy/${strategy.id}/performance/latest`)),
+                            fetch(getApiBaseUrl(`/strategy/${strategy.id}/performance/history`))
+                        ]);
+                        
+                        let performance = {};
+                        let history = [];
+                        
+                        if (latestRes.ok) {
+                            const latestData = await latestRes.json();
+                            // 性能数据在 metrics 字段中
+                            performance = latestData.metrics || {};
+                            console.log(`策略 ${strategy.id} 性能数据:`, performance);
+                        }
+                        
+                        if (historyRes.ok) {
+                            const historyData = await historyRes.json();
+                            history = historyData.history || [];
+                        }
+                        
+                        strategiesWithPerformance.push({
+                            ...strategy,
+                            performance: performance,
+                            history: history
+                        });
+                    } catch (e) {
+                        console.warn(`加载策略 ${strategy.id} 性能数据失败:`, e);
+                        strategiesWithPerformance.push({
+                            ...strategy,
+                            performance: {},
+                            history: []
+                        });
+                    }
+                }
+                
+                // 渲染策略对比
+                renderStrategyComparison(strategiesWithPerformance);
+                setCache(CACHE_KEYS.STRATEGIES, { strategies: strategiesWithPerformance });
+                
+                // 计算并渲染综合指标
+                const aggregatedMetrics = calculateAggregatedMetrics(strategiesWithPerformance);
+                renderPerformanceMetrics(aggregatedMetrics);
+                updateCharts(aggregatedMetrics);
+                setCache(CACHE_KEYS.METRICS, aggregatedMetrics);
+                
+            } catch (error) {
+                console.error('加载性能数据失败:', error);
+            }
+        }
+        
+        function calculateAggregatedMetrics(strategies) {
+            // 计算综合性能指标
+            const totalStrategies = strategies.length;
+            const activeStrategies = strategies.filter(s => s.performance && Object.keys(s.performance).length > 0).length;
+            
+            let totalReturn = 0;
+            let totalSharpe = 0;
+            let totalDrawdown = 0;
+            let totalAnnualReturn = 0;
+            let totalWinRate = 0;
+            let count = 0;
+            
+            strategies.forEach(s => {
+                // 从performance对象获取性能数据
+                const perf = s.performance || {};
+                if (perf.total_return !== undefined) {
+                    totalReturn += perf.total_return;
+                    count++;
+                }
+                if (perf.sharpe_ratio !== undefined) {
+                    totalSharpe += perf.sharpe_ratio;
+                }
+                if (perf.max_drawdown !== undefined) {
+                    totalDrawdown += perf.max_drawdown;
+                }
+                if (perf.annual_return !== undefined) {
+                    totalAnnualReturn += perf.annual_return;
+                }
+                if (perf.win_rate !== undefined) {
+                    totalWinRate += perf.win_rate;
+                }
+            });
+            
+            return {
+                total_strategies: totalStrategies,
+                active_strategies: activeStrategies,
+                avg_return: count > 0 ? totalReturn / count : 0,
+                avg_sharpe: count > 0 ? totalSharpe / count : 0,
+                avg_drawdown: count > 0 ? totalDrawdown / count : 0,
+                avg_annual_return: count > 0 ? totalAnnualReturn / count : 0,
+                avg_win_rate: count > 0 ? totalWinRate / count : 0,
+                strategies: strategies
+            };
+        }
+
+        function renderStrategyComparison(strategies) {
+            const tbody = document.getElementById('strategyComparisonBody');
+            const filter = document.getElementById('comparisonFilter').value;
+            
+            let filtered = strategies;
+            if (filter === 'active') {
+                filtered = strategies.filter(s => s.status === 'active');
+            } else if (filter === 'top10') {
+                filtered = strategies.slice(0, 10);
+            }
+
+            // 从performance对象获取性能数据
+            const getPerformanceValue = (strategy, field) => {
+                // 优先从performance对象读取
+                if (strategy.performance && strategy.performance[field] !== undefined) {
+                    return strategy.performance[field];
+                }
+                // 兼容直接从strategy读取（如果有）
+                if (strategy[field] !== undefined) {
+                    return strategy[field];
+                }
+                return 0;
+            };
+
+            // 按总收益率排序
+            filtered.sort((a, b) => getPerformanceValue(b, 'total_return') - getPerformanceValue(a, 'total_return'));
+
+            // 检查是否有性能数据
+            const hasPerformanceData = filtered.some(s => {
+                const perf = s.performance || {};
+                return Object.keys(perf).length > 0;
+            });
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无策略数据</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            if (!hasPerformanceData) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-chart-line text-2xl mb-2"></i>
+                            <div>暂无性能数据</div>
+                            <div class="text-sm mt-2">请先运行回测或优化以生成性能数据</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map((strategy, index) => {
+                const totalReturn = getPerformanceValue(strategy, 'total_return');
+                const sharpeRatio = getPerformanceValue(strategy, 'sharpe_ratio');
+                const maxDrawdown = getPerformanceValue(strategy, 'max_drawdown');
+                const annualReturn = getPerformanceValue(strategy, 'annual_return');
+                const winRate = getPerformanceValue(strategy, 'win_rate');
+                
+                const returnColor = totalReturn > 0 ? 'text-green-600' : 'text-red-600';
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #${index + 1}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${strategy.name || '--'}</div>
+                            <div class="text-sm text-gray-500">${strategy.type || '--'}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${returnColor}">
+                            ${(totalReturn * 100).toFixed(2)}%
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${sharpeRatio ? sharpeRatio.toFixed(2) : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${maxDrawdown ? (maxDrawdown * 100).toFixed(2) + '%' : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${annualReturn ? (annualReturn * 100).toFixed(2) + '%' : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${winRate ? (winRate * 100).toFixed(1) + '%' : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="viewStrategyDetails('${strategy.id || strategy.name}')" class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderPerformanceMetrics(data) {
+            const container = document.getElementById('performanceMetrics');
+            // 从data直接读取聚合指标（calculateAggregatedMetrics返回的格式）
+            const metricsList = [
+                { name: '平均夏普比率', value: data.avg_sharpe, format: (v) => v ? v.toFixed(2) : '--' },
+                { name: '平均最大回撤', value: data.avg_drawdown, format: (v) => v ? (v * 100).toFixed(2) + '%' : '--' },
+                { name: '平均年化收益', value: data.avg_annual_return, format: (v) => v ? (v * 100).toFixed(2) + '%' : '--' },
+                { name: '平均胜率', value: data.avg_win_rate, format: (v) => v ? (v * 100).toFixed(1) + '%' : '--' }
+            ];
+
+            container.innerHTML = metricsList.map(metric => `
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-2">${metric.name}</div>
+                    <div class="performance-score score-good">${metric.format(metric.value)}</div>
+                </div>
+            `).join('');
+        }
+
+        function optimizeDataForRendering(data, maxPoints = 1000) {
+            if (!Array.isArray(data) || data.length <= maxPoints) {
+                return data;
+            }
+            
+            const step = Math.ceil(data.length / maxPoints);
+            const optimized = [];
+            
+            for (let i = 0; i < data.length; i += step) {
+                optimized.push(data[i]);
+            }
+            
+            return optimized;
+        }
+
+        function updateCharts(data) {
+            const returnCurves = data.return_curves || [];
+            const riskReturn = data.risk_return || [];
+
+            if (returnCurveChart && returnCurves.length > 0) {
+                const datasets = returnCurves.map((curve, index) => ({
+                    label: curve.name || `策略 ${index + 1}`,
+                    data: optimizeDataForRendering(curve.values || []),
+                    borderColor: `hsl(${index * 60}, 70%, 50%)`,
+                    backgroundColor: `hsla(${index * 60}, 70%, 50%, 0.1)`,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    borderWidth: 2,
+                    spanGaps: false
+                }));
+
+                // 优化标签
+                const originalLabels = returnCurves[0].labels || [];
+                const optimizedLabels = optimizeDataForRendering(originalLabels);
+                
+                returnCurveChart.data.labels = optimizedLabels;
+                returnCurveChart.data.datasets = datasets;
+                returnCurveChart.update('none'); // 使用'none'模式减少渲染开销
+            }
+
+            if (riskReturnChart && riskReturn.length > 0) {
+                const optimizedRiskReturn = optimizeDataForRendering(riskReturn, 500);
+                
+                riskReturnChart.data.datasets[0].data = optimizedRiskReturn.map(r => ({
+                    x: r.risk || 0,
+                    y: r.return || 0
+                }));
+                riskReturnChart.data.datasets[0].pointRadius = 3;
+                riskReturnChart.data.datasets[0].pointHoverRadius = 6;
+                riskReturnChart.update('none');
+            }
+
+            const rankings = data.rankings || [];
+            if (rankingChart && rankings.length > 0) {
+                // 限制排名数量以提高性能
+                const optimizedRankings = rankings.slice(0, 20);
+                
+                rankingChart.data.labels = optimizedRankings.map(r => r.name || '--');
+                rankingChart.data.datasets[0].data = optimizedRankings.map(r => r.score || 0);
+                rankingChart.update('none');
+            }
+        }
+
+        function filterStrategies() {
+            loadPerformanceData();
+        }
+
+        async function viewStrategyDetails(strategyId) {
+            try {
+                // 从多个API获取策略详情和性能数据
+                const [conceptionRes, metricsRes, latestRes] = await Promise.all([
+                    fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`)),
+                    fetch(getApiBaseUrl(`/strategy/${strategyId}/performance/metrics`)),
+                    fetch(getApiBaseUrl(`/strategy/${strategyId}/performance/latest`))
+                ]);
+                
+                let conception = {};
+                let metrics = {};
+                let latest = {};
+                
+                if (conceptionRes.ok) {
+                    conception = await conceptionRes.json();
+                }
+                
+                if (metricsRes.ok) {
+                    metrics = await metricsRes.json();
+                }
+                
+                if (latestRes.ok) {
+                    latest = await latestRes.json();
+                }
+                
+                // 合并数据
+                const strategy = {
+                    ...conception,
+                    ...metrics,
+                    ...latest
+                };
+                
+                // 显示策略详情
+                const details = `
+策略名称: ${strategy.name || strategyId}
+策略类型: ${strategy.type || '未知'}
+策略描述: ${strategy.description || '无'}
+版本: v${strategy.version || 1}
+状态: ${strategy.status === 'active' ? '活跃' : '非活跃'}
+
+性能指标:
+总收益率: ${((strategy.total_return || 0) * 100).toFixed(2)}%
+年化收益率: ${((strategy.annual_return || 0) * 100).toFixed(2)}%
+夏普比率: ${(strategy.sharpe_ratio || 0).toFixed(2)}
+最大回撤: ${((strategy.max_drawdown || 0) * 100).toFixed(2)}%
+胜率: ${((strategy.win_rate || 0) * 100).toFixed(1)}%
+                `.trim();
+                
+                alert(details);
+            } catch (error) {
+                console.error('获取策略详情失败:', error);
+                alert(`获取策略详情失败: ${error.message}`);
+            }
+        }
+
+        function refreshData() {
+            clearCache();
+            loadPerformanceData();
+        }
+
+        function initCharts() {
+            // 全局Chart.js配置优化
+            Chart.defaults.responsive = true;
+            Chart.defaults.maintainAspectRatio = true;
+            Chart.defaults.animation.duration = 0; // 禁用动画以提高性能
+            Chart.defaults.animation.easing = 'linear';
+            Chart.defaults.animation.loop = false;
+            
+            // 优化字体渲染
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.font.size = 12;
+
+            const returnCtx = document.getElementById('returnCurveChart').getContext('2d');
+            returnCurveChart = new Chart(returnCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 6,
+                                boxHeight: 6
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return (value * 100).toFixed(1) + '%';
+                                },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 10
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                autoSkip: true,
+                                maxTicksLimit: 10
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    elements: {
+                        line: {
+                            tension: 0.4
+                        }
+                    }
+                }
+            });
+
+            const riskReturnCtx = document.getElementById('riskReturnChart').getContext('2d');
+            riskReturnChart = new Chart(riskReturnCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '风险收益',
+                        data: [],
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: false,
+                    interaction: {
+                        mode: 'point',
+                        intersect: true,
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return [
+                                        `风险: ${(point.x * 100).toFixed(2)}%`,
+                                        `收益: ${(point.y * 100).toFixed(2)}%`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: '风险' },
+                            ticks: {
+                                callback: function(value) {
+                                    return (value * 100).toFixed(1) + '%';
+                                },
+                                maxTicksLimit: 10
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        y: {
+                            title: { display: true, text: '收益' },
+                            ticks: {
+                                callback: function(value) {
+                                    return (value * 100).toFixed(1) + '%';
+                                },
+                                maxTicksLimit: 10
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const rankingCtx = document.getElementById('rankingChart').getContext('2d');
+            rankingChart = new Chart(rankingCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '综合得分',
+                        data: [],
+                        backgroundColor: 'rgba(139, 92, 246, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: false,
+                    indexAxis: 'y',
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return `得分: ${context.raw.toFixed(2)}`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                maxTicksLimit: 10
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                maxTicksLimit: 20,
+                                autoSkip: true
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadPerformanceData();
+            connectWebSocket();
+        });
+
+        // 页面卸载时断开WebSocket连接
+        window.addEventListener('beforeunload', function() {
+            disconnectWebSocket();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,50 @@
+{
+  "backup_recovery_mechanism": {
+    "setup_time": "2025-08-26T15:14:52.345760",
+    "backup_strategy": {
+      "database_backup": {
+        "type": "incremental",
+        "frequency": "每6小时",
+        "retention": "30天",
+        "compression": "gzip",
+        "encryption": "AES-256"
+      },
+      "file_backup": {
+        "type": "full",
+        "frequency": "每日",
+        "retention": "90天",
+        "compression": "lz4",
+        "encryption": "AES-256"
+      },
+      "configuration_backup": {
+        "type": "versioned",
+        "frequency": "实时",
+        "retention": "1年",
+        "repository": "Git"
+      }
+    },
+    "recovery_procedures": {
+      "rto_target": "< 4小时",
+      "rpo_target": "< 1小时",
+      "automation_level": "90%",
+      "testing_frequency": "每月"
+    },
+    "disaster_recovery": {
+      "offsite_storage": "阿里云OSS",
+      "multi_region": true,
+      "automated_failover": true,
+      "recovery_time_objective": "< 2小时"
+    },
+    "backup_metrics": {
+      "success_rate": "99.9%",
+      "backup_window": "< 2小时",
+      "data_integrity": "100%",
+      "recovery_success_rate": "95%"
+    },
+    "compliance_status": {
+      "data_protection_regulation": "符合",
+      "financial_regulation": "符合",
+      "audit_requirements": "符合"
+    }
+  }
+}

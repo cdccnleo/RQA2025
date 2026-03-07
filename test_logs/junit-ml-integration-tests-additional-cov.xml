@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="2" skipped="0" tests="3" time="89.336" timestamp="2025-11-17T03:59:38.872115+08:00" hostname="AIPC"><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_csv_data_source_method" time="0.797"><failure message="TypeError: StubPipeline() takes no arguments">tests\unit\ml\deep_learning\test_integration_tests_extended.py:395: in test_csv_data_source_method
+    test_case.test_csv_data_source()
+src\ml\deep_learning\core\integration_tests.py:101: in test_csv_data_source
+    pipeline = DataPipeline({})
+E   TypeError: StubPipeline() takes no arguments</failure><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_model_registration_method" time="0.036"><failure message="AttributeError: 'StubServiceWithVersions' object has no attribute 'stop_service'">tests\unit\ml\deep_learning\test_integration_tests_extended.py:443: in test_model_registration_method
+    test_case.tearDown()
+src\ml\deep_learning\core\integration_tests.py:137: in tearDown
+    self.service.stop_service()
+E   AttributeError: 'StubServiceWithVersions' object has no attribute 'stop_service'</failure><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:170 ✅ 模型注册测试通过
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:✅ 模型注册测试通过
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_feature_engineering_skip" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

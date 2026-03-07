@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RQA2025运维监控设置报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .metric { background: #e9ecef; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .artifacts { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .artifact { background: #ffffff; padding: 10px; margin: 5px 0; border-radius: 3px; border-left: 4px solid #007bff; }
+        .guide { background: #d4edda; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .schedule { background: #e9ecef; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RQA2025运维监控设置报告</h1>
+        <p>生成时间: 2025-12-04T12:13:23.444513</p>
+        <p>基于就绪评估: test_logs\production_readiness_assessment_20251204_115846.json</p>
+    </div>
+
+    <div class="metric">
+        <h2>监控覆盖概览</h2>
+        <p><strong>监控指标:</strong> 15 个</p>
+        <p><strong>告警规则:</strong> 33 个</p>
+        <p><strong>仪表板:</strong> 4 个</p>
+        <p><strong>覆盖率:</strong> 100.0%</p>
+    </div>
+
+    <h2>关键指标</h2>
+    <div class="metric">
+        <h3>系统指标 (4 个)</h3>
+        <ul>
+<li>cpu_usage_percent</li><li>memory_usage_percent</li><li>disk_usage_percent</li><li>network_connections</li><li>application_memory_usage</li><li>redis_memory_usage</li>
+        </ul>
+
+        <h3>应用指标</h3>
+        <ul>
+<li>application_response_time</li><li>application_requests_per_second</li><li>application_error_rate</li><li>application_memory_usage</li><li>database_connections_active</li><li>redis_memory_usage</li>
+        </ul>
+
+        <h3>业务指标</h3>
+        <ul>
+<li>trading_volume_per_minute</li><li>market_data_latency</li><li>portfolio_value_change</li><li>risk_exposure_level</li>
+        </ul>
+    </div>
+
+    <h2>生成产物</h2>
+    <div class="artifacts">
+
+        <div class="artifact">
+            <h4>metrics.json (configuration)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\configs\metrics.json</p>
+            <p><strong>描述:</strong> 监控指标配置</p>
+        </div>
+
+        <div class="artifact">
+            <h4>alert_rules.json (configuration)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\alerts\alert_rules.json</p>
+            <p><strong>描述:</strong> 告警规则配置</p>
+        </div>
+
+        <div class="artifact">
+            <h4>system_overview.json (dashboard)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\dashboards\system_overview.json</p>
+            <p><strong>描述:</strong> 系统整体状态监控仪表板</p>
+        </div>
+
+        <div class="artifact">
+            <h4>application_performance.json (dashboard)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\dashboards\application_performance.json</p>
+            <p><strong>描述:</strong> 应用性能监控仪表板</p>
+        </div>
+
+        <div class="artifact">
+            <h4>business_monitoring.json (dashboard)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\dashboards\business_monitoring.json</p>
+            <p><strong>描述:</strong> 业务指标监控仪表板</p>
+        </div>
+
+        <div class="artifact">
+            <h4>alerts_overview.json (dashboard)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\dashboards\alerts_overview.json</p>
+            <p><strong>描述:</strong> 告警状态总览仪表板</p>
+        </div>
+
+        <div class="artifact">
+            <h4>log_aggregation.json (configuration)</h4>
+            <p><strong>路径:</strong> C:\PythonProject\RQA2025\monitoring\configs\log_aggregation.json</p>
+            <p><strong>描述:</strong> 日志聚合配置</p>
+        </div>
+
+        <div class="artifact">
+            <h4>health_check.sh (script)</h4>
+            <p><strong>路径:</strong> monitoring/scripts/health_check.sh</p>
+            <p><strong>描述:</strong> 运维脚本: health_check.sh</p>
+        </div>
+
+        <div class="artifact">
+            <h4>performance_monitor.sh (script)</h4>
+            <p><strong>路径:</strong> monitoring/scripts/performance_monitor.sh</p>
+            <p><strong>描述:</strong> 运维脚本: performance_monitor.sh</p>
+        </div>
+
+        <div class="artifact">
+            <h4>alert_handler.sh (script)</h4>
+            <p><strong>路径:</strong> monitoring/scripts/alert_handler.sh</p>
+            <p><strong>描述:</strong> 运维脚本: alert_handler.sh</p>
+        </div>
+
+        <div class="artifact">
+            <h4>monitoring_infrastructure.json (configuration)</h4>
+            <p><strong>路径:</strong> monitoring/configs/monitoring_infrastructure.json</p>
+            <p><strong>描述:</strong> 监控基础设施配置</p>
+        </div>
+
+    </div>
+
+    <h2>实施指南</h2>
+    <div class="guide">
+<p>1. 基础设施部署</p><p>   - 安装Prometheus监控栈</p><p>   - 配置Grafana仪表板</p><p>   - 设置Alertmanager告警管理</p><p>   - 部署日志聚合系统</p><p>2. 配置部署</p><p>   - 应用监控指标配置</p><p>   - 导入告警规则</p><p>   - 设置仪表板</p><p>   - 配置日志收集</p><p>3. 验证测试</p><p>   - 执行健康检查脚本</p><p>   - 验证指标收集</p><p>   - 测试告警触发</p><p>   - 检查仪表板显示</p><p>4. 运维培训</p><p>   - 监控指标解读培训</p><p>   - 告警处理流程培训</p><p>   - 故障排查指南培训</p><p>   - 应急响应演练</p>
+    </div>
+
+    <h2>维护计划</h2>
+    <div class="schedule">
+<h3>Daily</h3><ul><li>检查监控系统状态</li><li>审查活跃告警</li><li>验证关键指标正常性</li><li>检查日志收集状态</li></ul><h3>Weekly</h3><ul><li>分析监控指标趋势</li><li>审查告警模式</li><li>检查仪表板配置</li><li>验证备份策略</li></ul><h3>Monthly</h3><ul><li>全面监控系统审计</li><li>告警规则优化</li><li>容量规划评估</li><li>运维文档更新</li></ul><h3>Quarterly</h3><ul><li>监控架构评估</li><li>技术栈升级规划</li><li>灾难恢复演练</li><li>合规性审查</li></ul>
+    </div>
+</body>
+</html>

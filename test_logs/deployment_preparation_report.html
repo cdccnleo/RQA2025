@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RQA2025部署准备报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .status { background: #dc3545; color: white; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; font-size: 24px; }
+        .metric { background: #e9ecef; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .artifacts { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .artifact { background: #ffffff; padding: 10px; margin: 5px 0; border-radius: 3px; border-left: 4px solid #007bff; }
+        .steps { background: #d4edda; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .step { background: #ffffff; padding: 8px; margin: 3px 0; border-radius: 3px; }
+        .risk { background: #f8d7da; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RQA2025部署准备报告</h1>
+        <p>生成时间: 2025-12-04T12:05:49.234240</p>
+        <p>基于就绪评估: test_logs\production_readiness_assessment_20251204_115846.json</p>
+    </div>
+
+    <div class="status">
+        <strong>部署状态: 暂不建议部署</strong>
+    </div>
+
+    <div class="metric">
+        <h2>评估概览</h2>
+        <p><strong>就绪评分:</strong> 66.3/100</p>
+        <p><strong>风险等级:</strong> medium</p>
+        <p><strong>预计部署时间:</strong> 3-5天</p>
+    </div>
+
+    <h2>部署产物</h2>
+    <div class="artifacts">
+
+        <div class="artifact">
+            <h4>config_development.json (config)</h4>
+            <p><strong>路径:</strong> deployment/templates/config_development.json</p>
+            <p><strong>描述:</strong> Development环境配置文件模板</p>
+            <p><strong>适用环境:</strong> development</p>
+        </div>
+
+        <div class="artifact">
+            <h4>config_production.json (config)</h4>
+            <p><strong>路径:</strong> deployment/templates/config_production.json</p>
+            <p><strong>描述:</strong> Production环境配置文件模板</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>pre_deploy_check.sh (script)</h4>
+            <p><strong>路径:</strong> deployment/scripts/pre_deploy_check.sh</p>
+            <p><strong>描述:</strong> 部署前环境检查脚本</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>deploy.sh (script)</h4>
+            <p><strong>路径:</strong> deployment/scripts/deploy.sh</p>
+            <p><strong>描述:</strong> 自动化部署脚本</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>rollback.sh (script)</h4>
+            <p><strong>路径:</strong> deployment/scripts/rollback.sh</p>
+            <p><strong>描述:</strong> 部署回滚脚本</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>deployment_guide.md (documentation)</h4>
+            <p><strong>路径:</strong> deployment/docs/deployment_guide.md</p>
+            <p><strong>描述:</strong> 完整部署指南文档</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>operations_manual.md (documentation)</h4>
+            <p><strong>路径:</strong> deployment/docs/operations_manual.md</p>
+            <p><strong>描述:</strong> 日常运维操作手册</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>troubleshooting_guide.md (documentation)</h4>
+            <p><strong>路径:</strong> deployment/docs/troubleshooting_guide.md</p>
+            <p><strong>描述:</strong> 故障排除指南</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>rollback_plan.json (documentation)</h4>
+            <p><strong>路径:</strong> deployment/docs/rollback_plan.json</p>
+            <p><strong>描述:</strong> 详细的回滚计划文档</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>validation_checklist.json (documentation)</h4>
+            <p><strong>路径:</strong> deployment/docs/validation_checklist.json</p>
+            <p><strong>描述:</strong> 部署验证检查清单</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+        <div class="artifact">
+            <h4>validate_deployment.sh (script)</h4>
+            <p><strong>路径:</strong> deployment/scripts/validate_deployment.sh</p>
+            <p><strong>描述:</strong> 自动化部署验证脚本</p>
+            <p><strong>适用环境:</strong> production</p>
+        </div>
+
+    </div>
+
+    <h2>下一步行动</h2>
+    <div class="steps">
+
+        <div class="step">🔧 解决生产就绪评估中发现的问题</div>
+
+        <div class="step">📈 提升系统评分至80+ (当前: 66.3)</div>
+
+        <div class="step">🎯 重点解决性能和安全问题</div>
+
+        <div class="step">🔄 重新运行就绪评估</div>
+
+        <div class="step">📋 完善部署文档和脚本</div>
+
+        <div class="step">📞 组织部署评审会议</div>
+
+        <div class="step">👥 确认部署团队和时间表</div>
+
+        <div class="step">🛡️ 制定上线应急预案</div>
+
+        <div class="step">📊 建立部署后监控指标</div>
+
+    </div>
+
+    <h2>风险评估</h2>
+    <div class="risk">
+        <h3>风险因素</h3>
+<p>• 系统存在可改进之处</p><p>• 部署需要额外监控</p>
+        <h3>缓解策略</h3>
+<p>• 在维护窗口执行部署</p><p>• 准备备用方案</p><p>• 增加部署后监控时间</p>
+        <h3>应急预案</h3>
+<p>• 立即回滚到上一版本</p><p>• 切换到备用系统</p><p>• 通知业务方和客户</p><p>• 启动应急响应团队</p>
+    </div>
+</body>
+</html>

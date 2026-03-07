@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 AI策略优化器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .ai-engine-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .ai-engine-card:hover {
+            background-color: #f3f4f6;
+        }
+        .ai-engine-card.active {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">AI策略优化器</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-brain text-purple-600 mr-3"></i>
+                AI策略优化器
+            </h1>
+            <p class="text-gray-600">基于机器学习和强化学习的智能策略优化</p>
+        </div>
+
+        <!-- AI Engine Selection -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">AI引擎选择</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="ai-engine-card border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectEngine('automl')">
+                        <i class="fas fa-robot text-3xl text-blue-500 mb-3"></i>
+                        <div class="font-semibold text-gray-900">AutoML引擎</div>
+                        <div class="text-xs text-gray-500 mt-1">自动机器学习</div>
+                    </div>
+                    <div class="ai-engine-card border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectEngine('rl')">
+                        <i class="fas fa-gamepad text-3xl text-green-500 mb-3"></i>
+                        <div class="font-semibold text-gray-900">强化学习</div>
+                        <div class="text-xs text-gray-500 mt-1">Reinforcement Learning</div>
+                    </div>
+                    <div class="ai-engine-card border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectEngine('cognitive')">
+                        <i class="fas fa-lightbulb text-3xl text-yellow-500 mb-3"></i>
+                        <div class="font-semibold text-gray-900">认知引擎</div>
+                        <div class="text-xs text-gray-500 mt-1">Cognitive Engine</div>
+                    </div>
+                    <div class="ai-engine-card border-2 border-gray-200 rounded-lg p-4 text-center" onclick="selectEngine('quantum')">
+                        <i class="fas fa-atom text-3xl text-purple-500 mb-3"></i>
+                        <div class="font-semibold text-gray-900">量子引擎</div>
+                        <div class="text-xs text-gray-500 mt-1">Quantum Engine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Selection -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">策略配置</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选择策略</label>
+                        <select id="strategySelect" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="">请选择策略...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">优化目标</label>
+                        <select id="optimizationTarget" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="sharpe_ratio">夏普比率</option>
+                            <option value="total_return">总收益</option>
+                            <option value="risk_adjusted">风险调整收益</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Progress -->
+        <div class="bg-white rounded-lg shadow mb-8" id="trainingProgress" style="display: none;">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">训练进度</h3>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>训练进度</span>
+                        <span id="trainingPercent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div id="trainingBar" class="bg-purple-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <div class="text-sm text-gray-600">当前轮次</div>
+                        <div class="text-xl font-semibold" id="currentEpoch">0</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600">最佳得分</div>
+                        <div class="text-xl font-semibold text-green-600" id="bestScore">--</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600">探索率</div>
+                        <div class="text-xl font-semibold" id="explorationRate">--</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600">预计剩余时间</div>
+                        <div class="text-xl font-semibold" id="estimatedTime">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">训练损失</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="lossChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">奖励曲线</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="rewardChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Results -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">优化结果</h3>
+            </div>
+            <div class="p-6">
+                <div id="optimizationResults" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-sm text-gray-600 mb-2">优化后夏普比率</div>
+                        <div class="text-3xl font-bold text-green-600" id="optimizedSharpe">--</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-600 mb-2">优化后总收益</div>
+                        <div class="text-3xl font-bold text-blue-600" id="optimizedReturn">--</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-600 mb-2">最大回撤</div>
+                        <div class="text-3xl font-bold text-red-600" id="optimizedDrawdown">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-4">
+            <button onclick="startOptimization()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                <i class="fas fa-play mr-2"></i>开始优化
+            </button>
+            <button onclick="stopOptimization()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition duration-300" style="display: none;" id="stopBtn">
+                <i class="fas fa-stop mr-2"></i>停止优化
+            </button>
+            <button onclick="exportModel()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-300">
+                <i class="fas fa-download mr-2"></i>导出模型
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let lossChart, rewardChart;
+        let selectedEngine = null;
+        let isTraining = false;
+        let trainingInterval = null;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        function selectEngine(engine) {
+            selectedEngine = engine;
+            document.querySelectorAll('.ai-engine-card').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        async function loadStrategies() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/conceptions'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const strategies = await response.json();
+                const select = document.getElementById('strategySelect');
+                select.innerHTML = '<option value="">请选择策略...</option>' +
+                    strategies.map(s => `<option value="${s.id}">${s.name || s.id}</option>`).join('');
+            } catch (error) {
+                console.error('加载策略列表失败:', error);
+            }
+        }
+
+        async function startOptimization() {
+            const strategyId = document.getElementById('strategySelect').value;
+            if (!strategyId) {
+                alert('请先选择策略');
+                return;
+            }
+
+            if (!selectedEngine) {
+                alert('请选择AI引擎');
+                return;
+            }
+
+            const target = document.getElementById('optimizationTarget').value;
+
+            try {
+                isTraining = true;
+                document.getElementById('trainingProgress').style.display = 'block';
+                document.getElementById('stopBtn').style.display = 'inline-block';
+
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/start'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        strategy_id: strategyId,
+                        engine: selectedEngine,
+                        target: target
+                    })
+                });
+
+                if (response.ok) {
+                    trainingInterval = setInterval(checkTrainingProgress, 2000);
+                } else {
+                    alert('启动优化失败');
+                    isTraining = false;
+                }
+            } catch (error) {
+                console.error('启动优化失败:', error);
+                alert('启动优化失败: ' + error.message);
+                isTraining = false;
+            }
+        }
+
+        async function checkTrainingProgress() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/progress'));
+                if (!response.ok) return;
+                
+                const progress = await response.json();
+                updateTrainingProgress(progress);
+
+                if (progress.status === 'completed' || progress.status === 'stopped') {
+                    clearInterval(trainingInterval);
+                    isTraining = false;
+                    document.getElementById('stopBtn').style.display = 'none';
+                    await loadOptimizationResults();
+                }
+            } catch (error) {
+                console.error('检查训练进度失败:', error);
+            }
+        }
+
+        function updateTrainingProgress(progress) {
+            const percent = progress.progress || 0;
+            document.getElementById('trainingBar').style.width = percent + '%';
+            document.getElementById('trainingPercent').textContent = percent.toFixed(1) + '%';
+            document.getElementById('currentEpoch').textContent = progress.current_epoch || 0;
+            document.getElementById('bestScore').textContent = progress.best_score ? progress.best_score.toFixed(4) : '--';
+            document.getElementById('explorationRate').textContent = progress.exploration_rate ? (progress.exploration_rate * 100).toFixed(1) + '%' : '--';
+            document.getElementById('estimatedTime').textContent = progress.estimated_time || '--';
+
+            if (progress.loss_history) {
+                updateLossChart(progress.loss_history);
+            }
+            if (progress.reward_history) {
+                updateRewardChart(progress.reward_history);
+            }
+        }
+
+        function updateLossChart(history) {
+            if (!lossChart) return;
+            
+            lossChart.data.labels = history.map((_, i) => i + 1);
+            lossChart.data.datasets[0].data = history;
+            lossChart.update();
+        }
+
+        function updateRewardChart(history) {
+            if (!rewardChart) return;
+            
+            rewardChart.data.labels = history.map((_, i) => i + 1);
+            rewardChart.data.datasets[0].data = history;
+            rewardChart.update();
+        }
+
+        async function loadOptimizationResults() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/results'));
+                if (!response.ok) return;
+                
+                const results = await response.json();
+                document.getElementById('optimizedSharpe').textContent = 
+                    results.sharpe_ratio ? results.sharpe_ratio.toFixed(4) : '--';
+                document.getElementById('optimizedReturn').textContent = 
+                    results.total_return ? (results.total_return * 100).toFixed(2) + '%' : '--';
+                document.getElementById('optimizedDrawdown').textContent = 
+                    results.max_drawdown ? (results.max_drawdown * 100).toFixed(2) + '%' : '--';
+            } catch (error) {
+                console.error('加载优化结果失败:', error);
+            }
+        }
+
+        async function stopOptimization() {
+            try {
+                const response = await fetch(getApiBaseUrl('/strategy/ai-optimization/stop'), {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    clearInterval(trainingInterval);
+                    isTraining = false;
+                    document.getElementById('stopBtn').style.display = 'none';
+                    await loadOptimizationResults();
+                }
+            } catch (error) {
+                console.error('停止优化失败:', error);
+            }
+        }
+
+        function exportModel() {
+            alert('导出模型功能开发中');
+        }
+
+        function refreshData() {
+            loadStrategies();
+            if (isTraining) {
+                checkTrainingProgress();
+            } else {
+                loadOptimizationResults();
+            }
+        }
+
+        function initCharts() {
+            const lossCtx = document.getElementById('lossChart').getContext('2d');
+            lossChart = new Chart(lossCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '损失值',
+                        data: [],
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const rewardCtx = document.getElementById('rewardChart').getContext('2d');
+            rewardChart = new Chart(rewardCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '奖励值',
+                        data: [],
+                        borderColor: 'rgb(139, 92, 246)',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadStrategies();
+            loadOptimizationResults();
+        });
+    </script>
+</body>
+</html>
+

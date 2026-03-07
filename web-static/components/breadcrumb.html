@@ -1,0 +1,92 @@
+<!-- 面包屑导航组件 -->
+<nav class="flex mb-4" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                <i class="fas fa-home mr-2"></i>
+                首页
+            </a>
+        </li>
+        <li id="breadcrumb-items">
+            <!-- 动态生成的面包屑项 -->
+        </li>
+    </ol>
+</nav>
+
+<script>
+    // 面包屑导航配置
+    const breadcrumbConfig = {
+        'strategy-management': {
+            name: '策略管理',
+            parent: '/',
+            icon: 'fa-chess-knight'
+        },
+        'strategy-conception': {
+            name: '策略构思',
+            parent: '/strategy-management',
+            icon: 'fa-lightbulb'
+        },
+        'strategy-backtest': {
+            name: '策略回测',
+            parent: '/strategy-management',
+            icon: 'fa-chart-line'
+        },
+        'strategy-optimizer': {
+            name: '策略优化',
+            parent: '/strategy-management',
+            icon: 'fa-sliders-h'
+        },
+        'strategy-workflow': {
+            name: '策略工作流',
+            parent: '/strategy-management',
+            icon: 'fa-magic'
+        }
+    };
+
+    // 初始化面包屑导航
+    function initBreadcrumb() {
+        const currentPath = window.location.pathname;
+        const pageName = currentPath.split('/').pop() || 'index';
+        const config = breadcrumbConfig[pageName];
+
+        if (!config) return;
+
+        const breadcrumbItems = document.getElementById('breadcrumb-items');
+        if (!breadcrumbItems) return;
+
+        let html = '';
+
+        // 添加父级导航
+        if (config.parent && config.parent !== '/') {
+            const parentPage = config.parent.split('/').pop();
+            const parentConfig = breadcrumbConfig[parentPage];
+            if (parentConfig) {
+                html += `
+                    <li class="inline-flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <a href="${config.parent}" class="text-sm font-medium text-gray-700 hover:text-blue-600">
+                            <i class="fas ${parentConfig.icon} mr-1"></i>
+                            ${parentConfig.name}
+                        </a>
+                    </li>
+                `;
+            }
+        }
+
+        // 添加当前页面
+        html += `
+            <li class="inline-flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                <span class="text-sm font-medium text-gray-500">
+                    <i class="fas ${config.icon} mr-1"></i>
+                    ${config.name}
+                </span>
+            </li>
+        `;
+
+        breadcrumbItems.innerHTML = html;
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', initBreadcrumb);
+</script>

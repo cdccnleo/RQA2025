@@ -1,0 +1,59 @@
+{
+  "rfecv_optimization": {
+    "description": "RFECV性能优化配置，避免死锁和超时问题",
+    "dataset_scaling": {
+      "small": {
+        "samples": 100,
+        "features": 15,
+        "min_features": 3,
+        "cv_folds": 2,
+        "max_features": 12,
+        "timeout_seconds": 30
+      },
+      "medium": {
+        "samples": 300,
+        "features": 20,
+        "min_features": 5,
+        "cv_folds": 2,
+        "max_features": 15,
+        "timeout_seconds": 60
+      },
+      "large": {
+        "samples": 500,
+        "features": 30,
+        "min_features": 8,
+        "cv_folds": 2,
+        "max_features": 20,
+        "timeout_seconds": 180
+      }
+    },
+    "algorithm_parameters": {
+      "estimator": {
+        "type": "RandomForestRegressor",
+        "n_estimators": 50,
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "random_state": 42
+      },
+      "rfecv": {
+        "step": 1,
+        "min_features_to_select": 3,
+        "cv": 2,
+        "scoring": "neg_mean_squared_error",
+        "n_jobs": 1
+      }
+    },
+    "performance_limits": {
+      "max_execution_time": 300,
+      "max_memory_usage_mb": 500,
+      "max_iterations": 1000
+    },
+    "debug_settings": {
+      "verbose": true,
+      "log_progress": true,
+      "check_deadlock": true,
+      "progress_interval_seconds": 10
+    }
+  }
+}

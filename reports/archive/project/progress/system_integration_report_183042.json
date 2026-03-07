@@ -1,0 +1,102 @@
+{
+  "timestamp": 1753592080.79248,
+  "config": {
+    "enable_cache_optimization": true,
+    "enable_monitoring_alert": true,
+    "enable_parameter_optimization": true,
+    "integration_mode": "production",
+    "auto_restart_enabled": true,
+    "backup_enabled": true
+  },
+  "integration_status": {
+    "backup": {
+      "config/risk_control_config.yaml": "backup\\integration\\risk_control_config.yaml.backup",
+      "config/deployment_config.json": "backup\\integration\\deployment_config.json.backup"
+    },
+    "cache_optimization": {
+      "status": "success",
+      "original_config": {
+        "max_size": 2000,
+        "ttl_seconds": 7200,
+        "cleanup_interval": 600,
+        "enable_persistence": true,
+        "compression_enabled": true,
+        "memory_limit_mb": 200
+      },
+      "optimized_config": {
+        "max_size": 2000,
+        "ttl_seconds": 3600,
+        "cleanup_interval": 600,
+        "enable_persistence": true,
+        "compression_enabled": true,
+        "memory_limit_mb": 200
+      },
+      "usage_patterns": {
+        "hit_rate": 0.75,
+        "avg_request_rate": 1500,
+        "memory_usage": 65
+      }
+    },
+    "monitoring_alert": {
+      "status": "success",
+      "config": {
+        "cpu_threshold": 75.0,
+        "memory_threshold": 80.0,
+        "disk_threshold": 85.0,
+        "response_time_threshold": 800.0,
+        "error_rate_threshold": 3.0,
+        "alert_cooldown": 600,
+        "email_enabled": true,
+        "webhook_enabled": true
+      },
+      "system_status": {
+        "running": true,
+        "notification_history": []
+      }
+    },
+    "parameter_optimization": {
+      "status": "error",
+      "error": "No module named 'scripts.optimization.parameter_optimization'"
+    },
+    "config_update": {
+      "status": "success",
+      "config_file": "config\\main_config.yaml",
+      "config": {
+        "optimization": {
+          "cache_enabled": true,
+          "monitoring_enabled": true,
+          "parameter_optimization_enabled": true,
+          "integration_mode": "production",
+          "auto_restart": true
+        }
+      }
+    }
+  },
+  "validation_results": {
+    "backup": {
+      "status": "success",
+      "message": "备份完成"
+    },
+    "cache_optimization": {
+      "status": "success",
+      "message": "缓存优化集成成功"
+    },
+    "monitoring_alert": {
+      "status": "success",
+      "message": "监控告警集成成功"
+    },
+    "parameter_optimization": {
+      "status": "error",
+      "message": "参数优化集成失败: No module named 'scripts.optimization.parameter_optimization'"
+    },
+    "config_update": {
+      "status": "success",
+      "message": "配置更新成功"
+    },
+    "overall": {
+      "status": "partial",
+      "success_rate": "4/5",
+      "message": "集成完成，成功率: 4/5"
+    }
+  }
+}

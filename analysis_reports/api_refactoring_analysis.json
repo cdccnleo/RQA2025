@@ -1,0 +1,293 @@
+{
+  "APITestCaseGenerator": {
+    "file_path": "src\\infrastructure\\api\\api_test_case_generator.py",
+    "line_count": 694,
+    "method_count": 11,
+    "responsibilities": [
+      "模板管理",
+      "统计分析",
+      "测试生成",
+      "导出功能"
+    ],
+    "suggested_splits": [
+      {
+        "responsibility": "模板管理",
+        "suggested_class_name": "TestTemplateManager",
+        "methods": [
+          "_load_templates"
+        ],
+        "estimated_lines": 81,
+        "priority": "medium"
+      },
+      {
+        "responsibility": "测试生成",
+        "suggested_class_name": "TestCaseBuilder",
+        "methods": [
+          "create_data_service_test_suite",
+          "create_feature_service_test_suite",
+          "create_trading_service_test_suite",
+          "create_monitoring_service_test_suite",
+          "generate_complete_test_suite"
+        ],
+        "estimated_lines": 493,
+        "priority": "high"
+      },
+      {
+        "responsibility": "导出功能",
+        "suggested_class_name": "TestSuiteExporter",
+        "methods": [
+          "export_test_cases",
+          "_export_json",
+          "_export_yaml"
+        ],
+        "estimated_lines": 75,
+        "priority": "medium"
+      },
+      {
+        "responsibility": "统计分析",
+        "suggested_class_name": "TestStatisticsCollector",
+        "methods": [
+          "get_test_statistics"
+        ],
+        "estimated_lines": 28,
+        "priority": "medium"
+      }
+    ],
+    "long_methods": [
+      {
+        "name": "_load_templates",
+        "lines": 81
+      },
+      {
+        "name": "create_data_service_test_suite",
+        "lines": 205
+      },
+      {
+        "name": "create_feature_service_test_suite",
+        "lines": 93
+      },
+      {
+        "name": "create_trading_service_test_suite",
+        "lines": 97
+      },
+      {
+        "name": "create_monitoring_service_test_suite",
+        "lines": 76
+      },
+      {
+        "name": "_export_json",
+        "lines": 54
+      }
+    ],
+    "complex_methods": []
+  },
+  "RQAApiDocumentationGenerator": {
+    "file_path": "src\\infrastructure\\api\\openapi_generator.py",
+    "line_count": 553,
+    "method_count": 8,
+    "responsibilities": [
+      "交易服务测试",
+      "数据服务测试",
+      "监控服务测试",
+      "特征服务测试"
+    ],
+    "suggested_splits": [
+      {
+        "responsibility": "数据服务测试",
+        "suggested_class_name": "DataServiceTestGenerator",
+        "methods": [
+          "_add_data_service_endpoints",
+          "_add_feature_service_endpoints",
+          "_add_trading_service_endpoints",
+          "_add_monitoring_service_endpoints"
+        ],
+        "estimated_lines": 230,
+        "priority": "high"
+      },
+      {
+        "responsibility": "特征服务测试",
+        "suggested_class_name": "FeatureServiceTestGenerator",
+        "methods": [
+          "_add_feature_service_endpoints"
+        ],
+        "estimated_lines": 58,
+        "priority": "medium"
+      },
+      {
+        "responsibility": "交易服务测试",
+        "suggested_class_name": "TradingServiceTestGenerator",
+        "methods": [
+          "_add_trading_service_endpoints"
+        ],
+        "estimated_lines": 59,
+        "priority": "medium"
+      },
+      {
+        "responsibility": "监控服务测试",
+        "suggested_class_name": "MonitoringServiceTestGenerator",
+        "methods": [
+          "_add_monitoring_service_endpoints"
+        ],
+        "estimated_lines": 40,
+        "priority": "medium"
+      }
+    ],
+    "long_methods": [
+      {
+        "name": "_add_data_service_endpoints",
+        "lines": 73
+      },
+      {
+        "name": "_add_feature_service_endpoints",
+        "lines": 58
+      },
+      {
+        "name": "_add_trading_service_endpoints",
+        "lines": 59
+      },
+      {
+        "name": "_add_common_schemas",
+        "lines": 251
+      }
+    ],
+    "complex_methods": []
+  },
+  "APIFlowDiagramGenerator": {
+    "file_path": "src\\infrastructure\\api\\api_flow_diagram_generator.py",
+    "line_count": 543,
+    "method_count": 9,
+    "responsibilities": [
+      "导出功能",
+      "交易服务测试",
+      "统计分析",
+      "数据服务测试",
+      "特征服务测试"
+    ],
+    "suggested_splits": [
+      {
+        "responsibility": "数据服务测试",
+        "suggested_class_name": "DataServiceTestGenerator",
+        "methods": [
+          "create_data_service_flow"
+        ],
+        "estimated_lines": 133,
+        "priority": "high"
+      },
+      {
+        "responsibility": "交易服务测试",
+        "suggested_class_name": "TradingServiceTestGenerator",
+        "methods": [
+          "create_trading_flow"
+        ],
+        "estimated_lines": 122,
+        "priority": "high"
+      },
+      {
+        "responsibility": "特征服务测试",
+        "suggested_class_name": "FeatureServiceTestGenerator",
+        "methods": [
+          "create_feature_engineering_flow"
+        ],
+        "estimated_lines": 121,
+        "priority": "high"
+      },
+      {
+        "responsibility": "导出功能",
+        "suggested_class_name": "TestSuiteExporter",
+        "methods": [
+          "export_to_mermaid",
+          "export_to_json"
+        ],
+        "estimated_lines": 62,
+        "priority": "medium"
+      },
+      {
+        "responsibility": "统计分析",
+        "suggested_class_name": "TestStatisticsCollector",
+        "methods": [
+          "get_flow_statistics"
+        ],
+        "estimated_lines": 37,
+        "priority": "medium"
+      }
+    ],
+    "long_methods": [
+      {
+        "name": "create_data_service_flow",
+        "lines": 133
+      },
+      {
+        "name": "create_trading_flow",
+        "lines": 122
+      },
+      {
+        "name": "create_feature_engineering_flow",
+        "lines": 121
+      }
+    ],
+    "complex_methods": [
+      {
+        "name": "_generate_mermaid",
+        "complexity": 14
+      }
+    ]
+  },
+  "APIDocumentationEnhancer": {
+    "file_path": "src\\infrastructure\\api\\api_documentation_enhancer.py",
+    "line_count": 485,
+    "method_count": 13,
+    "responsibilities": [],
+    "suggested_splits": [],
+    "long_methods": [
+      {
+        "name": "_create_common_responses",
+        "lines": 132
+      },
+      {
+        "name": "_create_error_codes",
+        "lines": 58
+      },
+      {
+        "name": "generate_enhanced_documentation",
+        "lines": 66
+      }
+    ],
+    "complex_methods": [
+      {
+        "name": "_generate_example_value",
+        "complexity": 14
+      },
+      {
+        "name": "_standardize_responses",
+        "complexity": 15
+      }
+    ]
+  },
+  "APIDocumentationSearch": {
+    "file_path": "src\\infrastructure\\api\\api_documentation_search.py",
+    "line_count": 367,
+    "method_count": 26,
+    "responsibilities": [
+      "统计分析"
+    ],
+    "suggested_splits": [
+      {
+        "responsibility": "统计分析",
+        "suggested_class_name": "TestStatisticsCollector",
+        "methods": [
+          "_calculate_relevance_score",
+          "_calculate_endpoint_score",
+          "_calculate_field_score",
+          "_calculate_parameters_score",
+          "_calculate_responses_score",
+          "_calculate_text_score",
+          "get_search_statistics"
+        ],
+        "estimated_lines": 83,
+        "priority": "medium"
+      }
+    ],
+    "long_methods": [],
+    "complex_methods": []
+  }
+}

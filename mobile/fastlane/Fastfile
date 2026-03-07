@@ -1,0 +1,83 @@
+# RQA 2.0 Fastlane 配置
+# 自动化构建、测试和发布流程
+
+default_platform(:ios)
+
+platform :ios do
+  desc "构建和发布 iOS 应用"
+  lane :build_and_release do
+    # 安装依赖
+    cocoapods
+
+    # 构建应用
+    build_ios_app(
+      scheme: "RQA",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "RQA-2.0.ipa"
+    )
+
+    # 上传到 TestFlight
+    upload_to_testflight(
+      api_key_path: "./fastlane/api_key.json",
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "构建开发版本"
+  lane :build_development do
+    cocoapods
+
+    build_ios_app(
+      scheme: "RQA",
+      configuration: "Debug",
+      export_method: "development",
+      output_directory: "./build",
+      output_name: "RQA-Dev.ipa"
+    )
+  end
+
+  desc "运行测试"
+  lane :test do
+    run_tests(
+      scheme: "RQA",
+      devices: ["iPhone 14"],
+      output_directory: "./test_output"
+    )
+  end
+end
+
+platform :android do
+  desc "构建和发布 Android 应用"
+  lane :build_and_release do
+    # 构建 APK
+    gradle(
+      task: "clean assembleRelease",
+      project_dir: "./android"
+    )
+
+    # 构建 AAB (推荐用于 Google Play)
+    gradle(
+      task: "bundleRelease",
+      project_dir: "./android"
+    )
+
+    # 上传到 Google Play
+    upload_to_play_store(
+      track: "internal",
+      aab: "./android/app/build/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  desc "构建开发版本"
+  lane :build_development do
+    gradle(
+      task: "assembleDebug",
+      project_dir: "./android"
+    )
+  end
+end
+
+
+
+

@@ -1,0 +1,251 @@
+# AI测试优化器配置文件
+
+# 模型配置
+model:
+  # 模型类型: random_forest, linear_regression, logistic_regression, gradient_boosting
+  type: "random_forest"
+  
+  # 随机森林参数
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    min_samples_split: 2
+    min_samples_leaf: 1
+    random_state: 42
+    
+  # 线性回归参数
+  linear_regression:
+    fit_intercept: true
+    normalize: false
+    
+  # 逻辑回归参数
+  logistic_regression:
+    C: 1.0
+    max_iter: 1000
+    random_state: 42
+
+# 特征工程配置
+feature_engineering:
+  # 最大特征数量
+  max_features: 50
+  
+  # 特征类型权重
+  feature_weights:
+    priority: 0.3
+    complexity: 0.2
+    execution_count: 0.15
+    success_rate: 0.15
+    time_stability: 0.1
+    dependencies: 0.1
+    
+  # 分类特征编码
+  categorical_encoding:
+    method: "one_hot"  # one_hot, label, hash
+    max_categories: 10
+
+# 优化策略配置
+optimization:
+  # 选择策略: risk_based, time_based, hybrid, adaptive
+  default_strategy: "hybrid"
+  
+  # 风险基础选择权重
+  risk_based:
+    failure_probability: 0.5
+    priority: 0.3
+    complexity: 0.2
+    
+  # 时间基础选择权重
+  time_based:
+    efficiency: 0.7
+    confidence: 0.3
+    
+  # 混合策略配置
+  hybrid:
+    risk_ratio: 0.5
+    time_ratio: 0.5
+    
+  # 自适应策略配置
+  adaptive:
+    time_constraint_threshold: 0.8
+    quality_focus_threshold: 0.7
+
+# 资源优化配置
+resource_optimization:
+  # 资源配置文件
+  profiles:
+    light:
+      cpu: 0.1
+      memory: 0.1
+      disk: 0.1
+    medium:
+      cpu: 0.3
+      memory: 0.3
+      disk: 0.3
+    heavy:
+      cpu: 0.6
+      memory: 0.6
+      disk: 0.6
+      
+  # 资源调整策略
+  adjustment:
+    cpu_factor: 0.8
+    memory_factor: 0.8
+    disk_factor: 0.8
+    min_resource: 0.1
+
+# 模型训练配置
+training:
+  # 自动重新训练
+  auto_retrain: true
+  
+  # 重新训练阈值
+  retrain_threshold: 100
+  
+  # 最小训练数据量
+  min_training_data:
+    execution_time: 10
+    failure_prediction: 20
+    
+  # 交叉验证
+  cross_validation:
+    enabled: true
+    folds: 5
+    
+  # 模型评估指标
+  metrics:
+    execution_time: ["rmse", "mae", "r2"]
+    failure_prediction: ["accuracy", "precision", "recall", "f1"]
+
+# 缓存配置
+caching:
+  # 预测缓存大小
+  prediction_cache_size: 1000
+  
+  # 缓存清理策略
+  cleanup:
+    threshold: 0.8
+    keep_ratio: 0.5
+    
+  # 缓存过期时间 (秒)
+  expiration: 3600
+
+# 持久化配置
+persistence:
+  # 模型持久化
+  model_persistence: true
+  
+  # 模型保存路径
+  model_path: "models/ai_optimizer/"
+  
+  # 自动保存
+  auto_save: true
+  save_interval: 3600  # 秒
+  
+  # 备份配置
+  backup:
+    enabled: true
+    max_backups: 5
+    backup_interval: 86400  # 24小时
+
+# 后台任务配置
+background:
+  # 优化检查间隔 (秒)
+  optimization_check_interval: 300
+  
+  # 模型性能检查间隔 (秒)
+  performance_check_interval: 1800
+  
+  # 缓存清理间隔 (秒)
+  cache_cleanup_interval: 600
+  
+  # 统计信息更新间隔 (秒)
+  stats_update_interval: 60
+
+# 日志配置
+logging:
+  # 日志级别: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+  
+  # 日志文件
+  file: "logs/ai_optimizer.log"
+  
+  # 日志格式
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # 日志轮转
+  rotation:
+    max_size: "10MB"
+    max_files: 5
+
+# 性能配置
+performance:
+  # 线程池大小
+  thread_pool_size: 4
+  
+  # 批处理大小
+  batch_size: 100
+  
+  # 内存限制 (MB)
+  memory_limit: 512
+  
+  # 超时设置 (秒)
+  timeouts:
+    prediction: 5.0
+    training: 300.0
+    optimization: 60.0
+
+# 监控配置
+monitoring:
+  # 性能指标收集
+  metrics_collection: true
+  
+  # 模型性能监控
+  model_monitoring: true
+  
+  # 资源使用监控
+  resource_monitoring: true
+  
+  # 告警配置
+  alerts:
+    enabled: true
+    prediction_accuracy_threshold: 0.7
+    training_time_threshold: 600
+    memory_usage_threshold: 0.8
+
+# 集成配置
+integration:
+  # 与现有测试框架集成
+  test_framework:
+    pytest: true
+    unittest: true
+    nose: false
+    
+  # 与CI/CD系统集成
+  ci_cd:
+    jenkins: true
+    gitlab_ci: true
+    github_actions: true
+    azure_devops: true
+    
+  # 与监控系统集成
+  monitoring_system:
+    prometheus: true
+    grafana: true
+    elasticsearch: false
+
+# 安全配置
+security:
+  # 模型访问控制
+  access_control:
+    enabled: true
+    allowed_users: ["admin", "tester", "developer"]
+    
+  # 数据加密
+  encryption:
+    enabled: false
+    algorithm: "AES-256"
+    
+  # 审计日志
+  audit_logging:
+    enabled: true
+    log_level: "INFO"

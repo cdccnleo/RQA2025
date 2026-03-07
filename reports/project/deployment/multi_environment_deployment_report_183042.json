@@ -1,0 +1,81 @@
+{
+  "timestamp": 1753607332.5418878,
+  "deployment_summary": {
+    "status": "partial",
+    "total_environments": 3,
+    "successful_deployments": 2,
+    "failed_deployments": 1,
+    "success_rate": 0.6666666666666666,
+    "deployment_results": [
+      {
+        "environment": "development",
+        "status": "success",
+        "start_time": 1753607323.3306005,
+        "end_time": 1753607327.181946,
+        "duration": 3.8513455390930176,
+        "backup_created": true,
+        "rollback_performed": false,
+        "health_check_passed": true,
+        "error_message": null,
+        "deployment_logs": [
+          "[2025-07-27 17:08:43.330600] 开始部署到 development",
+          "[2025-07-27 17:08:43.331839] 备份创建: 成功",
+          "[2025-07-27 17:08:43.331839] 开始执行部署",
+          "[2025-07-27 17:08:46.369446] 开始健康检查",
+          "[2025-07-27 17:08:47.181946] 健康检查: 通过",
+          "[2025-07-27 17:08:47.181946] 部署完成"
+        ]
+      },
+      {
+        "environment": "staging",
+        "status": "failed",
+        "start_time": 1753607327.181946,
+        "end_time": 1753607328.716917,
+        "duration": 1.534970998764038,
+        "backup_created": true,
+        "rollback_performed": true,
+        "health_check_passed": false,
+        "error_message": "部署失败，已回滚",
+        "deployment_logs": [
+          "[2025-07-27 17:08:47.181946] 开始部署到 staging",
+          "[2025-07-27 17:08:47.185794] 备份创建: 成功",
+          "[2025-07-27 17:08:47.185794] 开始执行部署",
+          "[2025-07-27 17:08:48.716916] 部署失败，开始回滚",
+          "[2025-07-27 17:08:48.716916] 回滚: 成功"
+        ]
+      },
+      {
+        "environment": "production",
+        "status": "success",
+        "start_time": 1753607328.7179167,
+        "end_time": 1753607332.5418878,
+        "duration": 3.8239710330963135,
+        "backup_created": true,
+        "rollback_performed": false,
+        "health_check_passed": true,
+        "error_message": null,
+        "deployment_logs": [
+          "[2025-07-27 17:08:48.717916] 开始部署到 production",
+          "[2025-07-27 17:08:48.717916] 备份创建: 成功",
+          "[2025-07-27 17:08:48.717916] 开始执行部署",
+          "[2025-07-27 17:08:51.733459] 开始健康检查",
+          "[2025-07-27 17:08:52.541887] 健康检查: 通过",
+          "[2025-07-27 17:08:52.541887] 部署完成"
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "overall_status": "partial",
+    "total_environments": 3,
+    "successful_deployments": 2,
+    "failed_deployments": 1,
+    "success_rate": "66.7%"
+  },
+  "recommendations": [
+    "部分环境部署失败，建议检查失败原因并重新部署",
+    "建议检查网络连接和权限配置",
+    "建议建立完善的部署监控和告警机制",
+    "建议定期备份重要数据和配置文件"
+  ]
+}

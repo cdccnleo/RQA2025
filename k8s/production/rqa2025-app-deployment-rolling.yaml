@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-app-rolling
+  namespace: rqa2025-app
+  labels:
+    app: rqa2025
+    component: app
+    environment: production
+    strategy: rolling-update
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  # 最多1个Pod不可用
+      maxSurge: 1        # 最多1个额外的Pod
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: app
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: app
+        environment: production
+        strategy: rolling-update
+      annotations:
+        # 强制滚动更新触发器 - 修改此值会触发滚动更新
+        rollme: "2024-01-22-001"
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:latest
+        imagePullPolicy: Always  # 总是拉取最新镜像
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: REDIS_URL
+          value: "redis://redis-service.rqa2025-data:6379"
+        - name: DB_URL
+          value: "postgresql://user:password@postgres-service.rqa2025-data:5432/rqa2025"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 30  # 最多等待150秒启动
+      # Init容器 - 等待依赖服务就绪
+      initContainers:
+      - name: wait-for-redis
+        image: redis:7-alpine
+        command: ['sh', '-c', 'until redis-cli -h redis-service.rqa2025-data ping | grep -q PONG; do echo waiting for redis; sleep 2; done;']
+      - name: wait-for-postgres
+        image: postgres:14-alpine
+        command: ['sh', '-c', 'until pg_isready -h postgres-service.rqa2025-data -p 5432 -U user; do echo waiting for postgres; sleep 2; done;']

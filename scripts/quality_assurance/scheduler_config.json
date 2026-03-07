@@ -1,0 +1,36 @@
+{
+  "schedule": {
+    "automated_pipeline": "daily",
+    "consistency_check": "daily",
+    "doc_sync": "daily",
+    "version_check": "weekly",
+    "quality_report": "weekly"
+  },
+  "time": {
+    "automated_pipeline": "08:00",
+    "consistency_check": "09:00",
+    "doc_sync": "10:00",
+    "version_check": "09:00",
+    "quality_report": "11:00"
+  },
+  "notification": {
+    "enabled": false,
+    "email": {
+      "smtp_server": "",
+      "smtp_port": 587,
+      "username": "",
+      "password": "",
+      "recipients": []
+    },
+    "slack": {
+      "enabled": false,
+      "webhook_url": "",
+      "channel": "#quality"
+    }
+  },
+  "thresholds": {
+    "consistency_score": 95.0,
+    "sync_success_rate": 90.0,
+    "version_consistency": true
+  }
+}

@@ -1,0 +1,661 @@
+{
+  "timestamp": "2025-09-21T13:20:57.989595",
+  "summary": {
+    "duplicate_functions": 22,
+    "duplicate_classes": 2
+  },
+  "duplicates": {
+    "functions": [
+      {
+        "hash": "cb3d4cf55ff0299c",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "signature": "def save(self, config: Dict[str, Any], target: str) -> bool:",
+            "content": "    def save(self, config: Dict[str, Any], target: str) -> bool:\n        \"\"\"保存配置数据\n\n        Args:\n            config: 配置数据\n            target: 存储目标\n\n        Returns:\n            保存是否成功\n        \"\"\"\n        pass",
+            "hash": "cb3d4cf55ff0299c"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "signature": "def save(self, config: Dict[str, Any], target: str) -> bool:",
+            "content": "    def save(self, config: Dict[str, Any], target: str) -> bool:\n        \"\"\"保存配置数据\n\n        Args:\n            config: 配置数据\n            target: 存储目标\n\n        Returns:\n            保存是否成功\n        \"\"\"\n        pass",
+            "hash": "cb3d4cf55ff0299c"
+          }
+        ]
+      },
+      {
+        "hash": "19090ab35541ba2a",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "signature": "def load(self, source: str) -> Dict[str, Any]:",
+            "content": "    def load(self, source: str) -> Dict[str, Any]:\n        \"\"\"加载配置数据\n\n        Args:\n            source: 配置源标识\n\n        Returns:\n            配置数据字典\n        \"\"\"\n        pass",
+            "hash": "19090ab35541ba2a"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "signature": "def load(self, source: str) -> Dict[str, Any]:",
+            "content": "    def load(self, source: str) -> Dict[str, Any]:\n        \"\"\"加载配置数据\n\n        Args:\n            source: 配置源标识\n\n        Returns:\n            配置数据字典\n        \"\"\"\n        pass",
+            "hash": "19090ab35541ba2a"
+          }
+        ]
+      },
+      {
+        "hash": "4988a7a6216437ce",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "signature": "def get_config_value(self, key: str, default: Any = None) -> Any:",
+            "content": "    def get_config_value(self, key: str, default: Any = None) -> Any:\n        \"\"\"获取配置值\n\n        Args:\n            key: 配置键\n            default: 默认值\n\n        Returns:\n            配置值\n        \"\"\"\n        pass",
+            "hash": "4988a7a6216437ce"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "signature": "def get_config_value(self, key: str, default: Any = None) -> Any:",
+            "content": "    def get_config_value(self, key: str, default: Any = None) -> Any:\n        \"\"\"获取配置值\n\n        Args:\n            key: 配置键\n            default: 默认值\n\n        Returns:\n            配置值\n        \"\"\"\n        pass",
+            "hash": "4988a7a6216437ce"
+          }
+        ]
+      },
+      {
+        "hash": "d965cb8fac91c05c",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "signature": "def log_message(self, message: str, level: str = \"INFO\") -> None:",
+            "content": "    def log_message(self, message: str, level: str = \"INFO\") -> None:\n        \"\"\"记录日志消息\n\n        Args:\n            message: 日志消息\n            level: 日志级别\n        \"\"\"\n        pass",
+            "hash": "d965cb8fac91c05c"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "signature": "def log_message(self, message: str, level: str = \"INFO\") -> None:",
+            "content": "    def log_message(self, message: str, level: str = \"INFO\") -> None:\n        \"\"\"记录日志消息\n\n        Args:\n            message: 日志消息\n            level: 日志级别\n        \"\"\"\n        pass",
+            "hash": "d965cb8fac91c05c"
+          }
+        ]
+      },
+      {
+        "hash": "e32c7d7568df3d94",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "signature": "def get_resource_usage(self, resource_type: str) -> Dict[str, Any]:",
+            "content": "    def get_resource_usage(self, resource_type: str) -> Dict[str, Any]:\n        \"\"\"获取资源使用情况\n\n        Args:\n            resource_type: 资源类型\n\n        Returns:\n            资源使用情况\n        \"\"\"\n        pass",
+            "hash": "e32c7d7568df3d94"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "signature": "def get_resource_usage(self, resource_type: str) -> Dict[str, Any]:",
+            "content": "    def get_resource_usage(self, resource_type: str) -> Dict[str, Any]:\n        \"\"\"获取资源使用情况\n\n        Args:\n            resource_type: 资源类型\n\n        Returns:\n            资源使用情况\n        \"\"\"\n        pass",
+            "hash": "e32c7d7568df3d94"
+          }
+        ]
+      },
+      {
+        "hash": "26419baaa2e4c282",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\services\\client_sdk.py",
+            "signature": "def __init__(self, client: RQA2025DataClient):",
+            "content": "    def __init__(self, client: RQA2025DataClient):\n\n        self.client = client",
+            "hash": "26419baaa2e4c282"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\cache\\services\\client_sdk.py",
+            "signature": "def __init__(self, client: RQA2025DataClient):",
+            "content": "    def __init__(self, client: RQA2025DataClient):\n\n        self.client = client",
+            "hash": "26419baaa2e4c282"
+          }
+        ]
+      },
+      {
+        "hash": "ec35cd63877f9fd2",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\config_exceptions.py",
+            "signature": "def __init__(self, message: str, operation: str = None):",
+            "content": "    def __init__(self, message: str, operation: str = None):\n        super().__init__(message, details={'operation': operation})",
+            "hash": "ec35cd63877f9fd2"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\config_exceptions.py",
+            "signature": "def __init__(self, message: str, operation: str = None):",
+            "content": "    def __init__(self, message: str, operation: str = None):\n        super().__init__(message, details={'operation': operation})",
+            "hash": "ec35cd63877f9fd2"
+          }
+        ]
+      },
+      {
+        "hash": "84d7227317bd808e",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "signature": "def get(self, config_manager) -> T:",
+            "content": "    def get(self, config_manager) -> T:\n        \"\"\"获取配置值\"\"\"\n        if not self._loaded:\n            try:\n                raw_value = config_manager.get(self.key)\n                self._value = self._convert_value(raw_value)\n                self._loaded = True\n            except Exception as e:\n                if self.default is not None:\n                    self._value = self.default\n                    self._loaded = True\n                else:\n                    raise ConfigAccessError(f\"无法加载配置值 '{self.key}': {str(e)}\")\n        return self._value",
+            "hash": "84d7227317bd808e"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "signature": "def get(self, config_manager) -> T:",
+            "content": "    def get(self, config_manager) -> T:\n        \"\"\"获取配置值\"\"\"\n        if not self._loaded:\n            try:\n                raw_value = config_manager.get(self.key)\n                self._value = self._convert_value(raw_value)\n                self._loaded = True\n            except Exception as e:\n                if self.default is not None:\n                    self._value = self.default\n                    self._loaded = True\n                else:\n                    raise ConfigAccessError(f\"无法加载配置值 '{self.key}': {str(e)}\")\n        return self._value",
+            "hash": "84d7227317bd808e"
+          }
+        ]
+      },
+      {
+        "hash": "32a7b42bf85ef60f",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "signature": "def __init__(self, config_manager, env=\"default\"):",
+            "content": "    def __init__(self, config_manager, env=\"default\"):\n        self._config_manager = config_manager\n        self._env = env\n        self._config_values = {}\n        self._initialize_config_values()",
+            "hash": "32a7b42bf85ef60f"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "signature": "def __init__(self, config_manager, env=\"default\"):",
+            "content": "    def __init__(self, config_manager, env=\"default\"):\n        self._config_manager = config_manager\n        self._env = env\n        self._config_values = {}\n        self._initialize_config_values()",
+            "hash": "32a7b42bf85ef60f"
+          }
+        ]
+      },
+      {
+        "hash": "7fd36d975b3d8042",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "signature": "def _initialize_config_values(self):",
+            "content": "    def _initialize_config_values(self):\n        \"\"\"初始化配置值\"\"\"\n        # 获取类的类型注解\n        type_hints = get_type_hints(self.__class__)\n\n        # 遍历类的属性\n        for name, attr in inspect.getmembers(self.__class__):\n            if isinstance(attr, TypedConfigValue):\n                # 使用类型注解更新TypedConfigValue\n                if name in type_hints:\n                    attr.type_hint = type_hints[name]\n                self._config_values[name] = attr",
+            "hash": "7fd36d975b3d8042"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "signature": "def _initialize_config_values(self):",
+            "content": "    def _initialize_config_values(self):\n        \"\"\"初始化配置值\"\"\"\n        # 获取类的类型注解\n        type_hints = get_type_hints(self.__class__)\n\n        # 遍历类的属性\n        for name, attr in inspect.getmembers(self.__class__):\n            if isinstance(attr, TypedConfigValue):\n                # 使用类型注解更新TypedConfigValue\n                if name in type_hints:\n                    attr.type_hint = type_hints[name]\n                self._config_values[name] = attr",
+            "hash": "7fd36d975b3d8042"
+          }
+        ]
+      },
+      {
+        "hash": "e7f6bc28fa9eff63",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "signature": "def __getattribute__(self, name):",
+            "content": "    def __getattribute__(self, name):\n        \"\"\"重写属性访问，实现配置值的懒加载\"\"\"\n        # 获取普通属性\n        try:\n            attr = super().__getattribute__(name)\n            # 如果是TypedConfigValue，则获取实际值\n            if isinstance(attr, TypedConfigValue):\n                return attr.get(self._config_manager)\n            return attr\n        except AttributeError:\n            # 检查是否在_config_values中\n            config_values = super().__getattribute__('_config_values')\n            if name in config_values:\n                return config_values[name].get(self._config_manager)\n            raise",
+            "hash": "e7f6bc28fa9eff63"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "signature": "def __getattribute__(self, name):",
+            "content": "    def __getattribute__(self, name):\n        \"\"\"重写属性访问，实现配置值的懒加载\"\"\"\n        # 获取普通属性\n        try:\n            attr = super().__getattribute__(name)\n            # 如果是TypedConfigValue，则获取实际值\n            if isinstance(attr, TypedConfigValue):\n                return attr.get(self._config_manager)\n            return attr\n        except AttributeError:\n            # 检查是否在_config_values中\n            config_values = super().__getattribute__('_config_values')\n            if name in config_values:\n                return config_values[name].get(self._config_manager)\n            raise",
+            "hash": "e7f6bc28fa9eff63"
+          }
+        ]
+      },
+      {
+        "hash": "025e24efadef4abd",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "signature": "def get_typed_config(config_class: Type[TypedConfigBase], config_manager, env=\"default\") -> TypedConfigBase:",
+            "content": "def get_typed_config(config_class: Type[TypedConfigBase], config_manager, env=\"default\") -> TypedConfigBase:\n    \"\"\"获取类型安全的配置实例（带缓存）\"\"\"\n    return config_class(config_manager, env)",
+            "hash": "025e24efadef4abd"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "signature": "def get_typed_config(config_class: Type[TypedConfigBase], config_manager, env=\"default\") -> TypedConfigBase:",
+            "content": "def get_typed_config(config_class: Type[TypedConfigBase], config_manager, env=\"default\") -> TypedConfigBase:\n    \"\"\"获取类型安全的配置实例（带缓存）\"\"\"\n    return config_class(config_manager, env)",
+            "hash": "025e24efadef4abd"
+          }
+        ]
+      },
+      {
+        "hash": "6e598688af8836df",
+        "occurrences": 3,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "signature": "def set(self, key: str, value: Any) -> bool:",
+            "content": "    def set(self, key: str, value: Any) -> bool:\n        \"\"\"设置配置值\"\"\"\n        pass",
+            "hash": "6e598688af8836df"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "signature": "def set(self, key: str, value: Any) -> bool:",
+            "content": "    def set(self, key: str, value: Any) -> bool:\n        \"\"\"设置配置值\"\"\"\n        pass",
+            "hash": "6e598688af8836df"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "signature": "def set(self, key: str, value: Any) -> bool:",
+            "content": "    def set(self, key: str, value: Any) -> bool:\n        \"\"\"设置配置值\"\"\"\n        pass",
+            "hash": "6e598688af8836df"
+          }
+        ]
+      },
+      {
+        "hash": "415cc1a85814d8a2",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "signature": "def get(self, key: str, default: Any = None) -> Any:",
+            "content": "    def get(self, key: str, default: Any = None) -> Any:\n        \"\"\"获取配置值\"\"\"\n        pass",
+            "hash": "415cc1a85814d8a2"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "signature": "def get(self, key: str, default: Any = None) -> Any:",
+            "content": "    def get(self, key: str, default: Any = None) -> Any:\n        \"\"\"获取配置值\"\"\"\n        pass",
+            "hash": "415cc1a85814d8a2"
+          }
+        ]
+      },
+      {
+        "hash": "9266599f91511bf7",
+        "occurrences": 4,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\loaders\\cloud_loader.py",
+            "signature": "def get_last_metadata(self) -> Dict[str, Any]:",
+            "content": "    def get_last_metadata(self) -> Dict[str, Any]:\n        \"\"\"获取上次加载的元数据\"\"\"\n        return self._last_metadata.copy()",
+            "hash": "9266599f91511bf7"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\loaders\\database_loader.py",
+            "signature": "def get_last_metadata(self) -> Dict[str, Any]:",
+            "content": "    def get_last_metadata(self) -> Dict[str, Any]:\n        \"\"\"获取上次加载的元数据\"\"\"\n        return self._last_metadata.copy()",
+            "hash": "9266599f91511bf7"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\loaders\\toml_loader.py",
+            "signature": "def get_last_metadata(self) -> Dict[str, Any]:",
+            "content": "    def get_last_metadata(self) -> Dict[str, Any]:\n        \"\"\"获取上次加载的元数据\"\"\"\n        return self._last_metadata.copy()",
+            "hash": "9266599f91511bf7"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\config\\loaders\\yaml_loader.py",
+            "signature": "def get_last_metadata(self) -> Dict[str, Any]:",
+            "content": "    def get_last_metadata(self) -> Dict[str, Any]:\n        \"\"\"获取上次加载的元数据\"\"\"\n        return self._last_metadata.copy()",
+            "hash": "9266599f91511bf7"
+          }
+        ]
+      },
+      {
+        "hash": "4bad08bb44c1fca4",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def get_name(self) -> str:",
+            "content": "    def get_name(self) -> str:\n        \"\"\"获取名称\"\"\"\n        return self._name",
+            "hash": "4bad08bb44c1fca4"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def get_name(self) -> str:",
+            "content": "    def get_name(self) -> str:\n        \"\"\"获取名称\"\"\"\n        return self._name",
+            "hash": "4bad08bb44c1fca4"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def get_name(self) -> str:",
+            "content": "    def get_name(self) -> str:\n        \"\"\"获取名称\"\"\"\n        return self._name",
+            "hash": "4bad08bb44c1fca4"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def get_name(self) -> str:",
+            "content": "    def get_name(self) -> str:\n        \"\"\"获取名称\"\"\"\n        return self._name",
+            "hash": "4bad08bb44c1fca4"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def get_name(self) -> str:",
+            "content": "    def get_name(self) -> str:\n        \"\"\"获取名称\"\"\"\n        return self._name",
+            "hash": "4bad08bb44c1fca4"
+          }
+        ]
+      },
+      {
+        "hash": "28f72c2c7c52021f",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def get_version(self) -> str:",
+            "content": "    def get_version(self) -> str:\n        \"\"\"获取版本\"\"\"\n        return self._version",
+            "hash": "28f72c2c7c52021f"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def get_version(self) -> str:",
+            "content": "    def get_version(self) -> str:\n        \"\"\"获取版本\"\"\"\n        return self._version",
+            "hash": "28f72c2c7c52021f"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def get_version(self) -> str:",
+            "content": "    def get_version(self) -> str:\n        \"\"\"获取版本\"\"\"\n        return self._version",
+            "hash": "28f72c2c7c52021f"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def get_version(self) -> str:",
+            "content": "    def get_version(self) -> str:\n        \"\"\"获取版本\"\"\"\n        return self._version",
+            "hash": "28f72c2c7c52021f"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def get_version(self) -> str:",
+            "content": "    def get_version(self) -> str:\n        \"\"\"获取版本\"\"\"\n        return self._version",
+            "hash": "28f72c2c7c52021f"
+          }
+        ]
+      },
+      {
+        "hash": "7996bad1b7b2c124",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def is_healthy(self) -> bool:",
+            "content": "    def is_healthy(self) -> bool:\n        \"\"\"检查健康状态 - 基础实现\"\"\"\n        # 这里可以实现基本的健康检查逻辑\n        return True",
+            "hash": "7996bad1b7b2c124"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def is_healthy(self) -> bool:",
+            "content": "    def is_healthy(self) -> bool:\n        \"\"\"检查健康状态 - 基础实现\"\"\"\n        # 这里可以实现基本的健康检查逻辑\n        return True",
+            "hash": "7996bad1b7b2c124"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def is_healthy(self) -> bool:",
+            "content": "    def is_healthy(self) -> bool:\n        \"\"\"检查健康状态 - 基础实现\"\"\"\n        # 这里可以实现基本的健康检查逻辑\n        return True",
+            "hash": "7996bad1b7b2c124"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def is_healthy(self) -> bool:",
+            "content": "    def is_healthy(self) -> bool:\n        \"\"\"检查健康状态 - 基础实现\"\"\"\n        # 这里可以实现基本的健康检查逻辑\n        return True",
+            "hash": "7996bad1b7b2c124"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def is_healthy(self) -> bool:",
+            "content": "    def is_healthy(self) -> bool:\n        \"\"\"检查健康状态 - 基础实现\"\"\"\n        # 这里可以实现基本的健康检查逻辑\n        return True",
+            "hash": "7996bad1b7b2c124"
+          }
+        ]
+      },
+      {
+        "hash": "456a8d2abd7d62e9",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def get_statistics(self) -> Dict[str, Any]:",
+            "content": "    def get_statistics(self) -> Dict[str, Any]:\n        \"\"\"获取统计信息\"\"\"\n        return {\n            \"name\": self._name,\n            \"version\": self._version,\n            \"request_count\": self._request_count,\n            \"error_count\": self._error_count,\n            \"uptime\": 0,  # 可以计算实际运行时间\n            \"health_status\": self.is_healthy()\n        }",
+            "hash": "456a8d2abd7d62e9"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def get_statistics(self) -> Dict[str, Any]:",
+            "content": "    def get_statistics(self) -> Dict[str, Any]:\n        \"\"\"获取统计信息\"\"\"\n        return {\n            \"name\": self._name,\n            \"version\": self._version,\n            \"request_count\": self._request_count,\n            \"error_count\": self._error_count,\n            \"uptime\": 0,  # 可以计算实际运行时间\n            \"health_status\": self.is_healthy()\n        }",
+            "hash": "456a8d2abd7d62e9"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def get_statistics(self) -> Dict[str, Any]:",
+            "content": "    def get_statistics(self) -> Dict[str, Any]:\n        \"\"\"获取统计信息\"\"\"\n        return {\n            \"name\": self._name,\n            \"version\": self._version,\n            \"request_count\": self._request_count,\n            \"error_count\": self._error_count,\n            \"uptime\": 0,  # 可以计算实际运行时间\n            \"health_status\": self.is_healthy()\n        }",
+            "hash": "456a8d2abd7d62e9"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def get_statistics(self) -> Dict[str, Any]:",
+            "content": "    def get_statistics(self) -> Dict[str, Any]:\n        \"\"\"获取统计信息\"\"\"\n        return {\n            \"name\": self._name,\n            \"version\": self._version,\n            \"request_count\": self._request_count,\n            \"error_count\": self._error_count,\n            \"uptime\": 0,  # 可以计算实际运行时间\n            \"health_status\": self.is_healthy()\n        }",
+            "hash": "456a8d2abd7d62e9"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def get_statistics(self) -> Dict[str, Any]:",
+            "content": "    def get_statistics(self) -> Dict[str, Any]:\n        \"\"\"获取统计信息\"\"\"\n        return {\n            \"name\": self._name,\n            \"version\": self._version,\n            \"request_count\": self._request_count,\n            \"error_count\": self._error_count,\n            \"uptime\": 0,  # 可以计算实际运行时间\n            \"health_status\": self.is_healthy()\n        }",
+            "hash": "456a8d2abd7d62e9"
+          }
+        ]
+      },
+      {
+        "hash": "276fb6bfabccd5a1",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def _record_request(self):",
+            "content": "    def _record_request(self):\n        \"\"\"记录请求\"\"\"\n        self._request_count += 1",
+            "hash": "276fb6bfabccd5a1"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def _record_request(self):",
+            "content": "    def _record_request(self):\n        \"\"\"记录请求\"\"\"\n        self._request_count += 1",
+            "hash": "276fb6bfabccd5a1"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def _record_request(self):",
+            "content": "    def _record_request(self):\n        \"\"\"记录请求\"\"\"\n        self._request_count += 1",
+            "hash": "276fb6bfabccd5a1"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def _record_request(self):",
+            "content": "    def _record_request(self):\n        \"\"\"记录请求\"\"\"\n        self._request_count += 1",
+            "hash": "276fb6bfabccd5a1"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def _record_request(self):",
+            "content": "    def _record_request(self):\n        \"\"\"记录请求\"\"\"\n        self._request_count += 1",
+            "hash": "276fb6bfabccd5a1"
+          }
+        ]
+      },
+      {
+        "hash": "2c6556bae6aa7fd6",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def _record_error(self):",
+            "content": "    def _record_error(self):\n        \"\"\"记录错误\"\"\"\n        self._error_count += 1",
+            "hash": "2c6556bae6aa7fd6"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def _record_error(self):",
+            "content": "    def _record_error(self):\n        \"\"\"记录错误\"\"\"\n        self._error_count += 1",
+            "hash": "2c6556bae6aa7fd6"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def _record_error(self):",
+            "content": "    def _record_error(self):\n        \"\"\"记录错误\"\"\"\n        self._error_count += 1",
+            "hash": "2c6556bae6aa7fd6"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def _record_error(self):",
+            "content": "    def _record_error(self):\n        \"\"\"记录错误\"\"\"\n        self._error_count += 1",
+            "hash": "2c6556bae6aa7fd6"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def _record_error(self):",
+            "content": "    def _record_error(self):\n        \"\"\"记录错误\"\"\"\n        self._error_count += 1",
+            "hash": "2c6556bae6aa7fd6"
+          }
+        ]
+      },
+      {
+        "hash": "6429017927e8e046",
+        "occurrences": 5,
+        "blocks": [
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\factory_pattern.py",
+            "signature": "def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):",
+            "content": "    def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):\n        \"\"\"记录操作日志\"\"\"\n        message = operation + \" in \" + self._name\n        if details:\n            message += \" - \" + str(details)\n        self._logger.info(message)",
+            "hash": "6429017927e8e046"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\handler_pattern.py",
+            "signature": "def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):",
+            "content": "    def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):\n        \"\"\"记录操作日志\"\"\"\n        message = operation + \" in \" + self._name\n        if details:\n            message += \" - \" + str(details)\n        self._logger.info(message)",
+            "hash": "6429017927e8e046"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\manager_pattern.py",
+            "signature": "def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):",
+            "content": "    def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):\n        \"\"\"记录操作日志\"\"\"\n        message = operation + \" in \" + self._name\n        if details:\n            message += \" - \" + str(details)\n        self._logger.info(message)",
+            "hash": "6429017927e8e046"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\provider_pattern.py",
+            "signature": "def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):",
+            "content": "    def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):\n        \"\"\"记录操作日志\"\"\"\n        message = operation + \" in \" + self._name\n        if details:\n            message += \" - \" + str(details)\n        self._logger.info(message)",
+            "hash": "6429017927e8e046"
+          },
+          {
+            "type": "function",
+            "file": "src\\infrastructure\\interfaces\\service_pattern.py",
+            "signature": "def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):",
+            "content": "    def _log_operation(self, operation: str, details: Optional[Dict[str, Any]] = None):\n        \"\"\"记录操作日志\"\"\"\n        message = operation + \" in \" + self._name\n        if details:\n            message += \" - \" + str(details)\n        self._logger.info(message)",
+            "hash": "6429017927e8e046"
+          }
+        ]
+      }
+    ],
+    "classes": [
+      {
+        "hash": "4e5adac58e8b98ae",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "class",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "signature": "class IConfigStorage(ABC):",
+            "content": "class IConfigStorage(ABC):\n    \"\"\"配置存储接口\"\"\"\n\n    @abstractmethod\n    def save(self, config: Dict[str, Any], target: str) -> bool:\n        \"\"\"保存配置数据\n\n        Args:\n            config: 配置数据\n            target: 存储目标\n\n        Returns:\n            保存是否成功\n        \"\"\"\n        pass\n\n    @abstractmethod\n    def load(self, source: str) -> Dict[str, Any]:\n        \"\"\"加载配置数据\n\n        Args:\n            source: 配置源标识\n\n        Returns:\n            配置数据字典\n        \"\"\"\n        pass",
+            "hash": "4e5adac58e8b98ae"
+          },
+          {
+            "type": "class",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "signature": "class IConfigStorage(ABC):",
+            "content": "class IConfigStorage(ABC):\n    \"\"\"配置存储接口\"\"\"\n\n    @abstractmethod\n    def save(self, config: Dict[str, Any], target: str) -> bool:\n        \"\"\"保存配置数据\n\n        Args:\n            config: 配置数据\n            target: 存储目标\n\n        Returns:\n            保存是否成功\n        \"\"\"\n        pass\n\n    @abstractmethod\n    def load(self, source: str) -> Dict[str, Any]:\n        \"\"\"加载配置数据\n\n        Args:\n            source: 配置源标识\n\n        Returns:\n            配置数据字典\n        \"\"\"\n        pass",
+            "hash": "4e5adac58e8b98ae"
+          }
+        ]
+      },
+      {
+        "hash": "4a260282654ea263",
+        "occurrences": 2,
+        "blocks": [
+          {
+            "type": "class",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "signature": "class ConfigValueError(Exception):",
+            "content": "class ConfigValueError(Exception):\n\n    \"\"\"\n    typed_config - 配置管理\n\n    职责说明：\n    负责系统配置的统一管理、配置文件的读取、配置验证和配置分发\n\n    核心职责：\n    - 配置文件的读取和解析\n    - 配置参数的验证\n    - 配置的热重载\n    - 配置的分发和同步\n    - 环境变量管理\n    - 配置加密和安全\n\n    相关接口：\n    - IConfigComponent\n    - IConfigManager\n    - IConfigValidator\n    \"\"\"",
+            "hash": "4a260282654ea263"
+          },
+          {
+            "type": "class",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "signature": "class ConfigValueError(Exception):",
+            "content": "class ConfigValueError(Exception):\n\n    \"\"\"\n    typed_config - 配置管理\n\n    职责说明：\n    负责系统配置的统一管理、配置文件的读取、配置验证和配置分发\n\n    核心职责：\n    - 配置文件的读取和解析\n    - 配置参数的验证\n    - 配置的热重载\n    - 配置的分发和同步\n    - 环境变量管理\n    - 配置加密和安全\n\n    相关接口：\n    - IConfigComponent\n    - IConfigManager\n    - IConfigValidator\n    \"\"\"",
+            "hash": "4a260282654ea263"
+          }
+        ]
+      }
+    ]
+  }
+}

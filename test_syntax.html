@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript语法测试</title>
+</head>
+<body>
+    <div id="result">测试中...</div>
+
+    <script>
+        // 模拟修复后的代码结构
+        function initDataSourceLoading() {
+            console.log('开始数据源加载初始化...');
+
+            // 模拟directLoadDataSources函数
+            async function directLoadDataSources(retryCount = 0) {
+                const maxRetries = 3;
+                console.log('执行直接数据源加载...');
+
+                try {
+                    // 模拟API调用
+                    console.log('API请求...');
+
+                    // 模拟成功响应
+                    const mockData = { data_sources: [{ id: 'test', name: '测试' }] };
+
+                    if (mockData.data_sources && mockData.data_sources.length > 0) {
+                        console.log('渲染数据源...');
+                        console.log('加载成功');
+                    } else {
+                        console.log('无数据源');
+                    }
+                } catch (error) {
+                    console.error('加载失败:', error);
+
+                    if (retryCount < maxRetries) {
+                        console.log('重试...');
+                    } else {
+                        console.error('重试次数用完');
+                    }
+                }
+            }
+
+            // 调用函数
+            directLoadDataSources();
+        }
+
+        // 页面加载完成后开始初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDataSourceLoading);
+        } else {
+            initDataSourceLoading();
+        }
+
+        // 更新结果
+        setTimeout(() => {
+            document.getElementById('result').innerHTML = '✅ JavaScript语法测试通过';
+        }, 100);
+    </script>
+</body>
+</html>

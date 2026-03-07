@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service
+  namespace: rqa-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: model-service
+  template:
+    metadata:
+      labels:
+        app: model-service
+    spec:
+      containers:
+      - name: model-service
+        image: registry.rqa.com/model-service:prod
+        resources:
+          limits:
+            cpu: "4"
+            memory: 8Gi
+        ports:
+        - containerPort: 8080

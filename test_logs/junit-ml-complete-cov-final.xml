@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="102" time="94.975" timestamp="2025-11-17T03:02:33.227988+08:00" hostname="AIPC"><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_success_updates_stats" time="0.969"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: load
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: train
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:289 ML业务流程执行完成: test-process (状态: completed)
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: load
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: train
+INFO:src.ml.core.process_orchestrator:ML业务流程执行完成: test-process (状态: completed)
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optimizer_components_unit" name="test_optimizer_component_basic_flow" time="0.954"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_search_component_basic_operations" time="0.966"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_optuna_tuner_requires_param_space" time="0.968"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_initialization_fallback" time="0.984"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_model_training_and_serving_stubbed" time="1.048"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:283 ✅ 模型训练和服务测试通过
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:✅ 模型训练和服务测试通过
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optimizer_components_unit" name="test_optimizer_factory_supports_known_ids" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_hyperparameter_components_unit" name="test_hyperparameter_component_info_and_process" time="0.989"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_search_component_factory_supports_known_ids" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_grid_component_getters_return_consistent_info" time="1.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_failure_records_error" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: fail
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:329 ML业务流程步骤执行失败: fail, 错误: boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: fail
+ERROR:src.ml.core.process_orchestrator:ML业务流程步骤执行失败: fail, 错误: boom
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_early_stopping_unit" name="test_early_stopping_maximize_improves_resets_counter" time="1.028"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_hyperparameter_components_unit" name="test_hyperparameter_factory_lists_and_creates" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_grid_component_factory_creates_and_lists_components" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_grid_component_factory_invalid_id_raises" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_search_component_factory_invalid_id" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_steps_detects_dependency_cycle" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:335 ML业务流程存在无法执行的步骤: test-process
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:ML业务流程存在无法执行的步骤: test-process
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_optuna_tuner_returns_tuning_result" time="0.057"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_optuna_tuner_trials_dataframe_failure" time="0.034"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_search_component_compatibility_creators" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_component_factory_init_and_create_component" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_isearch_component_abstract_methods" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_submit_process_enqueues_when_running" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:226 已提交ML业务流程: test-process (ID: model_training_1763319838623)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已提交ML业务流程: test-process (ID: model_training_1763319838623)
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_stop_noop_when_not_running" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:202 ML业务流程编排器未运行
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器未运行
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_early_stopping_unit" name="test_early_stopping_minimize_triggers_after_patience" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_early_stopping_unit" name="test_early_stopping_reset_restores_state" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_initialization_without_model_cache_flag_applies_defaults" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_train_and_predict_linear_model" time="1.647"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_223c3b28
+INFO     src.ml.core.ml_core:ml_core.py:211 模型 model_223c3b28 预测完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_223c3b28
+INFO:src.ml.core.ml_core:模型 model_223c3b28 预测完成
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_hyperparameter_components_unit" name="test_hyperparameter_factory_invalid_id" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_hyperparameter_components_unit" name="test_hyperparameter_compatibility_helpers" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optimizer_components_unit" name="test_optimizer_factory_invalid_id" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_optuna_tuner_handles_unknown_param_type" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_tuner_components_unit" name="test_tuner_component_fields_and_process" time="1.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_grid_component_compatibility_helpers" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_component_factory_init_and_create_component" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_optuna_tuner_importance_failure" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_performance_concurrent_requests" time="0.041"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:327 ✅ 并发请求测试通过
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:✅ 并发请求测试通过
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_igrid_component_abstract_methods" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_tuner_components_unit" name="test_tuner_component_factory_lists_all" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optimizer_components_unit" name="test_optimizer_compatibility_helpers" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_start_warns_when_already_running" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+WARNING  src.ml.core.process_orchestrator:process_orchestrator.py:183 ML业务流程编排器已在运行中
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+WARNING:src.ml.core.process_orchestrator:ML业务流程编排器已在运行中
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_search_component_process_exception_path" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_optuna_tuner_sampler_selection" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_performance_large_data_processing" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:353 ✅ 大数据处理测试通过，处理时间: 0.10秒
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:✅ 大数据处理测试通过，处理时间: 0.10秒
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_grid_component_process_exception_path" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_tuner_components_unit" name="test_tuner_factory_invalid_id" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_start_initializes_workers_and_resets_event" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 2
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:197 ML业务流程编排器已启动，工作线程数: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 2
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已启动，工作线程数: 2
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_search_components_unit" name="test_search_component_compatibility_helpers_15_and_20" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_tuner" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_data_pipeline_teardown_cleanup" time="0.032"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_grid_components_unit" name="test_grid_component_compatibility_helpers_15_and_20" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_tuner_components_unit" name="test_tuner_compatibility_helpers" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_stop_sets_shutdown_flag_and_invokes_executor" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:205 正在停止ML业务流程编排器...
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:211 ML业务流程编排器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:正在停止ML业务流程编排器...
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器已停止
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_returns_empty_when_no_trials" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_get_process_status_summary" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_trials_dataframe_failure" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_end_to_end_pipeline_exception_handling" time="0.169"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_requires_objectives" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_get_process_status_returns_none_when_missing" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_unsupported_param_type" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_register_default_executors_is_idempotent" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_skips_trials_without_values" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_pause_and_resume_process" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:432 已暂停ML业务流程: test-process
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:442 已恢复ML业务流程: test-process
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已暂停ML业务流程: test-process
+INFO:src.ml.core.process_orchestrator:已恢复ML业务流程: test-process
+
+</system-err></testcase><testcase classname="unit.ml.tuning.test_optuna_tuner_unit" name="test_multi_objective_requires_param_space" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_add_process_callback_registers_and_triggers" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_trigger_callbacks_logs_exceptions" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:461 ML业务流程回调执行失败: on_complete, 错误: callback boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:ML业务流程回调执行失败: on_complete, 错误: callback boom
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_model_inference_skip_logging" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:177 ⚠️ 模型推理测试跳过（需要预训练模型）
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:⚠️ 模型推理测试跳过（需要预训练模型）
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_process_worker_logs_exception_and_exits" time="0.100"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:248 流程处理线程异常: queue boom
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+ERROR:src.ml.core.process_orchestrator:流程处理线程异常: queue boom
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_concurrent_requests_exception_handling" time="0.040"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:327 ✅ 并发请求测试通过
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:✅ 并发请求测试通过
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_test_suite_run_all_tests" time="0.036"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:372 #x1F9EA 开始运行深度学习集成测试套件
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:400 测试完成: 0/0 通过
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:#x1F9EA 开始运行深度学习集成测试套件
+
+----------------------------------------------------------------------
+Ran 0 tests in 0.000s
+
+OK
+INFO:src.ml.deep_learning.core.integration_tests:测试完成: 0/0 通过
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_process_worker_executes_active_process" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:231 ML业务流程处理线程 Thread-18 已启动
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:ML业务流程处理线程 Thread-18 已启动
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_create_test_financial_data" time="0.066"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_step_records_metrics_and_context" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: dummy
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: dummy
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_step_raises_when_executor_missing" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_generate_test_report" time="0.092"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.deep_learning.core.integration_tests:integration_tests.py:465 测试报告已生成: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4081\popen-gw3\test_generate_test_report0\test_report.json
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.deep_learning.core.integration_tests:测试报告已生成: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4081\popen-gw3\test_generate_test_report0\test_report.json
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_step_raises_when_validation_fails" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:386 已注册ML业务流程步骤执行器: bad
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已注册ML业务流程步骤执行器: bad
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_cancel_process_moves_to_completed" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:421 已取消ML业务流程: test-process
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+INFO:src.ml.core.process_orchestrator:已取消ML业务流程: test-process
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_cancel_process_returns_false_when_missing" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_get_statistics_reports_runtime" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+
+</system-err></testcase><testcase classname="unit.ml.deep_learning.test_integration_tests_extended" name="test_main_function_execution" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+❌ 深度学习模块导入失败: No module named 'deep_learning.deep_learning_manager'
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_execute_process_handles_unexpected_exception" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.process_orchestrator:process_orchestrator.py:174 ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR    src.ml.core.process_orchestrator:process_orchestrator.py:300 ML业务流程执行异常: test-process, 错误: explode
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.process_orchestrator:ML业务流程编排器初始化完成，最大工作线程数: 1
+ERROR:src.ml.core.process_orchestrator:ML业务流程执行异常: test-process, 错误: explode
+
+</system-err></testcase><testcase classname="unit.ml.core.test_process_orchestrator_unit" name="test_global_helper_functions" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_model_invalid_type" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:288 创建模型失败 unsupported: 不支持的模型类型: unsupported
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:创建模型失败 unsupported: 不支持的模型类型: unsupported
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_get_feature_importance_with_importances" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_save_load_and_delete_model" time="0.120"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_341de85d
+INFO     src.ml.core.ml_core:ml_core.py:389 模型 model_341de85d 已保存到 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4081\popen-gw1\test_save_load_and_delete_mode0\model.pkl
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:405 模型已从 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4081\popen-gw1\test_save_load_and_delete_mode0\model.pkl 加载，ID: model_341de85d
+INFO     src.ml.core.ml_core:ml_core.py:371 模型 model_341de85d 已删除
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_341de85d
+INFO:src.ml.core.ml_core:模型 model_341de85d 已保存到 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4081\popen-gw1\test_save_load_and_delete_mode0\model.pkl
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:模型已从 C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4081\popen-gw1\test_save_load_and_delete_mode0\model.pkl 加载，ID: model_341de85d
+INFO:src.ml.core.ml_core:模型 model_341de85d 已删除
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_cross_validate_returns_metrics" time="0.036"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:567 交叉验证完成: 平均分数=1.5146
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:交叉验证完成: 平均分数=1.5146
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_feature_processor_workflow" time="0.019"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:450 特征处理器创建成功: processor_standard_model_7c577249
+INFO     src.ml.core.ml_core:ml_core.py:468 特征处理器 processor_standard_model_7c577249 拟合完成
+INFO     src.ml.core.ml_core:ml_core.py:485 特征转换完成，形状: (4, 2)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:特征处理器创建成功: processor_standard_model_7c577249
+INFO:src.ml.core.ml_core:特征处理器 processor_standard_model_7c577249 拟合完成
+INFO:src.ml.core.ml_core:特征转换完成，形状: (4, 2)
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_initialization_force_fallback_and_null_adapters" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_train_model_exception_path" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+ERROR    src.ml.core.ml_core:ml_core.py:152 模型训练失败: model creation failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+ERROR:src.ml.core.ml_core:模型训练失败: model creation failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_prepare_features_else_branch" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_predict_model_not_found" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_predict_exception_handling" time="0.049"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_87396823
+ERROR    src.ml.core.ml_core:ml_core.py:214 模型预测失败: prediction failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_87396823
+ERROR:src.ml.core.ml_core:模型预测失败: prediction failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_evaluate_model_exception_handling" time="0.035"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+INFO     src.ml.core.ml_core:ml_core.py:133 开始训练 linear 模型
+INFO     src.ml.core.ml_core:ml_core.py:147 模型训练完成，ID: model_c046c752
+ERROR    src.ml.core.ml_core:ml_core.py:241 模型评估失败: prediction failed in evaluate
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+INFO:src.ml.core.ml_core:开始训练 linear 模型
+INFO:src.ml.core.ml_core:模型训练完成，ID: model_c046c752
+ERROR:src.ml.core.ml_core:模型评估失败: prediction failed in evaluate
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_model_rf_type" time="0.657"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_model_xgb_with_import_error" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+WARNING  src.ml.core.ml_core:ml_core.py:275 XGBoost未安装，使用随机森林作为替代
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+WARNING:src.ml.core.ml_core:XGBoost未安装，使用随机森林作为替代
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_simple_neural_network_with_import_error" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+WARNING  src.ml.core.ml_core:ml_core.py:307 MLPRegressor不可用，使用线性回归作为替代
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+WARNING:src.ml.core.ml_core:MLPRegressor不可用，使用线性回归作为替代
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_preprocess_features_exception_path" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:325 特征预处理失败: fillna failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:特征预处理失败: fillna failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_calculate_metrics_exception_path" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:350 计算评估指标失败: No module named 'sklearn.metrics'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:计算评估指标失败: No module named 'sklearn.metrics'
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_create_feature_processor_exception_path" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:454 创建特征处理器失败: No module named 'sklearn.preprocessing'
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:创建特征处理器失败: No module named 'sklearn.preprocessing'
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_fit_feature_processor_exception_paths" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:471 拟合特征处理器失败: 特征处理器 nonexistent 不存在
+INFO     src.ml.core.ml_core:ml_core.py:450 特征处理器创建成功: processor_standard_model_97df4cb8
+ERROR    src.ml.core.ml_core:ml_core.py:471 拟合特征处理器失败: fit failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:拟合特征处理器失败: 特征处理器 nonexistent 不存在
+INFO:src.ml.core.ml_core:特征处理器创建成功: processor_standard_model_97df4cb8
+ERROR:src.ml.core.ml_core:拟合特征处理器失败: fit failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_transform_features_exception_paths" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+ERROR    src.ml.core.ml_core:ml_core.py:489 特征转换失败: 特征处理器 nonexistent 不存在
+INFO     src.ml.core.ml_core:ml_core.py:450 特征处理器创建成功: processor_standard_model_5fbb8640
+INFO     src.ml.core.ml_core:ml_core.py:468 特征处理器 processor_standard_model_5fbb8640 拟合完成
+ERROR    src.ml.core.ml_core:ml_core.py:489 特征转换失败: transform failed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:特征转换失败: 特征处理器 nonexistent 不存在
+INFO:src.ml.core.ml_core:特征处理器创建成功: processor_standard_model_5fbb8640
+INFO:src.ml.core.ml_core:特征处理器 processor_standard_model_5fbb8640 拟合完成
+ERROR:src.ml.core.ml_core:特征转换失败: transform failed
+
+</system-err></testcase><testcase classname="unit.ml.core.test_ml_core_unit" name="test_get_feature_importance_branches" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+
+</system-err></testcase></testsuite></testsuites>

@@ -1,0 +1,1132 @@
+# RQA2025 基于业务流程驱动的架构设计
+
+## 概述
+
+本文档基于代码分析自动生成，反映当前系统的实际架构状态。
+
+**生成时间**: 2025-08-23 20:53:44
+**生成方式**: 自动化生成
+**数据来源**: 代码分析 + 配置扫描
+
+---
+
+**重要说明**: 本文档由自动化工具生成，请勿直接编辑。如需修改架构，请修改代码和配置，然后重新生成文档。
+
+
+## 1. 架构概述
+
+### 1.1 系统规模统计
+- **总文件数**: 1254
+- **主要模块**: 116
+- **架构层次**: 10层
+
+### 1.2 模块分布
+- **acceleration**: 2 个文件
+- **adapters**: 8 个文件
+- **advanced**: 1 个文件
+- **advanced_analysis**: 4 个文件
+- **alerting**: 1 个文件
+- **alignment**: 1 个文件
+- **analysis**: 1 个文件
+- **async_processing**: 3 个文件
+- **backtest**: 18 个文件
+- **benchmark**: 1 个文件
+- **cache**: 27 个文件
+- **china**: 35 个文件
+- **cloud**: 1 个文件
+- **cloud_native**: 2 个文件
+- **compliance**: 7 个文件
+- **config**: 28 个文件
+- **core**: 36 个文件
+- **crypto**: 2 个文件
+- **dashboard**: 1 个文件
+- **data**: 13 个文件
+- **database**: 20 个文件
+- **decoders**: 1 个文件
+- **deployment**: 2 个文件
+- **di**: 8 个文件
+- **disaster**: 1 个文件
+- **distributed**: 15 个文件
+- **documentation**: 1 个文件
+- **edge**: 1 个文件
+- **edge_computing**: 1 个文件
+- **email**: 1 个文件
+- **engine**: 7 个文件
+- **ensemble**: 2 个文件
+- **error**: 18 个文件
+- **evaluation**: 2 个文件
+- **evaluators**: 1 个文件
+- **event**: 4 个文件
+- **execution**: 10 个文件
+- **export**: 1 个文件
+- **factories**: 4 个文件
+- **features**: 19 个文件
+- **fpga**: 10 个文件
+- **gateway**: 1 个文件
+- **governance**: 1 个文件
+- **gpu**: 7 个文件
+- **health**: 9 个文件
+- **helpers**: 10 个文件
+- **implementations**: 3 个文件
+- **inference**: 6 个文件
+- **infrastructure**: 19 个文件
+- **integration**: 9 个文件
+- **intelligent**: 4 个文件
+- **interfaces**: 17 个文件
+- **international**: 1 个文件
+- **lake**: 3 个文件
+- **level2**: 1 个文件
+- **loader**: 14 个文件
+- **logger**: 1 个文件
+- **logging**: 28 个文件
+- **macro**: 1 个文件
+- **managers**: 6 个文件
+- **microservice**: 1 个文件
+- **miniqmt**: 7 个文件
+- **ml**: 1 个文件
+- **ml_integration**: 8 个文件
+- **mobile**: 1 个文件
+- **models**: 18 个文件
+- **modules**: 7 个文件
+- **monitoring**: 67 个文件
+- **monitoring_service**: 2 个文件
+- **network**: 6 个文件
+- **news**: 1 个文件
+- **ops**: 2 个文件
+- **optimization**: 11 个文件
+- **optimizations**: 4 个文件
+- **optimizers**: 2 个文件
+- **orderbook**: 5 个文件
+- **parallel**: 4 个文件
+- **performance**: 31 个文件
+- **plugins**: 5 个文件
+- **portfolio**: 3 个文件
+- **preload**: 1 个文件
+- **processing**: 2 个文件
+- **processors**: 12 个文件
+- **production**: 1 个文件
+- **quality**: 6 个文件
+- **quantum**: 1 个文件
+- **realtime**: 1 个文件
+- **repair**: 1 个文件
+- **resource**: 3 个文件
+- **resource_management**: 3 个文件
+- **risk**: 11 个文件
+- **scheduler**: 5 个文件
+- **security**: 17 个文件
+- **sentiment**: 2 个文件
+- **services**: 58 个文件
+- **settlement**: 1 个文件
+- **signal**: 1 个文件
+- **sources**: 1 个文件
+- **src**: 2 个文件
+- **storage**: 16 个文件
+- **strategies**: 21 个文件
+- **strategy**: 1 个文件
+- **strategy_workspace**: 8 个文件
+- **streaming**: 1 个文件
+- **sync**: 1 个文件
+- **technical**: 2 个文件
+- **testing**: 8 个文件
+- **trading**: 25 个文件
+- **transformers**: 1 个文件
+- **tuning**: 1 个文件
+- **universe**: 6 个文件
+- **utils**: 20 个文件
+- **validation**: 11 个文件
+- **version_control**: 2 个文件
+- **versioning**: 2 个文件
+- **web**: 11 个文件
+
+
+## 2. 架构层次分析
+
+### 2.1 层次分布
+
+#### 核心服务层 (core)
+- **文件数量**: 19
+- **主要组件**:
+  - architecture_demo.py
+  - architecture_layers.py
+  - base.py
+  - business_process_demo.py
+  - business_process_integration.py
+
+#### 基础设施层 (infrastructure)
+- **文件数量**: 635
+- **主要组件**:
+  - auto_recovery.py
+  - circuit_breaker.py
+  - database_adapter.py
+  - data_sync.py
+  - degradation_manager.py
+
+#### 数据采集层 (data)
+- **文件数量**: 188
+- **主要组件**:
+  - api.py
+  - backup_recovery.py
+  - base_adapter.py
+  - base_loader.py
+  - data_manager.py
+
+#### API网关层 (gateway)
+- **文件数量**: 2
+- **主要组件**:
+  - api_gateway.py
+
+#### 特征处理层 (features)
+- **文件数量**: 94
+- **主要组件**:
+  - api.py
+  - config_classes.py
+  - config_integration.py
+  - exceptions.py
+  - feature_config.py
+
+#### 模型推理层 (ml)
+- **文件数量**: 3
+- **主要组件**:
+  - enhanced_ml_integration.py
+
+#### 策略决策层 (backtest)
+- **文件数量**: 24
+- **主要组件**:
+  - advanced_analytics.py
+  - alert_system.py
+  - analyzer.py
+  - auto_strategy_generator.py
+  - backtest_engine.py
+
+#### 交易执行层 (trading)
+- **文件数量**: 114
+- **主要组件**:
+  - account_manager.py
+  - api.py
+  - backtester.py
+  - backtest_analyzer.py
+  - broker_adapter.py
+
+#### 风控合规层 (risk)
+- **文件数量**: 9
+- **主要组件**:
+  - alert_system.py
+  - api.py
+  - compliance_checker.py
+  - compliance_workflow_manager.py
+  - real_time_monitor.py
+
+#### 监控反馈层 (engine)
+- **文件数量**: 64
+- **主要组件**:
+  - buffers.py
+  - dispatcher.py
+  - exceptions.py
+  - level2.py
+  - realtime.py
+
+
+
+## 3. 代码结构
+
+### 3.1 目录结构
+
+```
+src/
+- **src** (3 files)
+  - aliases.py
+  - main.py
+  - __init__.py
+  - **acceleration** (3 files)
+    - performance_optimizer.py
+    - scalability_enhancer.py
+    - __init__.py
+    - **fpga** (11 files)
+      - fpga_accelerator.py
+      - fpga_dashboard.py
+      - fpga_fallback_manager.py
+      - **templates** (1 files)
+        - __init__.py
+    - **gpu** (6 files)
+      - gpu_accelerator.py
+      - gpu_memory_dashboard.py
+      - gpu_memory_dashboard_web.py
+  - **adapters** (1 files)
+    - __init__.py
+    - **miniqmt** (8 files)
+      - adapter.py
+      - connection_pool.py
+      - data_cache.py
+  - **analysis** (2 files)
+    - advanced_analysis.py
+    - __init__.py
+  - **backtest** (19 files)
+    - advanced_analytics.py
+    - alert_system.py
+    - analyzer.py
+    - **evaluation** (3 files)
+      - model_evaluator.py
+      - strategy_evaluator.py
+      - __init__.py
+    - **utils** (2 files)
+      - backtest_utils.py
+      - __init__.py
+  - **core** (13 files)
+    - architecture_demo.py
+    - architecture_layers.py
+    - base.py
+    - **optimizations** (5 files)
+      - long_term_optimizations.py
+      - medium_term_optimizations.py
+      - optimization_implementer.py
+  - **data** (14 files)
+    - api.py
+    - backup_recovery.py
+    - base_adapter.py
+    - **adapters** (6 files)
+      - adapter_registry.py
+      - base.py
+      - base_adapter.py
+      - **china** (9 files)
+        - adapter.py
+        - dragon_board.py
+        - financial_adapter.py
+      - **crypto** (3 files)
+        - ccxt_mock_adapter.py
+        - crypto_adapter.py
+        - __init__.py
+      - **international** (2 files)
+        - international_stock_adapter.py
+        - __init__.py
+      - **macro** (2 files)
+        - macro_economic_adapter.py
+        - __init__.py
+      - **news** (2 files)
+        - news_sentiment_adapter.py
+        - __init__.py
+    - **alignment** (2 files)
+      - data_aligner.py
+      - __init__.py
+    - **cache** (9 files)
+      - cache_manager.py
+      - data_cache.py
+      - disk_cache.py
+    - **china** (11 files)
+      - adapter.py
+      - adapters.py
+      - cache_policy.py
+    - **compliance** (5 files)
+      - compliance_checker.py
+      - data_compliance_manager.py
+      - data_policy_manager.py
+    - **core** (3 files)
+      - data_model.py
+      - models.py
+      - __init__.py
+    - **decoders** (2 files)
+      - level2_decoder.py
+      - __init__.py
+    - **distributed** (6 files)
+      - cluster_manager.py
+      - distributed_data_loader.py
+      - load_balancer.py
+    - **edge** (2 files)
+      - edge_node.py
+      - __init__.py
+    - **export** (2 files)
+      - data_exporter.py
+      - __init__.py
+    - **governance** (2 files)
+      - enterprise_governance.py
+      - __init__.py
+    - **integration** (2 files)
+      - enhanced_data_integration.py
+      - __init__.py
+    - **interfaces** (3 files)
+      - ICacheBackend.py
+      - IDataModel.py
+      - __init__.py
+    - **lake** (4 files)
+      - data_lake_manager.py
+      - metadata_manager.py
+      - partition_manager.py
+    - **loader** (15 files)
+      - base_loader.py
+      - batch_loader.py
+      - bond_loader.py
+      - **infrastructure** (1 files)
+        - __init__.py
+    - **ml** (2 files)
+      - quality_assessor.py
+      - __init__.py
+    - **monitoring** (4 files)
+      - dashboard.py
+      - performance_monitor.py
+      - quality_monitor.py
+    - **optimization** (6 files)
+      - advanced_optimizer.py
+      - data_optimizer.py
+      - data_preloader.py
+    - **parallel** (5 files)
+      - dynamic_executor.py
+      - enhanced_parallel_loader.py
+      - parallel_loader.py
+    - **performance** (1 files)
+      - __init__.py
+    - **preload** (2 files)
+      - preloader.py
+      - __init__.py
+    - **processing** (3 files)
+      - data_processor.py
+      - unified_processor.py
+      - __init__.py
+    - **quality** (7 files)
+      - advanced_quality_monitor.py
+      - data_quality_monitor.py
+      - enhanced_quality_monitor.py
+    - **quantum** (2 files)
+      - quantum_circuit.py
+      - __init__.py
+    - **realtime** (1 files)
+      - __init__.py
+    - **repair** (2 files)
+      - data_repairer.py
+      - __init__.py
+    - **sources** (2 files)
+      - intelligent_source_manager.py
+      - __init__.py
+    - **streaming** (2 files)
+      - in_memory_stream.py
+      - __init__.py
+    - **sync** (2 files)
+      - multi_market_sync.py
+      - __init__.py
+    - **transformers** (2 files)
+      - data_transformer.py
+      - __init__.py
+    - **validation** (2 files)
+      - china_stock_validator.py
+      - __init__.py
+    - **validators** (1 files)
+      - __init__.py
+    - **version_control** (3 files)
+      - test_version_manager.py
+      - version_manager.py
+      - __init__.py
+  - **deployment** (2 files)
+    - production_ready.py
+    - __init__.py
+  - **engine** (8 files)
+    - buffers.py
+    - dispatcher.py
+    - exceptions.py
+    - **config** (6 files)
+      - config_loader.py
+      - config_schema.py
+      - config_validator.py
+    - **documentation** (2 files)
+      - doc_sync_manager.py
+      - __init__.py
+    - **inference** (2 files)
+      - optimized_inference_engine.py
+      - __init__.py
+    - **level2** (2 files)
+      - level2_adapter.py
+      - __init__.py
+    - **logging** (9 files)
+      - business_logger.py
+      - correlation_tracker.py
+      - engine_logger.py
+    - **monitoring** (5 files)
+      - alert_manager.py
+      - engine_monitor.py
+      - metrics_collector.py
+    - **optimization** (4 files)
+      - buffer_optimizer.py
+      - dispatcher_optimizer.py
+      - level2_optimizer.py
+    - **production** (2 files)
+      - model_serving.py
+      - __init__.py
+    - **testing** (4 files)
+      - test_data_generator.py
+      - test_data_manager.py
+      - test_data_validator.py
+    - **web** (6 files)
+      - app_factory.py
+      - client_sdk.py
+      - data_api.py
+      - **modules** (8 files)
+        - base_module.py
+        - config_module.py
+        - features_module.py
+      - **static** (1 files)
+        - __init__.py
+        - **css** (1 files)
+          - __init__.py
+        - **js** (1 files)
+          - __init__.py
+      - **templates** (1 files)
+        - __init__.py
+  - **ensemble** (3 files)
+    - ensemble_predictor.py
+    - model_ensemble.py
+    - __init__.py
+  - **features** (20 files)
+    - api.py
+    - config_classes.py
+    - config_integration.py
+    - **config** (1 files)
+      - __init__.py
+    - **core** (5 files)
+      - config.py
+      - engine.py
+      - factory.py
+    - **distributed** (4 files)
+      - distributed_processor.py
+      - task_scheduler.py
+      - worker_manager.py
+    - **engineering** (1 files)
+      - __init__.py
+    - **intelligent** (5 files)
+      - auto_feature_selector.py
+      - intelligent_enhancement_manager.py
+      - ml_model_integration.py
+    - **monitoring** (9 files)
+      - alert_manager.py
+      - benchmark_runner.py
+      - features_monitor.py
+    - **orderbook** (6 files)
+      - analyzer.py
+      - level2.py
+      - level2_analyzer.py
+    - **performance** (3 files)
+      - performance_optimizer.py
+      - scalability_manager.py
+      - __init__.py
+    - **plugins** (6 files)
+      - base_plugin.py
+      - plugin_loader.py
+      - plugin_manager.py
+    - **processors** (13 files)
+      - advanced_feature_selector.py
+      - base_processor.py
+      - distributed_processor.py
+      - **advanced** (2 files)
+        - advanced_feature_processor.py
+        - __init__.py
+      - **deep_learning** (1 files)
+        - __init__.py
+      - **distributed** (2 files)
+        - distributed_feature_processor.py
+        - __init__.py
+      - **gpu** (3 files)
+        - gpu_technical_processor.py
+        - multi_gpu_processor.py
+        - __init__.py
+      - **technical** (2 files)
+        - technical_processor.py
+        - __init__.py
+    - **sentiment** (3 files)
+      - analyzer.py
+      - sentiment_analyzer.py
+      - __init__.py
+      - **models** (2 files)
+        - sentiment_model.py
+        - __init__.py
+    - **technical** (2 files)
+      - technical_processor.py
+      - __init__.py
+    - **types** (1 files)
+      - __init__.py
+    - **utils** (3 files)
+      - feature_metadata.py
+      - selector.py
+      - __init__.py
+  - **gateway** (2 files)
+    - api_gateway.py
+    - __init__.py
+  - **infrastructure** (20 files)
+    - auto_recovery.py
+    - circuit_breaker.py
+    - database_adapter.py
+    - **benchmark** (2 files)
+      - performance_benchmark.py
+      - __init__.py
+    - **cloud_native** (3 files)
+      - cloud_native_enhanced.py
+      - cloud_native_test_platform.py
+      - __init__.py
+    - **config** (9 files)
+      - config_factory.py
+      - config_schema.py
+      - config_strategy.py
+      - **config** (1 files)
+        - __init__.py
+      - **core** (9 files)
+        - config_storage.py
+        - config_version_manager.py
+        - performance.py
+      - **error** (6 files)
+        - config_exceptions.py
+        - error_handler.py
+        - exceptions.py
+      - **event** (3 files)
+        - config_event.py
+        - filters.py
+        - __init__.py
+      - **interfaces** (2 files)
+        - unified_interface.py
+        - __init__.py
+      - **managers** (4 files)
+        - database.py
+        - deployment.py
+        - performance.py
+      - **monitoring** (6 files)
+        - audit_logger.py
+        - config_monitor.py
+        - health_checker.py
+      - **performance** (5 files)
+        - cache_optimizer.py
+        - concurrency_controller.py
+        - interfaces.py
+      - **security** (5 files)
+        - encryption_service.py
+        - integrity_checker.py
+        - interfaces.py
+      - **services** (26 files)
+        - cache_service.py
+        - config_encryption_service.py
+        - config_loader_service.py
+      - **static** (1 files)
+        - __init__.py
+      - **storage** (6 files)
+        - database_storage.py
+        - file_storage.py
+        - interfaces.py
+      - **strategies** (7 files)
+        - env_loader.py
+        - hybrid_loader.py
+        - json_loader.py
+      - **utils** (4 files)
+        - dependency.py
+        - migration.py
+        - paths.py
+      - **validation** (6 files)
+        - config_example.py
+        - config_schema.py
+        - schema.py
+      - **web** (2 files)
+        - app.py
+        - __init__.py
+    - **core** (3 files)
+      - resource_manager.py
+      - resource_optimization.py
+      - __init__.py
+      - **async_processing** (4 files)
+        - async_optimizer.py
+        - concurrency_controller.py
+        - task_manager.py
+      - **cache** (12 files)
+        - base_cache_manager.py
+        - cache_factory.py
+        - exceptions.py
+        - **interfaces** (2 files)
+          - unified_interface.py
+          - __init__.py
+      - **cloud** (2 files)
+        - cloud_native_manager.py
+        - __init__.py
+      - **config** (15 files)
+        - base_manager.py
+        - cached_manager.py
+        - config_factory.py
+        - **cache** (1 files)
+          - __init__.py
+        - **config** (1 files)
+          - __init__.py
+        - **core** (3 files)
+          - cache_manager.py
+          - unified_validator.py
+          - __init__.py
+        - **data** (1 files)
+          - __init__.py
+        - **event** (3 files)
+          - config_event.py
+          - filters.py
+          - __init__.py
+        - **interfaces** (2 files)
+          - unified_interface.py
+          - __init__.py
+        - **logs** (1 files)
+          - __init__.py
+        - **managers** (4 files)
+          - database.py
+          - deployment.py
+          - performance.py
+        - **models** (1 files)
+          - __init__.py
+        - **performance** (5 files)
+          - cache_optimizer.py
+          - concurrency_controller.py
+          - interfaces.py
+        - **security** (5 files)
+          - encryption_service.py
+          - integrity_checker.py
+          - interfaces.py
+        - **services** (26 files)
+          - cache_service.py
+          - config_encryption_service.py
+          - config_loader_service.py
+        - **static** (1 files)
+          - __init__.py
+        - **storage** (6 files)
+          - database_storage.py
+          - file_storage.py
+          - interfaces.py
+        - **strategies** (7 files)
+          - env_loader.py
+          - hybrid_loader.py
+          - json_loader.py
+        - **utils** (4 files)
+          - dependency.py
+          - migration.py
+          - paths.py
+        - **validation** (6 files)
+          - config_example.py
+          - config_schema.py
+          - schema.py
+        - **web** (2 files)
+          - app.py
+          - __init__.py
+      - **database** (3 files)
+        - base_database.py
+        - unified_database.py
+        - __init__.py
+      - **deployment** (2 files)
+        - deployment_validator.py
+        - __init__.py
+      - **di** (3 files)
+        - base_container.py
+        - unified_container.py
+        - __init__.py
+      - **distributed** (2 files)
+        - distributed_manager.py
+        - __init__.py
+      - **error** (8 files)
+        - comprehensive_error_plugin.py
+        - error_codes_utils.py
+        - error_exceptions.py
+        - **core** (2 files)
+          - handler.py
+          - __init__.py
+      - **factories** (4 files)
+        - cache_factory.py
+        - config_factory.py
+        - monitor_factory.py
+      - **logging** (21 files)
+        - base_logger.py
+        - business_log_manager.py
+        - config_validator.py
+        - **core** (2 files)
+          - logger.py
+          - __init__.py
+        - **logger** (2 files)
+          - logger.py
+          - __init__.py
+      - **microservice** (2 files)
+        - microservice_manager.py
+        - __init__.py
+      - **monitoring** (26 files)
+        - alert_manager.py
+        - application_monitor.py
+        - automation_monitor.py
+        - **core** (2 files)
+          - monitor.py
+          - __init__.py
+        - **interfaces** (2 files)
+          - unified_interface.py
+          - __init__.py
+        - **monitoring_service** (2 files)
+          - monitoringservice.py
+          - __init__.py
+      - **performance** (7 files)
+        - async_performance_tester.py
+        - cache_performance_tester.py
+        - performance_optimizer_manager.py
+      - **resource_management** (4 files)
+        - cpu_optimizer.py
+        - memory_manager.py
+        - resource_optimizer.py
+      - **security** (5 files)
+        - base_security.py
+        - security_factory.py
+        - security_utils.py
+      - **utils** (3 files)
+        - date_utils.py
+        - interfaces.py
+        - __init__.py
+    - **di** (7 files)
+      - container.py
+      - enhanced_container.py
+      - lifecycle_manager.py
+    - **disaster** (2 files)
+      - disaster_recovery.py
+      - __init__.py
+    - **distributed** (4 files)
+      - config_center.py
+      - distributed_lock.py
+      - distributed_monitoring.py
+    - **edge_computing** (2 files)
+      - edge_computing_test_platform.py
+      - __init__.py
+    - **error** (7 files)
+      - comprehensive_error_plugin.py
+      - error_codes_utils.py
+      - error_exceptions.py
+      - **core** (2 files)
+        - handler.py
+        - __init__.py
+    - **extensions** (1 files)
+      - __init__.py
+      - **compliance** (4 files)
+        - regulatory_compliance.py
+        - regulatory_reporter.py
+        - report_generator.py
+      - **dashboard** (2 files)
+        - resource_dashboard.py
+        - __init__.py
+      - **email** (2 files)
+        - secure_config.py
+        - __init__.py
+      - **web** (5 files)
+        - app_factory.py
+        - client_sdk.py
+        - data_api.py
+    - **health** (10 files)
+      - alert_manager.py
+      - alert_rule_engine.py
+      - api_endpoints.py
+      - **alerting** (2 files)
+        - performance_alert_manager.py
+        - __init__.py
+      - **cache** (3 files)
+        - advanced_cache_manager.py
+        - performance_cache_manager.py
+        - __init__.py
+      - **config** (2 files)
+        - performance_config.py
+        - __init__.py
+      - **core** (2 files)
+        - health_check_core.py
+        - __init__.py
+      - **factories** (2 files)
+        - health_checker_factory.py
+        - __init__.py
+      - **implementations** (4 files)
+        - basic_health_checker.py
+        - enhanced_health_checker.py
+        - fastapi_health_checker.py
+      - **interfaces** (2 files)
+        - health_checker.py
+        - __init__.py
+      - **models** (3 files)
+        - health_result.py
+        - health_status.py
+        - __init__.py
+      - **monitoring** (2 files)
+        - prometheus_integration.py
+        - __init__.py
+    - **interfaces** (10 files)
+      - base.py
+      - caching.py
+      - configuration.py
+    - **mobile** (2 files)
+      - mobile_test_framework.py
+      - __init__.py
+    - **monitoring** (19 files)
+      - alert_manager.py
+      - application_monitor.py
+      - automation_monitor.py
+      - **core** (2 files)
+        - monitor.py
+        - __init__.py
+      - **monitoring_service** (2 files)
+        - monitoringservice.py
+        - __init__.py
+    - **ops** (3 files)
+      - deployment_manager.py
+      - monitoring_dashboard.py
+      - __init__.py
+    - **performance** (16 files)
+      - ai_optimization_enhanced.py
+      - ai_test_optimizer.py
+      - automated_test_runner.py
+      - **templates** (1 files)
+        - __init__.py
+    - **resource** (4 files)
+      - gpu_manager.py
+      - quota_manager.py
+      - resource_manager.py
+      - **docs** (1 files)
+        - __init__.py
+    - **scheduler** (6 files)
+      - exceptions.py
+      - job_scheduler.py
+      - priority_queue.py
+    - **services** (1 files)
+      - __init__.py
+      - **cache** (7 files)
+        - disk_cache_manager.py
+        - enhanced_cache_manager.py
+        - icache_manager.py
+      - **database** (19 files)
+        - audit_logger.py
+        - config_monitor.py
+        - config_validator.py
+        - **interfaces** (2 files)
+          - database_interface.py
+          - __init__.py
+      - **network** (7 files)
+        - connection_pool.py
+        - exceptions.py
+        - load_balancer.py
+      - **notification** (1 files)
+        - __init__.py
+      - **security** (6 files)
+        - auth_manager.py
+        - data_sanitizer.py
+        - enhanced_security_manager.py
+      - **storage** (7 files)
+        - archive_failure_handler.py
+        - core.py
+        - data_consistency.py
+        - **adapters** (4 files)
+          - database.py
+          - file_system.py
+          - redis.py
+    - **testing** (6 files)
+      - chaos_engine.py
+      - chaos_orchestrator.py
+      - deployment_validator.py
+    - **trading** (7 files)
+      - circuit_breaker.py
+      - circuit_breaker_manager.py
+      - error_handler.py
+    - **utils** (2 files)
+      - exceptions.py
+      - __init__.py
+      - **helpers** (11 files)
+        - audit.py
+        - cache_utils.py
+        - datetime_parser.py
+        - **validators** (1 files)
+          - __init__.py
+    - **versioning** (3 files)
+      - data_version_manager.py
+      - storage_adapter.py
+      - __init__.py
+  - **integration** (8 files)
+    - data.py
+    - deployment.py
+    - discovery.py
+  - **ml** (1 files)
+    - __init__.py
+    - **integration** (2 files)
+      - enhanced_ml_integration.py
+      - __init__.py
+  - **models** (16 files)
+    - ab_testing.py
+    - api.py
+    - automl.py
+    - **inference** (6 files)
+      - batch_inference_processor.py
+      - gpu_inference_engine.py
+      - inference_cache.py
+  - **monitoring** (4 files)
+    - full_link_monitor.py
+    - intelligent_alert_system.py
+    - performance_analyzer.py
+  - **risk** (9 files)
+    - alert_system.py
+    - api.py
+    - compliance_checker.py
+  - **services** (9 files)
+    - api_service.py
+    - base_service.py
+    - business_service.py
+  - **trading** (20 files)
+    - account_manager.py
+    - api.py
+    - backtester.py
+    - **advanced_analysis** (5 files)
+      - clustering_engine.py
+      - portfolio_optimizer.py
+      - relationship_network.py
+    - **distributed** (3 files)
+      - distributed_trading_node.py
+      - intelligent_order_router.py
+      - __init__.py
+    - **execution** (11 files)
+      - enums.py
+      - execution_algorithm.py
+      - execution_engine.py
+    - **ml_integration** (9 files)
+      - auto_optimizer.py
+      - hyperparameter_tuner.py
+      - multi_objective_optimizer.py
+    - **portfolio** (4 files)
+      - portfolio_manager.py
+      - portfolio_optimizer.py
+      - strategy_portfolio.py
+    - **realtime** (2 files)
+      - realtime_trading_system.py
+      - __init__.py
+    - **risk** (4 files)
+      - china.py
+      - risk_compliance_engine.py
+      - risk_controller.py
+      - **china** (10 files)
+        - china_market_rule_checker.py
+        - circuit_breaker.py
+        - market_rule_checker.py
+    - **settlement** (2 files)
+      - settlement_engine.py
+      - __init__.py
+    - **signal** (2 files)
+      - signal_generator.py
+      - __init__.py
+    - **strategies** (10 files)
+      - base_strategy.py
+      - core.py
+      - cross_market_arbitrage.py
+      - **china** (9 files)
+        - base_strategy.py
+        - basic_strategy.py
+        - dragon_tiger.py
+      - **optimization** (4 files)
+        - advanced_optimizer.py
+        - genetic_optimizer.py
+        - performance_tuner.py
+    - **strategy** (2 files)
+      - high_freq_optimizer.py
+      - __init__.py
+    - **strategy_workspace** (9 files)
+      - analyzer.py
+      - optimizer.py
+      - simulator.py
+      - **static** (1 files)
+        - __init__.py
+    - **universe** (7 files)
+      - adaptive_factor_model.py
+      - comprehensive_scoring.py
+      - dynamic_universe_manager.py
+  - **tuning** (2 files)
+    - core.py
+    - __init__.py
+    - **evaluators** (2 files)
+      - early_stopping.py
+      - __init__.py
+    - **optimizers** (3 files)
+      - base.py
+      - optuna_tuner.py
+      - __init__.py
+    - **utils** (2 files)
+      - visualization.py
+      - __init__.py
+  - **utils** (8 files)
+    - convert.py
+    - data_utils.py
+    - date_utils.py
+```
+
+
+## 4. 依赖关系
+
+### 4.1 模块依赖分析
+
+- **aliases.py**
+  - src
+  - src
+  - src
+  - src
+  - src
+- **main.py**
+  - logging
+  - sys
+  - argparse
+  - pathlib
+  - typing
+- **acceleration\performance_optimizer.py**
+  - time
+  - threading
+  - typing
+  - logging
+- **acceleration\scalability_enhancer.py**
+  - time
+  - threading
+  - typing
+  - logging
+- **acceleration\fpga\fpga_accelerator.py**
+  - logging
+  - typing
+  - numpy
+- **acceleration\fpga\fpga_dashboard.py**
+  - datetime
+  - flask
+- **acceleration\fpga\fpga_fallback_manager.py**
+  - time
+  - typing
+  - logging
+- **acceleration\fpga\fpga_manager.py**
+  - time
+  - typing
+  - logging
+- **acceleration\fpga\fpga_optimizer.py**
+  - typing
+  - dataclasses
+  - logging
+- **acceleration\fpga\fpga_orderbook_optimizer.py**
+  - typing
+
+
+## 5. 事件系统
+
+### 5.1 事件统计
+- **发现事件**: 2211
+
+### 5.2 事件列表
+- status: completed
+- strategy: aggressive
+- label: POSITIVE
+- label: POSITIVE
+- label: POSITIVE
+- strategy: conservative
+- strategy: conservative
+- slippage_control: aggressive
+- slippage_control: aggressive
+- precision: FP16
+- status: pending
+- type: histogram
+- type: scatter
+- type: histogram
+- type: scatter
+- type: scatter
+- type: scatter
+- type: scatter
+- type: scatter
+- name: data_collection  # 最多显示20个
+
+
+## 6. 架构指标
+
+### 6.1 量化指标
+- **代码文件数**: 1254
+- **代码行数**: 299647
+- **模块数量**: 22
+- **复杂度**: 中
+- **可维护性**: 高
+
+---
+
+**文档生成完成时间**: 2025-08-23 20:53:45

@@ -1,0 +1,30 @@
+{
+  "name": "rqa2025_health_monitor_canary",
+  "version": "1.0.0",
+  "total_traffic_percentage": 100,
+  "initial_rollout_percentage": 5,
+  "rollout_steps": [
+    5,
+    15,
+    30,
+    50,
+    75,
+    100
+  ],
+  "monitoring_duration_minutes": 20,
+  "success_criteria": {
+    "error_rate_threshold": 0.05,
+    "response_time_p95_threshold": 5000,
+    "cpu_usage_threshold": 80,
+    "memory_usage_threshold": 85,
+    "monitoring_duration_minutes": 15
+  },
+  "rollback_criteria": {
+    "error_rate_threshold": 0.1,
+    "response_time_p95_threshold": 10000,
+    "cpu_usage_threshold": 95,
+    "memory_usage_threshold": 95,
+    "manual_rollback_trigger": false
+  },
+  "traffic_distribution": "percentage_based"
+}

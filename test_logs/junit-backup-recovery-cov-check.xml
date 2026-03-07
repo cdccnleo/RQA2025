@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="3" skipped="0" tests="11" time="70.182" timestamp="2025-11-17T08:13:19.762217+08:00" hostname="AIPC"><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_config_defaults" time="0.434"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_config_custom" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_info_dataclass" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_init_none_config" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: backups
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: backups
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_init_custom_config" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_init_custo0\backups
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_init_custo0\backups
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_load_backup_index_empty" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_load_backu0\backups
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_load_backu0\backups
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_load_backup_index_existing" time="0.055"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_load_backu1\backups
+INFO     src.data.sync.backup_recovery:backup_recovery.py:113 加载了 1 个备份记录
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_load_backu1\backups
+INFO:src.data.sync.backup_recovery:加载了 1 个备份记录
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_load_backup_index_invalid_json" time="0.040"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_load_backu2\backups
+ERROR    src.data.sync.backup_recovery:backup_recovery.py:115 加载备份索引失败: Expecting value: line 1 column 1 (char 0)
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_load_backu2\backups
+ERROR:src.data.sync.backup_recovery:加载备份索引失败: Expecting value: line 1 column 1 (char 0)
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_save_backup_index" time="0.037"><failure message="ValueError: Invalid format string">tests\unit\data\sync\test_backup_recovery_unit.py:156: in test_backup_manager_save_backup_index
+    backup_id = backup_manager.create_backup(data_sources)
+src\data\sync\backup_recovery.py:156: in create_backup
+    backup_id = f"backup_{datetime.now().strftime('%Y % m % d_ % H % M % S')}_{int(time.time() * 1000) % 1000}"
+E   ValueError: Invalid format string</failure><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_save_backu0\backups
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_save_backu0\backups
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_create_backup_dataframe" time="0.019"><failure message="ValueError: Invalid format string">tests\unit\data\sync\test_backup_recovery_unit.py:172: in test_backup_manager_create_backup_dataframe
+    backup_id = backup_manager.create_backup(data_sources)
+src\data\sync\backup_recovery.py:156: in create_backup
+    backup_id = f"backup_{datetime.now().strftime('%Y % m % d_ % H % M % S')}_{int(time.time() * 1000) % 1000}"
+E   ValueError: Invalid format string</failure><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_create_bac0\backups
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_create_bac0\backups
+
+</system-err></testcase><testcase classname="unit.data.sync.test_backup_recovery_unit" name="test_backup_manager_create_backup_dict" time="0.020"><failure message="ValueError: Invalid format string">tests\unit\data\sync\test_backup_recovery_unit.py:185: in test_backup_manager_create_backup_dict
+    backup_id = backup_manager.create_backup(data_sources)
+src\data\sync\backup_recovery.py:156: in create_backup
+    backup_id = f"backup_{datetime.now().strftime('%Y % m % d_ % H % M % S')}_{int(time.time() * 1000) % 1000}"
+E   ValueError: Invalid format string</failure><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.sync.backup_recovery:backup_recovery.py:91 数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_create_bac1\backups
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.sync.backup_recovery:数据备份恢复管理器初始化完成，备份目录: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-4242\popen-gw0\test_backup_manager_create_bac1\backups
+
+</system-err></testcase></testsuite></testsuites>

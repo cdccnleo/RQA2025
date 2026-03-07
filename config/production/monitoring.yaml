@@ -1,0 +1,486 @@
+# RQA2025 生产环境监控配置
+# 用于配置生产环境的监控、告警和日志收集
+
+monitoring:
+  # 监控总开关
+  enabled: true
+  
+  # 监控系统配置
+  systems:
+    # Prometheus 配置
+    prometheus:
+      enabled: true
+      port: 9090
+      retention_days: 30
+      scrape_interval: 15s
+      evaluation_interval: 15s
+      
+      # 告警规则配置
+      alerting:
+        enabled: true
+        rules_file: "config/production/prometheus_rules.yml"
+        
+      # 存储配置
+      storage:
+        type: "local"
+        path: "/var/lib/prometheus"
+        retention: "30d"
+    
+    # Grafana 配置
+    grafana:
+      enabled: true
+      port: 3000
+      admin_user: "admin"
+      admin_password: "${GRAFANA_ADMIN_PASSWORD}"
+      
+      # 数据源配置
+      datasources:
+        - name: "Prometheus"
+          type: "prometheus"
+          url: "http://prometheus:9090"
+          access: "proxy"
+          isDefault: true
+        
+        - name: "PostgreSQL"
+          type: "postgres"
+          url: "postgres:5432"
+          database: "rqa2025"
+          user: "${DB_USER}"
+          password: "${DB_PASSWORD}"
+      
+      # 仪表板配置
+      dashboards:
+        default: true
+        path: "config/production/grafana_dashboards"
+    
+    # AlertManager 配置
+    alertmanager:
+      enabled: true
+      port: 9093
+      
+      # 告警通知配置
+      notifications:
+        email:
+          enabled: true
+          smtp_host: "${SMTP_HOST}"
+          smtp_port: 587
+          smtp_user: "${SMTP_USER}"
+          smtp_password: "${SMTP_PASSWORD}"
+          from: "alerts@rqa2025.com"
+          to: ["ops@rqa2025.com", "dev@rqa2025.com"]
+        
+        slack:
+          enabled: true
+          webhook_url: "${SLACK_WEBHOOK_URL}"
+          channel: "#alerts"
+        
+        webhook:
+          enabled: true
+          url: "${WEBHOOK_URL}"
+  
+  # 日志收集配置
+  logging:
+    # 日志级别
+    level: "INFO"
+    
+    # 日志格式
+    format: "json"
+    
+    # 日志输出
+    outputs:
+      - type: "file"
+        path: "logs/application.log"
+        max_size: "100MB"
+        max_age: "30d"
+        max_backups: 10
+      
+      - type: "console"
+        enabled: true
+      
+      - type: "syslog"
+        enabled: false
+        host: "localhost"
+        port: 514
+    
+    # 结构化日志字段
+    fields:
+      service: "rqa2025"
+      environment: "production"
+      version: "1.0.0"
+  
+  # 指标收集配置
+  metrics:
+    # 应用指标
+    application:
+      enabled: true
+      port: 8080
+      path: "/metrics"
+      
+      # 自定义指标
+      custom:
+        - name: "business_process_count"
+          type: "counter"
+          help: "业务流程执行总数"
+          labels: ["process_type", "status"]
+        
+        - name: "business_process_duration"
+          type: "histogram"
+          help: "业务流程执行时长"
+          labels: ["process_type"]
+          buckets: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+        
+        - name: "active_users"
+          type: "gauge"
+          help: "当前活跃用户数"
+          labels: ["user_type"]
+    
+    # 系统指标
+    system:
+      enabled: true
+      
+      # CPU 指标
+      cpu:
+        enabled: true
+        interval: "15s"
+      
+      # 内存指标
+      memory:
+        enabled: true
+        interval: "15s"
+      
+      # 磁盘指标
+      disk:
+        enabled: true
+        interval: "60s"
+        paths: ["/", "/var", "/home"]
+      
+      # 网络指标
+      network:
+        enabled: true
+        interval: "15s"
+        interfaces: ["eth0", "eth1"]
+    
+    # 数据库指标
+    database:
+      enabled: true
+      
+      # PostgreSQL 指标
+      postgresql:
+        enabled: true
+        host: "localhost"
+        port: 5432
+        database: "rqa2025"
+        user: "${DB_USER}"
+        password: "${DB_PASSWORD}"
+        interval: "30s"
+      
+      # Redis 指标
+      redis:
+        enabled: true
+        host: "localhost"
+        port: 6379
+        password: "${REDIS_PASSWORD}"
+        interval: "30s"
+  
+  # 告警规则配置
+  alerts:
+    # 高严重性告警
+    critical:
+      - name: "ServiceDown"
+        condition: "up == 0"
+        duration: "1m"
+        severity: "critical"
+        summary: "服务 {{ $labels.instance }} 已停止运行"
+        description: "服务 {{ $labels.instance }} 已停止运行超过1分钟"
+        
+      - name: "HighCPUUsage"
+        condition: "cpu_usage > 90"
+        duration: "5m"
+        severity: "critical"
+        summary: "CPU使用率过高: {{ $value }}%"
+        description: "CPU使用率持续5分钟超过90%"
+        
+      - name: "HighMemoryUsage"
+        condition: "memory_usage > 95"
+        duration: "5m"
+        severity: "critical"
+        summary: "内存使用率过高: {{ $value }}%"
+        description: "内存使用率持续5分钟超过95%"
+        
+      - name: "HighDiskUsage"
+        condition: "disk_usage > 90"
+        duration: "10m"
+        severity: "critical"
+        summary: "磁盘使用率过高: {{ $value }}%"
+        description: "磁盘使用率持续10分钟超过90%"
+    
+    # 中等严重性告警
+    warning:
+      - name: "ServiceResponseSlow"
+        condition: "http_request_duration_seconds > 2"
+        duration: "2m"
+        severity: "warning"
+        summary: "服务响应缓慢: {{ $value }}s"
+        description: "服务响应时间持续2分钟超过2秒"
+        
+      - name: "HighErrorRate"
+        condition: "rate(http_requests_total{status=~\"5..\"}[5m]) > 0.1"
+        duration: "5m"
+        severity: "warning"
+        summary: "错误率过高: {{ $value }}"
+        description: "HTTP 5xx错误率持续5分钟超过10%"
+        
+      - name: "DatabaseConnectionsHigh"
+        condition: "pg_stat_database_numbackends > 80"
+        duration: "5m"
+        severity: "warning"
+        summary: "数据库连接数过高: {{ $value }}"
+        description: "数据库活跃连接数持续5分钟超过80"
+    
+    # 低严重性告警
+    info:
+      - name: "ServiceRestart"
+        condition: "changes(process_start_time_seconds[5m]) > 0"
+        severity: "info"
+        summary: "服务重启: {{ $labels.instance }}"
+        description: "检测到服务 {{ $labels.instance }} 重启"
+        
+      - name: "NewDeployment"
+        condition: "changes(container_start_time_seconds[5m]) > 0"
+        severity: "info"
+        summary: "新部署检测到"
+        description: "检测到新的容器部署"
+  
+  # 健康检查配置
+  health_checks:
+    enabled: true
+    interval: "30s"
+    timeout: "10s"
+    retries: 3
+    
+    # 服务健康检查端点
+    endpoints:
+      - name: "api_gateway"
+        url: "http://localhost:8080/health"
+        expected_status: 200
+        
+      - name: "data_service"
+        url: "http://localhost:8081/health"
+        expected_status: 200
+        
+      - name: "features_service"
+        url: "http://localhost:8082/health"
+        expected_status: 200
+        
+      - name: "model_service"
+        url: "http://localhost:8083/health"
+        expected_status: 200
+        
+      - name: "trading_service"
+        url: "http://localhost:8084/health"
+        expected_status: 200
+        
+      - name: "risk_service"
+        url: "http://localhost:8085/health"
+        expected_status: 200
+    
+    # 数据库健康检查
+    databases:
+      - name: "postgresql"
+        type: "postgresql"
+        host: "localhost"
+        port: 5432
+        database: "rqa2025"
+        user: "${DB_USER}"
+        password: "${DB_PASSWORD}"
+        
+      - name: "redis"
+        type: "redis"
+        host: "localhost"
+        port: 6379
+        password: "${REDIS_PASSWORD}"
+  
+  # 性能监控配置
+  performance:
+    enabled: true
+    
+    # APM (应用性能监控)
+    apm:
+      enabled: true
+      sampling_rate: 0.1  # 采样率10%
+      
+      # 追踪配置
+      tracing:
+        enabled: true
+        backend: "jaeger"
+        endpoint: "http://jaeger:14268/api/traces"
+        
+      # 性能指标
+      metrics:
+        - name: "request_duration"
+          type: "histogram"
+          unit: "seconds"
+          
+        - name: "request_count"
+          type: "counter"
+          
+        - name: "error_count"
+          type: "counter"
+    
+    # 业务流程性能监控
+    business_process:
+      enabled: true
+      
+      # 关键业务流程
+      critical_processes:
+        - name: "data_ingestion"
+          timeout: "300s"
+          alert_threshold: "60s"
+          
+        - name: "feature_engineering"
+          timeout: "600s"
+          alert_threshold: "120s"
+          
+        - name: "model_training"
+          timeout: "3600s"
+          alert_threshold: "1800s"
+          
+        - name: "trading_execution"
+          timeout: "30s"
+          alert_threshold: "10s"
+          
+        - name: "risk_assessment"
+          timeout: "60s"
+          alert_threshold: "20s"
+  
+  # 安全监控配置
+  security:
+    enabled: true
+    
+    # 入侵检测
+    intrusion_detection:
+      enabled: true
+      
+      # 异常行为检测
+      anomaly_detection:
+        enabled: true
+        sensitivity: "medium"
+        
+      # 威胁情报
+      threat_intelligence:
+        enabled: true
+        sources:
+          - "https://api.threatintel.com/v1/indicators"
+          - "https://feeds.abuse.ch/blocklist.txt"
+    
+    # 访问控制监控
+    access_control:
+      enabled: true
+      
+      # 登录监控
+      login_monitoring:
+        enabled: true
+        failed_attempts_threshold: 5
+        lockout_duration: "15m"
+        
+      # 权限变更监控
+      permission_changes:
+        enabled: true
+        alert_on_change: true
+        
+      # API访问监控
+      api_access:
+        enabled: true
+        rate_limit: 1000  # 每分钟请求数
+        suspicious_patterns:
+          - "SQL injection"
+          - "XSS attack"
+          - "Path traversal"
+  
+  # 备份监控配置
+  backup:
+    enabled: true
+    
+    # 数据库备份
+    database:
+      enabled: true
+      schedule: "0 2 * * *"  # 每天凌晨2点
+      retention: "30d"
+      compression: true
+      
+      # 备份验证
+      verification:
+        enabled: true
+        method: "checksum"
+        
+      # 备份监控
+      monitoring:
+        enabled: true
+        alert_on_failure: true
+        alert_on_missing: true
+    
+    # 配置文件备份
+    configuration:
+      enabled: true
+      schedule: "0 3 * * *"  # 每天凌晨3点
+      retention: "90d"
+      include_paths:
+        - "config/production"
+        - "scripts/deployment"
+        - "deploy"
+      
+      # 版本控制
+      version_control:
+        enabled: true
+        git_repository: "git@github.com:rqa2025/config-backup.git"
+        branch: "production"
+        auto_commit: true
+  
+  # 报告配置
+  reporting:
+    enabled: true
+    
+    # 日报
+    daily:
+      enabled: true
+      schedule: "0 8 * * *"  # 每天早上8点
+      recipients: ["ops@rqa2025.com", "management@rqa2025.com"]
+      format: "html"
+      
+      # 报告内容
+      content:
+        - "系统概览"
+        - "性能指标"
+        - "错误统计"
+        - "告警摘要"
+        - "资源使用情况"
+    
+    # 周报
+    weekly:
+      enabled: true
+      schedule: "0 9 * * 1"  # 每周一早上9点
+      recipients: ["ops@rqa2025.com", "management@rqa2025.com", "stakeholders@rqa2025.com"]
+      format: "pdf"
+      
+      # 报告内容
+      content:
+        - "周度趋势分析"
+        - "性能优化建议"
+        - "容量规划"
+        - "安全事件总结"
+        - "改进计划"
+    
+    # 月报
+    monthly:
+      enabled: true
+      schedule: "0 10 1 * *"  # 每月1号早上10点
+      recipients: ["management@rqa2025.com", "stakeholders@rqa2025.com", "board@rqa2025.com"]
+      format: "pdf"
+      
+      # 报告内容
+      content:
+        - "月度性能总结"
+        - "成本分析"
+        - "风险评估"
+        - "合规性检查"
+        - "战略建议"

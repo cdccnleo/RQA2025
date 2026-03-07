@@ -1,0 +1,64 @@
+{
+  "name": "application_performance",
+  "description": "应用性能监控仪表板",
+  "panels": [
+    {
+      "title": "响应时间分布",
+      "type": "heatmap",
+      "metrics": [
+        "application_response_time"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 6
+      }
+    },
+    {
+      "title": "请求速率",
+      "type": "graph",
+      "metrics": [
+        "application_requests_per_second"
+      ],
+      "layout": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 6
+      }
+    },
+    {
+      "title": "错误率",
+      "type": "graph",
+      "metrics": [
+        "application_error_rate"
+      ],
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "w": 6,
+        "h": 4
+      }
+    },
+    {
+      "title": "活跃连接数",
+      "type": "graph",
+      "metrics": [
+        "database_connections_active"
+      ],
+      "layout": {
+        "x": 6,
+        "y": 6,
+        "w": 6,
+        "h": 4
+      }
+    }
+  ],
+  "refresh_interval": "15s",
+  "tags": [
+    "application",
+    "performance",
+    "response"
+  ]
+}

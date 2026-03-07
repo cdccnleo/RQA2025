@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-app
+  namespace: rqa2025-preprod
+  labels:
+    app: rqa2025
+    component: app
+    environment: preprod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: app
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: app
+        environment: preprod
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "preprod"
+        - name: REDIS_URL
+          value: "redis://redis-service.rqa2025-preprod:6379"
+        - name: DB_URL
+          value: "postgresql://user:password@postgres-service.rqa2025-preprod:5432/rqa2025_preprod"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5

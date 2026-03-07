@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript语法测试</title>
+</head>
+<body>
+    <div id="result"></div>
+
+    <script>
+        try {
+            function testTemplateString() {
+                const error = 'test error';
+                const html = `<tr><td colspan="8" class="px-6 py-4 text-center text-red-500">加载失败: ${error}<br><button onclick='loadDataFromAPI()' class="mt-2 px-3 py-1 bg-blue-500 text-white rounded">重试</button></td></tr>`;
+                return html;
+            }
+
+            const result = testTemplateString();
+            document.getElementById('result').innerHTML = '✅ 语法测试通过<br>生成的HTML: ' + result.substring(0, 100) + '...';
+            console.log('✅ JavaScript语法测试通过');
+        } catch (error) {
+            document.getElementById('result').innerHTML = '❌ 语法错误: ' + error.message;
+            console.error('❌ JavaScript语法错误:', error);
+        }
+    </script>
+</body>
+</html>

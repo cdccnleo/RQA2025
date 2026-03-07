@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-08-07T08:58:32.843081",
+  "sync_type": "multi_market_data_synchronization",
+  "implementation_status": "completed",
+  "sync_score": 100.0,
+  "market_registration": {
+    "total_markets": 5,
+    "registered_markets": [
+      "US_NYSE",
+      "US_NASDAQ",
+      "UK_LSE",
+      "JP_TSE",
+      "HK_HKEX"
+    ],
+    "market_status": {
+      "US_NYSE": {
+        "market_name": "New York Stock Exchange",
+        "timezone": "America/New_York",
+        "base_currency": "USD",
+        "data_count": 100,
+        "is_trading": false,
+        "last_update": "2025-08-07T08:58:32.843081"
+      },
+      "US_NASDAQ": {
+        "market_name": "NASDAQ",
+        "timezone": "America/New_York",
+        "base_currency": "USD",
+        "data_count": 100,
+        "is_trading": false,
+        "last_update": "2025-08-07T08:58:32.843081"
+      },
+      "UK_LSE": {
+        "market_name": "London Stock Exchange",
+        "timezone": "Europe/London",
+        "base_currency": "GBP",
+        "data_count": 100,
+        "is_trading": false,
+        "last_update": "2025-08-07T08:58:32.843081"
+      },
+      "JP_TSE": {
+        "market_name": "Tokyo Stock Exchange",
+        "timezone": "Asia/Tokyo",
+        "base_currency": "JPY",
+        "data_count": 100,
+        "is_trading": true,
+        "last_update": "2025-08-07T08:58:32.843081"
+      },
+      "HK_HKEX": {
+        "market_name": "Hong Kong Stock Exchange",
+        "timezone": "Asia/Hong_Kong",
+        "base_currency": "HKD",
+        "data_count": 100,
+        "is_trading": false,
+        "last_update": "2025-08-07T08:58:32.843081"
+      }
+    }
+  },
+  "data_generation": {
+    "total_records": 500,
+    "records_by_market": {
+      "US_NYSE": 100,
+      "US_NASDAQ": 100,
+      "UK_LSE": 100,
+      "JP_TSE": 100,
+      "HK_HKEX": 100
+    }
+  },
+  "timezone_synchronization": {
+    "sync_tasks": 10,
+    "sync_results": {
+      "US_NYSE_to_US_NASDAQ": 10,
+      "US_NYSE_to_UK_LSE": 10,
+      "US_NYSE_to_JP_TSE": 10,
+      "US_NYSE_to_HK_HKEX": 10,
+      "US_NASDAQ_to_UK_LSE": 10,
+      "US_NASDAQ_to_JP_TSE": 10,
+      "US_NASDAQ_to_HK_HKEX": 10,
+      "UK_LSE_to_JP_TSE": 10,
+      "UK_LSE_to_HK_HKEX": 10,
+      "JP_TSE_to_HK_HKEX": 10
+    },
+    "sync_status": {
+      "total_tasks": 0,
+      "completed_tasks": 0,
+      "failed_tasks": 0,
+      "running_tasks": 0,
+      "success_rate": 0,
+      "timezone_mappings": 8
+    }
+  },
+  "currency_processing": {
+    "processing_results": {
+      "total_records": 100,
+      "usd_converted": 100,
+      "eur_converted": 100,
+      "currencies_processed": [
+        "HKD",
+        "JPY",
+        "USD",
+        "GBP"
+      ]
+    },
+    "currency_statistics": {
+      "currency_distribution": {},
+      "total_value_usd": 0.0,
+      "exchange_rates_count": 4,
+      "supported_currencies": [
+        "USD",
+        "EUR",
+        "GBP",
+        "JPY",
+        "HKD",
+        "CNY"
+      ]
+    }
+  },
+  "sync_metrics": {
+    "markets_covered": 5,
+    "timezones_handled": 8,
+    "currencies_supported": 6,
+    "overall_effectiveness": 100.0
+  }
+}

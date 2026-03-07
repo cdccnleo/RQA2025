@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 数据质量监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="common/websocket_manager.js"></script>
+    <script src="common/ui_components.js"></script>
+    <script src="common/toast.js"></script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .quality-indicator {
+            position: relative;
+            height: 120px;
+        }
+        .quality-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .quality-excellent { color: #10b981; }
+        .quality-good { color: #3b82f6; }
+        .quality-warning { color: #f59e0b; }
+        .quality-poor { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">数据质量监控</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-shield-alt text-green-600 mr-3"></i>
+                数据质量监控
+            </h1>
+            <p class="text-gray-600">实时监控数据质量指标、异常检测和质量修复</p>
+        </div>
+
+        <!-- Overall Quality Score -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">整体质量得分</h3>
+                    <div class="quality-score quality-excellent" id="overall-score">--</div>
+                    <p class="text-sm text-gray-600 mt-2">基于5项核心质量指标的综合评估</p>
+                </div>
+                <div class="quality-indicator">
+                    <canvas id="overallQualityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-check-circle text-blue-500 text-3xl mb-3"></i>
+                    <div class="text-sm text-gray-600 mb-2">完整性</div>
+                    <div class="text-2xl font-bold text-gray-900" id="completeness-score">--</div>
+                    <div class="text-xs text-gray-500 mt-1">非空率</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-bullseye text-green-500 text-3xl mb-3"></i>
+                    <div class="text-sm text-gray-600 mb-2">准确性</div>
+                    <div class="text-2xl font-bold text-gray-900" id="accuracy-score">--</div>
+                    <div class="text-xs text-gray-500 mt-1">正确性</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-link text-purple-500 text-3xl mb-3"></i>
+                    <div class="text-sm text-gray-600 mb-2">一致性</div>
+                    <div class="text-2xl font-bold text-gray-900" id="consistency-score">--</div>
+                    <div class="text-xs text-gray-500 mt-1">逻辑一致</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-clock text-yellow-500 text-3xl mb-3"></i>
+                    <div class="text-sm text-gray-600 mb-2">时效性</div>
+                    <div class="text-2xl font-bold text-gray-900" id="timeliness-score">--</div>
+                    <div class="text-xs text-gray-500 mt-1">新鲜度</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-check-double text-red-500 text-3xl mb-3"></i>
+                    <div class="text-sm text-gray-600 mb-2">有效性</div>
+                    <div class="text-2xl font-bold text-gray-900" id="validity-score">--</div>
+                    <div class="text-xs text-gray-500 mt-1">格式正确</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Trends -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">质量趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="qualityTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">质量指标对比</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="qualityComparisonChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Issues -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">质量问题</h3>
+                    <select id="severityFilter" onchange="filterIssues()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option value="all">全部严重程度</option>
+                        <option value="critical">严重</option>
+                        <option value="high">高</option>
+                        <option value="medium">中</option>
+                        <option value="low">低</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">数据源</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">问题类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">严重程度</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">影响记录数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">建议修复</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qualityIssuesBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quality Recommendations -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">质量优化建议</h3>
+            </div>
+            <div class="p-6">
+                <div id="recommendations" class="space-y-3">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <div>加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let overallQualityChart, qualityTrendChart, qualityComparisonChart;
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadQualityData() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/quality/metrics'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                updateQualityMetrics(data);
+                updateQualityCharts(data);
+            } catch (error) {
+                console.error('加载质量数据失败:', error);
+            }
+        }
+
+        async function loadQualityIssues() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/quality/issues'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                renderQualityIssues(data.issues || []);
+            } catch (error) {
+                console.error('加载质量问题失败:', error);
+            }
+        }
+
+        async function loadRecommendations() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/quality/recommendations'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                renderRecommendations(data.recommendations || []);
+            } catch (error) {
+                console.error('加载建议失败:', error);
+            }
+        }
+
+        function updateQualityMetrics(data) {
+            const metrics = data.metrics || {};
+            
+            const overallScore = metrics.overall_score || 0;
+            document.getElementById('overall-score').textContent = (overallScore * 100).toFixed(1) + '%';
+            document.getElementById('overall-score').className = 'quality-score ' + getQualityClass(overallScore);
+            
+            document.getElementById('completeness-score').textContent = 
+                metrics.completeness ? (metrics.completeness * 100).toFixed(1) + '%' : '--';
+            document.getElementById('accuracy-score').textContent = 
+                metrics.accuracy ? (metrics.accuracy * 100).toFixed(1) + '%' : '--';
+            document.getElementById('consistency-score').textContent = 
+                metrics.consistency ? (metrics.consistency * 100).toFixed(1) + '%' : '--';
+            document.getElementById('timeliness-score').textContent = 
+                metrics.timeliness ? (metrics.timeliness * 100).toFixed(1) + '%' : '--';
+            document.getElementById('validity-score').textContent = 
+                metrics.validity ? (metrics.validity * 100).toFixed(1) + '%' : '--';
+        }
+
+        function getQualityClass(score) {
+            if (score >= 0.9) return 'quality-excellent';
+            if (score >= 0.7) return 'quality-good';
+            if (score >= 0.5) return 'quality-warning';
+            return 'quality-poor';
+        }
+
+        function updateQualityCharts(data) {
+            const history = data.history || [];
+            
+            // 整体质量雷达图
+            if (overallQualityChart && data.metrics) {
+                const metrics = data.metrics;
+                overallQualityChart.data.datasets[0].data = [
+                    metrics.completeness || 0,
+                    metrics.accuracy || 0,
+                    metrics.consistency || 0,
+                    metrics.timeliness || 0,
+                    metrics.validity || 0
+                ];
+                overallQualityChart.update();
+            }
+
+            // 质量趋势图
+            if (qualityTrendChart && history.length > 0) {
+                const labels = history.map((_, i) => {
+                    const date = new Date();
+                    date.setHours(date.getHours() - (history.length - i));
+                    return date.toLocaleTimeString();
+                });
+                
+                qualityTrendChart.data.labels = labels;
+                qualityTrendChart.data.datasets[0].data = history.map(h => h.overall_score || 0);
+                qualityTrendChart.update();
+            }
+
+            // 质量对比图
+            if (qualityComparisonChart && data.metrics) {
+                const metrics = data.metrics;
+                qualityComparisonChart.data.datasets[0].data = [
+                    metrics.completeness || 0,
+                    metrics.accuracy || 0,
+                    metrics.consistency || 0,
+                    metrics.timeliness || 0,
+                    metrics.validity || 0
+                ];
+                qualityComparisonChart.update();
+            }
+        }
+
+        function renderQualityIssues(issues) {
+            const tbody = document.getElementById('qualityIssuesBody');
+            const filter = document.getElementById('severityFilter').value;
+            
+            let filtered = issues;
+            if (filter !== 'all') {
+                filtered = issues.filter(i => i.severity === filter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-check-circle text-2xl mb-2 text-green-500"></i>
+                            <div>暂无质量问题</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(issue => {
+                const severityColor = {
+                    'critical': 'bg-red-100 text-red-800',
+                    'high': 'bg-orange-100 text-orange-800',
+                    'medium': 'bg-yellow-100 text-yellow-800',
+                    'low': 'bg-blue-100 text-blue-800'
+                }[issue.severity] || 'bg-gray-100 text-gray-800';
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${issue.data_source || '未知'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${issue.issue_type || '未知'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${severityColor}">
+                                ${getSeverityText(issue.severity)}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${issue.affected_records || 0}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            ${issue.suggested_fix || '暂无建议'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="repairIssue('${issue.issue_type}', '${issue.data_source}')" 
+                                class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-wrench"></i> 修复
+                            </button>
+                            <button onclick="viewIssueDetails('${issue.issue_type}')" 
+                                class="text-indigo-600 hover:text-indigo-900">
+                                <i class="fas fa-eye"></i> 详情
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getSeverityText(severity) {
+            const map = {
+                'critical': '严重',
+                'high': '高',
+                'medium': '中',
+                'low': '低'
+            };
+            return map[severity] || severity;
+        }
+
+        function renderRecommendations(recommendations) {
+            const container = document.getElementById('recommendations');
+            
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-check-circle text-2xl mb-2 text-green-500"></i>
+                        <div>暂无优化建议</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = recommendations.map(rec => `
+                <div class="flex items-start p-4 bg-blue-50 rounded-lg">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-3 mt-1"></i>
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900">${rec.title || rec}</div>
+                        ${rec.description ? `<div class="text-sm text-gray-600 mt-1">${rec.description}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterIssues() {
+            loadQualityIssues();
+        }
+
+        async function repairIssue(issueType, dataSource) {
+            if (!confirm('确定要修复此质量问题吗？')) return;
+            
+            try {
+                const response = await fetch(getApiBaseUrl('/data/quality/repair'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        issue_type: issueType,
+                        data_source: dataSource
+                    })
+                });
+
+                if (response.ok) {
+                    showSuccess('修复任务已启动');
+                    await loadQualityIssues();
+                } else {
+                    showError('修复失败');
+                }
+            } catch (error) {
+                console.error('修复质量问题失败:', error);
+                showError('修复失败: ' + error.message);
+            }
+        }
+
+        function viewIssueDetails(issueType) {
+            showInfo('查看详情功能开发中');
+        }
+
+        function refreshData() {
+            loadQualityData();
+            loadQualityIssues();
+            loadRecommendations();
+        }
+
+        function initCharts() {
+            // 整体质量雷达图
+            const overallCtx = document.getElementById('overallQualityChart').getContext('2d');
+            overallQualityChart = new Chart(overallCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['完整性', '准确性', '一致性', '时效性', '有效性'],
+                    datasets: [{
+                        label: '质量指标',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(59, 130, 246)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+
+            // 质量趋势图
+            const trendCtx = document.getElementById('qualityTrendChart').getContext('2d');
+            qualityTrendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '整体质量得分',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+
+            // 质量对比图
+            const comparisonCtx = document.getElementById('qualityComparisonChart').getContext('2d');
+            qualityComparisonChart = new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['完整性', '准确性', '一致性', '时效性', '有效性'],
+                    datasets: [{
+                        label: '质量得分',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        // WebSocket连接管理
+        let wsDataQuality = null;
+
+        function handleQualityEvent(message) {
+            if (!message.data) return;
+            const eventType = message.event_type;
+            const data = message.data || {};
+            
+            // 根据事件类型更新相应的UI组件
+            if (eventType && (eventType.includes('DATA_QUALITY_UPDATED') || eventType.includes('DATA_QUALITY_CHECKED'))) {
+                // 更新质量指标
+                if (data.metrics) {
+                    updateQualityMetrics({ metrics: data.metrics });
+                }
+                if (data.history) {
+                    updateQualityCharts({ history: data.history, metrics: data.metrics });
+                }
+            } else if (eventType && eventType.includes('DATA_QUALITY_ALERT')) {
+                // 更新质量问题列表
+                if (data.issues) {
+                    renderQualityIssues(data.issues);
+                }
+            } else if (eventType && eventType.includes('DATA_COLLECTED')) {
+                // 数据采集完成，刷新质量数据
+                loadQualityData();
+            } else {
+                // 默认处理：更新所有数据
+                if (data.metrics) {
+                    updateQualityMetrics({ metrics: data.metrics });
+                }
+                if (data.history) {
+                    updateQualityCharts({ history: data.history, metrics: data.metrics });
+                }
+                if (data.issues) {
+                    renderQualityIssues(data.issues);
+                }
+            }
+        }
+
+        function refreshQualityData() {
+            loadQualityData();
+            loadQualityIssues();
+            loadRecommendations();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadQualityData();
+            loadQualityIssues();
+            loadRecommendations();
+            // 优先使用WebSocket实时更新，失败则使用轮询
+            try {
+                if (typeof connectDataQualityWebSocket === 'function') {
+                    wsDataQuality = connectDataQualityWebSocket(
+                        (data) => {
+                            handleQualityEvent({ data: data });
+                        },
+                        () => {
+                            refreshQualityData();
+                        }
+                    );
+                } else {
+                    setInterval(refreshQualityData, 15000); // 每15秒刷新
+                }
+            } catch (error) {
+                console.warn('WebSocket连接失败，使用轮询模式:', error);
+                setInterval(refreshQualityData, 15000); // 每15秒刷新
+            }
+        });
+    </script>
+</body>
+</html>
+

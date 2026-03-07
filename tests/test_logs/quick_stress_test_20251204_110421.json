@@ -1,0 +1,220 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-12-04T11:04:21.378502",
+    "total_scenarios": 1,
+    "test_type": "quick_validation",
+    "framework_version": "1.0.0"
+  },
+  "system_limits": {
+    "overall_max_stable_concurrency": 20,
+    "best_performing_scenario": "high_frequency_trading",
+    "weakest_scenario": "high_frequency_trading",
+    "scenario_performance": {
+      "high_frequency_trading": {
+        "max_stable_concurrency": 20,
+        "max_throughput": 1120.1043924714095,
+        "scalability": "under_test"
+      }
+    }
+  },
+  "scenario_details": {
+    "high_frequency_trading": {
+      "profile": {
+        "name": "high_frequency_trading",
+        "description": "高频交易场景：模拟大量快速订单",
+        "concurrency_levels": [
+          5,
+          10,
+          20
+        ],
+        "ramp_up_time": 10,
+        "steady_state_time": 30,
+        "cooldown_time": 5,
+        "target_operations": [
+          {
+            "name": "market_order_execution",
+            "function": "<function simulate_market_order at 0x00000190DE53E430>",
+            "weight": 0.7,
+            "target_rps": 1000
+          },
+          {
+            "name": "limit_order_placement",
+            "function": "<function simulate_limit_order at 0x00000190DE60ED30>",
+            "weight": 0.2,
+            "target_rps": 500
+          },
+          {
+            "name": "order_cancellation",
+            "function": "<function simulate_order_cancel at 0x00000190DE60EDC0>",
+            "weight": 0.1,
+            "target_rps": 200
+          }
+        ]
+      },
+      "results": [
+        {
+          "test_name": "high_frequency_trading",
+          "concurrency_level": 5,
+          "total_requests": 8847,
+          "successful_requests": 8847,
+          "failed_requests": 0,
+          "total_duration": 47.08578848838806,
+          "avg_response_time": 16.822181010512036,
+          "min_response_time": 8.775499999998715,
+          "max_response_time": 33.987700000004395,
+          "p95_response_time": 30.680759999999907,
+          "p99_response_time": 32.15207600000042,
+          "throughput_rps": 294.5221135249294,
+          "error_rate": 0.0,
+          "cpu_usage_percent": 0.0,
+          "memory_usage_mb": 86.41015625,
+          "memory_usage_percent": 0.13348533399212087,
+          "system_stable": true
+        },
+        {
+          "test_name": "high_frequency_trading",
+          "concurrency_level": 10,
+          "total_requests": 17496,
+          "successful_requests": 17496,
+          "failed_requests": 0,
+          "total_duration": 47.08006811141968,
+          "avg_response_time": 17.02007941815273,
+          "min_response_time": 6.573099999997112,
+          "max_response_time": 103.84850000001222,
+          "p95_response_time": 30.541145000000824,
+          "p99_response_time": 32.735859999997814,
+          "throughput_rps": 582.4642281521453,
+          "error_rate": 0.0,
+          "cpu_usage_percent": 0.0,
+          "memory_usage_mb": 91.72265625,
+          "memory_usage_percent": 0.1416920178775367,
+          "system_stable": true
+        },
+        {
+          "test_name": "high_frequency_trading",
+          "concurrency_level": 20,
+          "total_requests": 33648,
+          "successful_requests": 33648,
+          "failed_requests": 0,
+          "total_duration": 47.11139273643494,
+          "avg_response_time": 17.707538676890202,
+          "min_response_time": 6.304700000015373,
+          "max_response_time": 45.420699999993985,
+          "p95_response_time": 30.76728499998964,
+          "p99_response_time": 34.18495499999665,
+          "throughput_rps": 1120.1043924714095,
+          "error_rate": 0.0,
+          "cpu_usage_percent": 0.0,
+          "memory_usage_mb": 101.27734375,
+          "memory_usage_percent": 0.15645198021851262,
+          "system_stable": true
+        }
+      ],
+      "report": {
+        "report_metadata": {
+          "generated_at": "2025-12-04T11:04:21.370510",
+          "test_profile": "high_frequency_trading",
+          "profile_description": "高频交易场景：模拟大量快速订单",
+          "total_concurrency_levels": 3,
+          "test_duration_total": 141.27724933624268
+        },
+        "performance_limits": {
+          "max_stable_concurrency": 20,
+          "performance_inflection_point": null,
+          "breaking_points": [],
+          "recommended_max_concurrency": 16.0,
+          "scalability_assessment": "良好扩展性"
+        },
+        "detailed_results": [
+          {
+            "test_name": "high_frequency_trading",
+            "concurrency_level": 5,
+            "total_requests": 8847,
+            "successful_requests": 8847,
+            "failed_requests": 0,
+            "total_duration": 47.08578848838806,
+            "avg_response_time": 16.822181010512036,
+            "min_response_time": 8.775499999998715,
+            "max_response_time": 33.987700000004395,
+            "p95_response_time": 30.680759999999907,
+            "p99_response_time": 32.15207600000042,
+            "throughput_rps": 294.5221135249294,
+            "error_rate": 0.0,
+            "cpu_usage_percent": 0.0,
+            "memory_usage_mb": 86.41015625,
+            "memory_usage_percent": 0.13348533399212087,
+            "system_stable": true
+          },
+          {
+            "test_name": "high_frequency_trading",
+            "concurrency_level": 10,
+            "total_requests": 17496,
+            "successful_requests": 17496,
+            "failed_requests": 0,
+            "total_duration": 47.08006811141968,
+            "avg_response_time": 17.02007941815273,
+            "min_response_time": 6.573099999997112,
+            "max_response_time": 103.84850000001222,
+            "p95_response_time": 30.541145000000824,
+            "p99_response_time": 32.735859999997814,
+            "throughput_rps": 582.4642281521453,
+            "error_rate": 0.0,
+            "cpu_usage_percent": 0.0,
+            "memory_usage_mb": 91.72265625,
+            "memory_usage_percent": 0.1416920178775367,
+            "system_stable": true
+          },
+          {
+            "test_name": "high_frequency_trading",
+            "concurrency_level": 20,
+            "total_requests": 33648,
+            "successful_requests": 33648,
+            "failed_requests": 0,
+            "total_duration": 47.11139273643494,
+            "avg_response_time": 17.707538676890202,
+            "min_response_time": 6.304700000015373,
+            "max_response_time": 45.420699999993985,
+            "p95_response_time": 30.76728499998964,
+            "p99_response_time": 34.18495499999665,
+            "throughput_rps": 1120.1043924714095,
+            "error_rate": 0.0,
+            "cpu_usage_percent": 0.0,
+            "memory_usage_mb": 101.27734375,
+            "memory_usage_percent": 0.15645198021851262,
+            "system_stable": true
+          }
+        ],
+        "summary_metrics": {
+          "max_throughput_achieved": 1120.1043924714095,
+          "min_response_time": 16.822181010512036,
+          "max_stable_concurrency": 20,
+          "overall_error_rate": 0.0,
+          "scalability_rating": "良好扩展性"
+        },
+        "recommendations": [
+          "系统最大稳定并发数: 20，建议生产环境不超过此值80%",
+          "系统扩展性良好，可以考虑水平扩展"
+        ],
+        "system_characteristics": {
+          "tested_operations": [
+            "market_order_execution",
+            "limit_order_placement",
+            "order_cancellation"
+          ],
+          "load_pattern": "gradual_ramp_up",
+          "stability_criteria": {
+            "max_error_rate": 5.0,
+            "max_p95_latency": 1000,
+            "max_cpu_usage": 90,
+            "max_memory_usage": 85
+          }
+        }
+      }
+    }
+  },
+  "production_recommendations": [
+    "基于快速测试结果，建议进行更全面的压力测试",
+    "关注系统在不同并发级别下的稳定性表现",
+    "监控CPU和内存使用率的变化趋势"
+  ]
+}

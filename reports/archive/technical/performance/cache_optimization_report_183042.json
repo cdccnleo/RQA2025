@@ -1,0 +1,40 @@
+{
+  "cache_stats": {
+    "hits": 1,
+    "misses": 0,
+    "total_requests": 1,
+    "hit_rate": 1.0,
+    "evictions": 0,
+    "current_size": 1,
+    "max_size": 1000
+  },
+  "optimization_history": [
+    {
+      "timestamp": 1753589873.6812994,
+      "original_config": {
+        "max_size": 1000,
+        "ttl_seconds": 3600,
+        "cleanup_interval": 300,
+        "enable_persistence": true,
+        "compression_enabled": true,
+        "memory_limit_mb": 100
+      },
+      "optimized_config": {
+        "max_size": 500,
+        "ttl_seconds": 3600,
+        "cleanup_interval": 300,
+        "enable_persistence": true,
+        "compression_enabled": true,
+        "memory_limit_mb": 100
+      },
+      "usage_patterns": {
+        "hit_rate": 1.0,
+        "avg_request_rate": 1000,
+        "memory_usage": 60
+      }
+    }
+  ],
+  "recommendations": [
+    "缓存利用率较低，可以考虑减少缓存大小"
+  ]
+}

@@ -1,0 +1,525 @@
+"""
+机器学习模型验证深度测试
+测试ML模型的各种验证场景和边界条件
+"""
+
+import pytest
+import numpy as np
+import pandas as pd
+from unittest.mock import Mock, patch, MagicMock
+from datetime import datetime, timedelta
+
+from src.ml.models.concrete_models import ConcreteModel
+from src.ml.core.exceptions import MLException, ModelNotFoundError
+
+
+class TestMLModelValidationComprehensive:
+    """机器学习模型验证综合测试"""
+
+    @pytest.fixture
+    def concrete_model(self):
+        """创建具体模型实例"""
+        return ConcreteModel()
+
+    @pytest.fixture
+    def ai_risk_model(self):
+        """创建AI风险预测模型实例"""
+        return ConcreteModel()  # Simplified for testing
+
+    def test_model_validator_initialization(self, concrete_model):
+        """测试模型验证器初始化"""
+        assert concrete_model is not None
+        assert hasattr(concrete_model, 'model_type')
+
+    @pytest.mark.skip(reason="Complex validation tests require unavailable modules")
+    def test_walk_forward_validation(self, concrete_model):
+        """测试步进式验证 - 跳过"""
+        pass
+
+    @pytest.mark.skip(reason="Complex validation tests require unavailable modules")
+    def test_cross_validation_with_time_series(self, concrete_model):
+        """测试时间序列交叉验证 - 跳过"""
+        pass
+
+    @pytest.mark.skip(reason="Complex validation tests require unavailable modules")
+    def test_model_stability_analysis(self, concrete_model):
+        """测试模型稳定性分析 - 跳过"""
+        pass
+
+    def test_walk_forward_validation(self, model_validator):
+        """测试步进式验证"""
+        # 创建模拟的训练数据
+        dates = pd.date_range('2020-01-01', '2023-01-01', freq='D')
+        np.random.seed(42)
+        features = pd.DataFrame({
+            'feature_1': np.random.randn(len(dates)),
+            'feature_2': np.random.randn(len(dates)),
+            'feature_3': np.random.randn(len(dates))
+        }, index=dates)
+
+        targets = pd.Series(
+            np.random.randn(len(dates)) + 0.1 * features['feature_1'],
+            index=dates
+        )
+
+        # 执行步进式验证
+        validation_results = model_validator.walk_forward_validation(
+            features, targets,
+            train_window=252,  # 一年交易日
+            test_window=21,    # 一个月的交易日
+            step_size=21       # 每月步进
+        )
+
+        assert isinstance(validation_results, dict)
+        assert 'fold_results' in validation_results
+        assert 'overall_metrics' in validation_results
+        assert len(validation_results['fold_results']) > 0
+
+    def test_cross_validation_with_temporal_splitting(self, model_validator):
+        """测试时序交叉验证"""
+        # 创建时间序列数据
+        dates = pd.date_range('2020-01-01', periods=1000, freq='D')
+        features = pd.DataFrame({
+            'x1': np.sin(np.arange(1000) * 0.1) + np.random.randn(1000) * 0.1,
+            'x2': np.cos(np.arange(1000) * 0.1) + np.random.randn(1000) * 0.1,
+        }, index=dates)
+
+        targets = pd.Series(
+            features['x1'] * 2 + features['x2'] * 1.5 + np.random.randn(1000) * 0.1,
+            index=dates
+        )
+
+        cv_results = model_validator.temporal_cross_validation(
+            features, targets, n_splits=5
+        )
+
+        assert isinstance(cv_results, dict)
+        assert 'cv_scores' in cv_results
+        assert 'mean_score' in cv_results
+        assert 'std_score' in cv_results
+        assert len(cv_results['cv_scores']) == 5
+
+    def test_model_stability_assessment(self, model_validator):
+        """测试模型稳定性评估"""
+        # 创建多个模型预测结果
+        np.random.seed(42)
+        n_samples = 1000
+        n_models = 5
+
+        predictions = {}
+        for i in range(n_models):
+            predictions[f'model_{i}'] = np.random.randn(n_samples) + i * 0.1
+
+        actuals = np.random.randn(n_samples)
+
+        stability_results = model_validator.assess_model_stability(
+            predictions, actuals
+        )
+
+        assert isinstance(stability_results, dict)
+        assert 'stability_score' in stability_results
+        assert 'prediction_consistency' in stability_results
+        assert 'model_agreement' in stability_results
+
+    def test_overfitting_detection(self, model_validator):
+        """测试过拟合检测"""
+        # 模拟训练和测试性能
+        training_scores = [0.95, 0.96, 0.97, 0.98, 0.99]  # 训练分数不断提高
+        validation_scores = [0.85, 0.82, 0.78, 0.75, 0.70]  # 验证分数不断下降
+
+        overfitting_analysis = model_validator.detect_overfitting(
+            training_scores, validation_scores
+        )
+
+        assert isinstance(overfitting_analysis, dict)
+        assert 'is_overfitting' in overfitting_analysis
+        assert 'overfitting_severity' in overfitting_analysis
+        assert 'recommended_action' in overfitting_analysis
+        assert overfitting_analysis['is_overfitting'] is True
+
+    def test_feature_importance_stability(self, model_validator):
+        """测试特征重要性稳定性"""
+        # 模拟多次训练的特征重要性
+        n_features = 10
+        n_iterations = 5
+
+        feature_importances = []
+        for i in range(n_iterations):
+            importance = np.random.exponential(1, n_features)
+            importance = importance / importance.sum()  # 归一化
+            feature_importances.append(importance)
+
+        feature_names = [f'feature_{i}' for i in range(n_features)]
+
+        stability_analysis = model_validator.analyze_feature_importance_stability(
+            feature_importances, feature_names
+        )
+
+        assert isinstance(stability_analysis, dict)
+        assert 'stable_features' in stability_analysis
+        assert 'unstable_features' in stability_analysis
+        assert 'importance_consistency' in stability_analysis
+
+    def test_model_calibration_assessment(self, model_validator):
+        """测试模型校准评估"""
+        # 创建预测概率和实际标签
+        np.random.seed(42)
+        n_samples = 10000
+
+        # 生成校准良好的预测
+        true_probs = np.random.beta(2, 2, n_samples)  # Beta分布，更集中
+        predictions = true_probs + np.random.normal(0, 0.1, n_samples)
+        predictions = np.clip(predictions, 0, 1)  # 确保在[0,1]范围内
+
+        actuals = np.random.binomial(1, true_probs)
+
+        calibration_results = model_validator.assess_model_calibration(
+            predictions, actuals
+        )
+
+        assert isinstance(calibration_results, dict)
+        assert 'calibration_curve' in calibration_results
+        assert 'brier_score' in calibration_results
+        assert 'calibration_error' in calibration_results
+
+    def test_adversarial_robustness_testing(self, model_validator):
+        """测试对抗鲁棒性"""
+        # 创建基础数据
+        np.random.seed(42)
+        n_samples = 1000
+        n_features = 5
+
+        X = np.random.randn(n_samples, n_features)
+        y = (X[:, 0] + X[:, 1] > 0).astype(int)
+
+        # 生成对抗样本
+        adversarial_samples = X + np.random.normal(0, 0.1, X.shape)
+
+        robustness_results = model_validator.test_adversarial_robustness(
+            X, y, adversarial_samples
+        )
+
+        assert isinstance(robustness_results, dict)
+        assert 'robustness_score' in robustness_results
+        assert 'adversarial_accuracy' in robustness_results
+        assert 'perturbation_sensitivity' in robustness_results
+
+    def test_model_explainability_validation(self, model_validator):
+        """测试模型可解释性验证"""
+        # 创建模拟的SHAP值
+        np.random.seed(42)
+        n_samples = 100
+        n_features = 5
+
+        shap_values = np.random.randn(n_samples, n_features)
+        feature_names = [f'feature_{i}' for i in range(n_features)]
+
+        explainability_results = model_validator.validate_model_explainability(
+            shap_values, feature_names
+        )
+
+        assert isinstance(explainability_results, dict)
+        assert 'explainability_score' in explainability_results
+        assert 'feature_contributions' in explainability_results
+        assert 'interpretability_metrics' in explainability_results
+
+    def test_data_drift_detection(self, model_validator):
+        """测试数据漂移检测"""
+        # 创建基准数据分布
+        np.random.seed(42)
+        n_samples = 1000
+        n_features = 3
+
+        baseline_data = np.random.normal(0, 1, (n_samples, n_features))
+
+        # 创建有漂移的新数据
+        drifted_data = np.random.normal(0.5, 1.2, (n_samples, n_features))  # 均值和方差都改变
+
+        drift_results = model_validator.detect_data_drift(
+            baseline_data, drifted_data
+        )
+
+        assert isinstance(drift_results, dict)
+        assert 'drift_detected' in drift_results
+        assert 'drift_severity' in drift_results
+        assert 'feature_drift_scores' in drift_results
+        assert drift_results['drift_detected'] is True
+
+    def test_model_performance_decay_analysis(self, model_validator):
+        """测试模型性能衰减分析"""
+        # 模拟模型随时间性能衰减
+        time_periods = pd.date_range('2023-01-01', periods=12, freq='M')
+
+        # 性能随时间衰减
+        base_performance = 0.85
+        decay_rate = 0.02  # 每月衰减2%
+
+        performance_history = []
+        for i, period in enumerate(time_periods):
+            performance = base_performance * (1 - decay_rate) ** i
+            performance_history.append({
+                'period': period,
+                'accuracy': performance,
+                'precision': performance - 0.05,
+                'recall': performance - 0.03
+            })
+
+        decay_analysis = model_validator.analyze_performance_decay(
+            performance_history
+        )
+
+        assert isinstance(decay_analysis, dict)
+        assert 'decay_detected' in decay_analysis
+        assert 'decay_rate' in decay_analysis
+        assert 'retraining_trigger' in decay_analysis
+        assert decay_analysis['decay_detected'] is True
+
+    def test_multi_model_comparison(self, model_validator):
+        """测试多模型比较"""
+        # 创建多个模型的性能指标
+        models_performance = {
+            'random_forest': {
+                'accuracy': 0.85,
+                'precision': 0.82,
+                'recall': 0.88,
+                'f1_score': 0.85,
+                'training_time': 120,
+                'inference_time': 0.001
+            },
+            'xgboost': {
+                'accuracy': 0.87,
+                'precision': 0.85,
+                'recall': 0.89,
+                'f1_score': 0.87,
+                'training_time': 180,
+                'inference_time': 0.002
+            },
+            'neural_network': {
+                'accuracy': 0.89,
+                'precision': 0.87,
+                'recall': 0.91,
+                'f1_score': 0.89,
+                'training_time': 600,
+                'inference_time': 0.005
+            }
+        }
+
+        comparison_results = model_validator.compare_models(models_performance)
+
+        assert isinstance(comparison_results, dict)
+        assert 'best_model' in comparison_results
+        assert 'performance_ranking' in comparison_results
+        assert 'trade_off_analysis' in comparison_results
+        assert 'recommendation' in comparison_results
+
+    def test_model_serialization_validation(self, model_validator):
+        """测试模型序列化验证"""
+        # 模拟模型保存和加载
+        with patch('pickle.dump') as mock_dump, \
+             patch('pickle.load') as mock_load:
+
+            mock_load.return_value = Mock()  # 模拟加载的模型
+
+            # 测试序列化一致性
+            serialization_results = model_validator.validate_model_serialization(
+                model_path='/fake/path/model.pkl'
+            )
+
+            assert isinstance(serialization_results, dict)
+            assert 'serialization_success' in serialization_results
+            assert 'data_integrity' in serialization_results
+
+    def test_model_version_compatibility(self, model_validator):
+        """测试模型版本兼容性"""
+        # 模拟不同版本的模型
+        version_info = {
+            'current_version': '2.1.0',
+            'supported_versions': ['2.0.0', '2.1.0'],
+            'deprecated_versions': ['1.0.0', '1.5.0'],
+            'breaking_changes': ['2.0.0']  # 破坏性变更版本
+        }
+
+        compatibility_results = model_validator.check_version_compatibility(
+            version_info
+        )
+
+        assert isinstance(compatibility_results, dict)
+        assert 'compatibility_status' in compatibility_results
+        assert 'migration_required' in compatibility_results
+        assert 'breaking_changes_detected' in compatibility_results
+
+    def test_model_monitoring_setup(self, model_validator):
+        """测试模型监控设置"""
+        # 配置监控指标
+        monitoring_config = {
+            'performance_metrics': ['accuracy', 'precision', 'recall'],
+            'data_quality_metrics': ['missing_rate', 'outlier_rate'],
+            'system_metrics': ['latency', 'throughput'],
+            'alert_thresholds': {
+                'accuracy_drop': 0.05,
+                'latency_increase': 50
+            }
+        }
+
+        monitoring_setup = model_validator.setup_model_monitoring(
+            monitoring_config
+        )
+
+        assert isinstance(monitoring_setup, dict)
+        assert 'monitoring_active' in monitoring_setup
+        assert 'metrics_configured' in monitoring_setup
+        assert 'alerts_configured' in monitoring_setup
+
+    def test_model_audit_trail(self, model_validator):
+        """测试模型审计追踪"""
+        # 模拟模型生命周期事件
+        audit_events = [
+            {
+                'timestamp': datetime.now() - timedelta(days=30),
+                'event': 'model_created',
+                'details': {'version': '1.0.0', 'author': 'data_scientist_1'}
+            },
+            {
+                'timestamp': datetime.now() - timedelta(days=20),
+                'event': 'model_trained',
+                'details': {'dataset_size': 10000, 'features': 50}
+            },
+            {
+                'timestamp': datetime.now() - timedelta(days=10),
+                'event': 'model_deployed',
+                'details': {'environment': 'production', 'endpoint': '/predict'}
+            },
+            {
+                'timestamp': datetime.now() - timedelta(days=1),
+                'event': 'model_retrained',
+                'details': {'trigger': 'performance_decay', 'improvement': 0.03}
+            }
+        ]
+
+        audit_results = model_validator.generate_audit_trail(audit_events)
+
+        assert isinstance(audit_results, dict)
+        assert 'audit_complete' in audit_results
+        assert 'lifecycle_events' in audit_results
+        assert 'compliance_status' in audit_results
+
+    def test_model_governance_compliance(self, model_validator):
+        """测试模型治理合规性"""
+        # 治理要求
+        governance_requirements = {
+            'documentation_required': True,
+            'version_control': True,
+            'testing_coverage': 0.8,
+            'bias_audit': True,
+            'explainability_required': True,
+            'data_lineage_tracking': True
+        }
+
+        # 模型治理状态
+        model_governance_status = {
+            'documentation_complete': True,
+            'version_controlled': True,
+            'test_coverage': 0.85,
+            'bias_audited': True,
+            'explainable': True,
+            'data_lineage_tracked': True
+        }
+
+        compliance_results = model_validator.check_governance_compliance(
+            governance_requirements, model_governance_status
+        )
+
+        assert isinstance(compliance_results, dict)
+        assert 'governance_compliant' in compliance_results
+        assert 'compliance_score' in compliance_results
+        assert 'non_compliant_items' in compliance_results
+        assert compliance_results['governance_compliant'] is True
+
+    def test_model_retraining_trigger_detection(self, model_validator):
+        """测试模型重训练触发检测"""
+        # 模拟模型性能指标时间序列
+        performance_metrics = {
+            'accuracy': [0.85, 0.83, 0.81, 0.79, 0.76, 0.74],
+            'precision': [0.82, 0.80, 0.78, 0.75, 0.73, 0.70],
+            'data_drift_score': [0.02, 0.05, 0.08, 0.12, 0.15, 0.18]
+        }
+
+        # 重训练触发规则
+        retraining_rules = {
+            'accuracy_threshold': 0.80,
+            'drift_threshold': 0.10,
+            'consecutive_degrades': 3
+        }
+
+        retraining_decision = model_validator.detect_retraining_trigger(
+            performance_metrics, retraining_rules
+        )
+
+        assert isinstance(retraining_decision, dict)
+        assert 'retraining_required' in retraining_decision
+        assert 'trigger_reason' in retraining_decision
+        assert 'urgency_level' in retraining_decision
+        assert retraining_decision['retraining_required'] is True
+
+    def test_model_fallback_mechanism(self, model_validator):
+        """测试模型降级机制"""
+        # 模拟主模型失败的情况
+        primary_model_status = {
+            'status': 'failed',
+            'error': 'Model prediction timeout',
+            'last_successful_prediction': datetime.now() - timedelta(minutes=30)
+        }
+
+        # 降级选项
+        fallback_options = {
+            'simple_rule_based': {'available': True, 'accuracy': 0.75},
+            'cached_predictions': {'available': True, 'freshness': 300},  # 5分钟
+            'ensemble_fallback': {'available': False, 'reason': 'not_trained'}
+        }
+
+        fallback_decision = model_validator.select_fallback_mechanism(
+            primary_model_status, fallback_options
+        )
+
+        assert isinstance(fallback_decision, dict)
+        assert 'fallback_selected' in fallback_decision
+        assert 'selected_mechanism' in fallback_decision
+        assert 'expected_performance' in fallback_decision
+
+    def test_model_resource_utilization_analysis(self, model_validator):
+        """测试模型资源利用分析"""
+        # 模拟资源使用指标
+        resource_metrics = {
+            'cpu_usage': [45, 52, 48, 55, 62, 58],
+            'memory_usage': [2.1, 2.3, 2.5, 2.7, 2.9, 3.1],  # GB
+            'gpu_usage': [85, 88, 82, 90, 95, 87],  # GPU利用率
+            'inference_latency': [120, 135, 118, 142, 158, 145]  # 毫秒
+        }
+
+        resource_analysis = model_validator.analyze_resource_utilization(
+            resource_metrics
+        )
+
+        assert isinstance(resource_analysis, dict)
+        assert 'efficiency_score' in resource_analysis
+        assert 'bottleneck_identified' in resource_analysis
+        assert 'optimization_recommendations' in resource_analysis
+
+    def test_model_bias_and_fairness_audit(self, model_validator):
+        """测试模型偏差和公平性审计"""
+        # 模拟不同群体的预测结果
+        group_predictions = {
+            'group_a': {'predictions': [0, 1, 0, 1, 0], 'actuals': [0, 1, 0, 0, 1]},
+            'group_b': {'predictions': [1, 1, 0, 0, 1], 'actuals': [1, 0, 0, 1, 1]},
+            'group_c': {'predictions': [0, 0, 1, 1, 0], 'actuals': [0, 1, 1, 0, 0]}
+        }
+
+        fairness_audit = model_validator.audit_model_fairness(
+            group_predictions
+        )
+
+        assert isinstance(fairness_audit, dict)
+        assert 'fairness_score' in fairness_audit
+        assert 'disparate_impact_detected' in fairness_audit
+        assert 'bias_metrics_by_group' in fairness_audit
+        assert 'fairness_recommendations' in fairness_audit

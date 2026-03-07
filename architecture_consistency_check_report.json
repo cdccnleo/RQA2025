@@ -1,0 +1,4928 @@
+{
+  "timestamp": "2025-09-21T13:18:28.018255",
+  "design_version": "v8.0",
+  "implementation_status": {
+    "directory_structure": {
+      "compliance_score": 100.0,
+      "missing_modules": [],
+      "extra_modules": [],
+      "structure_issues": [
+        "config模块缺少子模块: ['interfaces']"
+      ],
+      "file_organization": {}
+    },
+    "core_components": {
+      "compliance_score": 100.0,
+      "implemented_components": [
+        {
+          "name": "BaseInfrastructureComponent",
+          "file": "src\\infrastructure\\core\\base.py",
+          "found": true
+        },
+        {
+          "name": "UnifiedCacheManager",
+          "file": "src\\infrastructure\\cache\\core\\core_components.py",
+          "found": true
+        },
+        {
+          "name": "UnifiedConfigManager",
+          "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+          "found": true
+        },
+        {
+          "name": "UnifiedLogger",
+          "file": "src\\infrastructure\\logging\\core\\core_components.py",
+          "found": true
+        },
+        {
+          "name": "IHealthCheckerComponent",
+          "file": "src\\infrastructure\\core\\core_components.py",
+          "found": true
+        },
+        {
+          "name": "ComponentFactory",
+          "file": "src\\infrastructure\\cache\\core\\core_components.py",
+          "found": true
+        }
+      ],
+      "missing_components": [],
+      "implementation_quality": {}
+    },
+    "interface_definitions": {
+      "compliance_score": 100.0,
+      "interface_coverage": {},
+      "naming_compliance": {
+        "correct_prefixes": 226,
+        "incorrect_names": [],
+        "total_interfaces": 226
+      },
+      "implementation_consistency": {}
+    },
+    "design_patterns": {
+      "compliance_score": 100.0,
+      "implemented_patterns": [
+        "Factory Pattern",
+        "Manager Pattern",
+        "Service Pattern",
+        "Handler Pattern",
+        "Provider Pattern"
+      ],
+      "missing_patterns": [],
+      "pattern_usage": {}
+    },
+    "naming_conventions": {
+      "compliance_score": 74.69996756406098,
+      "class_naming": {
+        "total_classes": 1388,
+        "camel_case": 1388,
+        "snake_case": 0,
+        "violations": []
+      },
+      "method_naming": {
+        "total_methods": 6166,
+        "snake_case": 3046,
+        "violations": [
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\cache\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "activate",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "deactivate",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "increment",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "update",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "compare",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stats",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warmup",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "keys",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\cache\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "preload",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "backup",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "restore",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\cache\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "keys",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\managers\\combined_managers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "worker",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "keys",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\cache\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "has",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "keys",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "has",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connect",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disconnect",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "broadcast",
+            "file": "src\\infrastructure\\cache\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "expire",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "incr",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "store",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "retrieve",
+            "file": "src\\infrastructure\\cache\\storage\\redis_adapter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\cache\\strategies\\unified_strategy_manager.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "worker",
+            "file": "src\\infrastructure\\cache\\tools\\benchmark_framework.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\cache\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reset",
+            "file": "src\\infrastructure\\cache\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\cache\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\cache\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\cache\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "subscribe",
+            "file": "src\\infrastructure\\config\\config_event.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "unsubscribe",
+            "file": "src\\infrastructure\\config\\config_event.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "publish",
+            "file": "src\\infrastructure\\config\\config_event.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reload",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "merge",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "type",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "type",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "type",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "type",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "provide",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "update",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "watch",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reload",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "merge",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "description",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "description",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\enhanced_validators.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\typed_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "update",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "watch",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reload",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\unified_interface.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "update",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "watch",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reload",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\config\\core\\unified_manager_enhanced.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\loaders\\cloud_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\loaders\\database_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\loaders\\json_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\loaders\\toml_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\loaders\\toml_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\loaders\\yaml_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\loaders\\yaml_loader.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "encrypt",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decrypt",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "subscribe",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "unsubscribe",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "publish",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "subscribe",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "unsubscribe",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "publish",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "publish",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "subscribe",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "unsubscribe",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\config\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "migrate",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "optimize",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "optimize",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "optimize",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "register",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\config\\tools\\combined_tools.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\config\\tools\\typed_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\core\\base.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\core\\base.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "authenticate",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "authorize",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "compare",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "equal",
+            "file": "src\\infrastructure\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "register",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "resolve",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "scope",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\error\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\error\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "call",
+            "file": "src\\infrastructure\\error\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\error\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handlers",
+            "file": "src\\infrastructure\\error\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\foundation\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "classify",
+            "file": "src\\infrastructure\\error\\foundation\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "recover",
+            "file": "src\\infrastructure\\error\\foundation\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "trip",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reset",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "call",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "retry",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "retry",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "call",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "resilient",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\error\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\error\\recovery\\combined_recovery.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\recovery\\combined_recovery.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\error\\recovery\\combined_recovery.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\error\\storage\\combined_storage.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\error\\storage\\combined_storage.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "call",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "retry",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "activate",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "deactivate",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\error\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "check",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "monitor",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "report",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "alert",
+            "file": "src\\infrastructure\\health\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "health",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "ready",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\health\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "root",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "health",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "metrics",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "index",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "dashboard",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "alerts",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "config",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "tests",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "run",
+            "file": "src\\infrastructure\\health\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "monitor",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "update",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "configure",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "detect",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "detect",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "inc",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "dec",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "observe",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\health\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "serialize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "deserialize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "store",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "retrieve",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "restart",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "count",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "create",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "sanitize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "serialize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "deserialize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "run",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "pause",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "resume",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "destroy",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "version",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "description",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "activate",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "deactivate",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "update",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "attach",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "detach",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "notify",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reset",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "build",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "adapt",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "name",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "version",
+            "file": "src\\infrastructure\\interfaces\\combined_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reload",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "watch",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "unwatch",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "encrypt",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decrypt",
+            "file": "src\\infrastructure\\interfaces\\config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\interfaces\\unified_interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "predict",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "predict",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "predict",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "predict",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "emit",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\logging\\business\\combined_business.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\business\\smart_log_filter.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\config\\combined_config.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "format",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rotate",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "trace",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "format",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "format",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\logging\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\data\\combined_data.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\logging\\data\\combined_data.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\data\\combined_data.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\data\\combined_data.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "renew",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "renew",
+            "file": "src\\infrastructure\\logging\\distributed\\combined_distributed.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\foundation\\combined_foundation.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\logging\\foundation\\combined_foundation.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\foundation\\combined_foundation.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\logging\\foundation\\combined_foundation.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\foundation\\combined_foundation.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "search",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "search",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "save",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "load",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "search",
+            "file": "src\\infrastructure\\logging\\handlers\\combined_handlers.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "alert",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\logging\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "status",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "logs",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "labels",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "inc",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "observe",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "record",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reset",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "configure",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rules",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "format",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rotate",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "log",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "debug",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "info",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "warning",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "error",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "critical",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "trace",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\plugins\\combined_plugins.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "flush",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "merge",
+            "file": "src\\infrastructure\\logging\\processors\\combined_processors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\security\\combined_security.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "sanitize",
+            "file": "src\\infrastructure\\logging\\security\\combined_security.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "call",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "cleanup",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "schedule",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "join",
+            "file": "src\\infrastructure\\logging\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "state",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "injectable",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "singleton",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "transient",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "scoped",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "register",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "resolve",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "scope",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "flush",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "query",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "labels",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "inc",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "observe",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "time",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\logging\\system\\combined_system.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "configure",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rules",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "filter",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "peek",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "remove",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "size",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "format",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "format",
+            "file": "src\\infrastructure\\logging\\utils\\utilities.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\resource\\combined_resource.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\resource\\combined_resource.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\resource\\combined_resource.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\resource\\combined_resource.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\resource\\combined_resource.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\resource\\combined_resource.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "allocate",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "monitor",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "optimize",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "empty",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "qsize",
+            "file": "src\\infrastructure\\resource\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "metrics",
+            "file": "src\\infrastructure\\resource\\core\\base_monitor.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "enable",
+            "file": "src\\infrastructure\\resource\\core\\base_monitor.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disable",
+            "file": "src\\infrastructure\\resource\\core\\base_monitor.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "decorator",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\resource\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "initialize",
+            "file": "src\\infrastructure\\resource\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\resource\\core\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "put",
+            "file": "src\\infrastructure\\resource\\core\\priority_queue.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\resource\\core\\priority_queue.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "empty",
+            "file": "src\\infrastructure\\resource\\core\\priority_queue.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "qsize",
+            "file": "src\\infrastructure\\resource\\core\\priority_queue.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "peek",
+            "file": "src\\infrastructure\\resource\\core\\priority_queue.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\resource\\core\\priority_queue.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\resource\\monitors\\combined_monitors.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "run",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "priority",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "priority",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "status",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "status",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "complete",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "fail",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "stop",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\resource\\services\\combined_services.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\utils\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "convert",
+            "file": "src\\infrastructure\\utils\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "validate",
+            "file": "src\\infrastructure\\utils\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "optimize",
+            "file": "src\\infrastructure\\utils\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connect",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disconnect",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "begin",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "commit",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\utils\\common\\interfaces.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "start",
+            "file": "src\\infrastructure\\utils\\common\\async\\async_io_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\common\\async\\async_io_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "wrapper",
+            "file": "src\\infrastructure\\utils\\common\\async\\async_io_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\utils\\common\\async\\async_io_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "train",
+            "file": "src\\infrastructure\\utils\\common\\async\\combined_async.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "predict",
+            "file": "src\\infrastructure\\utils\\common\\async\\combined_async.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\components\\combined_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "read",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "process",
+            "file": "src\\infrastructure\\utils\\common\\core\\core_components.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\utils\\common\\data\\combined_data.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\utils\\common\\filesystem\\combined_filesystem.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "read",
+            "file": "src\\infrastructure\\utils\\common\\filesystem\\combined_filesystem.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\utils\\common\\filesystem\\combined_filesystem.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "reset",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\combined_monitoring.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "access",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "clear",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\utils\\common\\monitoring\\smart_cache_optimizer.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\utils\\common\\services\\memory_object_pool.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "worker",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "acquire",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "release",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connections",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "shutdown",
+            "file": "src\\infrastructure\\utils\\connection\\combined_connection.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "commit",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "execute",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "commit",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "fetchone",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "fetchall",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disconnect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "query",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "commit",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "handle",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disconnect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "query",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "commit",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disconnect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "default",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "set",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "get",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "delete",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "exists",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "keys",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "pipeline",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "commit",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "rollback",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "connect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "disconnect",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "close",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "write",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "query",
+            "file": "src\\infrastructure\\utils\\database\\combined_database.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "consume",
+            "file": "src\\infrastructure\\utils\\logging\\combined_logging.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "protect",
+            "file": "src\\infrastructure\\utils\\logging\\combined_logging.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "check",
+            "file": "src\\infrastructure\\utils\\logging\\combined_logging.py",
+            "issue": "建议使用蛇形命名"
+          },
+          {
+            "name": "compress",
+            "file": "src\\infrastructure\\utils\\logging\\combined_logging.py",
+            "issue": "建议使用蛇形命名"
+          }
+        ]
+      },
+      "variable_naming": {},
+      "file_naming": {}
+    },
+    "quality_metrics": {
+      "directory_structure": 100.0,
+      "core_components": 100.0,
+      "interface_definitions": 100.0,
+      "design_patterns": 100.0,
+      "naming_conventions": 74.69996756406098,
+      "overall_consistency": 96.20499513460915,
+      "grade": "优秀",
+      "assessment": "架构实现与设计高度一致，达到生产级标准"
+    }
+  },
+  "summary": {
+    "overall_assessment": "架构实现与设计高度一致，达到生产级标准",
+    "key_findings": [
+      "架构一致性评分: 96.2% (优秀)"
+    ],
+    "strengths": [
+      "核心组件实现完整",
+      "接口定义规范统一",
+      "设计模式使用得当"
+    ],
+    "weaknesses": [],
+    "critical_issues": []
+  },
+  "recommendations": [
+    {
+      "priority": "medium",
+      "category": "naming",
+      "title": "统一命名规范",
+      "description": "规范代码命名以提高可读性",
+      "estimated_effort": "1-2人天"
+    }
+  ]
+}

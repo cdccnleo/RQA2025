@@ -1,0 +1,160 @@
+{
+  "audit_timestamp": 1764626105.7846258,
+  "audit_scope": "comprehensive_security_assessment",
+  "categories": {
+    "code_security": {
+      "status": "completed",
+      "issues_found": 2,
+      "issues": [
+        {
+          "severity": "high",
+          "category": "hardcoded_secrets",
+          "description": "发现硬编码的API密钥",
+          "location": "config/production.py:45",
+          "recommendation": "使用环境变量或密钥管理服务"
+        },
+        {
+          "severity": "medium",
+          "category": "sql_injection",
+          "description": "检测到可能的SQL注入风险",
+          "location": "database/queries.py:123",
+          "recommendation": "使用参数化查询"
+        }
+      ],
+      "score": 80,
+      "grade": "良好"
+    },
+    "configuration_security": {
+      "status": "completed",
+      "issues_found": 1,
+      "issues": [
+        {
+          "severity": "medium",
+          "category": "configuration",
+          "description": "安全HTTP头配置检查",
+          "recommendation": "修复secure_headers配置"
+        }
+      ],
+      "score": 92,
+      "grade": "优秀"
+    },
+    "data_security": {
+      "status": "completed",
+      "issues_found": 1,
+      "issues": [
+        {
+          "severity": "high",
+          "category": "data_encryption",
+          "description": "敏感数据未加密存储",
+          "recommendation": "实施数据加密和密钥轮换"
+        }
+      ],
+      "score": 85,
+      "grade": "良好"
+    },
+    "access_control": {
+      "status": "completed",
+      "issues_found": 1,
+      "issues": [
+        {
+          "severity": "medium",
+          "category": "authorization",
+          "description": "API权限控制需要加强",
+          "recommendation": "实施基于角色的访问控制(RBAC)"
+        }
+      ],
+      "score": 88,
+      "grade": "良好"
+    },
+    "network_security": {
+      "status": "completed",
+      "issues_found": 1,
+      "issues": [
+        {
+          "severity": "low",
+          "category": "firewall",
+          "description": "建议配置Web应用防火墙",
+          "recommendation": "部署WAF保护层"
+        }
+      ],
+      "score": 95,
+      "grade": "优秀"
+    }
+  },
+  "overall_score": {
+    "overall_score": 86.35,
+    "grade": "良好",
+    "categories_breakdown": {
+      "code_security": 80,
+      "configuration_security": 92,
+      "data_security": 85,
+      "access_control": 88,
+      "network_security": 95
+    }
+  },
+  "recommendations": [
+    {
+      "category": "code_security",
+      "severity": "high",
+      "description": "发现硬编码的API密钥",
+      "recommendation": "使用环境变量或密钥管理服务",
+      "priority": "high"
+    },
+    {
+      "category": "data_security",
+      "severity": "high",
+      "description": "敏感数据未加密存储",
+      "recommendation": "实施数据加密和密钥轮换",
+      "priority": "high"
+    },
+    {
+      "category": "general",
+      "severity": "high",
+      "description": "实施安全监控和实时告警",
+      "recommendation": "部署SIEM系统和安全监控工具",
+      "priority": "high"
+    },
+    {
+      "category": "code_security",
+      "severity": "medium",
+      "description": "检测到可能的SQL注入风险",
+      "recommendation": "使用参数化查询",
+      "priority": "medium"
+    },
+    {
+      "category": "configuration_security",
+      "severity": "medium",
+      "description": "安全HTTP头配置检查",
+      "recommendation": "修复secure_headers配置",
+      "priority": "medium"
+    },
+    {
+      "category": "access_control",
+      "severity": "medium",
+      "description": "API权限控制需要加强",
+      "recommendation": "实施基于角色的访问控制(RBAC)",
+      "priority": "medium"
+    },
+    {
+      "category": "general",
+      "severity": "medium",
+      "description": "定期进行安全审计和渗透测试",
+      "recommendation": "建立定期的安全评估机制",
+      "priority": "medium"
+    },
+    {
+      "category": "general",
+      "severity": "medium",
+      "description": "加强员工安全意识培训",
+      "recommendation": "定期开展安全培训和演练",
+      "priority": "medium"
+    },
+    {
+      "category": "network_security",
+      "severity": "low",
+      "description": "建议配置Web应用防火墙",
+      "recommendation": "部署WAF保护层",
+      "priority": "low"
+    }
+  ]
+}

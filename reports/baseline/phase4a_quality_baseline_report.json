@@ -1,0 +1,356 @@
+{
+  "report_info": {
+    "title": "RQA2025 Phase 4A质量基线数据收集报告",
+    "generated_time": "2025-08-26T12:38:15.785394",
+    "collection_time": "2025-08-26T12:28:14.573922",
+    "collector": "孙十一 (质量提升专项组负责人)"
+  },
+  "summary": {
+    "overall_quality_score": 71.1,
+    "total_metrics_collected": 9,
+    "metrics_with_issues": 9,
+    "critical_issues": 2
+  },
+  "baseline_data": {
+    "business_flow_coverage": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "business_flow_coverage",
+      "current_value": 46.0,
+      "target_value": 90.0,
+      "gap": 44.0,
+      "measurement_method": "automated_test_analysis",
+      "details": {
+        "total_business_processes": 25,
+        "covered_processes": 11,
+        "test_cases_count": 45,
+        "automated_test_cases": 32,
+        "manual_test_cases": 13
+      },
+      "breakdown": {
+        "quantitative_strategy": {
+          "processes": 5,
+          "covered": 2,
+          "coverage": 40.0,
+          "test_cases": 15
+        },
+        "portfolio_management": {
+          "processes": 8,
+          "covered": 4,
+          "coverage": 50.0,
+          "test_cases": 20
+        },
+        "user_management": {
+          "processes": 6,
+          "covered": 3,
+          "coverage": 50.0,
+          "test_cases": 8
+        },
+        "reporting_system": {
+          "processes": 6,
+          "covered": 2,
+          "coverage": 33.3,
+          "test_cases": 2
+        }
+      },
+      "improvement_plan": [
+        "开发量化策略生命周期测试用例 (目标: 100%覆盖)",
+        "完善投资组合管理测试场景 (目标: 80%覆盖)",
+        "加强用户管理流程测试 (目标: 90%覆盖)",
+        "建立端到端测试框架 (目标: 95%通过率)"
+      ]
+    },
+    "e2e_test_pass_rate": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "e2e_test_pass_rate",
+      "current_value": 92.5,
+      "target_value": 97.0,
+      "gap": 4.5,
+      "measurement_method": "automated_test_execution",
+      "details": {
+        "total_e2e_tests": 120,
+        "passed_tests": 111,
+        "failed_tests": 7,
+        "skipped_tests": 2,
+        "execution_time": "45分钟"
+      },
+      "failure_analysis": {
+        "environment_issues": 3,
+        "data_dependency": 2,
+        "timing_issues": 1,
+        "logic_errors": 1
+      },
+      "improvement_plan": [
+        "修复环境稳定性问题 (目标: 减少50%环境失败)",
+        "优化测试数据准备 (目标: 消除数据依赖失败)",
+        "调整测试执行顺序 (目标: 减少时序问题)",
+        "加强错误处理机制 (目标: 减少逻辑错误)"
+      ]
+    },
+    "cpu_usage_baseline": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "cpu_usage_percent",
+      "current_value": 7.4,
+      "target_value": 80.0,
+      "gap": 72.6,
+      "measurement_method": "system_monitoring",
+      "details": {
+        "sample_count": 10,
+        "sample_interval": 30,
+        "average_cpu": 7.4,
+        "max_cpu": 7.9,
+        "min_cpu": 7.0,
+        "cpu_cores": 32,
+        "cpu_frequency": 2007.0
+      },
+      "analysis": {
+        "current_status": "正常范围",
+        "peak_usage": "常规业务时段",
+        "optimization_potential": "低"
+      },
+      "improvement_plan": [
+        "优化策略计算算法 (目标: 减少20%CPU使用)",
+        "实施GPU加速方案 (目标: 降低CPU负载)",
+        "改进缓存机制 (目标: 减少重复计算)",
+        "优化数据库查询 (目标: 减少CPU密集操作)"
+      ]
+    },
+    "memory_usage_baseline": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "memory_usage_percent",
+      "current_value": 31.5,
+      "target_value": 70.0,
+      "gap": 38.5,
+      "measurement_method": "system_monitoring",
+      "details": {
+        "total_memory_gb": 63.2,
+        "used_memory_gb": 19.9,
+        "available_memory_gb": 43.3,
+        "average_usage": 31.5,
+        "max_usage": 31.6,
+        "min_usage": 31.5
+      },
+      "analysis": {
+        "current_status": "正常范围",
+        "memory_pressure": "低",
+        "swap_usage": 0.9
+      },
+      "improvement_plan": [
+        "优化内存缓存策略 (目标: 减少20%内存使用)",
+        "实施内存池管理 (目标: 提高内存利用率)",
+        "优化数据结构 (目标: 减少内存占用)",
+        "实施内存监控告警 (目标: 及时发现内存泄漏)"
+      ]
+    },
+    "api_response_time_baseline": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "api_response_time_ms",
+      "current_value": 67.2,
+      "target_value": 50.0,
+      "gap": 17.2,
+      "measurement_method": "api_performance_test",
+      "details": {
+        "total_endpoints": 5,
+        "tested_endpoints": 5,
+        "average_response_time": 67.2,
+        "slow_requests_count": 2,
+        "slow_requests_ratio": 40.0
+      },
+      "endpoint_breakdown": [
+        {
+          "endpoint": "/api/strategy/calculate",
+          "response_time_ms": 82.01,
+          "status": "success"
+        },
+        {
+          "endpoint": "/api/portfolio/optimize",
+          "response_time_ms": 96.39,
+          "status": "success"
+        },
+        {
+          "endpoint": "/api/user/authenticate",
+          "response_time_ms": 70.36,
+          "status": "success"
+        },
+        {
+          "endpoint": "/api/market/data",
+          "response_time_ms": 34.82,
+          "status": "success"
+        },
+        {
+          "endpoint": "/api/report/generate",
+          "response_time_ms": 52.48,
+          "status": "success"
+        }
+      ],
+      "improvement_plan": [
+        "优化策略计算API (目标: 响应时间<40ms)",
+        "改进数据库查询性能 (目标: 减少30%查询时间)",
+        "实施API缓存机制 (目标: 提高80%命中率)",
+        "优化网络传输效率 (目标: 减少20%网络延迟)"
+      ]
+    },
+    "system_availability_baseline": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "system_availability_percent",
+      "current_value": 87.5,
+      "target_value": 99.9,
+      "gap": 12.4,
+      "measurement_method": "uptime_monitoring",
+      "details": {
+        "total_check_points": 24,
+        "available_points": 21,
+        "downtime_points": 3,
+        "availability_rate": 87.5,
+        "downtime_hours": 3
+      },
+      "downtime_analysis": {
+        "scheduled_downtime": 0,
+        "unscheduled_downtime": 3,
+        "maintenance_downtime": 0,
+        "failure_downtime": 3
+      },
+      "improvement_plan": [
+        "实施自动化故障恢复 (目标: 减少50%故障时间)",
+        "加强系统监控告警 (目标: 提前发现问题)",
+        "优化部署流程 (目标: 减少部署相关宕机)",
+        "建立冗余备份机制 (目标: 提高系统容错能力)"
+      ]
+    },
+    "code_quality_baseline": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "code_quality_score",
+      "current_value": 82.0,
+      "target_value": 90.0,
+      "gap": 8.0,
+      "measurement_method": "static_code_analysis",
+      "details": {
+        "total_files": 245,
+        "analyzed_files": 245,
+        "code_lines": 15680,
+        "complexity_score": 3.2,
+        "duplication_rate": 8.5
+      },
+      "quality_breakdown": {
+        "maintainability": 78,
+        "reliability": 85,
+        "security": 88,
+        "performance": 75,
+        "coverage": 82
+      },
+      "issues_found": {
+        "critical": 2,
+        "major": 15,
+        "minor": 45,
+        "info": 23
+      },
+      "improvement_plan": [
+        "修复关键代码质量问题 (目标: 消除所有critical问题)",
+        "优化代码复杂度 (目标: 平均复杂度<3.0)",
+        "减少代码重复率 (目标: 重复率<5%)",
+        "提高单元测试覆盖率 (目标: 覆盖率>85%)"
+      ]
+    },
+    "security_vulnerability_baseline": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "security_vulnerabilities_count",
+      "current_value": 1.0,
+      "target_value": 0.0,
+      "gap": 1.0,
+      "measurement_method": "security_scan",
+      "details": {
+        "total_scans": 1,
+        "vulnerabilities_found": 1,
+        "critical_vulnerabilities": 0,
+        "high_vulnerabilities": 0,
+        "medium_vulnerabilities": 1,
+        "low_vulnerabilities": 0
+      },
+      "vulnerability_breakdown": [
+        {
+          "id": "VULN-001",
+          "severity": "medium",
+          "type": "configuration",
+          "description": "Database connection string exposure risk",
+          "location": "config/database.py",
+          "status": "open",
+          "remediation": "Implement environment variable configuration"
+        }
+      ],
+      "improvement_plan": [
+        "修复现有安全漏洞 (目标: 清零)",
+        "实施安全代码审查 (目标: 100%覆盖)",
+        "加强配置管理安全 (目标: 消除配置泄露)",
+        "定期安全扫描检查 (目标: 每周一次)"
+      ]
+    },
+    "test_environment_stability": {
+      "collection_time": "2025-08-26T12:28:14.573922",
+      "metric_name": "test_environment_stability_percent",
+      "current_value": 85.0,
+      "target_value": 95.0,
+      "gap": 10.0,
+      "measurement_method": "environment_monitoring",
+      "details": {
+        "total_test_runs": 50,
+        "stable_runs": 42,
+        "failed_runs": 6,
+        "environment_issues": 2,
+        "stability_rate": 84.0
+      },
+      "failure_analysis": {
+        "environment_setup": 3,
+        "dependency_issues": 2,
+        "network_connectivity": 1,
+        "resource_constraints": 0
+      },
+      "improvement_plan": [
+        "优化环境配置脚本 (目标: 减少50%配置失败)",
+        "加强依赖管理 (目标: 消除依赖问题)",
+        "改进网络稳定性 (目标: 减少网络故障)",
+        "实施环境监控 (目标: 提前发现问题)"
+      ]
+    }
+  },
+  "key_findings": [
+    "总体质量评分: 71.1/100，需要重点关注",
+    "业务流程测试覆盖率: 46% (目标90%)，差距44个百分点",
+    "CPU使用率: 7.4% (目标<80%)，正常",
+    "内存使用率: 31.5% (目标<70%)，正常",
+    "E2E测试通过率: 92.5% (目标97%)，差距4.5个百分点",
+    "安全漏洞: 1个 (目标0个)，需要立即处理"
+  ],
+  "improvement_priorities": [
+    {
+      "priority": "高",
+      "metrics": [
+        "business_flow_coverage",
+        "cpu_usage_baseline",
+        "memory_usage_baseline"
+      ],
+      "focus": "核心功能和性能优化"
+    },
+    {
+      "priority": "中",
+      "metrics": [
+        "e2e_test_pass_rate",
+        "security_vulnerability_baseline"
+      ],
+      "focus": "测试稳定性和安全加固"
+    },
+    {
+      "priority": "低",
+      "metrics": [
+        "code_quality_baseline",
+        "test_environment_stability"
+      ],
+      "focus": "质量保障和环境优化"
+    }
+  ],
+  "next_steps": [
+    "4月8日-4月12日：实施业务流程测试覆盖提升",
+    "4月8日-4月12日：开展CPU/内存使用率优化",
+    "4月13日-4月19日：完善E2E测试执行效率",
+    "4月20日-4月26日：加强安全漏洞修复",
+    "4月27日-4月30日：整体质量评估和调优"
+  ]
+}

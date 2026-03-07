@@ -1,0 +1,17 @@
+# GPU配置
+gpu:
+  enabled: true
+  memory_limit: 0.8  # GPU内存使用限制
+  batch_size: 1000   # 批处理大小
+  fallback_to_cpu: true  # 失败时回退到CPU
+
+# 技术指标GPU加速配置
+technical_indicators:
+  use_gpu: true
+  indicators:
+    - sma
+    - ema
+    - rsi
+    - macd
+    - bollinger
+    - atr

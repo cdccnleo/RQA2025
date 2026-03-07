@@ -1,0 +1,307 @@
+# RQA2025 生产环境Docker Compose配置
+# Production Docker Compose Configuration for RQA2025
+
+services:
+  # 全局环境变量配置
+  # All services inherit these environment variables
+  # 主应用服务
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rqa2025-app
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DATABASE_URL=postgresql://rqa2025_admin:SecurePass123!@postgres:5432/rqa2025_prod
+      - DB_USER=rqa2025_admin
+      - DB_PASSWORD=SecurePass123!
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - BACKUP_ENCRYPTION_KEY=${BACKUP_ENCRYPTION_KEY}
+      - TZ=Asia/Shanghai
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - data_volume:/app/data
+      - models_volume:/app/models
+      - ./production_config.yml:/app/production_config.yml:ro
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - rqa2025-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL + TimescaleDB数据库
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: rqa2025-postgres
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      - POSTGRES_DB=rqa2025_prod
+      - POSTGRES_USER=rqa2025_admin
+      - POSTGRES_PASSWORD=SecurePass123!
+      - POSTGRESQL_MAX_CONNECTIONS=200
+      - POSTGRESQL_SHARED_BUFFERS=512MB
+      - TZ=Asia/Shanghai
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-timescaledb.sql:/docker-entrypoint-initdb.d/init-timescaledb.sql
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./scripts/init_historical_data_tables.sql:/docker-entrypoint-initdb.d/init-historical-data-tables.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - rqa2025-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rqa2025_admin -d rqa2025_prod && psql -U rqa2025_admin -d rqa2025_prod -c 'SELECT 1 FROM timescaledb_information.hypertables LIMIT 1;'"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Redis缓存
+  redis:
+    image: docker.m.daocloud.io/library/redis:7-alpine
+    container_name: rqa2025-redis
+    restart: unless-stopped
+    command: redis-server --requirepass RedisSecure123! --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "6379:6379"
+    networks:
+      - rqa2025-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 前端应用服务（暂时禁用，使用Nginx直接提供静态文件）
+  # web:
+  #   build:
+  #     context: ./src/web
+  #     dockerfile: Dockerfile
+  #   container_name: rqa2025-web
+  #   restart: unless-stopped
+  #   networks:
+  #     - rqa2025-network
+
+  # Nginx负载均衡器
+  nginx:
+    image: docker.1ms.run/nginx:alpine
+    container_name: rqa2025-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./web-static:/usr/share/nginx/html:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - rqa2025-network
+
+  # Prometheus监控
+  prometheus:
+    image: docker.1ms.run/prom/prometheus:latest
+    container_name: rqa2025-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - rqa2025-network
+
+  # Grafana可视化
+  grafana:
+    image: docker.1ms.run/grafana/grafana:latest
+    container_name: rqa2025-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=GrafanaAdmin123!
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - rqa2025-network
+
+  # MinIO对象存储
+  minio:
+    image: docker.1ms.run/minio/minio:latest
+    container_name: rqa2025-minio
+    restart: unless-stopped
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_REGION_NAME=us-east-1
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - rqa2025-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Loki日志聚合
+  loki:
+    image: docker.1ms.run/grafana/loki:latest
+    container_name: rqa2025-loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - rqa2025-network
+
+  # Promtail日志收集
+  promtail:
+    image: docker.1ms.run/grafana/promtail:latest
+    container_name: rqa2025-promtail
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - ./logs:/var/log/rqa2025:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - rqa2025-network
+
+  # PostgreSQL Exporter - TimescaleDB监控
+  postgres-exporter:
+    image: docker.1ms.run/prometheuscommunity/postgres-exporter:latest
+    container_name: rqa2025-postgres-exporter
+    restart: unless-stopped
+    environment:
+      - DATA_SOURCE_NAME=postgresql://rqa2025_admin:SecurePass123!@postgres:5432/rqa2025_prod?sslmode=disable
+      - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/postgres-exporter/queries.yaml
+    volumes:
+      - ./monitoring/postgres-exporter/queries.yaml:/etc/postgres-exporter/queries.yaml:ro
+    ports:
+      - "9187:9187"
+    depends_on:
+      - postgres
+    networks:
+      - rqa2025-network
+
+  # Node Exporter系统监控
+  node-exporter:
+    image: docker.1ms.run/prom/node-exporter:latest
+    container_name: rqa2025-node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/host/sys'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - rqa2025-network
+
+  # cAdvisor容器监控 - 在Windows环境下禁用，因为依赖Linux cgroup
+  # cadvisor:
+  #   image: docker.1ms.run/google/cadvisor:latest
+  #   container_name: rqa2025-cadvisor
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /dev/disk/:/dev/disk:ro
+  #   devices:
+  #     - /dev/kmsg
+  #   networks:
+  #     - rqa2025-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  nginx_logs:
+    driver: local
+  backup_logs:
+    driver: local
+  minio_data:
+    driver: local
+  loki_data:
+    driver: local
+  data_volume:
+    driver: local
+  models_volume:
+    driver: local
+
+networks:
+  rqa2025-network:
+    driver: bridge

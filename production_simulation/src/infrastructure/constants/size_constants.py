@@ -1,0 +1,73 @@
+"""
+大小相关常量定义
+"""
+
+
+class SizeConstants:
+    """文件大小和内存大小相关常量（单位：字节）"""
+    
+    # 基础单位
+    BYTE = 1
+    KB = 1024
+    MB = 1024 * 1024
+    GB = 1024 * 1024 * 1024
+    TB = 1024 * 1024 * 1024 * 1024
+    
+    # 缓存大小
+    CACHE_SIZE_TINY = 64  # 64B
+    CACHE_SIZE_SMALL = 1024  # 1KB
+    CACHE_SIZE_MEDIUM = 10240  # 10KB
+    CACHE_SIZE_LARGE = 102400  # 100KB
+    CACHE_SIZE_XLARGE = 1048576  # 1MB
+    
+    # 文件大小限制
+    MAX_UPLOAD_SIZE = 10 * MB  # 10MB
+    MAX_CONFIG_FILE_SIZE = 10 * MB  # 10MB
+    MAX_LOG_FILE_SIZE = 100 * MB  # 100MB
+    MAX_BACKUP_SIZE = 1 * GB  # 1GB
+    
+    # 队列大小
+    QUEUE_SIZE_SMALL = 100
+    QUEUE_SIZE_MEDIUM = 1000
+    QUEUE_SIZE_LARGE = 10000
+    QUEUE_SIZE_XLARGE = 100000
+    
+    # 批处理大小
+    BATCH_SIZE_SMALL = 10
+    BATCH_SIZE_MEDIUM = 50
+    BATCH_SIZE_LARGE = 100
+    BATCH_SIZE_XLARGE = 500
+    BATCH_SIZE_XXLARGE = 1000
+    
+    # 内存阈值（字节）
+    MEMORY_SMALL_OBJECT = 1024  # 1KB
+    MEMORY_MEDIUM_OBJECT = 10240  # 10KB
+    MEMORY_LARGE_OBJECT = 10000  # ~10KB
+    MEMORY_XLARGE_OBJECT = 1048576  # 1MB
+    
+    # 对象大小阈值（为向后兼容保留）
+    LARGE_OBJECT = 10000  # 10KB
+    
+    # 数据库相关
+    DB_MAX_CONNECTIONS = 100
+    DB_MIN_CONNECTIONS = 5
+    DB_DEFAULT_CONNECTIONS = 20
+    
+    # 线程池大小
+    THREAD_POOL_MIN = 2
+    THREAD_POOL_MAX = 32
+    THREAD_POOL_DEFAULT = 10
+    
+    # 分页
+    PAGE_SIZE_SMALL = 10
+    PAGE_SIZE_MEDIUM = 20
+    PAGE_SIZE_LARGE = 50
+    PAGE_SIZE_XLARGE = 100
+    PAGE_SIZE_MAX = 1000
+    
+    # 字符串长度限制
+    MAX_STRING_LENGTH_SHORT = 50
+    MAX_STRING_LENGTH_MEDIUM = 255
+    MAX_STRING_LENGTH_LONG = 1000
+    MAX_STRING_LENGTH_XLARGE = 10000
+

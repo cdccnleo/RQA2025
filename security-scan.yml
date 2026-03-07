@@ -1,0 +1,214 @@
+# RQA2025 风险控制层安全扫描配置
+
+# Trivy 容器安全扫描配置
+trivy:
+  enabled: true
+  config:
+    # 扫描范围
+    scan:
+      - type: image
+        target: "rqa2025/risk-control:latest"
+      - type: filesystem
+        target: "./src"
+        skip-files:
+          - "*.pyc"
+          - "__pycache__"
+          - "*.log"
+
+    # 扫描选项
+    options:
+      - "--exit-code=1"          # 发现漏洞时退出码为1
+      - "--no-progress"          # 不显示进度条
+      - "--format=json"          # 输出JSON格式
+      - "--output=security-report.json"  # 输出文件
+      - "--severity=HIGH,CRITICAL"  # 只报告高危和严重漏洞
+      - "--ignore-unfixed"       # 忽略未修复的漏洞
+      - "--skip-files"           # 跳过文件
+      - "*.test.*"
+      - "*.spec.*"
+
+# Bandit Python代码安全扫描配置
+bandit:
+  enabled: true
+  config:
+    # 扫描目标
+    targets:
+      - "./src"
+
+    # 排除文件
+    exclude:
+      - "*/test_*"
+      - "*/tests/*"
+      - "*_test.py"
+      - "*/__pycache__/*"
+
+    # 扫描选项
+    options:
+      - "--format=json"          # 输出JSON格式
+      - "--output=bandit-report.json"  # 输出文件
+      - "--level=HIGH"           # 只报告高危问题
+      - "--confidence=HIGH"      # 高置信度
+
+# Dependency Check 依赖安全扫描配置
+dependency-check:
+  enabled: true
+  config:
+    # 扫描目标
+    project: "RQA2025-Risk-Control"
+    scan: "./"
+    format: "JSON"
+    output: "dependency-check-report.json"
+
+    # 排除项
+    exclude: |
+      **/node_modules/**
+      **/target/**
+      **/.git/**
+      **/*.pyc
+      **/__pycache__/**
+
+    # 高级选项
+    enableExperimental: false
+    enableRetired: false
+    failOnCVSS: 7.0
+
+# SonarQube 代码质量扫描配置
+sonarqube:
+  enabled: false  # 需要SonarQube服务器
+  config:
+    projectKey: "rqa2025-risk-control"
+    projectName: "RQA2025 Risk Control"
+    sources: "./src"
+    exclusions: |
+      **/test_*.py
+      **/tests/**
+      **/*.test.*
+      **/*.spec.*
+    properties:
+      sonar.python.coverage.reportPaths: "coverage.xml"
+      sonar.python.bandit.reportPaths: "bandit-report.json"
+
+# 自定义安全规则
+custom-rules:
+  enabled: true
+
+  # 敏感信息检查
+  secrets:
+    patterns:
+      - "password.*=.*"
+      - "secret.*=.*"
+      - "key.*=.*"
+      - "token.*=.*"
+      - "api_key.*=.*"
+    exclude:
+      - "*.test.*"
+      - "*_test.py"
+      - "*/test_*"
+
+  # 代码质量检查
+  quality:
+    rules:
+      # 避免硬编码凭据
+      - name: "hardcoded-credentials"
+        pattern: "(password|secret|key|token).*[\"'].*[\"']"
+        severity: "HIGH"
+
+      # 避免SQL注入
+      - name: "sql-injection"
+        pattern: "(SELECT|INSERT|UPDATE|DELETE).*{.*}"
+        severity: "CRITICAL"
+
+      # 避免危险函数
+      - name: "dangerous-functions"
+        pattern: "(eval|exec|__import__|open|file)"
+        severity: "MEDIUM"
+
+# 扫描报告配置
+reporting:
+  enabled: true
+  formats:
+    - "json"
+    - "html"
+    - "sarif"
+  output-dir: "./security-reports"
+
+  # 报告聚合
+  aggregate:
+    enabled: true
+    output: "security-summary.json"
+
+  # 通知配置
+  notifications:
+    enabled: true
+    on-failure-only: true  # 只在发现问题时通知
+    channels:
+      - type: "slack"
+        webhook: "${SLACK_WEBHOOK_URL}"
+        channel: "#security-alerts"
+      - type: "email"
+        recipients: ["security@company.com"]
+        subject: "Security Scan Report - RQA2025 Risk Control"
+
+# 合规检查配置
+compliance:
+  enabled: true
+  standards:
+    - "owasp-top-10"
+    - "cis-docker-benchmark"
+    - "nist-sp-800-53"
+
+  # 自定义合规规则
+  custom-rules:
+    - name: "data-encryption"
+      description: "确保敏感数据加密存储"
+      check: "grep -r 'encrypt' ./src"
+      severity: "HIGH"
+
+    - name: "access-control"
+      description: "检查访问控制实现"
+      check: "grep -r 'authorize\|authenticate' ./src"
+      severity: "HIGH"
+
+    - name: "audit-logging"
+      description: "确保审计日志记录"
+      check: "grep -r 'audit\|log' ./src"
+      severity: "MEDIUM"
+
+# CI/CD 集成配置
+ci-cd:
+  enabled: true
+
+  # GitHub Actions
+  github-actions:
+    enabled: true
+    workflow: ".github/workflows/security-scan.yml"
+    triggers:
+      - "push"
+      - "pull_request"
+
+  # Jenkins
+  jenkins:
+    enabled: false
+    job-name: "risk-control-security-scan"
+    pipeline: "Jenkinsfile"
+
+  # GitLab CI
+  gitlab-ci:
+    enabled: false
+    file: ".gitlab-ci.yml"
+    stage: "security"
+
+# 修复建议配置
+remediation:
+  enabled: true
+  auto-fix:
+    enabled: false  # 自动修复可能引入bug
+    rules:
+      - name: "dependency-updates"
+        description: "自动更新有漏洞的依赖"
+        enabled: false
+
+  # 手动修复建议
+  suggestions:
+    enabled: true
+    output: "remediation-guide.md"

@@ -1,0 +1,236 @@
+stages:
+  - build
+  - test
+  - security
+  - deploy
+  - production
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  BUILDKIT_INLINE_CACHE: "true"
+  DOCKER_BUILDKIT: "true"
+
+# 构建阶段
+build:docker:
+  stage: build
+  image: docker:20.10
+  services:
+    - docker:20.10-dind
+  script:
+    - echo "🏗️ 开始构建Docker镜像..."
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --target production --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - echo "✅ Docker镜像构建完成"
+  artifacts:
+    reports:
+      sbom: gl-sbom-report.json
+  cache:
+    key:
+      files:
+        - requirements.txt
+        - pyproject.toml
+    paths:
+      - .cache/pip
+  only:
+    - main
+    - develop
+    - /^release/.*$/
+
+# 单元测试
+test:unit:
+  stage: test
+  image: python:3.9-slim
+  script:
+    - echo "🧪 运行单元测试..."
+    - pip install -r requirements-dev.txt
+    - pytest tests/unit/ -v --cov=src --cov-report=xml --cov-report=html
+    - echo "✅ 单元测试完成"
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+      junit: junit-report.xml
+  cache:
+    key:
+      files:
+        - requirements-dev.txt
+        - pyproject.toml
+    paths:
+      - .cache/pip
+  only:
+    - main
+    - develop
+    - merge_requests
+
+# 集成测试
+test:integration:
+  stage: test
+  image: python:3.9-slim
+  services:
+    - postgres:15-alpine
+    - redis:7-alpine
+  script:
+    - echo "🔗 运行集成测试..."
+    - pip install -r requirements-dev.txt
+    - pytest tests/integration/ -v --cov=src --cov-report=xml --cov-append
+    - echo "✅ 集成测试完成"
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+      junit: junit-report.xml
+  only:
+    - main
+    - develop
+    - merge_requests
+
+# 安全扫描
+security:scan:
+  stage: security
+  image: python:3.9-slim
+  script:
+    - echo "🔒 执行安全扫描..."
+    - pip install -r requirements-dev.txt
+    - pip install safety bandit
+    - safety check --full-report
+    - bandit -r src/ -f json -o bandit-report.json || true
+    - echo "✅ 安全扫描完成"
+  artifacts:
+    reports:
+      sast: bandit-report.json
+  allow_failure: true
+  only:
+    - main
+    - develop
+    - merge_requests
+
+# 容器安全扫描
+security:container:
+  stage: security
+  image: aquasec/trivy:latest
+  script:
+    - echo "🐳 容器安全扫描..."
+    - trivy image --format json --output trivy-report.json $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - echo "✅ 容器安全扫描完成"
+  artifacts:
+    reports:
+      container_scanning: trivy-report.json
+  allow_failure: true
+  only:
+    - main
+    - develop
+
+# 部署到测试环境
+deploy:staging:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  environment:
+    name: staging
+    url: https://staging.rqa2025.example.com
+  script:
+    - echo "🚀 部署到测试环境..."
+    - kubectl config use-context staging-cluster
+    - kubectl apply -f k8s/staging/ --namespace rqa2025-staging
+    - kubectl set image deployment/rqa2025-app rqa2025-app=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -n rqa2025-staging
+    - kubectl rollout status deployment/rqa2025-app -n rqa2025-staging --timeout=600s
+    - echo "✅ 测试环境部署完成"
+  only:
+    - develop
+
+# 部署到预生产环境
+deploy:preprod:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  environment:
+    name: preprod
+    url: https://preprod.rqa2025.example.com
+  script:
+    - echo "🚀 部署到预生产环境..."
+    - kubectl config use-context preprod-cluster
+    - kubectl apply -f k8s/preprod/ --namespace rqa2025-preprod
+    - kubectl set image deployment/rqa2025-app rqa2025-app=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -n rqa2025-preprod
+    - kubectl rollout status deployment/rqa2025-app -n rqa2025-preprod --timeout=600s
+    - echo "✅ 预生产环境部署完成"
+  only:
+    - main
+
+# 生产环境金丝雀部署
+deploy:production:canary:
+  stage: production
+  image: bitnami/kubectl:latest
+  environment:
+    name: production
+    url: https://rqa2025.example.com
+  script:
+    - echo "🦜 生产环境金丝雀部署..."
+    - kubectl config use-context production-cluster
+    - kubectl apply -f k8s/production/ --namespace rqa2025-app
+    - kubectl set image deployment/rqa2025-app rqa2025-app=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -n rqa2025-app
+    - kubectl scale deployment rqa2025-app --replicas=1 -n rqa2025-app  # 金丝雀: 10%流量
+    - kubectl rollout status deployment/rqa2025-app -n rqa2025-app --timeout=600s
+    - echo "✅ 金丝雀部署完成，等待验证..."
+    - sleep 300  # 等待5分钟验证
+    - kubectl get pods -l app=rqa2025 -n rqa2025-app
+  only:
+    - /^release/.*$/
+  when: manual
+
+# 生产环境全量部署
+deploy:production:full:
+  stage: production
+  image: bitnami/kubectl:latest
+  environment:
+    name: production
+    url: https://rqa2025.example.com
+  script:
+    - echo "🚀 生产环境全量部署..."
+    - kubectl config use-context production-cluster
+    - kubectl scale deployment rqa2025-app --replicas=3 -n rqa2025-app  # 全量部署
+    - kubectl rollout status deployment/rqa2025-app -n rqa2025-app --timeout=600s
+    - kubectl get pods -l app=rqa2025 -n rqa2025-app
+    - echo "✅ 生产环境全量部署完成"
+  only:
+    - /^release/.*$/
+  when: manual
+
+# 回滚生产环境
+rollback:production:
+  stage: production
+  image: bitnami/kubectl:latest
+  environment:
+    name: production
+    url: https://rqa2025.example.com
+  script:
+    - echo "🔄 生产环境回滚..."
+    - kubectl config use-context production-cluster
+    - kubectl rollout undo deployment/rqa2025-app -n rqa2025-app
+    - kubectl rollout status deployment/rqa2025-app -n rqa2025-app --timeout=600s
+    - kubectl get pods -l app=rqa2025 -n rqa2025-app
+    - echo "✅ 生产环境回滚完成"
+  when: manual
+
+# 部署后验证
+verify:production:
+  stage: production
+  image: bitnami/kubectl:latest
+  environment:
+    name: production
+    url: https://rqa2025.example.com
+  script:
+    - echo "✅ 生产环境部署验证..."
+    - kubectl config use-context production-cluster
+    - kubectl get pods -l app=rqa2025 -n rqa2025-app -o wide
+    - kubectl get services -n rqa2025-app
+    - kubectl get ingress -n rqa2025-app
+    - echo "🏥 健康检查..."
+    - kubectl exec -n rqa2025-app deployment/rqa2025-app -- curl -f http://localhost:8000/health || exit 1
+    - echo "✅ 生产环境验证通过"
+  only:
+    - /^release/.*$/
+  when: manual

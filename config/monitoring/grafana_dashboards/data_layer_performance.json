@@ -1,0 +1,61 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "RQA2025 数据层性能监控",
+    "tags": [
+      "rqa2025",
+      "data-layer"
+    ],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "数据加载性能",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "data_load_time_seconds",
+            "legendFormat": "加载时间"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "缓存命中率",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "cache_hit_rate",
+            "legendFormat": "命中率"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "错误率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "error_rate",
+            "legendFormat": "错误率"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "资源使用",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "cpu_usage_percent",
+            "legendFormat": "CPU使用率"
+          },
+          {
+            "expr": "memory_usage_percent",
+            "legendFormat": "内存使用率"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "min_history_points": 100,
+  "pattern_analysis_window": 1000,
+  "correlation_window_hours": 24,
+  "prediction_horizon_hours": 6,
+  "root_cause_keywords": {
+    "system_resource": ["cpu", "memory", "disk", "storage"],
+    "network_issue": ["network", "connection", "timeout", "latency"],
+    "database_problem": ["database", "db", "query", "connection"],
+    "application_error": ["error", "exception", "crash", "fail"],
+    "external_dependency": ["api", "service", "external", "third_party"],
+    "configuration_issue": ["config", "configuration", "setting"],
+    "human_error": ["manual", "user", "operator", "deployment"]
+  },
+  "pattern_detection": {
+    "spike_threshold": 2.0,
+    "trend_threshold": 0.1,
+    "cycle_detection_min_points": 50,
+    "similarity_threshold": 0.7,
+    "autocorrelation_threshold": 0.3
+  },
+  "correlation_analysis": {
+    "time_window_hours": 1,
+    "correlation_threshold": 0.3,
+    "cascade_probability_threshold": 0.6,
+    "common_cause_probability_threshold": 0.7
+  },
+  "predictive_alerting": {
+    "confidence_threshold": 0.8,
+    "deviation_multiplier": 2.0,
+    "trend_prediction_hours": 6,
+    "prevention_suggestion_count": 3
+  }
+}

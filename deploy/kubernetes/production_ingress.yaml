@@ -1,0 +1,259 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa2025-production-ingress
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-production
+    environment: production
+    cloud-native: "true"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length,Content-Range"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/common-name: "api.rqa2025.com"
+    cert-manager.io/dns-names: "api.rqa2025.com,*.api.rqa2025.com"
+spec:
+  tls:
+  - hosts:
+    - api.rqa2025.com
+    - *.api.rqa2025.com
+    secretName: rqa2025-tls-certificates
+  rules:
+  - host: api.rqa2025.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-api-gateway
+            port:
+              number: 80
+      - path: /health
+        pathType: Exact
+        backend:
+          service:
+            name: rqa2025-api-gateway
+            port:
+              number: 80
+      - path: /metrics
+        pathType: Exact
+        backend:
+          service:
+            name: rqa2025-api-gateway
+            port:
+              number: 80
+      - path: /api/v1/engine
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-engine-service
+            port:
+              number: 8001
+      - path: /api/v1/infrastructure
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-infrastructure-service
+            port:
+              number: 8002
+      - path: /api/v1/business
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-business-service
+            port:
+              number: 8003
+      - path: /api/v1/data
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-data-service
+            port:
+              number: 8004
+      - path: /api/v1/features
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-features-service
+            port:
+              number: 8005
+      - path: /api/v1/model
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-model-service
+            port:
+              number: 8006
+      - path: /api/v1/risk
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-risk-service
+            port:
+              number: 8007
+      - path: /api/v1/trading
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-trading-service
+            port:
+              number: 8008
+      - path: /api/v1/storage
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-storage-service
+            port:
+              number: 8009
+      - path: /monitoring
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-grafana-service
+            port:
+              number: 3000
+      - path: /prometheus
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-prometheus-service
+            port:
+              number: 9090
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa2025-monitoring-ingress
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-monitoring
+    environment: production
+    cloud-native: "true"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/common-name: "monitoring.rqa2025.com"
+    cert-manager.io/dns-names: "monitoring.rqa2025.com"
+spec:
+  tls:
+  - hosts:
+    - monitoring.rqa2025.com
+    secretName: rqa2025-monitoring-tls-certificates
+  rules:
+  - host: monitoring.rqa2025.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-grafana-service
+            port:
+              number: 3000
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-grafana-service
+            port:
+              number: 3000
+      - path: /prometheus
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-prometheus-service
+            port:
+              number: 9090
+      - path: /alertmanager
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-alertmanager-service
+            port:
+              number: 9093
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa2025-admin-ingress
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-admin
+    environment: production
+    cloud-native: "true"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    nginx.ingress.kubernetes.io/basic-auth: "rqa2025-admin-auth"
+    nginx.ingress.kubernetes.io/basic-auth-realm: "Admin Access Required"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/common-name: "admin.rqa2025.com"
+    cert-manager.io/dns-names: "admin.rqa2025.com"
+spec:
+  tls:
+  - hosts:
+    - admin.rqa2025.com
+    secretName: rqa2025-admin-tls-certificates
+  rules:
+  - host: admin.rqa2025.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-admin-service
+            port:
+              number: 8080
+      - path: /kibana
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-kibana-service
+            port:
+              number: 5601
+      - path: /elasticsearch
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-elasticsearch-service
+            port:
+              number: 9200

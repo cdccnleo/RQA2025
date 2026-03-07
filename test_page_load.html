@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面加载测试</title>
+</head>
+<body>
+    <h1>页面加载测试</h1>
+    <div id="status">正在初始化...</div>
+    <div id="result"></div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const resultDiv = document.getElementById('result');
+
+        function log(message) {
+            console.log(message);
+            resultDiv.innerHTML += message + '<br>';
+        }
+
+        // 模拟我们的加载逻辑
+        function initDataSourceLoading() {
+            log('🚀 开始数据源加载初始化...');
+
+            // 模拟检查DOM元素
+            const mockTable = document.createElement('table');
+            mockTable.innerHTML = '<tbody id="test-tbody"></tbody>';
+            document.body.appendChild(mockTable);
+
+            const tbody = document.querySelector('#test-tbody');
+            if (!tbody) {
+                log('❌ 找不到数据源表格，重试中...');
+                setTimeout(initDataSourceLoading, 50);
+                return;
+            }
+
+            log('✅ 表格元素存在，开始加载数据');
+            tbody.innerHTML = '<tr><td>正在加载数据源...</td></tr>';
+
+            // 执行API请求
+            loadDataFromAPI();
+        }
+
+        async function loadDataFromAPI() {
+            try {
+                log('📡 发送API请求...');
+                const response = await fetch('http://localhost:8000/api/v1/data/sources', {
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+
+                log('📡 API响应状态: ' + response.status + ' ' + response.ok);
+
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+
+                const data = await response.json();
+                log('📦 API响应成功，数据源数量: ' + (data.data_sources ? data.data_sources.length : 0));
+
+                // 模拟渲染
+                if (data.data_sources && data.data_sources.length > 0) {
+                    log('🎨 模拟渲染数据源...');
+                    log('✅ 加载成功 - 找到 ' + data.data_sources.length + ' 个数据源');
+                } else {
+                    log('📭 无数据源数据');
+                }
+
+            } catch (error) {
+                log('❌ API加载失败: ' + error.message);
+            }
+        }
+
+        // 页面加载完成后开始初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                statusDiv.textContent = 'DOM加载完成，开始初始化';
+                initDataSourceLoading();
+            });
+        } else {
+            statusDiv.textContent = 'DOM已加载，开始初始化';
+            initDataSourceLoading();
+        }
+
+        // 页面完全加载
+        window.addEventListener('load', function() {
+            log('✅ 页面完全加载');
+        });
+    </script>
+</body>
+</html>

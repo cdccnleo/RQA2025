@@ -1,0 +1,259 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-service
+  namespace: production
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: rqa2025
+    version: blue  # 默认指向蓝色环境
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-blue
+  namespace: production
+  labels:
+    app: rqa2025
+    version: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rqa2025
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        version: blue
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:blue
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: "blue"
+        - name: VERSION
+          value: "1.0.0-blue"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-green
+  namespace: production
+  labels:
+    app: rqa2025
+    version: green
+spec:
+  replicas: 0  # 初始状态为0，等待切换
+  selector:
+    matchLabels:
+      app: rqa2025
+      version: green
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        version: green
+    spec:
+      containers:
+      - name: rqa2025-app
+        image: rqa2025:green
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: "green"
+        - name: VERSION
+          value: "1.0.1-green"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-config
+  namespace: production
+data:
+  # 蓝绿部署配置
+  blue_green:
+    enabled: "true"
+    health_check_path: "/health"
+    readiness_check_path: "/ready"
+    switch_timeout: "300"  # 5分钟切换超时
+    rollback_timeout: "60"  # 1分钟回滚超时
+  
+  # 监控配置
+  monitoring:
+    prometheus_enabled: "true"
+    grafana_enabled: "true"
+    alerting_enabled: "true"
+    
+  # 数据库配置
+  database:
+    host: "postgresql-service"
+    port: "5432"
+    name: "rqa2025_prod"
+    
+  # Redis配置
+  redis:
+    host: "redis-service"
+    port: "6379"
+    
+  # 日志配置
+  logging:
+    level: "INFO"
+    format: "json"
+    output: "stdout"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-blue-service
+  namespace: production
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: rqa2025
+    version: blue
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-green-service
+  namespace: production
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: rqa2025
+    version: green
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rqa2025-ingress
+  namespace: production
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - rqa2025.example.com
+    secretName: rqa2025-tls
+  rules:
+  - host: rqa2025.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rqa2025-service
+            port:
+              number: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rqa2025-blue-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rqa2025-blue
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rqa2025-green-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rqa2025-green
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80 

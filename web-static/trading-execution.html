@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 交易执行监控</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mobile-optimization.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .signal-indicator {
+            position: relative;
+        }
+        .signal-indicator.buy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #10b981, #059669);
+            border-radius: 2px 0 0 2px;
+        }
+        .signal-indicator.sell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+            border-radius: 2px 0 0 2px;
+        }
+        .status-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .order-flow {
+            position: relative;
+        }
+        .order-flow::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 20px;
+            height: 2px;
+            background: #e5e7eb;
+            transform: translateY(-50%);
+        }
+        .order-flow.last::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                            <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">交易执行监控</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-green-600 font-medium">交易中</span>
+                    </div>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-exchange-alt text-green-600 mr-3"></i>
+                交易执行监控
+            </h1>
+            <p class="text-gray-600">实时监控交易信号生成、订单处理、成交执行和持仓管理</p>
+        </div>
+
+        <!-- Trading Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-signal text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">今日信号</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="today-signals">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-file-invoice-dollar text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">待成交订单</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="pending-orders">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">今日成交</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="today-trades">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-balance-scale text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500 truncate">持仓市值</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="portfolio-value">加载中...</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Flow Pipeline -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">交易流程管道</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Signal Generation -->
+                <div class="order-flow bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-signal text-blue-600 mr-2"></i>
+                            信号生成
+                        </h3>
+                        <span class="status-badge px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                            活跃
+                        </span>
+                    </div>
+
+                    <div id="signal-generation-list" class="space-y-3">
+                        <div class="text-center text-gray-500 py-4">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <div class="text-sm">正在加载信号数据...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Generation -->
+                <div class="order-flow bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-file-invoice-dollar text-yellow-600 mr-2"></i>
+                            订单生成
+                        </h3>
+                        <span class="status-badge px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                            处理中
+                        </span>
+                    </div>
+
+                    <div id="order-generation-list" class="space-y-3">
+                        <div class="text-center text-gray-500 py-4">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <div class="text-sm">正在加载订单数据...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trade Execution -->
+                <div class="order-flow bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                            成交执行
+                        </h3>
+                        <span class="status-badge px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                            正常
+                        </span>
+                    </div>
+
+                    <div id="trade-execution-list" class="space-y-3">
+                        <div class="text-center text-gray-500 py-4">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <div class="text-sm">正在加载成交数据...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position Management -->
+                <div class="order-flow bg-white rounded-lg shadow-lg p-6 last">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-balance-scale text-purple-600 mr-2"></i>
+                            持仓管理
+                        </h3>
+                        <span class="status-badge px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+                            监控中
+                        </span>
+                    </div>
+
+                    <div id="position-management-list" class="space-y-3">
+                        <div class="text-center text-gray-500 py-4">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <div class="text-sm">正在加载持仓数据...</div>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Summary -->
+                    <div id="portfolio-summary" class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-700">总市值</span>
+                            <span class="text-lg font-semibold text-gray-900">加载中...</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="text-sm text-gray-600">今日盈亏</span>
+                            <span class="text-sm font-medium text-gray-400">加载中...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Execution Flow Monitor -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">交易执行流程监控</h2>
+
+            <!-- Flow Monitor Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <!-- Market Monitoring -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+                        <i class="fas fa-eye text-green-600 mr-2"></i>市场监控
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">数据流状态</span>
+                            <span class="text-sm font-medium text-green-600" id="market-data-status">数据不可用</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">数据延迟</span>
+                            <span class="text-sm font-medium text-gray-900" id="market-data-latency">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">数据质量</span>
+                            <span class="text-sm font-medium text-green-600" id="market-data-quality">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Signal Generation -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+                        <i class="fas fa-signal text-blue-600 mr-2"></i>信号生成
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">生成频率</span>
+                            <span class="text-sm font-medium text-gray-900" id="signal-frequency">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">信号质量</span>
+                            <span class="text-sm font-medium text-green-600" id="signal-quality">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">信号分布</span>
+                            <span class="text-sm font-medium text-gray-900" id="signal-distribution">数据不可用</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Check -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-red-800 mb-3 flex items-center">
+                        <i class="fas fa-shield-alt text-red-600 mr-2"></i>风险检查
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">检查耗时</span>
+                            <span class="text-sm font-medium text-gray-900" id="risk-check-latency">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">拦截率</span>
+                            <span class="text-sm font-medium text-green-600" id="risk-intercept-rate">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">阈值状态</span>
+                            <span class="text-sm font-medium text-yellow-600" id="risk-threshold-status">数据不可用</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Generation -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-yellow-800 mb-3 flex items-center">
+                        <i class="fas fa-file-invoice-dollar text-yellow-600 mr-2"></i>订单生成
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">生成速率</span>
+                            <span class="text-sm font-medium text-gray-900" id="order-generation-rate">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">订单类型</span>
+                            <span class="text-sm font-medium text-gray-900" id="order-type-distribution">数据不可用</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">状态流转</span>
+                            <span class="text-sm font-medium text-green-600" id="order-status-flow">数据不可用</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow Monitor Cards - Continued -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <!-- Smart Routing -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
+                        <i class="fas fa-route text-purple-600 mr-2"></i>智能路由
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">路由耗时</span>
+                            <span class="text-sm font-medium text-gray-900" id="routing-latency">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">成功率</span>
+                            <span class="text-sm font-medium text-green-600" id="routing-success-rate">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">路径分析</span>
+                            <span class="text-sm font-medium text-gray-900" id="routing-path-analysis">数据不可用</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-indigo-800 mb-3 flex items-center">
+                        <i class="fas fa-check-circle text-indigo-600 mr-2"></i>成交执行
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">成交率</span>
+                            <span class="text-sm font-medium text-green-600" id="execution-success-rate">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">执行延迟</span>
+                            <span class="text-sm font-medium text-gray-900" id="execution-latency">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">滑点分析</span>
+                            <span class="text-sm font-medium text-yellow-600" id="execution-slippage">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Feedback -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-teal-800 mb-3 flex items-center">
+                        <i class="fas fa-bell text-teal-600 mr-2"></i>结果反馈
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">反馈延迟</span>
+                            <span class="text-sm font-medium text-gray-900" id="feedback-latency">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">确认率</span>
+                            <span class="text-sm font-medium text-green-600" id="feedback-confirmation-rate">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">异常订单</span>
+                            <span class="text-sm font-medium text-red-600" id="feedback-abnormal-orders">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position Management -->
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h4 class="font-semibold text-pink-800 mb-3 flex items-center">
+                        <i class="fas fa-balance-scale text-pink-600 mr-2"></i>持仓管理
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">持仓变化</span>
+                            <span class="text-sm font-medium text-gray-900" id="position-changes">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">仓位风险</span>
+                            <span class="text-sm font-medium text-yellow-600" id="position-risk">数据不可用</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">持仓收益</span>
+                            <span class="text-sm font-medium text-green-600" id="position-pnl">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Order Flow Visualization -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-stream text-blue-600 mr-2"></i>
+                    实时订单流可视化
+                </h3>
+                <div class="relative">
+                    <canvas id="orderFlowChart" width="800" height="300"></canvas>
+                    <div class="absolute top-2 right-2 flex space-x-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
+                            <span class="text-xs text-gray-600">买入</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
+                            <span class="text-xs text-gray-600">卖出</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-1"></div>
+                            <span class="text-xs text-gray-600">挂单</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Execution Performance Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-chart-line text-green-600 mr-2"></i>
+                        执行性能指标
+                    </h3>
+                    <canvas id="executionPerformanceChart" width="400" height="250"></canvas>
+                </div>
+
+                <!-- Risk Metrics Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-shield-alt text-red-600 mr-2"></i>
+                        风险指标监控
+                    </h3>
+                    <canvas id="riskMetricsChart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Tables -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+            <!-- Recent Signals Table -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-signal text-blue-600 mr-2"></i>
+                    最新交易信号
+                </h3>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">股票</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">信号</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">强度</th>
+                            </tr>
+                        </thead>
+                        <tbody id="signals-table-body" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <div>正在加载信号数据...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-file-invoice-dollar text-yellow-600 mr-2"></i>
+                    最新订单记录
+                </h3>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">订单ID</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">股票</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">方向</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数量</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">价格</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <div>正在加载订单数据...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Trading Volume Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-bar text-green-600 mr-2"></i>
+                    交易量统计
+                </h3>
+                <canvas id="tradingVolumeChart" width="400" height="250"></canvas>
+            </div>
+
+            <!-- P&L Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-blue-600 mr-2"></i>
+                    实时盈亏曲线
+                </h3>
+                <canvas id="pnlChart" width="400" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL生成函数（环境感知）
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost'
+                ? 'http://localhost:8000/api/v1'
+                : '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        let tradingVolumeChart, pnlChart, orderFlowChart, executionPerformanceChart, riskMetricsChart;
+        let executionWebSocket = null;
+
+        // WebSocket连接管理
+        function connectExecutionWebSocket() {
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'localhost:8000'
+                : window.location.host;
+            const wsUrl = `${wsProtocol}//${wsHost}/ws/trading-execution`;
+            
+            try {
+                executionWebSocket = new WebSocket(wsUrl);
+                
+                executionWebSocket.onopen = function() {
+                    console.log('交易执行WebSocket连接已建立');
+                };
+                
+                executionWebSocket.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'execution_event') {
+                            // 根据事件类型更新相应的UI
+                            handleExecutionEvent(data);
+                        } else if (data.type === 'flow_data') {
+                            // 更新流程监控数据
+                            updateFlowMonitorMetrics(data.data);
+                        }
+                    } catch (error) {
+                        console.error('处理WebSocket消息失败:', error);
+                    }
+                };
+                
+                executionWebSocket.onerror = function(error) {
+                    console.error('WebSocket错误:', error);
+                    // WebSocket连接失败时，回退到轮询模式
+                    setTimeout(connectExecutionWebSocket, 5000);
+                };
+                
+                executionWebSocket.onclose = function() {
+                    console.log('交易执行WebSocket连接已关闭，尝试重连...');
+                    // 尝试重连
+                    setTimeout(connectExecutionWebSocket, 5000);
+                };
+            } catch (error) {
+                console.error('创建WebSocket连接失败:', error);
+                // WebSocket不可用时，回退到轮询模式
+            }
+        }
+
+        function handleExecutionEvent(eventData) {
+            // 根据事件类型更新相应的UI组件
+            const eventType = eventData.event_type;
+            const data = eventData.data || {};
+            
+            switch(eventType) {
+                case 'orders_generated':
+                    // 更新订单生成相关UI
+                    loadFlowMonitorData();
+                    break;
+                case 'execution_completed':
+                    // 更新执行完成相关UI
+                    loadFlowMonitorData();
+                    loadTradingOverview();
+                    break;
+                case 'position_updated':
+                    // 更新持仓管理相关UI
+                    loadFlowMonitorData();
+                    break;
+                case 'risk_check_completed':
+                    // 更新风险检查相关UI
+                    loadFlowMonitorData();
+                    break;
+                case 'signals_generated':
+                    // 更新信号生成相关UI
+                    loadFlowMonitorData();
+                    loadSignalsTable();
+                    break;
+                case 'execution_started':
+                    // 更新执行开始相关UI
+                    loadFlowMonitorData();
+                    break;
+                default:
+                    // 默认更新所有数据
+                    loadFlowMonitorData();
+            }
+        }
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadTradingOverview();
+            loadTradingFlow();
+            loadFlowMonitorData();
+            loadSignalsTable();
+            loadOrdersTable();
+            loadCharts();
+
+            // 建立WebSocket连接（事件驱动架构）
+            connectExecutionWebSocket();
+
+            // 保留轮询作为后备方案（如果WebSocket不可用）
+            // 但降低轮询频率，因为WebSocket会实时推送
+            setInterval(loadFlowMonitorData, 30000); // 每30秒轮询一次（作为后备）
+        });
+
+        function initCharts() {
+            // Trading Volume Chart - 初始化为空数据，等待API数据加载
+            const volumeCtx = document.getElementById('tradingVolumeChart').getContext('2d');
+            tradingVolumeChart = new Chart(volumeCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '今日交易统计'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // P&L Chart - 初始化为空数据，等待API数据加载
+            const pnlCtx = document.getElementById('pnlChart').getContext('2d');
+            pnlChart = new Chart(pnlCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '实时盈亏监控'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: '盈亏金额 (元)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Order Flow Chart
+            const orderFlowCtx = document.getElementById('orderFlowChart').getContext('2d');
+            orderFlowChart = new Chart(orderFlowCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '买入订单',
+                        data: [],
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        pointRadius: 4
+                    }, {
+                        label: '卖出订单',
+                        data: [],
+                        backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        pointRadius: 4
+                    }, {
+                        label: '挂单',
+                        data: [],
+                        backgroundColor: 'rgba(245, 158, 11, 0.6)',
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '实时订单流 (时间 vs 价格)'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                displayFormats: {
+                                    minute: 'HH:mm'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '时间'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '价格 (元)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Execution Performance Chart - 初始化为空数据，等待API数据加载
+            const executionPerformanceCtx = document.getElementById('executionPerformanceChart').getContext('2d');
+            executionPerformanceChart = new Chart(executionPerformanceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '成交率',
+                        data: [],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '执行延迟(ms)',
+                        data: [],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '执行性能指标趋势'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '成交率 (%)'
+                            },
+                            min: 95,
+                            max: 100
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '延迟 (ms)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+
+            // Risk Metrics Chart - 初始化为空数据，等待API数据加载
+            const riskMetricsCtx = document.getElementById('riskMetricsChart').getContext('2d');
+            riskMetricsChart = new Chart(riskMetricsCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['市场风险', '流动性风险', '操作风险', '合规风险', '系统风险', '信用风险'],
+                    datasets: [{
+                        label: '当前风险水平',
+                        data: [],
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        pointBackgroundColor: 'rgb(239, 68, 68)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(239, 68, 68)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '风险指标雷达图'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 5
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadTradingOverview() {
+            try {
+                // 从API获取交易概览数据
+                const response = await fetch(getApiBaseUrl('/trading/overview'));
+                if (response.ok) {
+                    const data = await response.json();
+                    // 更新概览数据
+                    document.getElementById('today-signals').textContent = 
+                        data.today_signals !== undefined ? data.today_signals.toString() : '--';
+                    document.getElementById('pending-orders').textContent = 
+                        data.pending_orders !== undefined ? data.pending_orders.toString() : '--';
+                    document.getElementById('today-trades').textContent = 
+                        data.today_trades !== undefined ? data.today_trades.toString() : '--';
+                    document.getElementById('portfolio-value').textContent = 
+                        data.portfolio_value !== undefined && data.portfolio_value > 0 
+                            ? data.portfolio_value.toLocaleString('zh-CN', { style: 'currency', currency: 'CNY' })
+                            : '--';
+                } else {
+                    // 如果API不可用，显示"--"
+                    document.getElementById('today-signals').textContent = '--';
+                    document.getElementById('pending-orders').textContent = '--';
+                    document.getElementById('today-trades').textContent = '--';
+                    document.getElementById('portfolio-value').textContent = '--';
+                }
+            } catch (error) {
+                console.error('加载交易概览失败:', error);
+                // 出错时显示"--"
+                document.getElementById('today-signals').textContent = '--';
+                document.getElementById('pending-orders').textContent = '--';
+                document.getElementById('today-trades').textContent = '--';
+                document.getElementById('portfolio-value').textContent = '--';
+                document.getElementById('today-signals').textContent = '无法获取';
+                document.getElementById('pending-orders').textContent = '无法获取';
+                document.getElementById('today-trades').textContent = '无法获取';
+                document.getElementById('portfolio-value').textContent = '无法获取';
+            }
+        }
+
+        async function loadFlowMonitorData() {
+            try {
+                // Load flow monitor data from API
+                const response = await fetch(getApiBaseUrl('/trading/execution/flow'));
+                if (response.ok) {
+                    const data = await response.json();
+                    updateFlowMonitorMetrics(data);
+                } else {
+                    // If API not available, show default values
+                    updateFlowMonitorMetrics(null);
+                }
+            } catch (error) {
+                console.error('加载流程监控数据失败:', error);
+                // Show default values on error
+                updateFlowMonitorMetrics(null);
+            }
+        }
+
+        function updateFlowMonitorMetrics(data) {
+            // Market Monitoring
+            document.getElementById('market-data-status').textContent = data?.market_monitoring?.status || '数据不可用';
+            document.getElementById('market-data-latency').textContent = data?.market_monitoring?.latency ? data.market_monitoring.latency + 'ms' : '--';
+            document.getElementById('market-data-quality').textContent = data?.market_monitoring?.quality ? data.market_monitoring.quality + '%' : '--';
+
+            // Signal Generation
+            document.getElementById('signal-frequency').textContent = data?.signal_generation?.frequency ? data.signal_generation.frequency.toFixed(2) + '/秒' : '--';
+            document.getElementById('signal-quality').textContent = data?.signal_generation?.quality ? data.signal_generation.quality.toFixed(1) + '%' : '--';
+            document.getElementById('signal-distribution').textContent = data?.signal_generation?.distribution || '数据不可用';
+
+            // Risk Check
+            document.getElementById('risk-check-latency').textContent = data?.risk_check?.latency ? data.risk_check.latency + 'ms' : '--';
+            document.getElementById('risk-intercept-rate').textContent = data?.risk_check?.intercept_rate ? data.risk_check.intercept_rate + '%' : '--';
+            document.getElementById('risk-threshold-status').textContent = data?.risk_check?.threshold_status || '数据不可用';
+
+            // Order Generation
+            document.getElementById('order-generation-rate').textContent = data?.order_generation?.rate ? data.order_generation.rate.toFixed(2) + '/秒' : '--';
+            document.getElementById('order-type-distribution').textContent = data?.order_generation?.type_distribution || '数据不可用';
+            document.getElementById('order-status-flow').textContent = data?.order_generation?.status_flow || '数据不可用';
+
+            // Smart Routing
+            document.getElementById('routing-latency').textContent = data?.smart_routing?.latency ? data.smart_routing.latency + 'ms' : '--';
+            document.getElementById('routing-success-rate').textContent = data?.smart_routing?.success_rate ? data.smart_routing.success_rate + '%' : '--';
+            document.getElementById('routing-path-analysis').textContent = data?.smart_routing?.path_analysis || '数据不可用';
+
+            // Execution
+            document.getElementById('execution-success-rate').textContent = data?.execution?.success_rate ? data.execution.success_rate + '%' : '--';
+            document.getElementById('execution-latency').textContent = data?.execution?.latency ? data.execution.latency + 'ms' : '--';
+            document.getElementById('execution-slippage').textContent = data?.execution?.slippage ? data.execution.slippage + '%' : '--';
+
+            // Result Feedback
+            document.getElementById('feedback-latency').textContent = data?.result_feedback?.latency ? data.result_feedback.latency + 'ms' : '--';
+            document.getElementById('feedback-confirmation-rate').textContent = data?.result_feedback?.confirmation_rate ? data.result_feedback.confirmation_rate + '%' : '--';
+            document.getElementById('feedback-abnormal-orders').textContent = data?.result_feedback?.abnormal_orders || '--';
+
+            // Position Management
+            document.getElementById('position-changes').textContent = data?.position_management?.changes ? data.position_management.changes + '%' : '--';
+            document.getElementById('position-risk').textContent = data?.position_management?.risk || '数据不可用';
+            document.getElementById('position-pnl').textContent = data?.position_management?.pnl ? data.position_management.pnl + '%' : '--';
+
+            // Update order flow chart if data available
+            if (data?.order_flow && orderFlowChart) {
+                updateOrderFlowChart(data.order_flow);
+            }
+
+            // Update performance charts if data available
+            if (data?.performance && executionPerformanceChart) {
+                updateExecutionPerformanceChart(data.performance);
+            }
+
+            if (data?.risk_metrics && riskMetricsChart) {
+                updateRiskMetricsChart(data.risk_metrics);
+            }
+        }
+
+        function updateOrderFlowChart(orderFlowData) {
+            // Update order flow visualization
+            if (orderFlowChart && orderFlowData) {
+                orderFlowChart.data.datasets[0].data = orderFlowData.buy_orders || [];
+                orderFlowChart.data.datasets[1].data = orderFlowData.sell_orders || [];
+                orderFlowChart.data.datasets[2].data = orderFlowData.pending_orders || [];
+                orderFlowChart.update();
+            }
+        }
+
+        function updateExecutionPerformanceChart(performanceData) {
+            // Update execution performance chart
+            if (executionPerformanceChart && performanceData) {
+                executionPerformanceChart.data.datasets[0].data = performanceData.success_rates || [];
+                executionPerformanceChart.data.datasets[1].data = performanceData.latencies || [];
+                executionPerformanceChart.update();
+            }
+        }
+
+        function updateRiskMetricsChart(riskMetricsData) {
+            // Update risk metrics radar chart
+            if (riskMetricsChart && riskMetricsData) {
+                riskMetricsChart.data.datasets[0].data = riskMetricsData.values || [];
+                riskMetricsChart.update();
+            }
+        }
+
+        async function refreshData() {
+            const btn = event.target;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>刷新中...';
+            
+            try {
+                await Promise.all([
+                    loadTradingOverview(),
+                    loadTradingFlow(),
+                    loadFlowMonitorData(),
+                    loadSignalsTable(),
+                    loadOrdersTable(),
+                    loadCharts()
+                ]);
+            } catch (error) {
+                console.error('刷新数据失败:', error);
+            } finally {
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 1000);
+            }
+        }
+
+        async function loadTradingFlow() {
+            try {
+                // 从API获取交易流程数据
+                // TODO: 实现真实的交易流程API端点
+                // const [signalsResponse, ordersResponse, tradesResponse, positionsResponse] = await Promise.all([
+                //     fetch(getApiBaseUrl('/trading/signals/recent')),
+                //     fetch(getApiBaseUrl('/trading/orders/pending')),
+                //     fetch(getApiBaseUrl('/trading/trades/recent')),
+                //     fetch(getApiBaseUrl('/trading/positions'))
+                // ]);
+                
+                // 量化交易系统要求：不使用模拟数据
+                // 如果API不可用，显示空状态
+                document.getElementById('signal-generation-list').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <div class="text-sm">暂无信号数据</div>
+                    </div>
+                `;
+                document.getElementById('order-generation-list').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <div class="text-sm">暂无订单数据</div>
+                    </div>
+                `;
+                document.getElementById('trade-execution-list').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <div class="text-sm">暂无成交数据</div>
+                    </div>
+                `;
+                document.getElementById('position-management-list').innerHTML = `
+                    <div class="text-center text-gray-500 py-4">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <div class="text-sm">暂无持仓数据</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('加载交易流程失败:', error);
+            }
+        }
+
+        async function loadSignalsTable() {
+            try {
+                // 从API获取信号列表
+                // TODO: 实现真实的信号API端点
+                // const response = await fetch(getApiBaseUrl('/trading/signals'));
+                // const data = await response.json();
+                
+                // 量化交易系统要求：不使用模拟数据
+                const tbody = document.getElementById('signals-table-body');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                <i class="fas fa-inbox text-2xl mb-2"></i>
+                                <div>暂无信号数据</div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('加载信号列表失败:', error);
+            }
+        }
+
+        async function loadOrdersTable() {
+            try {
+                // 从API获取订单列表
+                // TODO: 实现真实的订单API端点
+                // const response = await fetch(getApiBaseUrl('/trading/orders'));
+                // const data = await response.json();
+                
+                // 量化交易系统要求：不使用模拟数据
+                const tbody = document.getElementById('orders-table-body');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                                <i class="fas fa-inbox text-2xl mb-2"></i>
+                                <div>暂无订单数据</div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('加载订单列表失败:', error);
+            }
+        }
+
+        async function loadCharts() {
+            try {
+                // 从API获取图表数据
+                // TODO: 实现真实的图表数据API端点
+                // const [volumeResponse, pnlResponse] = await Promise.all([
+                //     fetch(getApiBaseUrl('/trading/volume')),
+                //     fetch(getApiBaseUrl('/trading/pnl'))
+                // ]);
+                
+                // 量化交易系统要求：不使用模拟数据
+                // 如果API不可用，保持图表为空
+                if (tradingVolumeChart) {
+                    tradingVolumeChart.data.labels = [];
+                    tradingVolumeChart.data.datasets = [];
+                    tradingVolumeChart.update();
+                }
+                
+                if (pnlChart) {
+                    pnlChart.data.labels = [];
+                    pnlChart.data.datasets = [];
+                    pnlChart.update();
+                }
+            } catch (error) {
+                console.error('加载图表数据失败:', error);
+            }
+        }
+
+        // 页面卸载时关闭WebSocket连接
+        window.addEventListener('beforeunload', function() {
+            if (executionWebSocket) {
+                executionWebSocket.close();
+            }
+        });
+
+        // 保留定时刷新作为后备方案（如果WebSocket不可用）
+        // 但降低频率，因为WebSocket会实时推送事件
+        setInterval(() => {
+            // 只有在WebSocket未连接时才进行轮询
+            if (!executionWebSocket || executionWebSocket.readyState !== WebSocket.OPEN) {
+                loadTradingOverview();
+                loadTradingFlow();
+                loadSignalsTable();
+                loadOrdersTable();
+                loadCharts();
+            }
+        }, 60000); // 每60秒轮询一次（作为后备）
+    </script>
+</body>
+</html>

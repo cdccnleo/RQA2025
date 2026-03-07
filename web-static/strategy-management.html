@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 策略管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mobile-optimization.css">
+    <script src="mobile-utils.js"></script>
+    <script src="ux-optimization.js"></script>
+    <script src="js/page-state-manager.js"></script>
+</head>
+
+<!-- 引入用户引导组件 -->
+<script>
+    // 页面引导配置
+    const pageGuides = {
+        'strategy-management': {
+            title: '策略管理页面指南',
+            steps: [
+                {
+                    icon: 'fa-plus',
+                    title: '创建策略',
+                    description: '点击"新建策略"按钮，使用策略构思工具创建新策略'
+                },
+                {
+                    icon: 'fa-chart-line',
+                    title: '回测策略',
+                    description: '点击策略行的"回测"按钮，对策略进行历史数据回测'
+                },
+                {
+                    icon: 'fa-sliders-h',
+                    title: '优化策略',
+                    description: '点击"优化"按钮，使用参数优化器寻找最优参数'
+                },
+                {
+                    icon: 'fa-magic',
+                    title: '一键执行',
+                    description: '点击"一键执行"按钮，自动完成回测→优化→应用的完整流程'
+                },
+                {
+                    icon: 'fa-rocket',
+                    title: '发布部署',
+                    description: '点击"发布"按钮，将策略部署到开发/测试/生产环境'
+                },
+                {
+                    icon: 'fa-history',
+                    title: '部署历史',
+                    description: '点击"历史"按钮，查看策略的部署记录和回滚操作'
+                },
+                {
+                    icon: 'fa-trash',
+                    title: '删除策略',
+                    description: '点击"删除"按钮，删除不需要的策略'
+                }
+            ]
+        }
+    };
+
+    // 显示用户引导
+    function showUserGuide() {
+        const pageName = 'strategy-management';
+        const guide = pageGuides[pageName];
+
+        if (!guide) return;
+
+        // 检查是否设置了不再显示
+        const dontShow = localStorage.getItem('dont_show_guide_' + pageName);
+        if (dontShow === 'true') return;
+
+        // 创建引导弹窗
+        const modal = document.createElement('div');
+        modal.id = 'userGuideModal';
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                        操作指南
+                    </h3>
+                    <button onclick="closeUserGuide()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="space-y-4 max-h-96 overflow-y-auto">
+                    <p class="text-gray-600 mb-4">${guide.title}</p>
+                    ${guide.steps.map((step, index) => `
+                        <div class="flex items-start p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas ${step.icon} text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">${index + 1}. ${step.title}</h4>
+                                <p class="text-sm text-gray-600">${step.description}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="mt-6 flex justify-between">
+                    <label class="flex items-center text-sm text-gray-600">
+                        <input type="checkbox" id="dontShowAgain" class="mr-2">
+                        不再显示
+                    </label>
+                    <button onclick="closeUserGuide()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        知道了
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // 点击外部关闭
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeUserGuide();
+            }
+        });
+    }
+
+    // 关闭用户引导
+    function closeUserGuide() {
+        const modal = document.getElementById('userGuideModal');
+        const dontShowAgain = document.getElementById('dontShowAgain');
+
+        if (dontShowAgain && dontShowAgain.checked) {
+            localStorage.setItem('dont_show_guide_strategy-management', 'true');
+        }
+
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    // 页面加载完成后显示引导
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(showUserGuide, 1500);
+    });
+</script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .table-row-hover {
+            transition: background-color 0.2s ease;
+        }
+        .table-row-hover:hover {
+            background-color: #f3f4f6;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-draft {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-archived {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg mobile-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16 flex-wrap">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/dashboard" class="flex items-center touch-target">
+                            <i class="fas fa-arrow-left text-gray-600 mr-2 xs-nav-icon"></i>
+                            <span class="text-xl font-bold text-indigo-600 nav-brand xs-nav-brand">RQA2025</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
+                    <span class="text-sm text-gray-600 hidden sm:inline">策略管理</span>
+                    <button onclick="refreshStrategies()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition duration-300 mobile-btn touch-target">
+                        <i class="fas fa-sync-alt mr-1 sm:mr-2"></i>
+                        <span class="hidden sm:inline">刷新</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-4 sm:py-6 px-3 sm:px-4 mobile-container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="flex mb-4" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="inline-flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <span class="text-sm font-medium text-gray-500">
+                        <i class="fas fa-chess-knight mr-1"></i>
+                        策略管理
+                    </span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-cogs text-indigo-600 mr-3"></i>
+                策略管理
+            </h1>
+            <p class="text-gray-600">策略的查看、编辑、删除和导出管理</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8 mobile-grid-1">
+            <div class="bg-white rounded-lg p-6 shadow-lg card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-list text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">总策略数</dt>
+                        <dd class="text-2xl font-semibold text-blue-600" id="total-strategies">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">活跃策略</dt>
+                        <dd class="text-2xl font-semibold text-green-600" id="active-strategies">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">最近更新</dt>
+                        <dd class="text-lg font-semibold text-orange-600" id="last-updated">--</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-layer-group text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">平均节点数</dt>
+                        <dd class="text-2xl font-semibold text-purple-600" id="avg-nodes">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">总回测次数</dt>
+                        <dd class="text-2xl font-semibold text-indigo-600" id="total-backtests">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-lg card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-sliders-h text-pink-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <dt class="text-sm font-medium text-gray-500 truncate">总优化次数</dt>
+                        <dd class="text-2xl font-semibold text-pink-600" id="total-optimizations">0</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
+            <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <!-- Search and Filters -->
+                <div class="flex-1 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="搜索策略名称、类型、ID..." 
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <select id="filterType" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <option value="">所有类型</option>
+                        <option value="trend_following">趋势跟踪</option>
+                        <option value="mean_reversion">均值回归</option>
+                        <option value="ml_based">机器学习</option>
+                        <option value="arbitrage">套利策略</option>
+                        <option value="statistical">统计套利</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <button onclick="deleteSelectedStrategies()" id="batchDeleteBtn" disabled
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition duration-300">
+                        <i class="fas fa-trash mr-2"></i>批量删除
+                    </button>
+                    <button onclick="exportSelectedStrategies()" id="batchExportBtn" disabled
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition duration-300">
+                        <i class="fas fa-download mr-2"></i>批量导出
+                    </button>
+                    <button onclick="exportAllStrategies()"
+                        class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition duration-300">
+                        <i class="fas fa-file-export mr-2"></i>导出全部
+                    </button>
+                    <a href="/strategy-conception" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition duration-300 inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i>新建策略
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Table -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略名称</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">策略类型</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">更新时间</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">节点数</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">版本</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">统计</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategiesTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>加载中...</p>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategy Details Modal -->
+    <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">策略详情</h3>
+                <button onclick="closeDetailsModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="strategyDetailsContent">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - 使用相对路径通过nginx代理
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        // 全局日期解析函数
+        function parseDate(dateValue) {
+            if (!dateValue) return '--';
+            // 如果是数字（时间戳），转换为毫秒
+            if (typeof dateValue === 'number') {
+                return new Date(dateValue * 1000).toLocaleString('zh-CN');
+            }
+            // 如果是字符串（ISO格式），直接解析
+            return new Date(dateValue).toLocaleString('zh-CN');
+        }
+
+        let allStrategies = [];
+        let filteredStrategies = [];
+        let selectedStrategies = new Set();
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof MobileUtils !== 'undefined') {
+                MobileUtils.init();
+            }
+            if (typeof UXOptimization !== 'undefined') {
+                UXOptimization.init();
+            }
+            
+            loadStrategies();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('filterType').addEventListener('change', handleFilter);
+        }
+
+        async function loadStrategies() {
+            try {
+                console.log('[StrategyManagement] 开始加载策略列表...');
+                const apiUrl = getApiBaseUrl('/strategy/conceptions');
+                console.log('[StrategyManagement] API URL:', apiUrl);
+                
+                // 添加时间戳防止缓存
+                const fetchUrl = `${apiUrl}?_t=${Date.now()}`;
+                console.log('[StrategyManagement] Fetch URL:', fetchUrl);
+                
+                const response = await fetch(fetchUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                console.log('[StrategyManagement] 响应状态:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('[StrategyManagement] 响应错误:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                console.log('[StrategyManagement] 响应数据:', result);
+                
+                allStrategies = Array.isArray(result) ? result : (result.conceptions || []);
+                filteredStrategies = [...allStrategies];
+                
+                console.log('[StrategyManagement] 策略数量:', allStrategies.length);
+                
+                renderStrategyTable();
+                updateStatistics();
+            } catch (error) {
+                console.error('[StrategyManagement] 加载策略列表失败:', error);
+                document.getElementById('strategiesTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="9" class="px-6 py-8 text-center text-red-500">
+                            <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+                            <p>加载失败: ${error.message}</p>
+                            <p class="text-sm text-gray-500 mt-2">请检查网络连接或刷新页面重试</p>
+                            <button onclick="loadStrategies()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">重试</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderStrategyTable() {
+            const tbody = document.getElementById('strategiesTableBody');
+            if (filteredStrategies.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <p>暂无策略</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredStrategies.map(strategy => {
+                // 使用全局parseDate函数处理时间格式
+                const createdDate = parseDate(strategy.created_at);
+                const updatedDate = parseDate(strategy.updated_at);
+                const nodeCount = strategy.nodes ? strategy.nodes.length : 0;
+                const version = strategy.version || 1;
+                const strategyType = getStrategyTypeName(strategy.strategyType || strategy.type || '');
+                const isSelected = selectedStrategies.has(strategy.id);
+                // 从stats或parameters._stats读取统计信息
+                const stats = strategy.stats || strategy.parameters?._stats || {};
+                const backtestCount = stats.backtest_count || 0;
+                const optimizationCount = stats.optimization_count || 0;
+
+                return `
+                    <tr class="table-row-hover ${isSelected ? 'bg-blue-50' : ''}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                                onchange="toggleStrategySelection('${strategy.id}')"
+                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${strategy.name || strategy.id}</div>
+                            ${strategy.description ? `<div class="text-sm text-gray-500">${strategy.description}</div>` : ''}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${strategyType}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${createdDate}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${updatedDate}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${nodeCount}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">v${version}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" title="回测次数">
+                                <i class="fas fa-chart-line mr-1"></i>${backtestCount}
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800 ml-1" title="优化次数">
+                                <i class="fas fa-sliders-h mr-1"></i>${optimizationCount}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <button onclick="viewStrategyDetails('${strategy.id}')" 
+                                    class="text-indigo-600 hover:text-indigo-900" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="editStrategy('${strategy.id}')" 
+                                    class="text-blue-600 hover:text-blue-900" title="编辑">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="backtestStrategy('${strategy.id}')" 
+                                    class="text-purple-600 hover:text-purple-900" title="回测">
+                                    <i class="fas fa-chart-line"></i>
+                                </button>
+                                <button onclick="optimizeStrategy('${strategy.id}')" 
+                                    class="text-orange-600 hover:text-orange-900" title="优化">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <button onclick="startOneClickWorkflow('${strategy.id}', '${strategy.name || strategy.id}')" 
+                                    class="text-teal-600 hover:text-teal-900" title="一键执行完整流程">
+                                    <i class="fas fa-magic"></i>
+                                </button>
+                                <button onclick="deployStrategy('${strategy.id}', '${strategy.name || strategy.id}')" 
+                                    class="text-cyan-600 hover:text-cyan-900" title="发布部署">
+                                    <i class="fas fa-rocket"></i>
+                                </button>
+                                <button onclick="viewDeploymentHistory('${strategy.id}', '${strategy.name || strategy.id}')" 
+                                    class="text-gray-600 hover:text-gray-900" title="部署历史">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                                <button onclick="deleteStrategy('${strategy.id}')" 
+                                    class="text-red-600 hover:text-red-900" title="删除">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button onclick="exportStrategy('${strategy.id}')" 
+                                    class="text-green-600 hover:text-green-900" title="导出">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getStrategyTypeName(type) {
+            const typeMap = {
+                'trend_following': '趋势跟踪',
+                'mean_reversion': '均值回归',
+                'ml_based': '机器学习',
+                'arbitrage': '套利策略',
+                'statistical': '统计套利'
+            };
+            return typeMap[type] || type || '未分类';
+        }
+
+        function handleSearch() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            applyFilters();
+        }
+
+        function handleFilter() {
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('filterType').value;
+
+            filteredStrategies = allStrategies.filter(strategy => {
+                const matchesKeyword = !keyword || 
+                    (strategy.name && strategy.name.toLowerCase().includes(keyword)) ||
+                    (strategy.id && strategy.id.toLowerCase().includes(keyword)) ||
+                    (strategy.strategyType && strategy.strategyType.toLowerCase().includes(keyword)) ||
+                    (strategy.type && strategy.type.toLowerCase().includes(keyword));
+                
+                const matchesType = !typeFilter || 
+                    strategy.strategyType === typeFilter || 
+                    strategy.type === typeFilter;
+
+                return matchesKeyword && matchesType;
+            });
+
+            renderStrategyTable();
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll').checked;
+            if (selectAll) {
+                filteredStrategies.forEach(s => selectedStrategies.add(s.id));
+            } else {
+                filteredStrategies.forEach(s => selectedStrategies.delete(s.id));
+            }
+            updateBatchButtons();
+            renderStrategyTable();
+        }
+
+        function toggleStrategySelection(strategyId) {
+            if (selectedStrategies.has(strategyId)) {
+                selectedStrategies.delete(strategyId);
+            } else {
+                selectedStrategies.add(strategyId);
+            }
+            updateBatchButtons();
+            updateSelectAllCheckbox();
+        }
+
+        function updateSelectAllCheckbox() {
+            const selectAll = document.getElementById('selectAll');
+            if (filteredStrategies.length === 0) {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+                return;
+            }
+            const allSelected = filteredStrategies.every(s => selectedStrategies.has(s.id));
+            const someSelected = filteredStrategies.some(s => selectedStrategies.has(s.id));
+            selectAll.checked = allSelected;
+            selectAll.indeterminate = someSelected && !allSelected;
+        }
+
+        function updateBatchButtons() {
+            const hasSelection = selectedStrategies.size > 0;
+            document.getElementById('batchDeleteBtn').disabled = !hasSelection;
+            document.getElementById('batchExportBtn').disabled = !hasSelection;
+        }
+
+        function updateStatistics() {
+            document.getElementById('total-strategies').textContent = allStrategies.length;
+            document.getElementById('active-strategies').textContent = allStrategies.length;
+            
+            // 统计回测和优化次数
+            let totalBacktests = 0;
+            let totalOptimizations = 0;
+            
+            allStrategies.forEach(s => {
+                // 从stats或parameters._stats读取统计信息
+                const stats = s.stats || s.parameters?._stats || {};
+                totalBacktests += stats.backtest_count || 0;
+                totalOptimizations += stats.optimization_count || 0;
+            });
+            
+            document.getElementById('total-backtests').textContent = totalBacktests;
+            document.getElementById('total-optimizations').textContent = totalOptimizations;
+            
+            if (allStrategies.length > 0) {
+                const latest = allStrategies.reduce((latest, s) => {
+                    const time = s.updated_at || s.created_at || 0;
+                    return time > (latest.updated_at || latest.created_at || 0) ? s : latest;
+                }, allStrategies[0]);
+                const latestTime = latest.updated_at || latest.created_at;
+                if (latestTime) {
+                    // 处理时间格式 - 支持ISO字符串和时间戳
+                    let date;
+                    if (typeof latestTime === 'number') {
+                        date = new Date(latestTime * 1000);
+                    } else {
+                        date = new Date(latestTime);
+                    }
+                    document.getElementById('last-updated').textContent = date.toLocaleDateString('zh-CN');
+                }
+
+                const totalNodes = allStrategies.reduce((sum, s) => sum + (s.nodes ? s.nodes.length : 0), 0);
+                const avgNodes = Math.round(totalNodes / allStrategies.length);
+                document.getElementById('avg-nodes').textContent = avgNodes;
+            }
+        }
+
+        async function viewStrategyDetails(strategyId) {
+            try {
+                const response = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`));
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const strategy = await response.json();
+                
+                const content = `
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">基本信息</h4>
+                            <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">策略ID:</span>
+                                    <span class="font-medium">${strategy.id || '--'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">策略名称:</span>
+                                    <span class="font-medium">${strategy.name || '--'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">策略类型:</span>
+                                    <span class="font-medium">${getStrategyTypeName(strategy.strategyType || strategy.type || '')}</span>
+                                </div>
+                                ${strategy.description ? `
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">描述:</span>
+                                    <span class="font-medium">${strategy.description}</span>
+                                </div>
+                                ` : ''}
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">版本:</span>
+                                    <span class="font-medium">v${strategy.version || 1}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">创建时间:</span>
+                                    <span class="font-medium">${parseDate(strategy.created_at)}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">更新时间:</span>
+                                    <span class="font-medium">${parseDate(strategy.updated_at)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${strategy.nodes && strategy.nodes.length > 0 ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">节点列表 (${strategy.nodes.length})</h4>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="space-y-2">
+                                    ${strategy.nodes.map((node, index) => `
+                                        <div class="flex justify-between items-center p-2 bg-white rounded border">
+                                            <div>
+                                                <span class="font-medium">${node.name || node.type || '节点' + (index + 1)}</span>
+                                                <span class="text-sm text-gray-500 ml-2">(${node.type || '未知类型'})</span>
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                位置: (${node.x || 0}, ${node.y || 0})
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${strategy.connections && strategy.connections.length > 0 ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">连接关系 (${strategy.connections.length})</h4>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="space-y-2">
+                                    ${strategy.connections.map(conn => `
+                                        <div class="flex items-center p-2 bg-white rounded border">
+                                            <span class="text-sm">${conn.source || '源节点'} → ${conn.target || '目标节点'}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${strategy.parameters ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">参数配置</h4>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <pre class="text-sm overflow-x-auto">${JSON.stringify(strategy.parameters, null, 2)}</pre>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button onclick="editStrategy('${strategy.id}')" 
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                            <i class="fas fa-edit mr-2"></i>编辑
+                        </button>
+                        <button onclick="deleteStrategy('${strategy.id}')" 
+                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg">
+                            <i class="fas fa-trash mr-2"></i>删除
+                        </button>
+                        <button onclick="exportStrategy('${strategy.id}')" 
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg">
+                            <i class="fas fa-download mr-2"></i>导出
+                        </button>
+                        <button onclick="closeDetailsModal()" 
+                            class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg">
+                            关闭
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('strategyDetailsContent').innerHTML = content;
+                document.getElementById('detailsModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('加载策略详情失败:', error);
+                alert(`加载策略详情失败: ${error.message}`);
+            }
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+
+        function editStrategy(strategyId) {
+            window.location.href = `/strategy-conception?id=${strategyId}`;
+        }
+
+        function backtestStrategy(strategyId) {
+            // 跳转到回测页面，并传递策略ID
+            window.location.href = `/strategy-backtest?strategy_id=${strategyId}`;
+        }
+
+        function optimizeStrategy(strategyId) {
+            // 跳转到优化器页面，并传递策略ID
+            window.location.href = `/strategy-optimizer?strategy_id=${strategyId}`;
+        }
+
+        // 一键工作流功能
+        let currentWorkflowId = null;
+        let workflowCheckInterval = null;
+
+        async function startOneClickWorkflow(strategyId, strategyName) {
+            if (!confirm(`确定要对策略 "${strategyName}" 执行一键完整流程吗？\n\n流程包括：\n1. 回测验证\n2. 参数优化\n3. 应用最优参数\n\n这可能需要几分钟时间。`)) {
+                return;
+            }
+
+            try {
+                // 1. 创建工作流
+                const createResponse = await fetch(getApiBaseUrl('/strategy/workflow/create'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        strategy_id: strategyId,
+                        strategy_name: strategyName
+                    })
+                });
+
+                if (!createResponse.ok) {
+                    throw new Error('创建工作流失败');
+                }
+
+                const workflowData = await createResponse.json();
+                currentWorkflowId = workflowData.workflow_id;
+
+                // 显示工作流监控面板
+                showWorkflowMonitor(strategyName);
+
+                // 2. 开始执行流程
+                await executeWorkflowSteps(strategyId, currentWorkflowId);
+
+            } catch (error) {
+                console.error('启动一键工作流失败:', error);
+                alert('启动失败: ' + error.message);
+                hideWorkflowMonitor();
+            }
+        }
+
+        function showWorkflowMonitor(strategyName) {
+            // 创建或显示工作流监控面板
+            let monitor = document.getElementById('workflowMonitor');
+            if (!monitor) {
+                monitor = document.createElement('div');
+                monitor.id = 'workflowMonitor';
+                monitor.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                monitor.innerHTML = `
+                    <div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                <i class="fas fa-magic text-teal-600 mr-2"></i>
+                                一键执行流程
+                            </h3>
+                            <button onclick="cancelWorkflow()" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">策略: <span id="workflowStrategyName"></span></p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="workflowProgressBar" class="bg-teal-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            <p id="workflowProgressText" class="text-sm text-gray-600 mt-1">准备中...</p>
+                        </div>
+                        <div id="workflowSteps" class="space-y-2">
+                            <div class="flex items-center p-2 rounded" id="step-design">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-sm">策略设计</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded bg-gray-50" id="step-backtest">
+                                <i class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-sm">回测验证</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded" id="step-optimize">
+                                <i class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-sm">参数优化</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded" id="step-apply">
+                                <i class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-sm">应用参数</span>
+                            </div>
+                        </div>
+                        <div id="workflowResult" class="mt-4 hidden">
+                            <div class="p-3 rounded bg-green-50 text-green-700">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                <span id="workflowResultText">流程执行完成！</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(monitor);
+            }
+            document.getElementById('workflowStrategyName').textContent = strategyName;
+            monitor.classList.remove('hidden');
+        }
+
+        function hideWorkflowMonitor() {
+            const monitor = document.getElementById('workflowMonitor');
+            if (monitor) {
+                monitor.classList.add('hidden');
+            }
+            if (workflowCheckInterval) {
+                clearInterval(workflowCheckInterval);
+                workflowCheckInterval = null;
+            }
+            currentWorkflowId = null;
+        }
+
+        function updateWorkflowStep(stepName, status, message = '') {
+            const stepEl = document.getElementById(`step-${stepName}`);
+            if (!stepEl) return;
+
+            const iconEl = stepEl.querySelector('i');
+            stepEl.className = 'flex items-center p-2 rounded ' + (status === 'running' ? 'bg-blue-50' : status === 'completed' ? 'bg-green-50' : '');
+
+            if (status === 'completed') {
+                iconEl.className = 'fas fa-check-circle text-green-500 mr-2';
+            } else if (status === 'running') {
+                iconEl.className = 'fas fa-spinner fa-spin text-blue-500 mr-2';
+            } else if (status === 'failed') {
+                iconEl.className = 'fas fa-times-circle text-red-500 mr-2';
+            }
+
+            if (message) {
+                const spanEl = stepEl.querySelector('span');
+                spanEl.textContent = message;
+            }
+        }
+
+        function updateWorkflowProgress(percent, message) {
+            const progressBar = document.getElementById('workflowProgressBar');
+            const progressText = document.getElementById('workflowProgressText');
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressText) progressText.textContent = message;
+        }
+
+        async function executeWorkflowSteps(strategyId, workflowId) {
+            try {
+                // 步骤1: 回测
+                updateWorkflowStep('backtest', 'running');
+                updateWorkflowProgress(10, '正在启动回测...');
+
+                // 转换状态到回测
+                await fetch(getApiBaseUrl(`/strategy/workflow/${workflowId}/transition`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_status: 'backtest' })
+                });
+
+                // 调用真实回测API
+                const backtestResult = await runBacktestForWorkflow(strategyId);
+                if (!backtestResult) {
+                    throw new Error('回测执行失败');
+                }
+
+                updateWorkflowStep('backtest', 'completed', '回测验证完成');
+                updateWorkflowProgress(30, '回测完成，准备优化...');
+
+                // 步骤2: 优化
+                updateWorkflowStep('optimize', 'running');
+                updateWorkflowProgress(40, '正在启动参数优化...');
+
+                await fetch(getApiBaseUrl(`/strategy/workflow/${workflowId}/transition`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_status: 'optimize' })
+                });
+
+                // 调用真实优化API
+                const optimizationResult = await runOptimizationForWorkflow(strategyId);
+                if (!optimizationResult) {
+                    throw new Error('优化执行失败');
+                }
+
+                updateWorkflowStep('optimize', 'completed', '参数优化完成');
+                updateWorkflowProgress(70, '优化完成，准备应用...');
+
+                // 步骤3: 应用
+                updateWorkflowStep('apply', 'running');
+                updateWorkflowProgress(80, '正在应用最优参数...');
+
+                await fetch(getApiBaseUrl(`/strategy/workflow/${workflowId}/transition`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_status: 'apply' })
+                });
+
+                // 调用真实应用API
+                // task_id 应该是完整的优化任务ID（如 opt_1771490358）
+                const taskId = optimizationResult.task_id;
+                console.log('应用优化结果，task_id:', taskId);
+                if (!taskId) {
+                    throw new Error('优化结果缺少task_id');
+                }
+                const applyResult = await applyOptimizationForWorkflow(strategyId, taskId);
+                if (!applyResult) {
+                    throw new Error('应用优化结果失败');
+                }
+
+                updateWorkflowStep('apply', 'completed', '参数应用完成');
+                updateWorkflowProgress(100, '流程执行完成！');
+
+                // 转换到就绪状态
+                await fetch(getApiBaseUrl(`/strategy/workflow/${workflowId}/transition`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_status: 'ready' })
+                });
+
+                // 显示完成结果
+                document.getElementById('workflowResult').classList.remove('hidden');
+
+                // 3秒后关闭
+                setTimeout(() => {
+                    hideWorkflowMonitor();
+                    // 刷新策略列表
+                    loadStrategies();
+                }, 3000);
+
+            } catch (error) {
+                console.error('执行工作流步骤失败:', error);
+                updateWorkflowStep('backtest', 'failed');
+                updateWorkflowProgress(0, '执行失败: ' + error.message);
+
+                // 标记工作流失败
+                await fetch(getApiBaseUrl(`/strategy/workflow/${workflowId}/transition`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_status: 'failed' })
+                });
+            }
+        }
+
+        // 回测步骤 - 真实API调用
+        async function runBacktestForWorkflow(strategyId) {
+            try {
+                // 准备回测参数
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - 3); // 默认3个月回测期
+
+                const requestData = {
+                    strategy_id: strategyId,
+                    start_date: startDate.toISOString().split('T')[0],
+                    end_date: endDate.toISOString().split('T')[0],
+                    initial_capital: 100000,
+                    commission_rate: 0.001,
+                    slippage: 0.001,
+                    market_impact: 0.001
+                };
+
+                updateWorkflowProgress(15, '正在执行回测...');
+
+                // 启动回测
+                const response = await fetch(getApiBaseUrl('/backtest/run'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`回测启动失败: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const backtestId = result.backtest_id;
+
+                // 轮询回测进度
+                let backtestComplete = false;
+                let attempts = 0;
+                const maxAttempts = 60; // 最多轮询60次（约2分钟）
+
+                while (!backtestComplete && attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // 每2秒检查一次
+                    attempts++;
+
+                    const progressResponse = await fetch(getApiBaseUrl(`/backtest/${backtestId}`));
+                    if (progressResponse.ok) {
+                        const progressData = await progressResponse.json();
+                        
+                        if (progressData.status === 'completed') {
+                            backtestComplete = true;
+                            updateWorkflowProgress(25, '回测完成，更新统计...');
+                            
+                            // 更新策略回测统计
+                            try {
+                                await updateStrategyBacktestStats(strategyId);
+                                console.log('策略回测统计已更新');
+                            } catch (statsError) {
+                                console.warn('更新回测统计失败:', statsError);
+                                // 不回测失败，继续流程
+                            }
+                            
+                            return progressData;
+                        } else if (progressData.status === 'failed') {
+                            throw new Error('回测执行失败');
+                        } else {
+                            // 更新进度
+                            const progress = progressData.progress || (attempts / maxAttempts) * 15;
+                            updateWorkflowProgress(15 + progress, `回测进行中... (${attempts}/${maxAttempts})`);
+                        }
+                    }
+                }
+
+                if (!backtestComplete) {
+                    throw new Error('回测超时');
+                }
+
+                return null;
+            } catch (error) {
+                console.error('回测步骤失败:', error);
+                throw error;
+            }
+        }
+
+        // 更新策略回测统计
+        async function updateStrategyBacktestStats(strategyId) {
+            console.log(`[Backtest Stats] 开始更新策略 ${strategyId} 的回测统计`);
+            try {
+                // 获取当前策略配置
+                console.log(`[Backtest Stats] 获取策略配置: /strategy/conceptions/${strategyId}`);
+                const response = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`));
+                if (!response.ok) {
+                    throw new Error(`获取策略配置失败: ${response.status}`);
+                }
+
+                const strategy = await response.json();
+                console.log(`[Backtest Stats] 获取到策略配置:`, strategy.id, '当前stats:', strategy.stats);
+
+                // 更新回测统计
+                const stats = strategy.stats || {};
+                const currentCount = stats.backtest_count || 0;
+                console.log(`[Backtest Stats] 当前回测次数: ${currentCount}`);
+
+                const updatedStrategy = {
+                    ...strategy,
+                    stats: {
+                        ...stats,
+                        backtest_count: currentCount + 1,
+                        last_backtest_at: new Date().toISOString()
+                    }
+                };
+                console.log(`[Backtest Stats] 更新后的stats:`, updatedStrategy.stats);
+
+                // 保存更新后的策略
+                console.log(`[Backtest Stats] 发送PUT请求保存策略`);
+                const saveResponse = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedStrategy)
+                });
+
+                if (!saveResponse.ok) {
+                    const errorText = await saveResponse.text();
+                    console.error(`[Backtest Stats] 保存失败: ${saveResponse.status}`, errorText);
+                    throw new Error(`保存策略配置失败: ${saveResponse.status}`);
+                }
+
+                const saveResult = await saveResponse.json();
+                console.log(`[Backtest Stats] 保存成功:`, saveResult);
+
+                return true;
+            } catch (error) {
+                console.error('[Backtest Stats] 更新回测统计失败:', error);
+                throw error;
+            }
+        }
+
+        // 更新策略优化统计
+        async function updateStrategyOptimizationStats(strategyId) {
+            console.log(`[Optimization Stats] 开始更新策略 ${strategyId} 的优化统计`);
+            try {
+                // 获取当前策略配置
+                console.log(`[Optimization Stats] 获取策略配置: /strategy/conceptions/${strategyId}`);
+                const response = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`));
+                if (!response.ok) {
+                    throw new Error(`获取策略配置失败: ${response.status}`);
+                }
+
+                const strategy = await response.json();
+                console.log(`[Optimization Stats] 获取到策略配置:`, strategy.id, '当前stats:', strategy.stats);
+
+                // 更新优化统计
+                const stats = strategy.stats || {};
+                const currentCount = stats.optimization_count || 0;
+                console.log(`[Optimization Stats] 当前优化次数: ${currentCount}`);
+
+                const updatedStrategy = {
+                    ...strategy,
+                    stats: {
+                        ...stats,
+                        optimization_count: currentCount + 1,
+                        last_optimization_at: new Date().toISOString()
+                    }
+                };
+                console.log(`[Optimization Stats] 更新后的stats:`, updatedStrategy.stats);
+
+                // 保存更新后的策略
+                console.log(`[Optimization Stats] 发送PUT请求保存策略`);
+                const saveResponse = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedStrategy)
+                });
+
+                if (!saveResponse.ok) {
+                    const errorText = await saveResponse.text();
+                    console.error(`[Optimization Stats] 保存失败: ${saveResponse.status}`, errorText);
+                    throw new Error(`保存策略配置失败: ${saveResponse.status}`);
+                }
+
+                const saveResult = await saveResponse.json();
+                console.log(`[Optimization Stats] 保存成功:`, saveResult);
+
+                return true;
+            } catch (error) {
+                console.error('[Optimization Stats] 更新优化统计失败:', error);
+                throw error;
+            }
+        }
+
+        // 优化步骤 - 真实API调用
+        async function runOptimizationForWorkflow(strategyId) {
+            try {
+                updateWorkflowProgress(45, '正在启动参数优化...');
+
+                const requestData = {
+                    strategy_id: strategyId,
+                    method: 'grid_search',
+                    target: 'sharpe_ratio',
+                    parameters: {
+                        max_iterations: 50,
+                        convergence_threshold: 0.001
+                    }
+                };
+
+                // 启动优化
+                const response = await fetch(getApiBaseUrl('/strategy/optimization/start'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`优化启动失败: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const taskId = result.task_id;
+
+                // 轮询优化进度
+                let optimizationComplete = false;
+                let attempts = 0;
+                const maxAttempts = 60; // 最多轮询60次
+
+                while (!optimizationComplete && attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    attempts++;
+
+                    // 传递task_id参数以获取特定任务的进度
+                    const progressResponse = await fetch(getApiBaseUrl(`/strategy/optimization/progress?task_id=${taskId}`));
+                    if (progressResponse.ok) {
+                        const progressData = await progressResponse.json();
+                        
+                        if (progressData.status === 'completed') {
+                            optimizationComplete = true;
+                            updateWorkflowProgress(65, '优化完成，获取结果...');
+                            return { task_id: taskId, ...progressData };
+                        } else if (progressData.status === 'failed') {
+                            throw new Error('优化执行失败');
+                        } else {
+                            const progress = progressData.progress || (attempts / maxAttempts) * 20;
+                            updateWorkflowProgress(45 + progress, `优化进行中... (${attempts}/${maxAttempts})`);
+                        }
+                    }
+                }
+
+                if (!optimizationComplete) {
+                    throw new Error('优化超时');
+                }
+
+                return null;
+            } catch (error) {
+                console.error('优化步骤失败:', error);
+                throw error;
+            }
+        }
+
+        // 应用步骤 - 真实API调用
+        async function applyOptimizationForWorkflow(strategyId, taskId) {
+            try {
+                updateWorkflowProgress(85, '正在应用最优参数...');
+
+                const response = await fetch(getApiBaseUrl(`/strategy/optimization/${taskId}/apply`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        strategy_id: strategyId,
+                        result_index: 0 // 应用第一个（最优）结果
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`应用优化结果失败: ${response.status}`);
+                }
+
+                const result = await response.json();
+                updateWorkflowProgress(95, '参数应用成功，保存完成');
+                
+                // 注意：优化统计已由后端在apply_optimization_result中更新，前端无需重复更新
+                // 后端会自动增加optimization_count并保存到parameters._stats
+                
+                return result;
+            } catch (error) {
+                console.error('应用步骤失败:', error);
+                throw error;
+            }
+        }
+
+        function cancelWorkflow() {
+            if (confirm('确定要取消当前工作流吗？')) {
+                if (currentWorkflowId) {
+                    fetch(getApiBaseUrl(`/strategy/workflow/${currentWorkflowId}/pause`), {
+                        method: 'POST'
+                    }).catch(() => {});
+                }
+                hideWorkflowMonitor();
+            }
+        }
+
+        async function deleteStrategy(strategyId) {
+            const strategy = allStrategies.find(s => s.id === strategyId);
+            const strategyName = strategy ? strategy.name || strategyId : strategyId;
+            
+            if (!confirm(`确定要删除策略 "${strategyName}" 吗？此操作不可恢复。`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`), {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                alert('策略删除成功！');
+                selectedStrategies.delete(strategyId);
+                await loadStrategies();
+            } catch (error) {
+                console.error('删除策略失败:', error);
+                alert(`删除策略失败: ${error.message}`);
+            }
+        }
+
+        async function deleteSelectedStrategies() {
+            if (selectedStrategies.size === 0) {
+                alert('请先选择要删除的策略');
+                return;
+            }
+
+            const selectedNames = Array.from(selectedStrategies).map(id => {
+                const s = allStrategies.find(strategy => strategy.id === id);
+                return s ? (s.name || id) : id;
+            });
+
+            if (!confirm(`确定要删除以下 ${selectedStrategies.size} 个策略吗？\n\n${selectedNames.join('\n')}\n\n此操作不可恢复。`)) {
+                return;
+            }
+
+            const deletePromises = Array.from(selectedStrategies).map(async (strategyId) => {
+                try {
+                    const response = await fetch(getApiBaseUrl(`/strategy/conceptions/${strategyId}`), {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) {
+                        throw new Error(`删除 ${strategyId} 失败`);
+                    }
+                    return { success: true, id: strategyId };
+                } catch (error) {
+                    console.error(`删除策略 ${strategyId} 失败:`, error);
+                    return { success: false, id: strategyId, error: error.message };
+                }
+            });
+
+            const results = await Promise.allSettled(deletePromises);
+            const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+            const failed = results.length - successful;
+
+            if (failed === 0) {
+                alert(`成功删除 ${successful} 个策略！`);
+            } else {
+                alert(`删除完成：成功 ${successful} 个，失败 ${failed} 个`);
+            }
+
+            selectedStrategies.clear();
+            await loadStrategies();
+        }
+
+        function exportStrategy(strategyId) {
+            const strategy = allStrategies.find(s => s.id === strategyId);
+            if (!strategy) {
+                alert('策略不存在');
+                return;
+            }
+
+            const dataStr = JSON.stringify(strategy, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `strategy_${strategyId}_${Date.now()}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportSelectedStrategies() {
+            if (selectedStrategies.size === 0) {
+                alert('请先选择要导出的策略');
+                return;
+            }
+
+            const selected = allStrategies.filter(s => selectedStrategies.has(s.id));
+            const dataStr = JSON.stringify(selected, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `strategies_batch_${Date.now()}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportAllStrategies() {
+            if (allStrategies.length === 0) {
+                alert('没有可导出的策略');
+                return;
+            }
+
+            const dataStr = JSON.stringify(allStrategies, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `strategies_all_${Date.now()}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== 策略部署功能 ====================
+
+        /**
+         * 部署策略
+         * @param {string} strategyId - 策略ID
+         * @param {string} strategyName - 策略名称
+         */
+        async function deployStrategy(strategyId, strategyName) {
+            // 显示环境选择对话框
+            const environment = await showEnvironmentSelectDialog(strategyName);
+            if (!environment) return;
+
+            try {
+                showDeploymentProgress(strategyName, environment);
+
+                const response = await fetch(getApiBaseUrl(`/strategy/${strategyId}/deploy`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        environment: environment,
+                        deploy_by: 'user',
+                        notes: `用户手动部署到 ${environment} 环境`
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `部署失败: ${response.status}`);
+                }
+
+                const result = await response.json();
+                updateDeploymentProgress(100, '部署完成！', 'success');
+
+                setTimeout(() => {
+                    hideDeploymentProgress();
+                    alert(`策略 "${strategyName}" 已成功部署到 ${environment} 环境！\n部署ID: ${result.deployment_id}`);
+                }, 1500);
+
+            } catch (error) {
+                console.error('部署策略失败:', error);
+                updateDeploymentProgress(0, `部署失败: ${error.message}`, 'failed');
+                setTimeout(() => {
+                    hideDeploymentProgress();
+                    alert(`部署失败: ${error.message}`);
+                }, 2000);
+            }
+        }
+
+        /**
+         * 显示环境选择对话框
+         * @param {string} strategyName - 策略名称
+         * @returns {Promise<string|null>} - 选择的环境或null
+         */
+        function showEnvironmentSelectDialog(strategyName) {
+            return new Promise((resolve) => {
+                const modal = document.createElement('div');
+                modal.id = 'environmentSelectModal';
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                modal.innerHTML = `
+                    <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                <i class="fas fa-rocket text-cyan-600 mr-2"></i>
+                                发布策略
+                            </h3>
+                            <button onclick="closeEnvironmentSelectModal(null)" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600">策略: <span class="font-medium">${strategyName}</span></p>
+                            <p class="text-sm text-gray-500 mt-1">请选择目标环境:</p>
+                        </div>
+                        <div class="space-y-2">
+                            <button onclick="closeEnvironmentSelectModal('development')" 
+                                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-code text-blue-500 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900">开发环境</div>
+                                        <div class="text-sm text-gray-500">用于开发和测试</div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button onclick="closeEnvironmentSelectModal('staging')" 
+                                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-yellow-50 hover:border-yellow-300 transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-flask text-yellow-500 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900">测试环境</div>
+                                        <div class="text-sm text-gray-500">用于预发布验证</div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button onclick="closeEnvironmentSelectModal('production')" 
+                                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-green-50 hover:border-green-300 transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-server text-green-500 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900">生产环境</div>
+                                        <div class="text-sm text-gray-500">正式运行环境</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                // 点击外部关闭
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeEnvironmentSelectModal(null);
+                    }
+                });
+
+                // 全局关闭函数
+                window.closeEnvironmentSelectModal = (env) => {
+                    const modalEl = document.getElementById('environmentSelectModal');
+                    if (modalEl) {
+                        modalEl.remove();
+                    }
+                    delete window.closeEnvironmentSelectModal;
+                    resolve(env);
+                };
+            });
+        }
+
+        /**
+         * 显示部署进度
+         * @param {string} strategyName - 策略名称
+         * @param {string} environment - 目标环境
+         */
+        function showDeploymentProgress(strategyName, environment) {
+            let monitor = document.getElementById('deploymentProgressModal');
+            if (monitor) {
+                monitor.remove();
+            }
+
+            monitor = document.createElement('div');
+            monitor.id = 'deploymentProgressModal';
+            monitor.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            monitor.innerHTML = `
+                <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-rocket text-cyan-600 mr-2"></i>
+                            正在发布
+                        </h3>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600">策略: <span id="deployStrategyName">${strategyName}</span></p>
+                        <p class="text-sm text-gray-600">环境: <span id="deployEnvironment" class="font-medium">${environment}</span></p>
+                    </div>
+                    <div class="mb-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="deploymentProgressBar" class="bg-cyan-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p id="deploymentProgressText" class="text-sm text-gray-600 mt-2">准备中...</p>
+                    </div>
+                    <div id="deploymentSteps" class="space-y-2">
+                        <div class="flex items-center p-2 rounded" id="deploy-step-package">
+                            <i class="fas fa-circle text-gray-300 mr-2"></i>
+                            <span class="text-sm">打包策略</span>
+                        </div>
+                        <div class="flex items-center p-2 rounded" id="deploy-step-validate">
+                            <i class="fas fa-circle text-gray-300 mr-2"></i>
+                            <span class="text-sm">验证包完整性</span>
+                        </div>
+                        <div class="flex items-center p-2 rounded" id="deploy-step-deploy">
+                            <i class="fas fa-circle text-gray-300 mr-2"></i>
+                            <span class="text-sm">部署到目标环境</span>
+                        </div>
+                        <div class="flex items-center p-2 rounded" id="deploy-step-test">
+                            <i class="fas fa-circle text-gray-300 mr-2"></i>
+                            <span class="text-sm">运行测试</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(monitor);
+        }
+
+        /**
+         * 更新部署进度
+         * @param {number} percent - 进度百分比
+         * @param {string} message - 进度消息
+         * @param {string} status - 状态: running, success, failed
+         */
+        function updateDeploymentProgress(percent, message, status = 'running') {
+            const progressBar = document.getElementById('deploymentProgressBar');
+            const progressText = document.getElementById('deploymentProgressText');
+
+            if (progressBar) {
+                progressBar.style.width = percent + '%';
+                if (status === 'success') {
+                    progressBar.classList.remove('bg-cyan-600');
+                    progressBar.classList.add('bg-green-600');
+                } else if (status === 'failed') {
+                    progressBar.classList.remove('bg-cyan-600');
+                    progressBar.classList.add('bg-red-600');
+                }
+            }
+            if (progressText) {
+                progressText.textContent = message;
+                if (status === 'failed') {
+                    progressText.classList.add('text-red-600');
+                }
+            }
+
+            // 更新步骤状态
+            const steps = ['package', 'validate', 'deploy', 'test'];
+            const stepPercent = percent / 25;
+            steps.forEach((step, index) => {
+                const stepEl = document.getElementById(`deploy-step-${step}`);
+                if (stepEl) {
+                    const iconEl = stepEl.querySelector('i');
+                    if (stepPercent > index + 1) {
+                        stepEl.className = 'flex items-center p-2 rounded bg-green-50';
+                        iconEl.className = 'fas fa-check-circle text-green-500 mr-2';
+                    } else if (stepPercent > index) {
+                        stepEl.className = 'flex items-center p-2 rounded bg-blue-50';
+                        iconEl.className = 'fas fa-spinner fa-spin text-blue-500 mr-2';
+                    } else if (status === 'failed') {
+                        stepEl.className = 'flex items-center p-2 rounded';
+                        iconEl.className = 'fas fa-circle text-gray-300 mr-2';
+                    }
+                }
+            });
+        }
+
+        /**
+         * 隐藏部署进度
+         */
+        function hideDeploymentProgress() {
+            const monitor = document.getElementById('deploymentProgressModal');
+            if (monitor) {
+                monitor.remove();
+            }
+        }
+
+        /**
+         * 查看部署历史
+         * @param {string} strategyId - 策略ID
+         * @param {string} strategyName - 策略名称
+         */
+        async function viewDeploymentHistory(strategyId, strategyName) {
+            try {
+                const response = await fetch(getApiBaseUrl(`/strategy/${strategyId}/deployments`));
+                if (!response.ok) {
+                    throw new Error(`获取部署历史失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+                showDeploymentHistoryModal(strategyName, data.deployments);
+
+            } catch (error) {
+                console.error('获取部署历史失败:', error);
+                alert(`获取部署历史失败: ${error.message}`);
+            }
+        }
+
+        /**
+         * 显示部署历史弹窗
+         * @param {string} strategyName - 策略名称
+         * @param {Array} deployments - 部署记录列表
+         */
+        function showDeploymentHistoryModal(strategyName, deployments) {
+            const modal = document.createElement('div');
+            modal.id = 'deploymentHistoryModal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+
+            const hasDeployments = deployments && deployments.length > 0;
+            const deploymentsHtml = hasDeployments
+                ? deployments.map(d => {
+                    const statusColors = {
+                        'success': 'bg-green-100 text-green-800',
+                        'failed': 'bg-red-100 text-red-800',
+                        'pending': 'bg-yellow-100 text-yellow-800',
+                        'deploying': 'bg-blue-100 text-blue-800'
+                    };
+                    const statusLabels = {
+                        'success': '成功',
+                        'failed': '失败',
+                        'pending': '待处理',
+                        'deploying': '部署中'
+                    };
+                    const statusClass = statusColors[d.status] || 'bg-gray-100 text-gray-800';
+                    const statusLabel = statusLabels[d.status] || d.status;
+
+                    return `
+                        <div class="border rounded-lg p-3 mb-2 hover:bg-gray-50">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-medium text-gray-900">${d.deployment_id}</div>
+                                    <div class="text-sm text-gray-500">
+                                        环境: ${d.environment} | 部署人: ${d.deployed_by}
+                                    </div>
+                                    <div class="text-sm text-gray-400">
+                                        ${new Date(d.started_at).toLocaleString('zh-CN')}
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
+                                    ${statusLabel}
+                                </span>
+                            </div>
+                            ${d.optimization_history ? `
+                                <div class="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                                    <i class="fas fa-chart-line mr-1"></i>回测: ${d.optimization_history.backtest_count || 0}次
+                                    <i class="fas fa-sliders-h mr-1 ml-3"></i>优化: ${d.optimization_history.optimization_count || 0}次
+                                </div>
+                            ` : ''}
+                            ${d.status === 'success' ? `
+                                <div class="mt-2 flex justify-end">
+                                    <button onclick="rollbackDeployment('${d.deployment_id}', '${strategyName}')" 
+                                        class="text-sm text-red-600 hover:text-red-800">
+                                        <i class="fas fa-undo mr-1"></i>回滚
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')
+                : '<div class="text-center text-gray-500 py-8">暂无部署记录</div>';
+
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-history text-gray-600 mr-2"></i>
+                            部署历史
+                        </h3>
+                        <button onclick="closeDeploymentHistoryModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600">策略: <span class="font-medium">${strategyName}</span></p>
+                        <p class="text-sm text-gray-500">共 ${deployments.length} 条部署记录</p>
+                    </div>
+                    <div class="space-y-2">
+                        ${deploymentsHtml}
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // 点击外部关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeDeploymentHistoryModal();
+                }
+            });
+
+            window.closeDeploymentHistoryModal = () => {
+                const modalEl = document.getElementById('deploymentHistoryModal');
+                if (modalEl) {
+                    modalEl.remove();
+                }
+                delete window.closeDeploymentHistoryModal;
+            };
+        }
+
+        /**
+         * 回滚部署
+         * @param {string} deploymentId - 部署ID
+         * @param {string} strategyName - 策略名称
+         */
+        async function rollbackDeployment(deploymentId, strategyName) {
+            if (!confirm(`确定要回滚策略 "${strategyName}" 的这次部署吗？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(getApiBaseUrl(`/deployments/${deploymentId}/rollback`), {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`回滚失败: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('回滚成功！');
+                    closeDeploymentHistoryModal();
+                } else {
+                    alert(`回滚失败: ${result.message}`);
+                }
+
+            } catch (error) {
+                console.error('回滚部署失败:', error);
+                alert(`回滚失败: ${error.message}`);
+            }
+        }
+
+        // ==================== 策略部署功能结束 ====================
+
+        function refreshStrategies() {
+            selectedStrategies.clear();
+            document.getElementById('selectAll').checked = false;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterType').value = '';
+            loadStrategies();
+        }
+    </script>
+</body>
+</html>

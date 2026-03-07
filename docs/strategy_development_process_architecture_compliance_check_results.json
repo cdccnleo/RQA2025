@@ -1,0 +1,257 @@
+{
+  "check_time": "2026-01-09T07:29:28.379155",
+  "processes": {
+    "strategy_management": {
+      "process_name": "策略管理",
+      "business_process_step": "策略构思",
+      "checks": [
+        {
+          "check": "文件存在性: 策略服务核心",
+          "file": "src/strategy/core/strategy_service.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "文件存在性: 生命周期管理",
+          "file": "src/strategy/lifecycle/strategy_lifecycle_manager.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "文件存在性: API路由",
+          "file": "src/gateway/web/strategy_routes.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "使用适配器: 统一适配器",
+          "file": "src/strategy/core/strategy_service.py",
+          "status": "passed",
+          "message": "使用适配器"
+        },
+        {
+          "check": "生命周期管理",
+          "file": "src/strategy/lifecycle/strategy_lifecycle_manager.py",
+          "status": "passed",
+          "message": "有生命周期管理"
+        },
+        {
+          "check": "使用ServiceContainer",
+          "file": "src/strategy/core/strategy_service.py",
+          "status": "passed",
+          "message": "使用服务容器"
+        },
+        {
+          "check": "使用EventBus",
+          "file": "src/strategy/core/strategy_service.py",
+          "status": "passed",
+          "message": "使用事件总线"
+        },
+        {
+          "check": "使用BusinessProcessOrchestrator",
+          "file": "src/strategy/core/strategy_service.py",
+          "status": "passed",
+          "message": "使用业务流程编排器"
+        },
+        {
+          "check": "RESTful API设计",
+          "file": "src/gateway/web/strategy_routes.py",
+          "status": "passed",
+          "message": "符合RESTful设计"
+        }
+      ]
+    },
+    "data_collection": {
+      "process_name": "数据采集",
+      "business_process_step": "数据收集",
+      "checks": [
+        {
+          "check": "文件存在性: 数据采集编排器",
+          "file": "src/core/orchestration/business_process/data_collection_orchestrator.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "文件存在性: 数据采集器",
+          "file": "src/gateway/web/data_collectors.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "使用适配器: 数据适配器",
+          "file": "src/core/orchestration/business_process/data_collection_orchestrator.py",
+          "status": "passed",
+          "message": "使用适配器"
+        },
+        {
+          "check": "使用EventBus",
+          "file": "src/core/orchestration/business_process/data_collection_orchestrator.py",
+          "status": "passed",
+          "message": "使用事件总线"
+        },
+        {
+          "check": "使用BusinessProcessOrchestrator",
+          "file": "src/core/orchestration/business_process/data_collection_orchestrator.py",
+          "status": "passed",
+          "message": "使用业务流程编排器"
+        }
+      ]
+    },
+    "feature_analysis": {
+      "process_name": "特征分析",
+      "business_process_step": "特征工程",
+      "checks": [
+        {
+          "check": "文件存在性: 特征工程服务",
+          "file": "src/gateway/web/feature_engineering_service.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "目录存在性: 特征处理模块",
+          "file": "src/features",
+          "status": "passed",
+          "message": "目录存在"
+        },
+        {
+          "check": "使用适配器: 特征适配器",
+          "file": "src/gateway/web/feature_engineering_service.py",
+          "status": "passed",
+          "message": "使用适配器"
+        }
+      ]
+    },
+    "model_training": {
+      "process_name": "模型训练",
+      "business_process_step": "模型训练",
+      "checks": [
+        {
+          "check": "文件存在性: ML核心服务",
+          "file": "src/ml/core/ml_core.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "目录存在性: 训练模块",
+          "file": "src/ml/training",
+          "status": "failed",
+          "message": "目录不存在: src/ml/training"
+        },
+        {
+          "check": "使用BusinessProcessOrchestrator",
+          "file": "src/ml/core/ml_core.py",
+          "status": "passed",
+          "message": "使用业务流程编排器"
+        },
+        {
+          "check": "使用适配器: ML适配器",
+          "file": "src/ml/core/ml_core.py",
+          "status": "passed",
+          "message": "使用适配器"
+        }
+      ]
+    },
+    "strategy_backtest": {
+      "process_name": "策略回测",
+      "business_process_step": "策略回测",
+      "checks": [
+        {
+          "check": "文件存在性: 回测服务",
+          "file": "src/strategy/backtest/backtest_service.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "文件存在性: 回测API服务",
+          "file": "src/gateway/web/backtest_service.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "使用适配器: 数据适配器",
+          "file": "src/strategy/backtest/backtest_service.py",
+          "status": "passed",
+          "message": "使用适配器"
+        }
+      ]
+    },
+    "strategy_optimization": {
+      "process_name": "策略优化",
+      "business_process_step": "性能评估",
+      "checks": [
+        {
+          "check": "文件存在性: 性能优化器",
+          "file": "src/strategy/core/performance_optimizer.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "文件存在性: 优化服务",
+          "file": "src/gateway/web/strategy_optimization_service.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "使用适配器: 优化适配器",
+          "file": "src/strategy/core/performance_optimizer.py",
+          "status": "passed",
+          "message": "使用适配器"
+        }
+      ]
+    },
+    "strategy_deployment": {
+      "process_name": "策略部署",
+      "business_process_step": "策略部署",
+      "checks": [
+        {
+          "check": "文件存在性: 生命周期管理",
+          "file": "src/strategy/lifecycle/strategy_lifecycle_manager.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "文件存在性: K8s部署",
+          "file": "src/strategy/cloud_native/kubernetes_deployment.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "部署机制",
+          "file": "src/strategy/lifecycle/strategy_lifecycle_manager.py",
+          "status": "passed",
+          "message": "有部署机制"
+        }
+      ]
+    },
+    "execution_monitoring": {
+      "process_name": "执行监控",
+      "business_process_step": "监控优化",
+      "checks": [
+        {
+          "check": "文件存在性: 执行监控服务",
+          "file": "src/gateway/web/strategy_execution_service.py",
+          "status": "passed",
+          "message": "文件存在"
+        },
+        {
+          "check": "目录存在性: 监控模块",
+          "file": "src/monitoring",
+          "status": "passed",
+          "message": "目录存在"
+        },
+        {
+          "check": "使用EventBus",
+          "file": "src/gateway/web/strategy_execution_service.py",
+          "status": "passed",
+          "message": "使用事件总线"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "total_checks": 33,
+    "passed": 32,
+    "failed": 1,
+    "warnings": 0
+  }
+}

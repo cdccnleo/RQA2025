@@ -1,0 +1,552 @@
+# 交易周期业务流程配置
+# 定义完整的量化交易流程，包括数据收集、特征提取、模型预测、策略决策、风控检查、订单生成和执行
+
+process_name: "trading_cycle_process"
+version: "1.0.0"
+description: "完整的量化交易周期流程，从数据收集到订单执行"
+
+# 流程定义
+workflow:
+  name: "trading_cycle"
+  description: "量化交易周期主流程"
+  
+  # 初始状态
+  initial_state: "data_collection_started"
+  
+  # 最终状态
+  final_states: ["completed", "error", "cancelled"]
+  
+  # 状态定义
+  states:
+    # 数据收集阶段
+    data_collection_started:
+      description: "数据收集开始"
+      actions:
+        - "validate_symbols"
+        - "check_data_availability"
+      transitions:
+        - to: "data_collection_in_progress"
+          condition: "data_available"
+          event: "DATA_AVAILABILITY_CHECKED"
+        - to: "error"
+          condition: "data_unavailable"
+          event: "DATA_UNAVAILABLE"
+    
+    data_collection_in_progress:
+      description: "数据收集进行中"
+      actions:
+        - "collect_market_data"
+        - "collect_fundamental_data"
+        - "collect_news_data"
+      transitions:
+        - to: "data_collection_completed"
+          condition: "all_data_collected"
+          event: "DATA_COLLECTED"
+        - to: "error"
+          condition: "data_collection_failed"
+          event: "DATA_COLLECTION_FAILED"
+    
+    data_collection_completed:
+      description: "数据收集完成"
+      actions:
+        - "validate_data_quality"
+        - "store_data_cache"
+      transitions:
+        - to: "feature_extraction_started"
+          condition: "data_quality_ok"
+          event: "DATA_QUALITY_VALIDATED"
+        - to: "error"
+          condition: "data_quality_poor"
+          event: "DATA_QUALITY_INSUFFICIENT"
+    
+    # 特征提取阶段
+    feature_extraction_started:
+      description: "特征提取开始"
+      actions:
+        - "prepare_feature_extractors"
+        - "validate_feature_requirements"
+      transitions:
+        - to: "feature_extraction_in_progress"
+          condition: "extractors_ready"
+          event: "FEATURE_EXTRACTORS_READY"
+        - to: "error"
+          condition: "extractors_not_ready"
+          event: "FEATURE_EXTRACTORS_FAILED"
+    
+    feature_extraction_in_progress:
+      description: "特征提取进行中"
+      actions:
+        - "extract_technical_features"
+        - "extract_fundamental_features"
+        - "extract_market_microstructure_features"
+      transitions:
+        - to: "feature_extraction_completed"
+          condition: "all_features_extracted"
+          event: "FEATURES_EXTRACTED"
+        - to: "error"
+          condition: "feature_extraction_failed"
+          event: "FEATURE_EXTRACTION_FAILED"
+    
+    feature_extraction_completed:
+      description: "特征提取完成"
+      actions:
+        - "validate_feature_quality"
+        - "prepare_feature_matrix"
+      transitions:
+        - to: "model_prediction_started"
+          condition: "features_ready"
+          event: "FEATURES_READY"
+        - to: "error"
+          condition: "features_not_ready"
+          event: "FEATURES_NOT_READY"
+    
+    # 模型预测阶段
+    model_prediction_started:
+      description: "模型预测开始"
+      actions:
+        - "load_models"
+        - "validate_model_availability"
+      transitions:
+        - to: "model_prediction_in_progress"
+          condition: "models_available"
+          event: "MODELS_LOADED"
+        - to: "error"
+          condition: "models_unavailable"
+          event: "MODELS_LOAD_FAILED"
+    
+    model_prediction_in_progress:
+      description: "模型预测进行中"
+      actions:
+        - "run_ml_models"
+        - "run_ensemble_models"
+        - "calculate_confidence_scores"
+      transitions:
+        - to: "model_prediction_completed"
+          condition: "predictions_ready"
+          event: "MODEL_PREDICTION_READY"
+        - to: "error"
+          condition: "prediction_failed"
+          event: "MODEL_PREDICTION_FAILED"
+    
+    model_prediction_completed:
+      description: "模型预测完成"
+      actions:
+        - "validate_predictions"
+        - "prepare_prediction_summary"
+      transitions:
+        - to: "strategy_decision_started"
+          condition: "predictions_valid"
+          event: "PREDICTIONS_VALIDATED"
+        - to: "error"
+          condition: "predictions_invalid"
+          event: "PREDICTIONS_INVALID"
+    
+    # 策略决策阶段
+    strategy_decision_started:
+      description: "策略决策开始"
+      actions:
+        - "load_strategy_config"
+        - "validate_strategy_parameters"
+      transitions:
+        - to: "strategy_decision_in_progress"
+          condition: "strategy_ready"
+          event: "STRATEGY_READY"
+        - to: "error"
+          condition: "strategy_not_ready"
+          event: "STRATEGY_NOT_READY"
+    
+    strategy_decision_in_progress:
+      description: "策略决策进行中"
+      actions:
+        - "apply_strategy_rules"
+        - "calculate_position_sizes"
+        - "generate_trading_signals"
+      transitions:
+        - to: "strategy_decision_completed"
+          condition: "signals_generated"
+          event: "SIGNALS_GENERATED"
+        - to: "error"
+          condition: "signal_generation_failed"
+          event: "SIGNAL_GENERATION_FAILED"
+    
+    strategy_decision_completed:
+      description: "策略决策完成"
+      actions:
+        - "validate_signals"
+        - "prepare_signal_summary"
+      transitions:
+        - to: "risk_check_started"
+          condition: "signals_valid"
+          event: "SIGNALS_VALIDATED"
+        - to: "error"
+          condition: "signals_invalid"
+          event: "SIGNALS_INVALID"
+    
+    # 风控检查阶段
+    risk_check_started:
+      description: "风控检查开始"
+      actions:
+        - "load_risk_config"
+        - "prepare_risk_metrics"
+      transitions:
+        - to: "risk_check_in_progress"
+          condition: "risk_config_ready"
+          event: "RISK_CONFIG_READY"
+        - to: "error"
+          condition: "risk_config_not_ready"
+          event: "RISK_CONFIG_NOT_READY"
+    
+    risk_check_in_progress:
+      description: "风控检查进行中"
+      actions:
+        - "check_position_limits"
+        - "check_risk_metrics"
+        - "validate_compliance_rules"
+      transitions:
+        - to: "risk_check_completed"
+          condition: "risk_check_done"
+          event: "RISK_CHECK_COMPLETED"
+        - to: "error"
+          condition: "risk_check_failed"
+          event: "RISK_CHECK_FAILED"
+    
+    risk_check_completed:
+      description: "风控检查完成"
+      actions:
+        - "evaluate_risk_results"
+        - "prepare_risk_summary"
+      transitions:
+        - to: "order_generation_started"
+          condition: "risk_check_passed"
+          event: "RISK_CHECK_PASSED"
+        - to: "completed"
+          condition: "risk_check_failed"
+          event: "RISK_CHECK_FAILED"
+          description: "风控检查未通过，流程结束"
+    
+    # 订单生成阶段
+    order_generation_started:
+      description: "订单生成开始"
+      actions:
+        - "prepare_order_templates"
+        - "validate_order_parameters"
+      transitions:
+        - to: "order_generation_in_progress"
+          condition: "order_templates_ready"
+          event: "ORDER_TEMPLATES_READY"
+        - to: "error"
+          condition: "order_templates_not_ready"
+          event: "ORDER_TEMPLATES_NOT_READY"
+    
+    order_generation_in_progress:
+      description: "订单生成进行中"
+      actions:
+        - "generate_orders"
+        - "validate_order_details"
+        - "prepare_execution_plan"
+      transitions:
+        - to: "order_generation_completed"
+          condition: "orders_generated"
+          event: "ORDERS_GENERATED"
+        - to: "error"
+          condition: "order_generation_failed"
+          event: "ORDER_GENERATION_FAILED"
+    
+    order_generation_completed:
+      description: "订单生成完成"
+      actions:
+        - "validate_orders"
+        - "prepare_order_summary"
+      transitions:
+        - to: "execution_started"
+          condition: "orders_valid"
+          event: "ORDERS_VALIDATED"
+        - to: "error"
+          condition: "orders_invalid"
+          event: "ORDERS_INVALID"
+    
+    # 执行阶段
+    execution_started:
+      description: "订单执行开始"
+      actions:
+        - "prepare_execution_engine"
+        - "validate_execution_parameters"
+      transitions:
+        - to: "execution_in_progress"
+          condition: "execution_engine_ready"
+          event: "EXECUTION_ENGINE_READY"
+        - to: "error"
+          condition: "execution_engine_not_ready"
+          event: "EXECUTION_ENGINE_NOT_READY"
+    
+    execution_in_progress:
+      description: "订单执行进行中"
+      actions:
+        - "execute_orders"
+        - "monitor_execution_progress"
+        - "handle_execution_events"
+      transitions:
+        - to: "execution_completed"
+          condition: "execution_done"
+          event: "EXECUTION_COMPLETED"
+        - to: "error"
+          condition: "execution_failed"
+          event: "EXECUTION_FAILED"
+    
+    execution_completed:
+      description: "订单执行完成"
+      actions:
+        - "validate_execution_results"
+        - "prepare_execution_summary"
+        - "update_portfolio"
+      transitions:
+        - to: "completed"
+          condition: "execution_successful"
+          event: "EXECUTION_SUCCESSFUL"
+        - to: "error"
+          condition: "execution_unsuccessful"
+          event: "EXECUTION_UNSUCCESSFUL"
+    
+    # 完成状态
+    completed:
+      description: "流程完成"
+      actions:
+        - "generate_process_summary"
+        - "cleanup_resources"
+        - "notify_completion"
+      final: true
+    
+    # 错误状态
+    error:
+      description: "流程出错"
+      actions:
+        - "log_error_details"
+        - "notify_error"
+        - "cleanup_resources"
+      final: true
+    
+    # 取消状态
+    cancelled:
+      description: "流程被取消"
+      actions:
+        - "log_cancellation_reason"
+        - "cleanup_resources"
+        - "notify_cancellation"
+      final: true
+
+# 事件定义
+events:
+  # 数据相关事件
+  DATA_AVAILABILITY_CHECKED:
+    description: "数据可用性检查完成"
+    data_schema:
+      symbols: "list"
+      data_available: "boolean"
+      error_message: "string?"
+  
+  DATA_COLLECTED:
+    description: "数据收集完成"
+    data_schema:
+      symbols: "list"
+      data_types: "list"
+      collection_time: "datetime"
+      data_quality_score: "float"
+  
+  DATA_QUALITY_VALIDATED:
+    description: "数据质量验证完成"
+    data_schema:
+      quality_score: "float"
+      validation_results: "dict"
+      is_acceptable: "boolean"
+  
+  # 特征相关事件
+  FEATURE_EXTRACTORS_READY:
+    description: "特征提取器准备就绪"
+    data_schema:
+      extractor_count: "integer"
+      extractor_types: "list"
+      ready_time: "datetime"
+  
+  FEATURES_EXTRACTED:
+    description: "特征提取完成"
+    data_schema:
+      feature_count: "integer"
+      feature_types: "list"
+      extraction_time: "datetime"
+      feature_quality_score: "float"
+  
+  FEATURES_READY:
+    description: "特征准备就绪"
+    data_schema:
+      feature_matrix_shape: "tuple"
+      feature_names: "list"
+      is_normalized: "boolean"
+  
+  # 模型相关事件
+  MODELS_LOADED:
+    description: "模型加载完成"
+    data_schema:
+      model_count: "integer"
+      model_types: "list"
+      load_time: "datetime"
+  
+  MODEL_PREDICTION_READY:
+    description: "模型预测完成"
+    data_schema:
+      predictions: "dict"
+      confidence_scores: "dict"
+      prediction_time: "datetime"
+  
+  PREDICTIONS_VALIDATED:
+    description: "预测结果验证完成"
+    data_schema:
+      validation_score: "float"
+      is_acceptable: "boolean"
+      validation_details: "dict"
+  
+  # 策略相关事件
+  STRATEGY_READY:
+    description: "策略准备就绪"
+    data_schema:
+      strategy_name: "string"
+      parameters: "dict"
+      ready_time: "datetime"
+  
+  SIGNALS_GENERATED:
+    description: "交易信号生成完成"
+    data_schema:
+      signals: "list"
+      signal_count: "integer"
+      generation_time: "datetime"
+  
+  SIGNALS_VALIDATED:
+    description: "信号验证完成"
+    data_schema:
+      validation_score: "float"
+      valid_signals: "list"
+      invalid_signals: "list"
+  
+  # 风控相关事件
+  RISK_CONFIG_READY:
+    description: "风控配置准备就绪"
+    data_schema:
+      risk_limits: "dict"
+      compliance_rules: "list"
+      ready_time: "datetime"
+  
+  RISK_CHECK_COMPLETED:
+    description: "风控检查完成"
+    data_schema:
+      risk_score: "float"
+      passed: "boolean"
+      risk_details: "dict"
+      compliance_status: "dict"
+  
+  RISK_CHECK_PASSED:
+    description: "风控检查通过"
+    data_schema:
+      risk_score: "float"
+      passed: "boolean"
+      approval_time: "datetime"
+  
+  # 订单相关事件
+  ORDER_TEMPLATES_READY:
+    description: "订单模板准备就绪"
+    data_schema:
+      template_count: "integer"
+      template_types: "list"
+      ready_time: "datetime"
+  
+  ORDERS_GENERATED:
+    description: "订单生成完成"
+    data_schema:
+      orders: "list"
+      order_count: "integer"
+      generation_time: "datetime"
+  
+  ORDERS_VALIDATED:
+    description: "订单验证完成"
+    data_schema:
+      validation_score: "float"
+      valid_orders: "list"
+      invalid_orders: "list"
+  
+  # 执行相关事件
+  EXECUTION_ENGINE_READY:
+    description: "执行引擎准备就绪"
+    data_schema:
+      engine_type: "string"
+      capabilities: "list"
+      ready_time: "datetime"
+  
+  EXECUTION_COMPLETED:
+    description: "执行完成"
+    data_schema:
+      executed_orders: "list"
+      execution_summary: "dict"
+      completion_time: "datetime"
+  
+  EXECUTION_SUCCESSFUL:
+    description: "执行成功"
+    data_schema:
+      success_rate: "float"
+      execution_details: "dict"
+      completion_time: "datetime"
+
+# 配置参数
+configuration:
+  # 超时设置
+  timeouts:
+    data_collection: 300  # 5分钟
+    feature_extraction: 180  # 3分钟
+    model_prediction: 240  # 4分钟
+    strategy_decision: 60   # 1分钟
+    risk_check: 120        # 2分钟
+    order_generation: 60   # 1分钟
+    execution: 600         # 10分钟
+    total_process: 1800    # 30分钟
+  
+  # 重试设置
+  retries:
+    max_attempts: 3
+    retry_delay: 10  # 秒
+  
+  # 监控设置
+  monitoring:
+    progress_update_interval: 5  # 秒
+    health_check_interval: 30   # 秒
+    log_level: "INFO"
+  
+  # 资源限制
+  resource_limits:
+    max_memory_usage: "2GB"
+    max_cpu_usage: 80  # 百分比
+    max_concurrent_processes: 10
+
+# 依赖关系
+dependencies:
+  required_services:
+    - "data_service"
+    - "feature_service"
+    - "model_service"
+    - "strategy_service"
+    - "risk_service"
+    - "execution_service"
+  
+  required_configs:
+    - "data_sources.yaml"
+    - "feature_extractors.yaml"
+    - "models.yaml"
+    - "strategies.yaml"
+    - "risk_rules.yaml"
+    - "execution_config.yaml"
+
+# 版本兼容性
+compatibility:
+  min_version: "1.0.0"
+  max_version: "2.0.0"
+  supported_environments:
+    - "development"
+    - "testing"
+    - "staging"
+    - "production"

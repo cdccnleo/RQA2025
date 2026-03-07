@@ -1,0 +1,160 @@
+{
+  "test_id": "ACCEPTANCE-20250826-081411",
+  "start_time": "2025-08-26T08:14:11.172150",
+  "end_time": "2025-08-26T08:14:11.275289",
+  "total_tests": 4,
+  "passed_tests": 1,
+  "failed_tests": 3,
+  "blocked_tests": 0,
+  "test_cases": [
+    {
+      "test_id": "AUTH-ACCEPTANCE-001",
+      "test_name": "用户认证功能验收测试",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_id": "AUTH-REG-001",
+          "step_name": "用户注册功能测试",
+          "status": "FAIL",
+          "details": [
+            "✅ 用户创建成功",
+            "❌ 重复用户名未正确拒绝"
+          ]
+        },
+        {
+          "step_id": "AUTH-MFA-001",
+          "step_name": "多因素认证测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 多因素认证失败: 用户不存在"
+          ]
+        },
+        {
+          "step_id": "AUTH-SESSION-001",
+          "step_name": "会话管理测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 无法获取认证token"
+          ]
+        },
+        {
+          "step_id": "AUTH-SECURITY-001",
+          "step_name": "安全控制测试",
+          "status": "PASS",
+          "details": [
+            "✅ 密码强度验证正常",
+            "✅ 账户安全控制正常"
+          ]
+        }
+      ],
+      "defects": [
+        "发现关键缺陷：多因素认证流程存在问题",
+        "安全控制测试未完全通过"
+      ]
+    },
+    {
+      "test_id": "DATA-ACCEPTANCE-001",
+      "test_name": "数据保护功能验收测试",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_id": "DATA-MASK-001",
+          "step_name": "数据脱敏测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 数据脱敏效果不佳"
+          ]
+        },
+        {
+          "step_id": "DATA-ENCRYPT-001",
+          "step_name": "数据加密测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 数据加密失败"
+          ]
+        },
+        {
+          "step_id": "DATA-AUDIT-001",
+          "step_name": "访问审计测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 访问审计测试异常: get_audit_logs() got an unexpected keyword argument 'hours'"
+          ]
+        }
+      ],
+      "defects": [
+        "数据保护功能存在缺陷"
+      ]
+    },
+    {
+      "test_id": "MONITOR-ACCEPTANCE-001",
+      "test_name": "监控系统验收测试",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_id": "MONITOR-CONFIG-001",
+          "step_name": "告警配置测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 告警配置测试异常: __init__() missing 1 required positional argument: 'description'"
+          ]
+        },
+        {
+          "step_id": "MONITOR-PERF-001",
+          "step_name": "性能监控测试",
+          "status": "PASS",
+          "details": [
+            "✅ 性能指标收集正常"
+          ]
+        },
+        {
+          "step_id": "MONITOR-NOTIFY-001",
+          "step_name": "告警通知测试",
+          "status": "FAIL",
+          "details": [
+            "❌ 告警通知测试异常: 'IntelligentAlertSystem' object has no attribute 'create_alert'"
+          ]
+        }
+      ],
+      "defects": [
+        "监控系统存在功能缺陷"
+      ]
+    },
+    {
+      "test_id": "INTEGRATION-ACCEPTANCE-001",
+      "test_name": "系统集成验收测试",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_id": "INTEGRATION-COMM-001",
+          "step_name": "服务间通信测试",
+          "status": "PASS",
+          "details": [
+            "✅ 用户服务通信正常",
+            "✅ 数据服务通信正常"
+          ]
+        },
+        {
+          "step_id": "INTEGRATION-DATA-001",
+          "step_name": "数据流完整性测试",
+          "status": "PASS",
+          "details": [
+            "✅ 数据流完整性正常"
+          ]
+        },
+        {
+          "step_id": "INTEGRATION-ERROR-001",
+          "step_name": "错误处理测试",
+          "status": "PASS",
+          "details": [
+            "✅ 无效认证 - 错误处理正确",
+            "✅ 无效数据 - 错误处理正确"
+          ]
+        }
+      ],
+      "defects": []
+    }
+  ],
+  "defects": [],
+  "summary": {}
+}

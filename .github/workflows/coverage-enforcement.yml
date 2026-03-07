@@ -1,0 +1,324 @@
+name: Test Coverage Enforcement
+# RQA2025量化交易系统 - CI/CD覆盖率强制要求机制
+# 目标: 确保测试覆盖率达到投产标准 (90%)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 每日凌晨2点自动检查
+    - cron: '0 2 * * *'
+
+env:
+  MINIMUM_COVERAGE: 80  # 生产环境最低要求
+  TARGET_COVERAGE: 90   # 投产目标覆盖率
+  CRITICAL_MODULES_COVERAGE: 95  # 核心模块要求
+
+jobs:
+  coverage-check:
+    name: Coverage Enforcement Check
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Cache Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-html pytest-xvfb
+        pip install coverage[toml] coverage-badge
+        
+    - name: Prepare Test Environment
+      run: |
+        mkdir -p reports/coverage
+        mkdir -p reports/badges
+        
+    - name: Run Core Module Tests (Critical)
+      run: |
+        echo "🎯 Testing Core Business Logic Modules (Critical - 95% Required)"
+        python -m pytest tests/test_core_simplified.py \
+                         tests/test_data_management.py \
+                         tests/test_strategy_trading.py \
+          --cov=src/core \
+          --cov=src/data_management \
+          --cov=src/strategies \
+          --cov=src/trading \
+          --cov=src/risk_management \
+          --cov-report=xml:reports/coverage/core-coverage.xml \
+          --cov-report=html:reports/coverage/core-html \
+          --cov-report=term-missing \
+          --cov-fail-under=${{ env.CRITICAL_MODULES_COVERAGE }} \
+          -v --tb=short --maxfail=10
+          
+    - name: Run Infrastructure Tests (Essential)
+      run: |
+        echo "🔧 Testing Infrastructure Layer (Essential - 80% Required)"
+        python -m pytest tests/ -k "infrastructure" \
+          --cov=src/infrastructure \
+          --cov-append \
+          --cov-report=xml:reports/coverage/infrastructure-coverage.xml \
+          --cov-report=html:reports/coverage/infrastructure-html \
+          --cov-report=term-missing \
+          --cov-fail-under=80 \
+          -v --tb=short --maxfail=15
+          
+    - name: Run Full Test Suite
+      run: |
+        echo "📊 Running Complete Test Suite for Overall Coverage"
+        python -m pytest tests/ \
+          --cov=src \
+          --cov-append \
+          --cov-report=xml:reports/coverage/full-coverage.xml \
+          --cov-report=html:reports/coverage/full-html \
+          --cov-report=json:reports/coverage/coverage.json \
+          --cov-report=term-missing \
+          --cov-fail-under=${{ env.MINIMUM_COVERAGE }} \
+          --html=reports/pytest-report.html --self-contained-html \
+          -v --tb=short --maxfail=50
+          
+    - name: Coverage Analysis and Enforcement
+      run: |
+        python scripts/coverage_enforcement.py \
+          --minimum-coverage ${{ env.MINIMUM_COVERAGE }} \
+          --target-coverage ${{ env.TARGET_COVERAGE }} \
+          --critical-modules-coverage ${{ env.CRITICAL_MODULES_COVERAGE }} \
+          --coverage-file reports/coverage/coverage.json \
+          --output-report reports/coverage/enforcement-report.json
+          
+    - name: Generate Coverage Badge
+      run: |
+        coverage-badge -o reports/badges/coverage.svg
+        
+    - name: Upload Coverage Reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-reports-${{ matrix.python-version }}
+        path: |
+          reports/coverage/
+          reports/badges/
+          reports/pytest-report.html
+          
+    - name: Comment Coverage Report
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'reports/coverage/enforcement-report.json';
+          
+          if (fs.existsSync(path)) {
+            const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+            
+            const minCoverage = process.env.MINIMUM_COVERAGE;
+            const targetCoverage = process.env.TARGET_COVERAGE;
+            
+            let status = '❌ 未达到最低要求';
+            if (report.overall_coverage >= targetCoverage) {
+              status = '✅ 达到投产标准';
+            } else if (report.overall_coverage >= minCoverage) {
+              status = '⚠️ 达到最低要求，建议提升';
+            }
+            
+            const moduleList = Object.entries(report.module_coverage || {})
+              .map(([module, coverage]) => `- **${module}**: ${coverage}%`)
+              .join('\n');
+            
+            const comment = `## 🎯 测试覆盖率报告
+
+**整体覆盖率**: ${report.overall_coverage}% (最低要求: ${minCoverage}%, 目标: ${targetCoverage}%)
+
+**核心模块覆盖率**:
+${moduleList}
+
+**状态**: ${status}
+
+**建议**: ${(report.recommendations || []).join(', ')}`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+          
+  # 质量门禁检查
+  quality-gate:
+    name: Quality Gate
+    needs: coverage-check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download Coverage Reports
+      uses: actions/download-artifact@v3
+      with:
+        name: coverage-reports-3.9
+        path: reports/
+        
+    - name: Quality Gate Enforcement
+      run: |
+        echo "🚪 Quality Gate - Coverage Enforcement Check"
+        
+        # 检查覆盖率文件是否存在
+        if [ ! -f "reports/coverage/enforcement-report.json" ]; then
+          echo "❌ Coverage report not found!"
+          exit 1
+        fi
+        
+        # 解析覆盖率数据
+        OVERALL_COVERAGE=$(python -c "
+        import json
+        with open('reports/coverage/enforcement-report.json') as f:
+            data = json.load(f)
+            print(data.get('overall_coverage', 0))
+        ")
+        
+        echo "📊 Overall Coverage: ${OVERALL_COVERAGE}%"
+        echo "🎯 Minimum Required: ${{ env.MINIMUM_COVERAGE }}%"
+        echo "🏆 Target Coverage: ${{ env.TARGET_COVERAGE }}%"
+        
+        # 强制要求检查
+        if (( $(echo "$OVERALL_COVERAGE < ${{ env.MINIMUM_COVERAGE }}" | bc -l) )); then
+          echo "❌ COVERAGE ENFORCEMENT FAILED!"
+          echo "Current coverage (${OVERALL_COVERAGE}%) is below minimum requirement (${{ env.MINIMUM_COVERAGE }}%)"
+          echo "🚫 Blocking deployment until coverage improves"
+          exit 1
+        elif (( $(echo "$OVERALL_COVERAGE < ${{ env.TARGET_COVERAGE }}" | bc -l) )); then
+          echo "⚠️  Coverage Warning!"
+          echo "Current coverage (${OVERALL_COVERAGE}%) meets minimum but below target (${{ env.TARGET_COVERAGE }}%)"
+          echo "✅ Allowing deployment with warning"
+        else
+          echo "🎉 Coverage Target Achieved!"
+          echo "Current coverage (${OVERALL_COVERAGE}%) meets target (${{ env.TARGET_COVERAGE }}%)"
+          echo "✅ Ready for production deployment"
+        fi
+        
+  # 分阶段覆盖率验证
+  phased-coverage-check:
+    name: Phased Coverage Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+        
+    - name: Install Dependencies
+      run: |
+        pip install pytest pytest-cov
+        pip install -r requirements.txt
+        
+    - name: Phase 1 - Basic Coverage (30%)
+      run: |
+        echo "📊 Phase 1: Basic Import and Initialization Tests (Target: 30%)"
+        python -m pytest tests/test_phase1_basic_coverage.py \
+          --cov=src \
+          --cov-report=term-missing \
+          --cov-fail-under=30 \
+          -v || echo "Phase 1 target not yet achieved"
+          
+    - name: Phase 2 - Core Functionality (60%)
+      run: |
+        echo "📊 Phase 2: Core Functionality Tests (Target: 60%)"
+        python -m pytest tests/test_phase2_core_functionality.py \
+          --cov=src \
+          --cov-append \
+          --cov-report=term-missing \
+          --cov-fail-under=60 \
+          -v || echo "Phase 2 target not yet achieved"
+          
+    - name: Phase 3 - Comprehensive Coverage (90%)
+      run: |
+        echo "📊 Phase 3: Comprehensive Coverage Tests (Target: 90%)"
+        python -m pytest tests/ \
+          --cov=src \
+          --cov-report=term-missing \
+          --cov-fail-under=90 \
+          -v || echo "Phase 3 target not yet achieved - continue working towards goal"
+          
+  # 性能和覆盖率监控
+  coverage-monitoring:
+    name: Coverage Monitoring & Alerts
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Historical Coverage Analysis
+      run: |
+        echo "📈 Analyzing coverage trends..."
+        python scripts/coverage_trend_analysis.py \
+          --generate-trends \
+          --alert-on-decline \
+          --target-coverage ${{ env.TARGET_COVERAGE }}
+          
+    - name: Coverage Decline Alert
+      if: failure()
+      run: |
+        echo "🚨 Coverage Decline Detected!"
+        echo "Alert: Test coverage has declined below acceptable levels"
+        echo "Action Required: Investigate and restore coverage levels"
+        
+  # 投产准备检查
+  production-readiness:
+    name: Production Readiness Check
+    needs: [coverage-check, quality-gate]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Download Reports
+      uses: actions/download-artifact@v3
+      with:
+        name: coverage-reports-3.9
+        path: reports/
+        
+    - name: Production Readiness Assessment
+      run: |
+        echo "🏭 Production Readiness Assessment"
+        
+        # 检查核心指标
+        echo "📋 Checking Production Criteria:"
+        echo "  ✓ Minimum Coverage: ${{ env.MINIMUM_COVERAGE }}%"
+        echo "  ✓ Target Coverage: ${{ env.TARGET_COVERAGE }}%"
+        echo "  ✓ Critical Modules: ${{ env.CRITICAL_MODULES_COVERAGE }}%"
+        
+        # 生成投产报告
+        python scripts/production_readiness_report.py \
+          --coverage-report reports/coverage/enforcement-report.json \
+          --output reports/production-readiness.json
+          
+        echo "📄 Production readiness report generated"
+        
+    - name: Upload Production Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: production-readiness-report
+        path: reports/production-readiness.json

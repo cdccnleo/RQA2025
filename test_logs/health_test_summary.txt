@@ -1,0 +1,200 @@
+C:\Users\AILeo\miniconda3\lib\site-packages\pytest_benchmark\logger.py:39: PytestBenchmarkWarning: Benchmarks are automatically disabled because xdist plugin is active.Benchmarks cannot be performed reliably in a parallelized environment.
+  warner(PytestBenchmarkWarning(text))
+============================= test session starts =============================
+platform win32 -- Python 3.9.23, pytest-8.4.1, pluggy-1.6.0 -- C:\Users\AILeo\miniconda3\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+metadata: {'Python': '3.9.23', 'Platform': 'Windows-10-10.0.26100-SP0', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.9.0', 'dash': '3.1.1', 'Faker': '37.4.0', 'hypothesis': '6.135.4', 'asyncio': '1.0.0', 'benchmark': '5.1.0', 'cov': '6.0.0', 'html': '4.1.1', 'metadata': '3.1.1', 'mock': '3.14.1', 'timeout': '2.4.0', 'xdist': '3.7.0'}}
+rootdir: C:\PythonProject\RQA2025\tests
+configfile: pytest.ini
+plugins: anyio-4.9.0, dash-3.1.1, Faker-37.4.0, hypothesis-6.135.4, asyncio-1.0.0, benchmark-5.1.0, cov-6.0.0, html-4.1.1, metadata-3.1.1, mock-3.14.1, timeout-2.4.0, xdist-3.7.0
+asyncio: mode=strict, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+created: 16/16 workers
+16 workers [1345 items]
+
+scheduling tests via LoadScheduling
+
+tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_factory_initialization 
+tests\unit\infrastructure\health\test_adapters.py::TestFactoryAdapters::test_monitor_component_adapter 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_component_info_structure 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_component_with_custom_component_type 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_exception_handling 
+tests\unit\infrastructure\health\test_alert_components.py::TestAsyncAlertComponentFactory::test_get_available_alerts_async 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestHealthAPIEndpointsManager::test_is_healthy 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_manager_initialization 
+tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_system_error_alert_scenario 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIConstantsValidation::test_uptime_validation 
+tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_add_health_check 
+tests\unit\infrastructure\health\test_api_data.py::TestDataAPIManager::test_get_component_info 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_get_metrics_in_time_range 
+tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_get_error_summary 
+tests\unit\infrastructure\health\test_automation_monitor.py::TestAutomationMonitor::test_get_alert_history 
+tests\unit\infrastructure\health\test_backtest_monitor_plugin.py::TestBacktestMonitorPlugin::test_get_backtest_status 
+[gw0] [  0%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_factory_initialization 
+[gw1] [  0%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestFactoryAdapters::test_monitor_component_adapter 
+tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_register_service 
+tests\unit\infrastructure\health\test_adapters.py::TestUnifiedInterfaceImplementation::test_adapters_implement_unified_interface 
+[gw0] [  0%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_register_service 
+[gw3] [  0%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_component_info_structure 
+[gw1] [  0%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestUnifiedInterfaceImplementation::test_adapters_implement_unified_interface 
+tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_get_adapter 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_processing_result_structure 
+tests\unit\infrastructure\health\test_adapters.py::TestAdapterHealthChecks::test_adapter_health_functions 
+[gw0] [  0%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_get_adapter 
+[gw3] [  0%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_processing_result_structure 
+tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_get_adapter_not_found 
+[gw1] [  0%] SKIPPED tests\unit\infrastructure\health\test_adapters.py::TestAdapterHealthChecks::test_adapter_health_functions 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_async_processing_result_structure 
+tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_initialization 
+[gw0] [  0%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_get_adapter_not_found 
+[gw3] [  0%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_async_processing_result_structure 
+[gw1] [  0%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_initialization 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_error_result_structure 
+[gw3] [  0%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_error_result_structure 
+tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_get_available_services 
+tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_get_alert_id 
+[gw4] [  0%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_exception_handling 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_status_async_result_structure 
+[gw0] [  1%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_get_available_services 
+[gw5] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_component_with_custom_component_type 
+[gw1] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_get_alert_id 
+tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_factory_info 
+tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_get_info 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_with_nested_data 
+[gw3] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_status_async_result_structure 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_async_valid_data 
+[gw1] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_get_info 
+[gw0] [  1%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestInfrastructureAdapterFactory::test_factory_info 
+tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_adapter_initialization 
+[gw5] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_with_nested_data 
+tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_process_success 
+[gw8] [  1%] PASSED tests\unit\infrastructure\health\test_api_endpoints.py::TestHealthAPIEndpointsManager::test_is_healthy 
+[gw0] [  1%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_adapter_initialization 
+[gw12] [  1%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_get_metrics_in_time_range 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_factory_constants_alignment 
+[gw3] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_factory_constants_alignment 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_component_lifecycle_states 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_with_special_characters 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestHealthAPIEndpointsManager::test_get_metrics 
+[gw8] [  1%] PASSED tests\unit\infrastructure\health\test_api_endpoints.py::TestHealthAPIEndpointsManager::test_get_metrics 
+[gw1] [  1%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_process_success 
+tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_get_service_name 
+[gw0] [  2%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_get_service_name 
+[gw5] [  2%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_process_with_special_characters 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_async_processing_performance 
+[gw3] [  2%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_component_lifecycle_states 
+tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_process_error_handling 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_record_performance_metric 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_processing_data_types 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestHealthAPIEndpointsManager::test_cleanup_method 
+[gw8] [  2%] PASSED tests\unit\infrastructure\health\test_api_endpoints.py::TestHealthAPIEndpointsManager::test_cleanup_method 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsIntegration::test_manager_with_health_components 
+[gw8] [  2%] PASSED tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsIntegration::test_manager_with_health_components 
+[gw12] [  2%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_record_performance_metric 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_record_error 
+[gw12] [  2%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_record_error 
+tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_is_service_available 
+[gw9] [  2%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_manager_initialization 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_initialize_method 
+[gw6] [  2%] PASSED tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_system_error_alert_scenario 
+[gw3] [  2%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_processing_data_types 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_configuration_options 
+[gw3] [  2%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_configuration_options 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_business_scenarios_coverage 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsIntegration::test_health_check_integration 
+[gw8] [  2%] PASSED tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsIntegration::test_health_check_integration 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_get_performance_statistics 
+[gw12] [  2%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_get_performance_statistics 
+[gw9] [  2%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_initialize_method 
+[gw1] [  3%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_process_error_handling 
+tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_get_status 
+[gw3] [  3%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_business_scenarios_coverage 
+[gw2] [  3%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAsyncAlertComponentFactory::test_get_available_alerts_async 
+tests\unit\infrastructure\health\test_alert_components.py::TestAsyncAlertComponentFactory::test_create_all_alerts_async 
+[gw0] [  3%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_is_service_available 
+[gw11] [  3%] PASSED tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_add_health_check 
+[gw15] [  3%] SKIPPED tests\unit\infrastructure\health\test_backtest_monitor_plugin.py::TestBacktestMonitorPlugin::test_get_backtest_status 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_get_error_statistics 
+[gw12] [  3%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_get_error_statistics 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_get_component_info 
+[gw9] [  3%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_get_component_info 
+[gw1] [  3%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAlertComponent::test_get_status 
+tests\unit\infrastructure\health\test_alert_components.py::TestAsyncAlertComponent::test_get_info_async 
+[gw1] [  3%] PASSED tests\unit\infrastructure\health\test_alert_components.py::TestAsyncAlertComponent::test_get_info_async 
+tests\unit\infrastructure\health\test_alert_components.py::TestAsyncAlertComponent::test_process_async_success 
+tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_get_service_status 
+[gw0] [  3%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_get_service_status 
+tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_execute_operation 
+[gw0] [  3%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_execute_operation 
+tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_execute_operation_async 
+tests\unit\infrastructure\health\test_backtest_monitor_plugin.py::TestBacktestMonitorPlugin::test_check_backtest_health 
+[gw15] [  3%] SKIPPED tests\unit\infrastructure\health\test_backtest_monitor_plugin.py::TestBacktestMonitorPlugin::test_check_backtest_health 
+tests\unit\infrastructure\health\test_backtest_monitor_plugin.py::TestBacktestMonitorPlugin::test_get_active_backtests 
+tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_database_error_alert_scenario 
+[gw6] [  4%] PASSED tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_database_error_alert_scenario 
+tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_security_alert_scenario 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_clear_metrics_data 
+[gw12] [  4%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_clear_metrics_data 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_export_metrics_data 
+tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_integration_interfaces 
+[gw3] [  4%] PASSED tests\unit\infrastructure\health\test_alert_components_basic.py::TestAlertComponentsBasic::test_integration_interfaces 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsHealthChecks::test_api_endpoints_health_functions 
+tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_run_health_checks 
+[gw11] [  4%] PASSED tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_run_health_checks 
+[gw10] [  4%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIConstantsValidation::test_uptime_validation 
+[gw13] [  4%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_get_error_summary 
+tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_clear_monitoring_data 
+[gw13] [  4%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_clear_monitoring_data 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_is_healthy 
+[gw9] [  4%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_is_healthy 
+[gw6] [  4%] PASSED tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_security_alert_scenario 
+tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_performance_warning_scenario 
+[gw12] [  4%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_export_metrics_data 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_metrics_health_check 
+[gw12] [  4%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_metrics_health_check 
+tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_health_check 
+[gw11] [  4%] PASSED tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_health_check 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIRealTimeFeatures::test_message_type_validation 
+[gw10] [  4%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIRealTimeFeatures::test_message_type_validation 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIRealTimeFeatures::test_response_time_threshold 
+[gw10] [  4%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIRealTimeFeatures::test_response_time_threshold 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIRealTimeFeatures::test_async_manager_operations 
+tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_monitoring_health_check 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_get_metrics 
+[gw9] [  5%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_get_metrics 
+tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_cleanup_method 
+[gw9] [  5%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIManager::test_cleanup_method 
+[gw7] [  5%] PASSED tests\unit\infrastructure\health\test_api_data.py::TestDataAPIManager::test_get_component_info 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_alert_component_initialization 
+[gw3] [  5%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_alert_component_initialization 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_alert_component_default_initialization 
+[gw8] [  5%] SKIPPED tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsHealthChecks::test_api_endpoints_health_functions 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsHealthChecks::test_validate_service_name 
+tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_monitor_status 
+[gw11] [  5%] PASSED tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_monitor_status 
+tests\unit\infrastructure\health\test_application_monitor_core.py::TestApplicationMonitor::test_validate_config 
+[gw15] [  5%] SKIPPED tests\unit\infrastructure\health\test_backtest_monitor_plugin.py::TestBacktestMonitorPlugin::test_get_active_backtests 
+[gw13] [  5%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_monitoring_health_check 
+tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_monitoring_status 
+[gw13] [  5%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_monitoring_status 
+tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_export_monitoring_data 
+[gw13] [  5%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_monitoring.py::TestApplicationMonitorMonitoring::test_export_monitoring_data 
+tests\unit\infrastructure\health\test_api_data.py::TestDataAPIManager::test_is_healthy 
+[gw7] [  5%] PASSED tests\unit\infrastructure\health\test_api_data.py::TestDataAPIManager::test_is_healthy 
+tests\unit\infrastructure\health\test_api_data.py::TestDataAPIManager::test_get_metrics 
+[gw7] [  5%] PASSED tests\unit\infrastructure\health\test_api_data.py::TestDataAPIManager::test_get_metrics 
+[gw3] [  5%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_alert_component_default_initialization 
+tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_get_alert_id 
+[gw3] [  6%] PASSED tests\unit\infrastructure\health\test_alert_components_core.py::TestAlertComponentsCore::test_get_alert_id 
+[gw10] [  6%] PASSED tests\unit\infrastructure\health\test_api_websocket.py::TestWebSocketAPIRealTimeFeatures::test_async_manager_operations 
+[gw8] [  6%] SKIPPED tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsHealthChecks::test_validate_service_name 
+tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsHealthChecks::test_validate_config 
+[gw8] [  6%] SKIPPED tests\unit\infrastructure\health\test_api_endpoints.py::TestAPIEndpointsHealthChecks::test_validate_config 
+[gw6] [  6%] PASSED tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_performance_warning_scenario 
+tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_component_with_special_characters 
+[gw6] [  6%] PASSED tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_component_with_special_characters 
+tests\unit\infrastructure\health\test_alert_components_mock.py::TestAlertComponentsMock::test_component_with_nested_data 
+tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_unified_interface_implementation 
+[gw12] [  6%] SKIPPED tests\unit\infrastructure\health\test_application_monitor_metrics.py::TestApplicationMonitorMetrics::test_unified_interface_implementation 
+[gw0] [  6%] PASSED tests\unit\infrastructure\health\test_adapters.py::TestBaseInfrastructureAdapter::test_execute_operation_async 

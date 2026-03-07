@@ -1,0 +1,86 @@
+{
+  "deployment_timestamp": "2025-12-04T12:33:28.642620",
+  "overall_success": false,
+  "total_duration_minutes": 0.0009502666666666666,
+  "total_stages": 1,
+  "successful_stages": 0,
+  "failed_stages": 1,
+  "stage_results": [
+    {
+      "stage_name": "pre_deployment_preparation",
+      "success": false,
+      "start_time": "2025-12-04 12:33:28.584325",
+      "end_time": "2025-12-04 12:33:28.641341",
+      "duration_seconds": 0.057016,
+      "output": "部署前准备失败",
+      "errors": [
+        "[WinError 193] %1 不是有效的 Win32 应用程序。"
+      ],
+      "verification_results": {}
+    }
+  ],
+  "deployment_summary": {
+    "status": "failed",
+    "critical_failures": [],
+    "performance_metrics": {},
+    "recommendations": [
+      "立即执行回滚计划",
+      "分析失败原因并修复",
+      "重新进行部署前检查",
+      "考虑分阶段部署策略",
+      "加强部署前测试覆盖"
+    ]
+  },
+  "next_steps": [
+    "❌ 部署失败 - 立即行动",
+    "🔄 执行回滚计划",
+    "🔍 分析失败原因",
+    "🛠️ 修复发现的问题",
+    "📋 制定改进的部署计划",
+    "📅 长期改进",
+    "🏗️ 加强部署前验证",
+    "🔧 改进部署自动化",
+    "👥 增加部署演练",
+    "📊 完善监控覆盖"
+  ],
+  "rollback_plan": {
+    "rollback_strategy": "immediate_full_rollback",
+    "rollback_steps": [
+      {
+        "step": 1,
+        "description": "停止新版本服务",
+        "command": "sudo systemctl stop rqa2025",
+        "timeout": 30
+      },
+      {
+        "step": 2,
+        "description": "恢复上一版本代码",
+        "command": "sudo cp -r /opt/rqa2025_backup/* /opt/rqa2025/",
+        "timeout": 120
+      },
+      {
+        "step": 3,
+        "description": "重启服务",
+        "command": "sudo systemctl start rqa2025",
+        "timeout": 60
+      },
+      {
+        "step": 4,
+        "description": "验证服务恢复",
+        "command": "curl -f http://localhost:8000/health",
+        "timeout": 30
+      }
+    ],
+    "success_criteria": [
+      "服务成功重启",
+      "健康检查通过",
+      "基本功能恢复",
+      "用户访问正常"
+    ],
+    "contact_procedures": [
+      "立即通知技术团队",
+      "通知业务负责人",
+      "准备状态更新"
+    ]
+  }
+}

@@ -1,0 +1,434 @@
+# RQA2025 健康检查模块集成配置
+# 版本: 2.1.0
+# 最后更新: 2025-01-27
+
+health_check:
+  # 基础配置
+  enabled: true
+  interval: 30s
+  timeout: 10s
+  max_retries: 3
+  
+  # 监控配置
+  monitoring:
+    enabled: true
+    metrics_collection_interval: 60s
+    system_metrics_enabled: true
+    process_metrics_enabled: true
+    network_metrics_enabled: true
+    disk_metrics_enabled: true
+  
+  # 缓存配置
+  cache:
+    enabled: true
+    ttl: 300s  # 5分钟
+    max_size: 1000
+    policy: "lru"  # lru, lfu, fifo, priority
+    preload_enabled: true
+    preload_keys:
+      - "health_status"
+      - "system_metrics"
+      - "performance_metrics"
+    
+    # 智能缓存配置
+    smart_cache:
+      enabled: true
+      adaptive_ttl: true
+      hit_rate_threshold: 0.8
+      eviction_strategy: "adaptive"
+  
+  # Prometheus配置
+  prometheus:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+    namespace: "rqa_health"
+    subsystem: "health_check"
+    
+    # 指标配置
+    metrics:
+      health_status: true
+      response_time: true
+      system_resources: true
+      cache_performance: true
+      alert_statistics: true
+  
+  # 告警配置
+  alerting:
+    enabled: true
+    rules_file: "alert_rules.yaml"
+    evaluation_interval: 30s
+    
+    # 通知渠道
+    notification_channels:
+      - type: "email"
+        config:
+          smtp_server: "smtp.example.com"
+          smtp_port: 587
+          username: "alerts@example.com"
+          password: "${SMTP_PASSWORD}"
+          recipients:
+            - "admin@example.com"
+            - "ops@example.com"
+      
+      - type: "slack"
+        config:
+          webhook_url: "${SLACK_WEBHOOK_URL}"
+          channel: "#alerts"
+          username: "RQA Health Monitor"
+      
+      - type: "webhook"
+        config:
+          url: "https://api.example.com/webhooks/alerts"
+          method: "POST"
+          headers:
+            Authorization: "Bearer ${WEBHOOK_TOKEN}"
+    
+    # 告警抑制配置
+    suppression:
+      enabled: true
+      default_duration: "1h"
+      max_duration: "24h"
+      
+      # 时间抑制
+      time_based:
+        enabled: true
+        maintenance_windows:
+          - name: "daily_maintenance"
+            time_range: "02:00-04:00"
+            days: ["saturday", "sunday"]
+            reason: "定期维护"
+      
+      # 条件抑制
+      conditional:
+        enabled: true
+        rules:
+          - name: "low_severity_suppression"
+            condition: "severity == 'info'"
+            duration: "30m"
+  
+  # 性能优化配置
+  performance:
+    enabled: true
+    optimization_interval: 300s  # 5分钟
+    
+    # 自动优化
+    auto_optimization:
+      enabled: true
+      cache_strategy_adjustment: true
+      ttl_optimization: true
+      threshold_adjustment: true
+    
+    # 性能指标
+    metrics:
+      response_time:
+        enabled: true
+        threshold: 2.0
+        alert_on_violation: true
+      
+      cache_hit_rate:
+        enabled: true
+        threshold: 0.7
+        alert_on_violation: true
+      
+      system_resource_usage:
+        enabled: true
+        cpu_threshold: 80.0
+        memory_threshold: 85.0
+        disk_threshold: 90.0
+  
+  # Grafana集成配置
+  grafana:
+    enabled: false  # 生产环境启用
+    url: "http://grafana:3000"
+    api_key: "${GRAFANA_API_KEY}"
+    org_id: 1
+    
+    # 仪表板配置
+    dashboards:
+      health_monitoring:
+        enabled: true
+        title: "RQA Health Monitoring"
+        refresh: "30s"
+        auto_deploy: true
+        
+        panels:
+          - title: "System Health Status"
+            type: "stat"
+            targets:
+              - expr: "rqa_health_status"
+                legendFormat: "{{service}}"
+          
+          - title: "Response Time Trends"
+            type: "graph"
+            targets:
+              - expr: "rqa_health_response_time_seconds"
+                legendFormat: "{{service}} - {{check_type}}"
+      
+      performance_monitoring:
+        enabled: true
+        title: "RQA Performance Monitoring"
+        refresh: "1m"
+        auto_deploy: true
+        
+        panels:
+          - title: "Cache Hit Rate"
+            type: "gauge"
+            targets:
+              - expr: "rqa_cache_hit_rate"
+          
+          - title: "System Resource Usage"
+            type: "graph"
+            targets:
+              - expr: "rqa_system_cpu_percent"
+                legendFormat: "CPU Usage"
+              - expr: "rqa_system_memory_percent"
+                legendFormat: "Memory Usage"
+      
+      alert_dashboard:
+        enabled: true
+        title: "RQA Alert Management"
+        refresh: "10s"
+        auto_deploy: true
+        
+        panels:
+          - title: "Active Alerts by Severity"
+            type: "pie"
+            targets:
+              - expr: "rqa_alert_count"
+                legendFormat: "{{severity}}"
+          
+          - title: "Alert History"
+            type: "table"
+            targets:
+              - expr: "rqa_alert_history"
+  
+  # 告警规则配置
+  alert_rules:
+    # 系统资源告警
+    system_alerts:
+      - name: "high_cpu_usage"
+        description: "CPU使用率过高"
+        query: "rqa_system_cpu_percent > 80"
+        severity: "critical"
+        threshold: 80.0
+        duration: "5m"
+        auto_threshold: true
+        adjustment_factor: 1.5
+        suppress_conditions:
+          - "time: 23:00-06:00"
+          - "day: weekend"
+        
+        labels:
+          service: "system"
+          component: "cpu"
+          environment: "production"
+        
+        annotations:
+          summary: "CPU使用率过高"
+          description: "CPU使用率超过80%持续5分钟"
+          runbook_url: "https://runbook.example.com/cpu-usage"
+      
+      - name: "high_memory_usage"
+        description: "内存使用率过高"
+        query: "rqa_system_memory_percent > 85"
+        severity: "warning"
+        threshold: 85.0
+        duration: "3m"
+        auto_threshold: true
+        adjustment_factor: 1.2
+        
+        labels:
+          service: "system"
+          component: "memory"
+          environment: "production"
+        
+        annotations:
+          summary: "内存使用率过高"
+          description: "内存使用率超过85%持续3分钟"
+          runbook_url: "https://runbook.example.com/memory-usage"
+      
+      - name: "disk_space_critical"
+        description: "磁盘空间严重不足"
+        query: "rqa_system_disk_usage > 95"
+        severity: "critical"
+        threshold: 95.0
+        duration: "1m"
+        
+        labels:
+          service: "system"
+          component: "disk"
+          environment: "production"
+        
+        annotations:
+          summary: "磁盘空间严重不足"
+          description: "磁盘使用率超过95%"
+          runbook_url: "https://runbook.example.com/disk-space"
+    
+    # 性能告警
+    performance_alerts:
+      - name: "slow_response_time"
+        description: "响应时间过慢"
+        query: "rqa_health_response_time_seconds > 2"
+        severity: "warning"
+        threshold: 2.0
+        duration: "2m"
+        auto_threshold: true
+        adjustment_factor: 1.1
+        
+        labels:
+          service: "health_check"
+          component: "response_time"
+          environment: "production"
+        
+        annotations:
+          summary: "响应时间过慢"
+          description: "健康检查响应时间超过2秒"
+          runbook_url: "https://runbook.example.com/response-time"
+      
+      - name: "low_cache_hit_rate"
+        description: "缓存命中率过低"
+        query: "rqa_cache_hit_rate < 0.7"
+        severity: "warning"
+        threshold: 0.7
+        duration: "5m"
+        auto_threshold: true
+        adjustment_factor: 0.9
+        
+        labels:
+          service: "cache"
+          component: "performance"
+          environment: "production"
+        
+        annotations:
+          summary: "缓存命中率过低"
+          description: "缓存命中率低于70%"
+          runbook_url: "https://runbook.example.com/cache-performance"
+    
+    # 服务健康告警
+    service_alerts:
+      - name: "service_unhealthy"
+        description: "服务不健康"
+        query: "rqa_health_status != 1"
+        severity: "critical"
+        threshold: 1
+        duration: "1m"
+        
+        labels:
+          service: "health_check"
+          component: "service_status"
+          environment: "production"
+        
+        annotations:
+          summary: "服务不健康"
+          description: "服务健康状态异常"
+          runbook_url: "https://runbook.example.com/service-health"
+  
+  # 日志配置
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    
+    # 文件日志
+    file:
+      enabled: true
+      path: "logs/health_check.log"
+      max_size: "100MB"
+      backup_count: 5
+    
+    # 结构化日志
+    structured:
+      enabled: true
+      include_metrics: true
+      include_context: true
+  
+  # 安全配置
+  security:
+    # API认证
+    authentication:
+      enabled: true
+      type: "bearer_token"
+      token: "${HEALTH_CHECK_API_TOKEN}"
+    
+    # 访问控制
+    authorization:
+      enabled: true
+      allowed_ips:
+        - "127.0.0.1"
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+    
+    # 加密
+    encryption:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      key: "${ENCRYPTION_KEY}"
+  
+  # 高可用性配置
+  high_availability:
+    enabled: true
+    
+    # 负载均衡
+    load_balancing:
+      enabled: true
+      algorithm: "round_robin"
+      health_check_endpoint: "/health"
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+    
+    # 故障转移
+    failover:
+      enabled: true
+      primary_endpoint: "http://primary:8080"
+      secondary_endpoint: "http://secondary:8080"
+      failover_delay: "30s"
+    
+    # 集群配置
+    clustering:
+      enabled: false  # 生产环境启用
+      cluster_size: 3
+      election_timeout: "5s"
+      heartbeat_interval: "1s"
+  
+  # 备份和恢复
+  backup:
+    enabled: true
+    schedule: "0 2 * * *"  # 每天凌晨2点
+    retention_days: 30
+    
+    # 备份内容
+    content:
+      configuration: true
+      metrics_history: true
+      alert_rules: true
+      cache_data: false  # 缓存数据不备份
+    
+    # 存储配置
+    storage:
+      type: "local"  # local, s3, gcs
+      path: "backups/health_check"
+      compression: true
+      encryption: true
+  
+  # 监控和调试
+  debugging:
+    enabled: false  # 生产环境禁用
+    
+    # 性能分析
+    profiling:
+      enabled: false
+      sampling_rate: 0.1
+      max_samples: 1000
+    
+    # 详细日志
+    verbose_logging:
+      enabled: false
+      include_sql: false
+      include_http_headers: false
+    
+    # 指标导出
+    metrics_export:
+      enabled: false
+      format: "json"
+      interval: "60s"
+      include_raw_data: false

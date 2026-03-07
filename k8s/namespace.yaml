@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rqa2025
+  labels:
+    name: rqa2025
+    purpose: quantitative-trading
+    version: v1.0.0
+  annotations:
+    description: "RQA2025 量化交易系统命名空间"
+    contact: "ai-architect@rqa2025.com"
+    created-by: "RQA2025-DevOps"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: rqa2025-quota
+  namespace: rqa2025
+spec:
+  hard:
+    requests.cpu: "20"
+    requests.memory: 40Gi
+    limits.cpu: "40"
+    limits.memory: 80Gi
+    persistentvolumeclaims: "10"
+    services: "20"
+    pods: "50"
+    secrets: "10"
+    configmaps: "10"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: rqa2025-limits
+  namespace: rqa2025
+spec:
+  limits:
+  - default:
+      cpu: 500m
+      memory: 1Gi
+    defaultRequest:
+      cpu: 100m
+      memory: 256Mi
+    type: Container
+  - max:
+      cpu: 4
+      memory: 8Gi
+    min:
+      cpu: 50m
+      memory: 128Mi
+    type: Container

@@ -1,0 +1,124 @@
+name: RQA2025 Test Coverage CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 每天凌晨2点运行
+    - cron: '0 2 * * *'
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-mock
+        
+    - name: Run automated coverage pipeline
+      run: |
+        python scripts/testing/automated_coverage_pipeline.py --env test --timeout 1200
+        
+    - name: Check coverage threshold
+      run: |
+        python scripts/testing/check_coverage_threshold.py --min-coverage 75
+        
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-reports-${{ matrix.python-version }}
+        path: reports/testing/
+        
+    - name: Comment PR with coverage results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          // 查找最新的覆盖率报告
+          const reportsDir = 'reports/testing';
+          const files = fs.readdirSync(reportsDir);
+          const coverageFiles = files.filter(f => f.startsWith('coverage_report_'));
+          
+          if (coverageFiles.length > 0) {
+            const latestReport = coverageFiles.sort().pop();
+            const reportPath = path.join(reportsDir, latestReport);
+            const reportContent = fs.readFileSync(reportPath, 'utf8');
+            
+            // 提取覆盖率信息
+            const coverageMatch = reportContent.match(/平均覆盖率.*?(\d+\.\d+)%/);
+            const coverage = coverageMatch ? coverageMatch[1] : 'N/A';
+            
+            const comment = '## 📊 测试覆盖率报告\n\n**平均覆盖率**: ' + coverage + '%\n**状态**: ' + (coverage >= 75 ? '✅ 通过' : '❌ 未通过') + '\n\n详细报告请查看 [覆盖率报告](' + reportPath + ')\n\n---\n*此评论由CI/CD自动生成*';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+
+  coverage-dashboard:
+    needs: test-coverage
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download coverage reports
+      uses: actions/download-artifact@v3
+      with:
+        name: coverage-reports-3.9
+        
+    - name: Generate coverage dashboard
+      run: |
+        python scripts/testing/generate_coverage_dashboard.py
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./reports/testing/dashboard
+
+  notify-coverage:
+    needs: test-coverage
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+    - name: Send notification
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { exec } = require('child_process');
+          
+          // 这里可以集成Slack、钉钉等通知
+          console.log('❌ 测试覆盖率检查失败，请及时处理');
+          
+          // 示例：发送到Slack
+          // const webhook = process.env.SLACK_WEBHOOK;
+          // if (webhook) {
+          //   exec(`curl -X POST -H 'Content-type: application/json' --data '{"text":"RQA2025测试覆盖率检查失败，请及时处理"}' ${webhook}`);
+          // } 

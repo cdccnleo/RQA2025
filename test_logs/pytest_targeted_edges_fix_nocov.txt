@@ -1,0 +1,33 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+bringing up nodes...
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+16 workers [4 items]
+
+scheduling tests via LoadScopeScheduling
+
+tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_on_empty_dir 
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues 
+tests\unit\data\core\test_data_manager_edge_cov.py::test_load_data_adapter_exception_raises_dataloadererror 
+[gw0] [ 25%] PASSED tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_on_empty_dir 
+tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_with_files 
+[gw0] [ 50%] PASSED tests\unit\data\cache\test_disk_cache_stats_edges.py::test_collect_disk_usage_with_files 
+[gw1] [ 75%] PASSED tests\unit\data\core\test_data_manager_edge_cov.py::test_load_data_adapter_exception_raises_dataloadererror 
+[gw2] [100%] FAILED tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues 
+
+================================== FAILURES ===================================
+___________ test_unknown_type_and_failed_validation_triggers_issues ___________
+[gw2] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\python.exe
+tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py:20: in test_unknown_type_and_failed_validation_triggers_issues
+    assert rep["metrics"]["total"] >= 1
+E   TypeError: 'QualityMetrics' object is not subscriptable
+---------------------------- Captured stderr call -----------------------------
+WARNING:src.data.quality.unified_quality_monitor:璐ㄩ噺鍒嗘暟浣庝簬闃堝€?0.80): 0.74
+WARNING:src.data.quality.unified_quality_monitor:璐ㄩ噺闃堝€艰繚瑙? 鏁版嵁绫诲瀷=stock, 璐ㄩ噺鍒嗘暟=0.74, 闃堝€?0.80, 寮傚父鏁伴噺=0
+------------------------------ Captured log call ------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 璐ㄩ噺鍒嗘暟浣庝簬闃堝€?0.80): 0.74
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 璐ㄩ噺闃堝€艰繚瑙? 鏁版嵁绫诲瀷=stock, 璐ㄩ噺鍒嗘暟=0.74, 闃堝€?0.80, 寮傚父鏁伴噺=0
+=========================== short test summary info ===========================
+FAILED tests\unit\data\quality\test_unified_quality_monitor_core_edges2.py::test_unknown_type_and_failed_validation_triggers_issues
+=================== 1 failed, 3 passed in 68.13s (0:01:08) ====================

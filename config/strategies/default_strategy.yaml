@@ -1,0 +1,26 @@
+# 默认策略配置
+# 这是一个示例策略配置文件
+
+strategy_id: default_strategy
+strategy_name: 默认策略
+symbols:
+  - "000001"  # 平安银行
+  - "000002"  # 万科A
+  - "000858"  # 五粮液
+
+description: 默认策略，包含3只蓝筹股
+
+parameters:
+  lookback_period: 20
+  threshold: 0.05
+  max_position: 0.3
+
+data_sources:
+  - akshare
+  - baostock
+
+time_range:
+  start_date: "2024-01-01"
+  end_date: "2024-12-31"
+
+enabled: true

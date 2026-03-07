@@ -1,0 +1,89 @@
+name: Code Quality Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  code-quality-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort mypy
+
+    - name: Run code quality checker
+      run: |
+        python scripts/code_quality_checker.py --project-root . --output code_quality_report.json
+
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings
+        flake8 src --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Check code formatting with black
+      run: |
+        black --check --diff src
+
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only --diff src
+
+    - name: Type check with mypy
+      run: |
+        mypy src --ignore-missing-imports --no-strict-optional
+
+    - name: Upload code quality report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: code-quality-report
+        path: code_quality_report.json
+
+    - name: Comment PR with code quality results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('code_quality_report.json', 'utf8'));
+
+          const summary = report.summary;
+          const body = `## 🔍 Code Quality Check Results
+
+          ### 📊 Summary
+          - **Files checked**: ${summary.total_files_checked}
+          - **Magic numbers found**: ${summary.magic_numbers_count}
+          - **Long methods found**: ${summary.long_methods_count}
+          - **Missing docstrings**: ${summary.missing_docstrings_count}
+          - **Exception handling issues**: ${summary.exception_issues_count}
+
+          ### 📋 Details
+          ${summary.magic_numbers_count > 0 ? `⚠️ **${summary.magic_numbers_count}** magic numbers detected` : '✅ No magic numbers found'}
+          ${summary.long_methods_count > 0 ? `⚠️ **${summary.long_methods_count}** long methods detected` : '✅ No long methods found'}
+          ${summary.missing_docstrings_count > 0 ? `⚠️ **${summary.missing_docstrings_count}** missing docstrings` : '✅ All functions/classes have docstrings'}
+          ${summary.exception_issues_count > 0 ? `⚠️ **${summary.exception_issues_count}** exception handling issues` : '✅ No exception handling issues'}
+
+          ---
+          *This check was performed automatically by the RQA2025 Code Quality Checker*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });

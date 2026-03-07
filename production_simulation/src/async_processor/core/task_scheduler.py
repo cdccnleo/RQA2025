@@ -1,0 +1,515 @@
+"""
+Task Scheduler Module
+任务调度器模块
+
+此文件作为主入口，导入并导出各个模块的组件。
+
+重构说明(2025-11-01):
+- task_models.py: 任务数据模型
+- task_scheduler.py: 任务调度器(本文件)
+
+Author: RQA2025 Development Team
+Date: 2025-11-01
+"""
+
+import logging
+from typing import Any, Dict, List, Optional, Callable
+from datetime import datetime, timedelta
+import threading
+import time
+import queue
+
+from .task_models import TaskPriority, TaskStatus, ScheduledTask
+
+logger = logging.getLogger(__name__)
+
+
+# 继续保留TaskScheduler类
+class TaskScheduler:
+
+    """
+    Scheduled Task Class
+    调度任务类
+
+    Represents a task to be executed at a specific time or with specific priority
+    表示要在特定时间或具有特定优先级执行的任务
+    """
+
+    def __init__(self,
+
+
+                 task_id: str,
+                 func: Callable,
+                 args: Optional[tuple] = None,
+                 kwargs: Optional[Dict[str, Any]] = None,
+                 priority: TaskPriority = TaskPriority.NORMAL,
+                 scheduled_time: Optional[datetime] = None,
+                 timeout: Optional[float] = None,
+                 retry_count: int = 0,
+                 max_retries: int = 3):
+        """
+        Initialize a scheduled task
+        初始化调度任务
+
+        Args:
+            task_id: Unique task identifier
+                   唯一任务标识符
+            func: Function to execute
+                 要执行的函数
+            args: Positional arguments for the function
+                 函数的位置参数
+            kwargs: Keyword arguments for the function
+                   函数的关键字参数
+            priority: Task priority level
+                     任务优先级
+            scheduled_time: Time to execute the task (None for immediate)
+                          执行任务的时间（None表示立即执行）
+            timeout: Maximum execution time in seconds
+                    最大执行时间（秒）
+            retry_count: Current retry count
+                        当前重试次数
+            max_retries: Maximum number of retries
+                        最大重试次数
+        """
+        self.task_id = task_id
+        self.func = func
+        self.args = args or ()
+        self.kwargs = kwargs or {}
+        self.priority = priority
+        self.scheduled_time = scheduled_time or datetime.now()
+        self.timeout = timeout
+        self.retry_count = retry_count
+        self.max_retries = max_retries
+        self.status = TaskStatus.PENDING
+        self.created_at = datetime.now()
+        self.started_at: Optional[datetime] = None
+        self.completed_at: Optional[datetime] = None
+        self.result: Any = None
+        self.error: Optional[Exception] = None
+
+    def __lt__(self, other):
+        """Comparison for priority queue"""
+        if self.scheduled_time != other.scheduled_time:
+            return self.scheduled_time < other.scheduled_time
+        return self.priority.value > other.priority.value  # Higher priority first
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert task to dictionary
+        将任务转换为字典
+
+        Returns:
+            dict: Task data as dictionary
+                  任务数据字典
+        """
+        return {
+            'task_id': self.task_id,
+            'status': self.status.value,
+            'priority': self.priority.value,
+            'scheduled_time': self.scheduled_time.isoformat(),
+            'created_at': self.created_at.isoformat(),
+            'started_at': self.started_at.isoformat() if self.started_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'timeout': self.timeout,
+            'retry_count': self.retry_count,
+            'max_retries': self.max_retries,
+            'has_error': self.error is not None,
+            'error_message': str(self.error) if self.error else None
+        }
+
+
+class TaskScheduler:
+
+    """
+    Task Scheduler for Asynchronous Operations
+    异步操作任务调度器
+
+    Manages and executes scheduled tasks with priority and timing control
+    管理和执行具有优先级和时间控制的调度任务
+    """
+
+    def __init__(self, max_workers: int = 4, queue_size: int = 1000):
+        """
+        Initialize the task scheduler
+        初始化任务调度器
+
+        Args:
+            max_workers: Maximum number of worker threads
+                        最大工作线程数
+            queue_size: Maximum size of the task queue
+                       任务队列的最大大小
+        """
+        self.max_workers = max_workers
+        self.queue_size = queue_size
+        self.task_queue = queue.PriorityQueue(maxsize=queue_size)
+        self.active_tasks: Dict[str, ScheduledTask] = {}
+        self.completed_tasks: Dict[str, ScheduledTask] = {}
+        self.workers: List[threading.Thread] = []
+        self.is_running = False
+        self.scheduler_thread: Optional[threading.Thread] = None
+        self.task_counter = 0
+
+        # Synchronization
+        self.lock = threading.Lock()
+
+        logger.info(f"Task scheduler initialized with {max_workers} workers")
+
+    def start(self) -> bool:
+        """
+        Start the task scheduler
+        启动任务调度器
+
+        Returns:
+            bool: True if started successfully, False otherwise
+                  启动成功返回True，否则返回False
+        """
+        if self.is_running:
+            logger.warning("Task scheduler is already running")
+            return False
+
+        try:
+            self.is_running = True
+
+            # Start worker threads
+            for i in range(self.max_workers):
+                worker = threading.Thread(target=self._worker_loop, name=f"TaskWorker-{i + 1}")
+                worker.daemon = True
+                worker.start()
+                self.workers.append(worker)
+
+            # Start scheduler thread
+            self.scheduler_thread = threading.Thread(
+                target=self._scheduler_loop, name="TaskScheduler")
+            self.scheduler_thread.daemon = True
+            self.scheduler_thread.start()
+
+            logger.info(f"Task scheduler started with {self.max_workers} workers")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to start task scheduler: {str(e)}")
+            self.is_running = False
+            return False
+
+    def stop(self) -> bool:
+        """
+        Stop the task scheduler
+        停止任务调度器
+
+        Returns:
+            bool: True if stopped successfully, False otherwise
+                  停止成功返回True，否则返回False
+        """
+        if not self.is_running:
+            logger.warning("Task scheduler is not running")
+            return False
+
+        try:
+            self.is_running = False
+
+            # Wait for workers to finish
+            for worker in self.workers:
+                if worker.is_alive():
+                    worker.join(timeout=5.0)
+
+            # Wait for scheduler to finish
+            if self.scheduler_thread and self.scheduler_thread.is_alive():
+                self.scheduler_thread.join(timeout=5.0)
+
+            logger.info("Task scheduler stopped")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to stop task scheduler: {str(e)}")
+            return False
+
+    def schedule_task(self,
+
+
+                      func: Callable,
+                      args: Optional[tuple] = None,
+                      kwargs: Optional[Dict[str, Any]] = None,
+                      priority: TaskPriority = TaskPriority.NORMAL,
+                      delay_seconds: float = 0,
+                      timeout: Optional[float] = None,
+                      max_retries: int = 3) -> Optional[str]:
+        """
+        Schedule a task for execution
+        调度任务以执行
+
+        Args:
+            func: Function to execute
+                 要执行的函数
+            args: Positional arguments
+                 位置参数
+            kwargs: Keyword arguments
+                   关键字参数
+            priority: Task priority
+                     任务优先级
+            delay_seconds: Delay before execution (seconds)
+                          执行前的延迟（秒）
+            timeout: Task timeout (seconds)
+                    任务超时时间（秒）
+            max_retries: Maximum retry attempts
+                        最大重试次数
+
+        Returns:
+            str: Task ID if scheduled successfully, None otherwise
+                 如果调度成功则返回任务ID，否则返回None
+        """
+        try:
+            with self.lock:
+                self.task_counter += 1
+                task_id = f"task_{self.task_counter}"
+                scheduled_time = datetime.now() + timedelta(seconds=delay_seconds)
+
+                task = ScheduledTask(
+                    task_id=task_id,
+                    func=func,
+                    args=args,
+                    kwargs=kwargs,
+                    priority=priority,
+                    scheduled_time=scheduled_time,
+                    timeout=timeout,
+                    max_retries=max_retries
+                )
+
+                self.task_queue.put(task)
+                self.active_tasks[task_id] = task
+
+                logger.info(f"Task {task_id} scheduled for {scheduled_time}")
+                return task_id
+
+        except queue.Full:
+            logger.warning("Task queue is full, cannot schedule new task")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to schedule task: {str(e)}")
+            return None
+
+    def cancel_task(self, task_id: str) -> bool:
+        """
+        Cancel a scheduled task
+        取消已调度的任务
+
+        Args:
+            task_id: ID of the task to cancel
+                     要取消的任务ID
+
+        Returns:
+            bool: True if cancelled successfully, False otherwise
+                  取消成功返回True，否则返回False
+        """
+        with self.lock:
+            if task_id in self.active_tasks:
+                task = self.active_tasks[task_id]
+                if task.status == TaskStatus.PENDING:
+                    task.status = TaskStatus.CANCELLED
+                    logger.info(f"Task {task_id} cancelled")
+                    return True
+
+        return False
+
+    def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Get the status of a task
+        获取任务的状态
+
+        Args:
+            task_id: Task ID
+                     任务ID
+
+        Returns:
+            dict: Task status information or None if not found
+                  任务状态信息，如果未找到则返回None
+        """
+        with self.lock:
+            if task_id in self.active_tasks:
+                return self.active_tasks[task_id].to_dict()
+            elif task_id in self.completed_tasks:
+                return self.completed_tasks[task_id].to_dict()
+
+        return None
+
+    def _scheduler_loop(self) -> None:
+        """
+        Main scheduler loop
+        主要的调度器循环
+        """
+        logger.info("Scheduler loop started")
+
+        while self.is_running:
+            try:
+                # Check for tasks that are ready to execute
+                now = datetime.now()
+
+                # This is a simplified implementation
+                # In a real implementation, you'd use a more sophisticated
+                # timing mechanism, possibly with a separate priority queue
+                # for scheduled tasks
+
+                time.sleep(1)  # Check every second
+
+            except Exception as e:
+                logger.error(f"Scheduler loop error: {str(e)}")
+                time.sleep(1)
+
+        logger.info("Scheduler loop stopped")
+
+    def _worker_loop(self) -> None:
+        """
+        Worker thread loop
+        工作线程循环
+        """
+        thread_name = threading.current_thread().name
+        logger.info(f"Worker {thread_name} started")
+
+        while self.is_running:
+            try:
+                # Get task from queue
+                task = self.task_queue.get(timeout=1)
+
+                if task.status == TaskStatus.CANCELLED:
+                    self.task_queue.task_done()
+                    continue
+
+                # Execute task
+                self._execute_task(task)
+                self.task_queue.task_done()
+
+            except queue.Empty:
+                continue
+            except Exception as e:
+                logger.error(f"Worker {thread_name} error: {str(e)}")
+
+        logger.info(f"Worker {thread_name} stopped")
+
+    def _execute_task(self, task: ScheduledTask) -> None:
+        """
+        Execute a scheduled task
+        执行调度的任务
+
+        Args:
+            task: Task to execute
+                  要执行的任务
+        """
+        try:
+            task.status = TaskStatus.RUNNING
+            task.started_at = datetime.now()
+
+            logger.info(f"Executing task {task.task_id}")
+
+            # Execute the task function
+            if task.timeout:
+                # Execute with timeout
+                result = self._execute_with_timeout(task.func, task.args, task.kwargs, task.timeout)
+            else:
+                result = task.func(*task.args, **task.kwargs)
+
+            # Task completed successfully
+            task.status = TaskStatus.COMPLETED
+            task.result = result
+            task.completed_at = datetime.now()
+
+            logger.info(f"Task {task.task_id} completed successfully")
+
+        except Exception as e:
+            task.error = e
+            task.completed_at = datetime.now()
+
+            # Handle retries
+            if task.retry_count < task.max_retries:
+                task.retry_count += 1
+                task.status = TaskStatus.PENDING
+                # Put back in queue for retry
+                try:
+                    self.task_queue.put(task)
+                    logger.info(
+                        f"Task {task.task_id} failed, retrying ({task.retry_count}/{task.max_retries})")
+                    return
+                except queue.Full:
+                    pass
+
+            # Max retries reached or queue full
+            task.status = TaskStatus.FAILED
+            logger.error(f"Task {task.task_id} failed permanently: {str(e)}")
+
+        finally:
+            # Move to completed tasks
+            with self.lock:
+                if task.task_id in self.active_tasks:
+                    del self.active_tasks[task.task_id]
+                self.completed_tasks[task.task_id] = task
+
+    def _execute_with_timeout(self, func: Callable, args: tuple, kwargs: Dict[str, Any], timeout: float) -> Any:
+        """
+        Execute a function with timeout
+        使用超时执行函数
+
+        Args:
+            func: Function to execute
+                 要执行的函数
+            args: Positional arguments
+                 位置参数
+            kwargs: Keyword arguments
+                   关键字参数
+            timeout: Timeout in seconds
+                    超时时间（秒）
+
+        Returns:
+            Function result
+            函数结果
+
+        Raises:
+            TimeoutError: If execution exceeds timeout
+                         如果执行超过超时时间
+        """
+        import signal
+
+        def timeout_handler(signum, frame):
+
+            raise TimeoutError(f"Function execution exceeded {timeout} seconds")
+
+        # Set up signal handler
+        old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(int(timeout))
+
+        try:
+            result = func(*args, **kwargs)
+            return result
+        finally:
+            # Restore original handler
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, old_handler)
+
+    def get_scheduler_stats(self) -> Dict[str, Any]:
+        """
+        Get scheduler statistics
+        获取调度器统计信息
+
+        Returns:
+            dict: Scheduler statistics
+                  调度器统计信息
+        """
+        with self.lock:
+            return {
+                'is_running': self.is_running,
+                'max_workers': self.max_workers,
+                'queue_size': self.task_queue.qsize(),
+                'active_tasks': len(self.active_tasks),
+                'completed_tasks': len(self.completed_tasks),
+                'total_tasks_scheduled': self.task_counter
+            }
+
+
+# Global task scheduler instance
+# 全局任务调度器实例
+task_scheduler = TaskScheduler()
+
+__all__ = [
+    'TaskPriority',
+    'TaskStatus',
+    'ScheduledTask',
+    'TaskScheduler',
+    'task_scheduler'
+]

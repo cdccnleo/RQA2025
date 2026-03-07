@@ -1,0 +1,489 @@
+# RQA2025 第一阶段基础设施配置模板
+# 基于业务流程驱动架构设计，实现基础设施的标准化配置
+
+version: "1.0.0"
+environment: "production"
+phase: "phase1_infrastructure_setup"
+timestamp: "2025-01-27"
+
+# 网络配置
+network:
+  # 网络拓扑设计
+  topology:
+    type: "layered_architecture"
+    layers:
+      - "monitoring_feedback"
+      - "trading_execution" 
+      - "risk_compliance"
+      - "strategy_decision"
+      - "model_inference"
+      - "feature_processing"
+      - "data_management"
+      - "infrastructure"
+      - "core_services"
+  
+  # 网络分段配置
+  segments:
+    - name: "public"
+      cidr: "10.0.1.0/24"
+      purpose: "外部访问"
+      services: ["api-gateway", "load-balancer"]
+    
+    - name: "application"
+      cidr: "10.0.2.0/24" 
+      purpose: "应用服务"
+      services: ["engine-service", "business-service", "infrastructure-service"]
+    
+    - name: "data"
+      cidr: "10.0.3.0/24"
+      purpose: "数据服务"
+      services: ["postgresql", "redis", "elasticsearch"]
+    
+    - name: "monitoring"
+      cidr: "10.0.4.0/24"
+      purpose: "监控服务"
+      services: ["prometheus", "grafana", "jaeger"]
+    
+    - name: "management"
+      cidr: "10.0.5.0/24"
+      purpose: "管理服务"
+      services: ["kubernetes-api", "helm", "kubectl"]
+
+  # 负载均衡器配置
+  load_balancer:
+    type: "HAProxy"
+    version: "2.6+"
+    algorithm: "round-robin"
+    health_check:
+      interval: "5s"
+      timeout: "3s"
+      retries: 3
+    ssl_termination: true
+    rate_limiting:
+      enabled: true
+      requests_per_second: 1000
+    
+  # DNS配置
+  dns:
+    primary: "8.8.8.8"
+    secondary: "8.8.4.4"
+    internal_domains:
+      - "rqa2025.internal"
+      - "trading.internal"
+      - "data.internal"
+      - "monitoring.internal"
+
+# 安全配置
+security:
+  # 防火墙规则
+  firewall:
+    default_policy: "DROP"
+    allowed_ports:
+      - port: 22
+        protocol: "tcp"
+        source: "10.0.5.0/24"
+        description: "SSH管理访问"
+      
+      - port: 80
+        protocol: "tcp"
+        source: "0.0.0.0/0"
+        description: "HTTP访问"
+      
+      - port: 443
+        protocol: "tcp"
+        source: "0.0.0.0/0"
+        description: "HTTPS访问"
+      
+      - port: 8000
+        protocol: "tcp"
+        source: "10.0.1.0/24"
+        description: "API网关"
+      
+      - port: 8001
+        protocol: "tcp"
+        source: "10.0.2.0/24"
+        description: "引擎服务"
+      
+      - port: 8002
+        protocol: "tcp"
+        source: "10.0.2.0/24"
+        description: "基础设施服务"
+      
+      - port: 8003
+        protocol: "tcp"
+        source: "10.0.2.0/24"
+        description: "业务服务"
+      
+      - port: 5432
+        protocol: "tcp"
+        source: "10.0.2.0/24"
+        description: "PostgreSQL数据库"
+      
+      - port: 6379
+        protocol: "tcp"
+        source: "10.0.2.0/24"
+        description: "Redis缓存"
+      
+      - port: 9090
+        protocol: "tcp"
+        source: "10.0.4.0/24"
+        description: "Prometheus监控"
+      
+      - port: 3000
+        protocol: "tcp"
+        source: "10.0.4.0/24"
+        description: "Grafana仪表板"
+
+  # SSH配置
+  ssh:
+    port: 22
+    protocol: 2
+    key_authentication: true
+    password_authentication: false
+    root_login: false
+    max_attempts: 3
+    idle_timeout: 300
+    
+  # VPN配置
+  vpn:
+    type: "OpenVPN"
+    port: 1194
+    protocol: "udp"
+    encryption: "AES-256-GCM"
+    authentication: "certificate"
+    
+  # 堡垒机配置
+  bastion:
+    enabled: true
+    host: "10.0.5.10"
+    port: 22
+    users: ["admin", "devops", "monitoring"]
+    access_control:
+      time_restrictions: "09:00-18:00"
+      ip_whitelist: ["10.0.5.0/24"]
+
+# 监控配置
+monitoring:
+  # Prometheus配置
+  prometheus:
+    version: "2.45+"
+    retention_days: 30
+    scrape_interval: "15s"
+    evaluation_interval: "15s"
+    global_scrape_timeout: "10s"
+    
+    targets:
+      - name: "rqa2025-engine-service"
+        url: "http://engine-service:8001/metrics"
+        interval: "15s"
+      
+      - name: "rqa2025-business-service"
+        url: "http://business-service:8003/metrics"
+        interval: "15s"
+      
+      - name: "rqa2025-infrastructure-service"
+        url: "http://infrastructure-service:8002/metrics"
+        interval: "15s"
+      
+      - name: "postgresql"
+        url: "http://postgresql:9187/metrics"
+        interval: "30s"
+      
+      - name: "redis"
+        url: "http://redis:9121/metrics"
+        interval: "30s"
+      
+      - name: "node-exporter"
+        url: "http://node-exporter:9100/metrics"
+        interval: "15s"
+
+  # Grafana配置
+  grafana:
+    version: "10.0+"
+    admin_password: "admin"
+    security:
+      allow_sign_up: false
+      allow_embedding: true
+    
+    dashboards:
+      - name: "RQA2025系统概览"
+        uid: "rqa2025-overview"
+        panels:
+          - "系统性能指标"
+          - "业务指标监控"
+          - "基础设施状态"
+          - "服务健康状态"
+      
+      - name: "业务流程监控"
+        uid: "business-process-monitoring"
+        panels:
+          - "数据采集流程"
+          - "特征处理流程"
+          - "模型推理流程"
+          - "策略决策流程"
+          - "风控检查流程"
+          - "交易执行流程"
+          - "监控反馈流程"
+
+  # 告警规则
+  alerting:
+    rules:
+      - name: "高CPU使用率"
+        condition: "cpu_usage > 80"
+        duration: "5m"
+        severity: "warning"
+        
+      - name: "高内存使用率"
+        condition: "memory_usage > 85"
+        duration: "5m"
+        severity: "warning"
+        
+      - name: "磁盘空间不足"
+        condition: "disk_usage > 90"
+        duration: "5m"
+        severity: "critical"
+        
+      - name: "服务不可用"
+        condition: "up == 0"
+        duration: "1m"
+        severity: "critical"
+        
+      - name: "API响应时间过长"
+        condition: "http_request_duration_seconds > 1"
+        duration: "5m"
+        severity: "warning"
+        
+      - name: "数据库连接失败"
+        condition: "pg_up == 0"
+        duration: "1m"
+        severity: "critical"
+        
+      - name: "Redis连接失败"
+        condition: "redis_up == 0"
+        duration: "1m"
+        severity: "critical"
+
+# 日志配置
+logging:
+  # 日志级别
+  level: "INFO"
+  
+  # 日志轮转
+  rotation:
+    max_size: "100MB"
+    max_files: 10
+    max_age: "30d"
+  
+  # 日志格式
+  format: "json"
+  
+  # 日志输出
+  outputs:
+    - type: "file"
+      path: "/var/log/rqa2025"
+    
+    - type: "elasticsearch"
+      hosts: ["elasticsearch:9200"]
+      index: "rqa2025-logs"
+    
+    - type: "stdout"
+      enabled: true
+
+# 备份配置
+backup:
+  # 数据库备份
+  database:
+    postgresql:
+      schedule: "0 2 * * *"  # 每天凌晨2点
+      retention: "30d"
+      compression: true
+      encryption: true
+      
+    redis:
+      schedule: "0 3 * * *"  # 每天凌晨3点
+      retention: "7d"
+      compression: true
+      
+  # 配置文件备份
+  config:
+    schedule: "0 4 * * *"  # 每天凌晨4点
+    retention: "90d"
+    compression: true
+    
+  # 应用数据备份
+  application:
+    schedule: "0 5 * * *"  # 每天凌晨5点
+    retention: "7d"
+    compression: true
+
+# 性能调优
+performance:
+  # 系统参数调优
+  system:
+    # 文件描述符限制
+    file_descriptors:
+      soft_limit: 65536
+      hard_limit: 131072
+    
+    # 进程限制
+    process_limits:
+      max_processes: 32768
+      max_open_files: 65536
+    
+    # 内存调优
+    memory:
+      swappiness: 10
+      vm_overcommit_memory: 1
+      
+  # 网络调优
+  network:
+    # TCP参数
+    tcp:
+      keepalive_time: 300
+      keepalive_intvl: 75
+      keepalive_probes: 9
+      max_syn_backlog: 8192
+      somaxconn: 65535
+    
+    # 网络缓冲区
+    buffers:
+      rmem_default: 262144
+      rmem_max: 16777216
+      wmem_default: 262144
+      wmem_max: 16777216
+
+# 容器配置
+container:
+  # Docker配置
+  docker:
+    daemon:
+      log_driver: "json-file"
+      log_opts:
+        max-size: "100m"
+        max-file: "3"
+      storage_driver: "overlay2"
+      default_ulimits:
+        nofile:
+          soft: 65536
+          hard: 131072
+      
+  # Kubernetes配置
+  kubernetes:
+    version: "1.24+"
+    api_server:
+      max_requests_inflight: 4000
+      max_mutating_requests_inflight: 2000
+    scheduler:
+      max_concurrent_schedulable: 100
+    kubelet:
+      max_pods: 110
+      max_open_files: 65536
+
+# 健康检查配置
+health_check:
+  # 服务健康检查
+  services:
+    - name: "api-gateway"
+      endpoint: "/health"
+      interval: "30s"
+      timeout: "10s"
+      retries: 3
+      
+    - name: "engine-service"
+      endpoint: "/health"
+      interval: "30s"
+      timeout: "10s"
+      retries: 3
+      
+    - name: "business-service"
+      endpoint: "/health"
+      interval: "30s"
+      timeout: "10s"
+      retries: 3
+      
+    - name: "infrastructure-service"
+      endpoint: "/health"
+      interval: "30s"
+      timeout: "10s"
+      retries: 3
+      
+    - name: "postgresql"
+      endpoint: "/health"
+      interval: "60s"
+      timeout: "15s"
+      retries: 3
+      
+    - name: "redis"
+      endpoint: "/health"
+      interval: "60s"
+      timeout: "15s"
+      retries: 3
+      
+    - name: "elasticsearch"
+      endpoint: "/_cluster/health"
+      interval: "60s"
+      timeout: "15s"
+      retries: 3
+
+# 部署配置
+deployment:
+  # 蓝绿部署配置
+  blue_green:
+    enabled: true
+    switchover_time: "300s"
+    rollback_threshold: 0.95
+    
+  # 滚动更新配置
+  rolling_update:
+    max_surge: 1
+    max_unavailable: 0
+    min_ready_seconds: 60
+    
+  # 自动扩缩容配置
+  autoscaling:
+    enabled: true
+    min_replicas: 3
+    max_replicas: 10
+    target_cpu_utilization: 70
+    target_memory_utilization: 80
+
+# 合规配置
+compliance:
+  # 数据保护
+  data_protection:
+    encryption_at_rest: true
+    encryption_in_transit: true
+    key_rotation: "90d"
+    
+  # 访问控制
+  access_control:
+    rbac_enabled: true
+    audit_logging: true
+    session_timeout: "8h"
+    
+  # 安全扫描
+  security_scanning:
+    vulnerability_scanning: true
+    container_scanning: true
+    dependency_scanning: true
+    schedule: "0 1 * * 0"  # 每周日凌晨1点
+
+# 灾难恢复
+disaster_recovery:
+  # RTO目标
+  rto: "4h"
+  
+  # RPO目标
+  rpo: "1h"
+  
+  # 备份策略
+  backup_strategy:
+    full_backup: "weekly"
+    incremental_backup: "daily"
+    archive_backup: "monthly"
+    
+  # 恢复测试
+  recovery_testing:
+    schedule: "monthly"
+    automated: true
+    validation: true

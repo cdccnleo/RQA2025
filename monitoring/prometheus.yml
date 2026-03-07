@@ -1,0 +1,73 @@
+# RQA2025 Prometheus监控配置
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+rule_files:
+  - "rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # RQA2025 主应用服务
+  - job_name: 'rqa2025-app'
+    static_configs:
+      - targets: ['rqa2025-app:8000']
+        labels:
+          service: 'main-app'
+          environment: 'production'
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # RQA2025 微服务监控
+  - job_name: 'rqa2025-services'
+    static_configs:
+      - targets:
+          - 'strategy-service:8000'
+          - 'trading-service:8000'
+          - 'risk-service:8000'
+          - 'data-service:8000'
+          - 'data-collection-orchestrator:8000'
+        labels:
+          component: 'application'
+          environment: 'production'
+    metrics_path: '/metrics'
+    scrape_interval: 20s
+    scrape_timeout: 10s
+
+  # 基础设施监控
+  - job_name: 'rqa2025-infrastructure'
+    static_configs:
+      - targets:
+          - 'postgres:5432'
+          - 'redis:6379'
+          - 'minio:9000'
+        labels:
+          component: 'infrastructure'
+          environment: 'production'
+    metrics_path: '/metrics'
+
+  # Prometheus自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          environment: 'production'
+
+  # 系统监控 - Node Exporter (如果存在)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets:
+          - 'node-exporter:9100'
+        labels:
+          component: 'system'
+          environment: 'production'
+    scrape_interval: 30s

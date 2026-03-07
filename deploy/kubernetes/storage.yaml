@@ -1,0 +1,126 @@
+# 存储类
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rqa2025-storage
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp3
+  iops: "3000"
+  throughput: "125"
+---
+# 数据持久化卷
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-data-pvc
+  namespace: rqa2025
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: rqa2025-storage
+  resources:
+    requests:
+      storage: 100Gi
+---
+# 缓存持久化卷
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-cache-pvc
+  namespace: rqa2025
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: rqa2025-storage
+  resources:
+    requests:
+      storage: 50Gi
+---
+# 日志持久化卷
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-logs-pvc
+  namespace: rqa2025
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: rqa2025-storage
+  resources:
+    requests:
+      storage: 20Gi
+---
+# 模型持久化卷
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rqa2025-models-pvc
+  namespace: rqa2025
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: rqa2025-storage
+  resources:
+    requests:
+      storage: 200Gi
+---
+# 配置映射
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rqa2025-config
+  namespace: rqa2025
+data:
+  app_config.yaml: |
+    # 应用配置
+    app:
+      name: "RQA2025"
+      version: "1.0.0"
+      environment: "production"
+    
+    # 日志配置
+    logging:
+      level: "INFO"
+      format: "json"
+      handlers:
+        - type: "file"
+          filename: "/app/logs/app.log"
+          max_bytes: 10485760
+          backup_count: 5
+        - type: "console"
+    
+    # 数据库配置
+    database:
+      type: "postgresql"
+      host: "database-service"
+      port: 5432
+      name: "rqa2025"
+      pool_size: 10
+      max_overflow: 20
+    
+    # Redis配置
+    redis:
+      host: "redis-service"
+      port: 6379
+      db: 0
+      password: ""
+    
+    # 特征工程配置
+    features:
+      cache_enabled: true
+      cache_ttl: 3600
+      parallel_processing: true
+      max_workers: 4
+    
+    # 数据服务配置
+    data:
+      batch_size: 1000
+      timeout: 30
+      retry_attempts: 3
+    
+    # 模型服务配置
+    models:
+      model_storage_path: "/app/models"
+      max_model_size: "2GB"
+      gpu_enabled: false 

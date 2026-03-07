@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RQA2025 数据湖管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="common/websocket_manager.js"></script>
+    <script src="common/ui_components.js"></script>
+    <script src="common/toast.js"></script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .storage-tier {
+            border-left: 4px solid;
+        }
+        .storage-tier.hot { border-color: #ef4444; }
+        .storage-tier.warm { border-color: #f59e0b; }
+        .storage-tier.cold { border-color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-600">RQA2025</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">数据湖管理</span>
+                    <button onclick="refreshData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        <i class="fas fa-sync-alt mr-2"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-water text-blue-600 mr-3"></i>
+                数据湖管理
+            </h1>
+            <p class="text-gray-600">数据湖存储状态、数据集管理和元数据查看</p>
+        </div>
+
+        <!-- Storage Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-database text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">数据集总数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="total-datasets">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-hdd text-purple-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">总存储容量</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="total-storage">--</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-file text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">文件总数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="total-files">0</dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-chart-line text-yellow-500 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <dt class="text-sm font-medium text-gray-500">总记录数</dt>
+                        <dd class="text-2xl font-semibold text-gray-900" id="total-rows">0</dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Storage Tiers -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 storage-tier hot card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">热数据层</h3>
+                    <i class="fas fa-fire text-red-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">数据集</span>
+                        <span class="font-semibold" id="hot-datasets">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">存储容量</span>
+                        <span class="font-semibold" id="hot-storage">--</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">访问频率</span>
+                        <span class="font-semibold" id="hot-access">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 storage-tier warm card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">温数据层</h3>
+                    <i class="fas fa-sun text-yellow-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">数据集</span>
+                        <span class="font-semibold" id="warm-datasets">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">存储容量</span>
+                        <span class="font-semibold" id="warm-storage">--</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">访问频率</span>
+                        <span class="font-semibold" id="warm-access">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 storage-tier cold card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">冷数据层</h3>
+                    <i class="fas fa-snowflake text-blue-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">数据集</span>
+                        <span class="font-semibold" id="cold-datasets">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">存储容量</span>
+                        <span class="font-semibold" id="cold-storage">--</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">访问频率</span>
+                        <span class="font-semibold" id="cold-access">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset List -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">数据集列表</h3>
+                    <div class="flex space-x-2">
+                        <input type="text" id="datasetSearch" placeholder="搜索数据集..." 
+                               onkeyup="searchDatasets()" 
+                               class="border border-gray-300 rounded-lg px-4 py-2 text-sm">
+                        <select id="tierFilter" onchange="filterDatasets()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="all">全部层级</option>
+                            <option value="hot">热数据</option>
+                            <option value="warm">温数据</option>
+                            <option value="cold">冷数据</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">数据集名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">存储层级</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">分区策略</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">文件数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">记录数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">存储容量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">最后更新</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="datasetsTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Storage Distribution Chart -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">存储分布</h3>
+            </div>
+            <div class="p-6">
+                <canvas id="storageDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataset Details Modal -->
+    <div id="datasetModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">数据集详情</h3>
+                    <button onclick="closeDatasetModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="datasetDetails" class="space-y-4">
+                    <!-- 详情内容将通过JavaScript填充 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let storageDistributionChart;
+        let allDatasets = [];
+
+        function getApiBaseUrl(endpoint = '') {
+            const baseUrl = '/api/v1';
+            return baseUrl + endpoint;
+        }
+
+        async function loadDataLakeData() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/lake/stats'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const data = await response.json();
+                updateStorageStats(data);
+            } catch (error) {
+                console.error('加载数据湖数据失败:', error);
+            }
+        }
+
+        async function loadDatasets() {
+            try {
+                const response = await fetch(getApiBaseUrl('/data/lake/datasets'));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const result = await response.json();
+                allDatasets = result.datasets || [];
+                renderDatasetsTable();
+                updateStorageChart();
+            } catch (error) {
+                console.error('加载数据集列表失败:', error);
+            }
+        }
+
+        function updateStorageStats(data) {
+            const stats = data.stats || {};
+            const tiers = data.tiers || {};
+
+            document.getElementById('total-datasets').textContent = stats.total_datasets || 0;
+            document.getElementById('total-storage').textContent = formatBytes(stats.total_storage || 0);
+            document.getElementById('total-files').textContent = stats.total_files || 0;
+            document.getElementById('total-rows').textContent = (stats.total_rows || 0).toLocaleString();
+
+            // 热数据层
+            const hot = tiers.hot || {};
+            document.getElementById('hot-datasets').textContent = hot.datasets || 0;
+            document.getElementById('hot-storage').textContent = formatBytes(hot.storage || 0);
+            document.getElementById('hot-access').textContent = hot.access_frequency || '--';
+
+            // 温数据层
+            const warm = tiers.warm || {};
+            document.getElementById('warm-datasets').textContent = warm.datasets || 0;
+            document.getElementById('warm-storage').textContent = formatBytes(warm.storage || 0);
+            document.getElementById('warm-access').textContent = warm.access_frequency || '--';
+
+            // 冷数据层
+            const cold = tiers.cold || {};
+            document.getElementById('cold-datasets').textContent = cold.datasets || 0;
+            document.getElementById('cold-storage').textContent = formatBytes(cold.storage || 0);
+            document.getElementById('cold-access').textContent = cold.access_frequency || '--';
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function renderDatasetsTable() {
+            const tbody = document.getElementById('datasetsTableBody');
+            const searchTerm = document.getElementById('datasetSearch').value.toLowerCase();
+            const tierFilter = document.getElementById('tierFilter').value;
+
+            let filtered = allDatasets;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(d => 
+                    d.name.toLowerCase().includes(searchTerm) ||
+                    (d.description && d.description.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (tierFilter !== 'all') {
+                filtered = filtered.filter(d => d.tier === tierFilter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无数据集</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(dataset => {
+                const tierColor = {
+                    'hot': 'bg-red-100 text-red-800',
+                    'warm': 'bg-yellow-100 text-yellow-800',
+                    'cold': 'bg-blue-100 text-blue-800'
+                }[dataset.tier] || 'bg-gray-100 text-gray-800';
+
+                const tierText = {
+                    'hot': '热数据',
+                    'warm': '温数据',
+                    'cold': '冷数据'
+                }[dataset.tier] || dataset.tier;
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">${dataset.name}</div>
+                            <div class="text-sm text-gray-500">${dataset.description || ''}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${tierColor}">
+                                ${tierText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${dataset.partition_strategy || '日期分区'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${dataset.file_count || 0}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${(dataset.total_rows || 0).toLocaleString()}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${formatBytes(dataset.storage_size || 0)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${dataset.last_updated ? new Date(dataset.last_updated * 1000).toLocaleDateString('zh-CN') : '--'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="viewDatasetDetails('${dataset.name}')" 
+                                class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="queryDataset('${dataset.name}')" 
+                                class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStorageChart() {
+            if (!storageDistributionChart) return;
+
+            const hot = allDatasets.filter(d => d.tier === 'hot').reduce((sum, d) => sum + (d.storage_size || 0), 0);
+            const warm = allDatasets.filter(d => d.tier === 'warm').reduce((sum, d) => sum + (d.storage_size || 0), 0);
+            const cold = allDatasets.filter(d => d.tier === 'cold').reduce((sum, d) => sum + (d.storage_size || 0), 0);
+
+            storageDistributionChart.data.datasets[0].data = [hot, warm, cold];
+            storageDistributionChart.update();
+        }
+
+        function searchDatasets() {
+            renderDatasetsTable();
+        }
+
+        function filterDatasets() {
+            renderDatasetsTable();
+        }
+
+        async function viewDatasetDetails(datasetName) {
+            try {
+                const response = await fetch(getApiBaseUrl(`/data/lake/datasets/${datasetName}`));
+                if (!response.ok) throw new Error('加载失败');
+                
+                const dataset = await response.json();
+                
+                const modal = document.getElementById('datasetModal');
+                const details = document.getElementById('datasetDetails');
+                
+                details.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">基本信息</h4>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div><span class="text-gray-600">数据集名称:</span> <span class="font-medium">${dataset.name}</span></div>
+                            <div><span class="text-gray-600">存储层级:</span> <span class="font-medium">${dataset.tier || '--'}</span></div>
+                            <div><span class="text-gray-600">分区策略:</span> <span class="font-medium">${dataset.partition_strategy || '--'}</span></div>
+                            <div><span class="text-gray-600">压缩格式:</span> <span class="font-medium">${dataset.compression || '--'}</span></div>
+                            <div><span class="text-gray-600">文件数:</span> <span class="font-medium">${dataset.file_count || 0}</span></div>
+                            <div><span class="text-gray-600">总记录数:</span> <span class="font-medium">${(dataset.total_rows || 0).toLocaleString()}</span></div>
+                            <div><span class="text-gray-600">存储容量:</span> <span class="font-medium">${formatBytes(dataset.storage_size || 0)}</span></div>
+                            <div><span class="text-gray-600">最后更新:</span> <span class="font-medium">${dataset.last_updated ? new Date(dataset.last_updated * 1000).toLocaleString('zh-CN') : '--'}</span></div>
+                        </div>
+                    </div>
+                    ${dataset.partitions ? `
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">分区信息</h4>
+                        <div class="text-sm text-gray-600">
+                            ${Object.entries(dataset.partitions).map(([key, value]) => 
+                                `<div>${key}: ${Array.isArray(value) ? value.length : value} 个文件</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${dataset.metadata ? `
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">元数据</h4>
+                        <pre class="bg-gray-50 p-4 rounded text-xs overflow-auto">${JSON.stringify(dataset.metadata, null, 2)}</pre>
+                    </div>
+                    ` : ''}
+                `;
+                
+                modal.classList.remove('hidden');
+            } catch (error) {
+                console.error('加载数据集详情失败:', error);
+                alert('加载详情失败: ' + error.message);
+            }
+        }
+
+        function closeDatasetModal() {
+            document.getElementById('datasetModal').classList.add('hidden');
+        }
+
+        function queryDataset(datasetName) {
+            showInfo('数据查询功能开发中');
+        }
+
+        function refreshData() {
+            loadDataLakeData();
+            loadDatasets();
+        }
+
+        function initCharts() {
+            const ctx = document.getElementById('storageDistributionChart').getContext('2d');
+            storageDistributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['热数据层', '温数据层', '冷数据层'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(59, 130, 246, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+        }
+
+        // Initialize
+        // WebSocket连接管理
+        let wsDataLake = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadDataLakeData();
+            loadDatasets();
+            // 优先使用WebSocket实时更新，失败则使用轮询
+            try {
+                if (typeof connectDataLakeWebSocket === 'function') {
+                    wsDataLake = connectDataLakeWebSocket(
+                        (data) => {
+                            if (data.datasets) {
+                                loadDatasets();
+                            }
+                            if (data.metrics) {
+                                loadDataLakeData();
+                            }
+                        },
+                        () => {
+                            refreshData();
+                        }
+                    );
+                } else {
+                    setInterval(refreshData, 15000); // 每15秒刷新
+                }
+            } catch (error) {
+                console.warn('WebSocket连接失败，使用轮询模式:', error);
+                setInterval(refreshData, 15000); // 每15秒刷新
+            }
+        });
+    </script>
+</body>
+</html>
+

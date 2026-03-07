@@ -1,0 +1,91 @@
+{
+  "rules": [
+    {
+      "rule_id": "cpu_usage_statistical",
+      "name": "CPU使用率异常检测",
+      "description": "基于统计方法的CPU使用率异常检测",
+      "metric_name": "system.cpu.usage",
+      "detection_method": "statistical",
+      "severity": "high",
+      "parameters": {
+        "window_size": 100,
+        "method": "zscore",
+        "threshold": 3.0
+      },
+      "enabled": true,
+      "cooldown_minutes": 5,
+      "confidence_threshold": 0.8
+    },
+    {
+      "rule_id": "memory_usage_ml",
+      "name": "内存使用率机器学习检测",
+      "description": "基于孤立森林的内存使用率异常检测",
+      "metric_name": "system.memory.usage",
+      "detection_method": "isolation_forest",
+      "severity": "critical",
+      "parameters": {
+        "window_size": 1000,
+        "contamination": 0.1
+      },
+      "enabled": true,
+      "cooldown_minutes": 10,
+      "confidence_threshold": 0.7
+    },
+    {
+      "rule_id": "latency_statistical",
+      "name": "响应延迟统计检测",
+      "description": "基于IQR方法的响应延迟异常检测",
+      "metric_name": "trading.response_time",
+      "detection_method": "statistical",
+      "severity": "medium",
+      "parameters": {
+        "window_size": 200,
+        "method": "iqr",
+        "threshold": 1.5
+      },
+      "enabled": true,
+      "cooldown_minutes": 3,
+      "confidence_threshold": 0.85
+    },
+    {
+      "rule_id": "order_volume_anomaly",
+      "name": "订单量异常检测",
+      "description": "交易订单量异常检测",
+      "metric_name": "trading.order_volume",
+      "detection_method": "statistical",
+      "severity": "high",
+      "parameters": {
+        "window_size": 50,
+        "method": "zscore",
+        "threshold": 2.5
+      },
+      "enabled": true,
+      "cooldown_minutes": 2,
+      "confidence_threshold": 0.9
+    },
+    {
+      "rule_id": "pnl_change_detection",
+      "name": "盈亏变化检测",
+      "description": "策略盈亏异常变化检测",
+      "metric_name": "trading.strategy_pnl",
+      "detection_method": "statistical",
+      "severity": "critical",
+      "parameters": {
+        "window_size": 100,
+        "method": "zscore",
+        "threshold": 4.0
+      },
+      "enabled": true,
+      "cooldown_minutes": 15,
+      "confidence_threshold": 0.95
+    }
+  ],
+  "suppression_rules": [
+    {
+      "name": "similar_alert_suppression",
+      "description": "抑制相似告警",
+      "time_window_minutes": 5,
+      "max_similar_alerts": 3
+    }
+  ]
+}

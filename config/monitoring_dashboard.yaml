@@ -1,0 +1,268 @@
+# 监控仪表板配置
+# 定义质量监控仪表板的布局和指标
+
+dashboard:
+  title: "RQA2025 质量监控仪表板"
+  refresh_interval: 300  # 刷新间隔(秒)
+  theme: "dark"
+
+  # 仪表板布局
+  layout:
+    - type: "row"
+      height: 2
+      widgets:
+        - type: "metric"
+          title: "总体覆盖率"
+          metric: "coverage.total"
+          format: "percentage"
+          thresholds:
+            - value: 80
+              color: "red"
+            - value: 85
+              color: "yellow"
+            - value: 90
+              color: "green"
+
+        - type: "metric"
+          title: "测试通过率"
+          metric: "tests.pass_rate"
+          format: "percentage"
+          thresholds:
+            - value: 90
+              color: "red"
+            - value: 95
+              color: "yellow"
+            - value: 99
+              color: "green"
+
+        - type: "metric"
+          title: "构建状态"
+          metric: "ci.status"
+          format: "status"
+
+        - type: "metric"
+          title: "告警数量"
+          metric: "alerts.active_count"
+          thresholds:
+            - value: 0
+              color: "green"
+            - value: 5
+              color: "yellow"
+            - value: 10
+              color: "red"
+
+    - type: "row"
+      height: 3
+      widgets:
+        - type: "chart"
+          title: "各层覆盖率趋势"
+          chart_type: "line"
+          metrics:
+            - "coverage.infrastructure"
+            - "coverage.data"
+            - "coverage.strategy"
+            - "coverage.risk"
+            - "coverage.ml"
+            - "coverage.async_processor"
+          time_range: "30d"
+
+        - type: "chart"
+          title: "测试执行时间趋势"
+          chart_type: "area"
+          metrics:
+            - "performance.unit_test_time"
+            - "performance.integration_test_time"
+            - "performance.e2e_test_time"
+          time_range: "7d"
+
+    - type: "row"
+      height: 2
+      widgets:
+        - type: "table"
+          title: "最近告警"
+          data_source: "alerts.recent"
+          columns:
+            - name: "时间"
+              field: "timestamp"
+              type: "datetime"
+            - name: "严重程度"
+              field: "severity"
+              type: "badge"
+            - name: "消息"
+              field: "message"
+              type: "text"
+            - name: "状态"
+              field: "status"
+              type: "status"
+
+        - type: "list"
+          title: "质量建议"
+          data_source: "recommendations.active"
+          item_template: "{priority}: {message}"
+
+    - type: "row"
+      height: 2
+      widgets:
+        - type: "heatmap"
+          title: "代码质量热力图"
+          data_source: "quality.complexity_heatmap"
+          x_axis: "file"
+          y_axis: "complexity"
+
+        - type: "chart"
+          title: "安全漏洞趋势"
+          chart_type: "bar"
+          metrics:
+            - "security.high_severity"
+            - "security.medium_severity"
+            - "security.low_severity"
+          time_range: "90d"
+
+# 告警面板配置
+alerts_panel:
+  enabled: true
+  position: "top-right"
+  max_alerts: 10
+
+  # 告警过滤器
+  filters:
+    - severity: ["high", "medium"]
+    - status: ["active"]
+    - age_hours: 24
+
+  # 告警显示模板
+  templates:
+    high_severity: "🚨 {message}"
+    medium_severity: "⚠️ {message}"
+    low_severity: "ℹ️ {message}"
+
+# 通知配置
+notifications:
+  enabled: true
+
+  # 桌面通知
+  desktop:
+    enabled: true
+    show_on_alert: true
+
+  # 浏览器通知
+  browser:
+    enabled: true
+    require_permission: true
+
+  # 声音通知
+  sound:
+    enabled: true
+    high_severity_sound: "alert_high.mp3"
+    medium_severity_sound: "alert_medium.mp3"
+    low_severity_sound: "alert_low.mp3"
+
+# 数据源配置
+data_sources:
+  # 覆盖率数据源
+  coverage:
+    type: "codecov_api"
+    url: "https://codecov.io/api/gh/${REPO_OWNER}/${REPO_NAME}"
+    token: "${CODECOV_TOKEN}"
+    refresh_interval: 3600
+
+  # CI/CD数据源
+  ci_cd:
+    type: "github_api"
+    url: "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}"
+    token: "${GITHUB_TOKEN}"
+    refresh_interval: 300
+
+  # 测试结果数据源
+  tests:
+    type: "filesystem"
+    path: "test_reports/"
+    pattern: "*.xml"
+    refresh_interval: 60
+
+  # 告警数据源
+  alerts:
+    type: "filesystem"
+    path: "alerts/"
+    pattern: "*.json"
+    refresh_interval: 30
+
+# 自定义指标配置
+custom_metrics:
+  # 代码质量指标
+  code_quality:
+    - name: "平均复杂度"
+      query: "avg(quality.complexity)"
+      unit: "score"
+
+    - name: "可维护性指数"
+      query: "avg(quality.maintainability)"
+      unit: "index"
+
+    - name: "重复代码率"
+      query: "quality.duplication_rate"
+      unit: "percentage"
+
+  # 性能指标
+  performance:
+    - name: "测试执行时间"
+      query: "avg(performance.test_time)"
+      unit: "seconds"
+
+    - name: "内存使用率"
+      query: "performance.memory_usage"
+      unit: "percentage"
+
+    - name: "CPU使用率"
+      query: "performance.cpu_usage"
+      unit: "percentage"
+
+  # 安全指标
+  security:
+    - name: "高危漏洞数"
+      query: "count(security.vulnerabilities[severity='high'])"
+      unit: "count"
+
+    - name: "安全评分"
+      query: "security.overall_score"
+      unit: "score"
+
+# 导出配置
+export:
+  enabled: true
+  formats: ["pdf", "png", "json"]
+  schedule: "0 8 * * 1"  # 每周一早上8点导出
+  destination: "reports/dashboard_exports/"
+
+# 集成配置
+integrations:
+  # Slack集成
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#qa-dashboard"
+    post_summary: true
+    post_on_change: true
+
+  # Teams集成
+  teams:
+    enabled: true
+    webhook_url: "${TEAMS_WEBHOOK_URL}"
+    post_summary: true
+    post_on_alert: true
+
+  # Jira集成
+  jira:
+    enabled: false  # 默认关闭
+    url: "${JIRA_URL}"
+    username: "${JIRA_USERNAME}"
+    password: "${JIRA_PASSWORD}"
+    project_key: "QA"
+    create_issues_for_alerts: true
+
+  # Grafana集成
+  grafana:
+    enabled: false  # 默认关闭
+    url: "${GRAFANA_URL}"
+    api_key: "${GRAFANA_API_KEY}"
+    dashboard_uid: "rqa2025-qa-dashboard"

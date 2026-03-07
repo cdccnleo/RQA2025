@@ -1,0 +1,294 @@
+[
+  {
+    "id": "akshare_stock_a",
+    "name": "AKShare A股数据",
+    "type": "股票数据",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "1次/小时",
+    "enabled": true,
+    "config": {
+      "akshare_category": "A股",
+      "default_days": 30,
+      "adjust_type": "qfq",
+      "enable_incremental": true,
+      "description": "AKShare A股数据采集接口，支持日线行情、股票基础信息等。配置已通过编辑功能更新。",
+      "akshare_function": "stock_zh_a_spot_em"
+    },
+    "last_test": "2026-02-09 15:58:05",
+    "status": "连接失败"
+  },
+  {
+    "id": "akshare_stock_hk",
+    "name": "AKShare 港股数据",
+    "type": "股票数据",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-01-01 11:25:30",
+    "status": "连接超时",
+    "config": {
+      "akshare_category": "港股",
+      "description": "AKShare港股数据采集接口",
+      "akshare_function": "stock_hk_spot_em"
+    }
+  },
+  {
+    "id": "akshare_index",
+    "name": "AKShare 指数数据",
+    "type": "指数数据",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "config": {
+      "index_types": [
+        "上证指数",
+        "深证指数",
+        "创业板指数"
+      ],
+      "akshare_function": "stock_zh_index_spot_em",
+      "description": "AKShare指数实时数据采集接口，支持主要市场指数"
+    },
+    "last_test": "2026-02-09 15:58:06",
+    "status": "连接失败"
+  },
+  {
+    "id": "akshare_bond",
+    "name": "AKShare 债券数据",
+    "type": "债券数据",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-02-09 15:58:07",
+    "status": "连接失败",
+    "config": {
+      "bond_types": [
+        "国债",
+        "企业债",
+        "可转债"
+      ],
+      "description": "AKShare债券数据采集接口",
+      "akshare_function": "bond_zh_us_rate"
+    }
+  },
+  {
+    "id": "akshare_futures",
+    "name": "AKShare 期货数据",
+    "type": "期货数据",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2025-12-31 22:55:49",
+    "status": "HTTP 200 - 连接正常",
+    "config": {
+      "futures_types": [
+        "商品期货",
+        "金融期货"
+      ],
+      "description": "AKShare期货数据采集接口",
+      "akshare_function": "futures_zh_daily_sina"
+    }
+  },
+  {
+    "id": "akshare_forex",
+    "name": "AKShare 外汇数据",
+    "type": "外汇数据",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-02-09 15:58:09",
+    "status": "连接失败",
+    "config": {
+      "forex_pairs": [
+        "USDCNY",
+        "EURCNY",
+        "GBPCNY"
+      ],
+      "description": "AKShare外汇数据采集接口",
+      "akshare_function": "currency_boc_safe"
+    }
+  },
+  {
+    "id": "akshare_macro",
+    "name": "AKShare 宏观经济数据",
+    "type": "宏观经济",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "config": {
+      "macro_indicators": [
+        "GDP",
+        "CPI",
+        "PPI",
+        "PMI",
+        "M1",
+        "M2",
+        "社会融资规模"
+      ],
+      "macro_regions": [
+        "china",
+        "usa",
+        "euro",
+        "japan"
+      ],
+      "description": "AKShare宏观经济数据采集接口，支持中国、美国、欧元区、日本等主要经济体的宏观经济指标。中国：GDP(季频)、CPI/PPI/PMI(月频)、社会融资规模(月频)、M1/M2货币供应(月频)。美国：非农就业(月频)、CPI(月频)、美联储利率(不定期)。欧元区：GDP(季频)。日本：CPI(月频)",
+      "akshare_function": "macro_china_gdp_yearly"
+    },
+    "last_test": "2025-12-31 22:57:44",
+    "status": "HTTP 200 - 连接正常"
+  },
+  {
+    "id": "akshare_macro_china",
+    "name": "AKShare 中国宏观经济数据",
+    "type": "宏观经济",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-02-09 15:58:12",
+    "status": "连接失败",
+    "config": {
+      "macro_region": "china",
+      "macro_indicators": [
+        "GDP",
+        "CPI",
+        "PPI",
+        "PMI",
+        "M1",
+        "M2",
+        "社会融资规模"
+      ],
+      "description": "AKShare中国宏观经济数据采集接口，支持GDP、CPI、PPI、PMI、社会融资规模、M1/M2货币供应等指标",
+      "akshare_function": "macro_china_gdp_yearly"
+    }
+  },
+  {
+    "id": "akshare_macro_usa",
+    "name": "AKShare 美国宏观经济数据",
+    "type": "宏观经济",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2025-12-31 22:56:21",
+    "status": "HTTP 200 - 连接正常",
+    "config": {
+      "macro_region": "usa",
+      "macro_indicators": [
+        "非农就业",
+        "CPI",
+        "美联储利率"
+      ],
+      "description": "AKShare美国宏观经济数据采集接口，支持非农就业、CPI、美联储利率等指标",
+      "akshare_function": "macro_usa_gdp_monthly"
+    }
+  },
+  {
+    "id": "akshare_news_js",
+    "name": "AKShare 金十新闻",
+    "type": "财经新闻",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "config": {
+      "news_source": "futures_news_shmet",
+      "update_frequency": "实时",
+      "delay": "1-3分钟",
+      "description": "AKShare期货财经新闻数据采集接口，包含实时财经资讯",
+      "akshare_function": "futures_news_shmet"
+    },
+    "last_test": "2026-02-09 15:58:22",
+    "status": "连接失败"
+  },
+  {
+    "id": "akshare_news_sina",
+    "name": "AKShare 新浪财经新闻",
+    "type": "财经新闻",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-02-09 15:58:22",
+    "status": "连接失败",
+    "config": {
+      "news_source": "news_economic_baidu",
+      "update_frequency": "近实时",
+      "delay": "2-5分钟",
+      "description": "AKShare百度财经新闻数据采集接口，包含宏观经济新闻",
+      "akshare_function": "news_economic_baidu"
+    }
+  },
+  {
+    "id": "akshare_news_wallstreet",
+    "name": "AKShare 华尔街见闻",
+    "type": "财经新闻",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-01-01 12:48:35",
+    "status": "HTTP 200 - 连接正常",
+    "config": {
+      "news_source": "news_economic_baidu",
+      "update_frequency": "日频",
+      "delay": "1天",
+      "description": "AKShare百度财经新闻数据采集接口，包含宏观经济资讯",
+      "akshare_function": "news_economic_baidu"
+    }
+  },
+  {
+    "id": "akshare_news_eastmoney",
+    "name": "AKShare 东方财富新闻",
+    "type": "财经新闻",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": null,
+    "status": "未测试",
+    "config": {
+      "news_source": "futures_news_shmet",
+      "update_frequency": "实时",
+      "delay": "1-3分钟",
+      "description": "AKShare期货财经新闻数据采集接口，包含实时财经资讯",
+      "akshare_function": "futures_news_shmet"
+    }
+  },
+  {
+    "id": "akshare_news_all",
+    "name": "AKShare 全量新闻数据",
+    "type": "财经新闻",
+    "url": "https://akshare.akfamily.xyz",
+    "rate_limit": "100次/分钟",
+    "enabled": true,
+    "last_test": "2026-02-09 15:58:22",
+    "status": "连接失败",
+    "config": {
+      "news_source": "multiple_sources",
+      "description": "AKShare多源财经新闻数据采集接口，支持百度经济新闻等多个新闻源",
+      "akshare_function": "news_economic_baidu"
+    }
+  },
+  {
+    "id": "financial_reports_a",
+    "name": "A股财务报表数据",
+    "type": "财务报告",
+    "url": "https://financial-reports-api.com",
+    "rate_limit": "50次/分钟",
+    "enabled": true,
+    "last_test": "2026-02-09 15:58:10",
+    "status": "连接失败",
+    "config": {
+      "report_types": [
+        "季报",
+        "半年报",
+        "年报"
+      ],
+      "data_fields": [
+        "资产负债表",
+        "利润表",
+        "现金流量表"
+      ],
+      "companies": [
+        "全部A股",
+        "重点公司"
+      ],
+      "update_mode": "增量更新",
+      "description": "A股公司财务报表数据，包含三大财务报表，支持历史数据回溯。量化交易核心数据源，用于价值投资和多因子模型。"
+    }
+  }
+]

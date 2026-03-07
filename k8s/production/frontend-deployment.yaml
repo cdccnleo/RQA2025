@@ -1,0 +1,211 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqa2025-frontend
+  namespace: rqa2025-app
+  labels:
+    app: rqa2025
+    component: frontend
+    environment: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rqa2025
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: rqa2025
+        component: frontend
+        environment: production
+    spec:
+      containers:
+      - name: nginx-frontend
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+        - name: web-static
+          mountPath: /usr/share/nginx/html
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: frontend-nginx-config
+      - name: web-static
+        configMap:
+          name: web-static-files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-frontend-service
+  namespace: rqa2025-app
+  labels:
+    app: rqa2025
+    component: frontend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: rqa2025
+    component: frontend
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-nginx-config
+  namespace: rqa2025-app
+data:
+  nginx.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # 启用gzip压缩
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+        # 处理favicon.ico请求
+        location = /favicon.ico {
+            log_not_found off;
+            access_log off;
+            return 204;
+        }
+
+        # 静态文件缓存
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+
+        # API代理到后端服务
+        location /api/ {
+            proxy_pass http://rqa2025-app-service.rqa2025-app.svc.cluster.local;
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 10s;
+            proxy_read_timeout 10s;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # WebSocket代理到后端服务
+        location /ws/ {
+            proxy_pass http://rqa2025-app-service.rqa2025-app.svc.cluster.local;
+            proxy_http_version 1.1;
+            proxy_connect_timeout 10s;
+            proxy_send_timeout 86400;
+            proxy_read_timeout 86400;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            # 禁用缓冲
+            proxy_buffering off;
+            proxy_cache off;
+        }
+
+        # API文档代理
+        location /docs {
+            proxy_pass http://rqa2025-app-service.rqa2025-app.svc.cluster.local/docs;
+            proxy_connect_timeout 10s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 30s;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # 主页面
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        # 健康检查
+        location /health {
+            access_log off;
+            return 200 "healthy\n";
+            add_header Content-Type text/plain;
+        }
+
+        # 隐藏nginx版本信息
+        server_tokens off;
+
+        # 安全headers
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "no-referrer-when-downgrade" always;
+        add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-static-files
+  namespace: rqa2025-app
+data:
+  # This ConfigMap will contain the static web files
+  # In a real deployment, you would mount the actual files here
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RQA2025 量化交易系统</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <div class="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">
+                    🚀 RQA2025 量化交易系统
+                </h1>
+                <p class="text-gray-600 text-center">
+                    系统正在启动中，请稍候...
+                </p>
+                <div class="mt-4 text-center">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>

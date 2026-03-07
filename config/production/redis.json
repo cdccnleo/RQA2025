@@ -1,0 +1,30 @@
+{
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "password": "h*$1F6lYuUb7m0s4ACsXdD^C4tJLcFZ2",
+    "db": 0,
+    "ssl": true,
+    "cluster": {
+      "enabled": true,
+      "nodes": [
+        {
+          "host": "redis-node-1",
+          "port": 6379
+        },
+        {
+          "host": "redis-node-2",
+          "port": 6379
+        },
+        {
+          "host": "redis-node-3",
+          "port": 6379
+        }
+      ]
+    },
+    "connection_pool": {
+      "max_connections": 50,
+      "retry_on_timeout": true
+    }
+  }
+}

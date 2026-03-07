@@ -1,0 +1,291 @@
+# RQA2025 Logger配置文件示例 (YAML格式)
+# 版本: 1.0
+# 描述: 完整的Logger配置示例，包含所有主要功能
+
+version: "1.0"
+
+# 管理器配置
+manager:
+  default_level: INFO
+  default_format: STRUCTURED
+  default_category: GENERAL
+  log_directory: "logs"
+  enable_async: true
+  async_queue_size: 1000
+  flush_interval: 1.0
+  error_handling: "ignore"
+  enable_performance_monitoring: true
+  enable_statistics: true
+
+# 对象池配置
+pool:
+  enabled: true
+  max_size: 100
+  initial_size: 10
+  idle_timeout: 300
+  cleanup_interval: 60
+  enable_lru: true
+  preload_loggers:
+    - "api.service"
+    - "database.operations"
+    - "trading.engine"
+
+# 处理器配置
+handlers:
+  console:
+    handler_type: "console"
+    level: INFO
+    formatter:
+      format_type: SIMPLE
+      date_format: "%Y-%m-%d %H:%M:%S"
+      format_template: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  file:
+    handler_type: "file"
+    level: DEBUG
+    output_path: "logs/app.log"
+    max_bytes: 10485760  # 10MB
+    backup_count: 5
+    encoding: "utf-8"
+    formatter:
+      format_type: STRUCTURED
+      include_fields:
+        - timestamp
+        - level
+        - logger_name
+        - message
+        - category
+      custom_fields:
+        app_version: "1.0.0"
+        environment: "production"
+
+  json_file:
+    handler_type: "file"
+    level: INFO
+    output_path: "logs/app.json"
+    max_bytes: 52428800  # 50MB
+    backup_count: 10
+    encoding: "utf-8"
+    formatter:
+      format_type: JSON
+
+  business_file:
+    handler_type: "file"
+    level: INFO
+    output_path: "logs/business.log"
+    max_bytes: 20971520  # 20MB
+    backup_count: 7
+    encoding: "utf-8"
+    formatter:
+      format_type: STRUCTURED
+      include_fields:
+        - timestamp
+        - level
+        - logger_name
+        - message
+        - category
+        - order_id
+        - amount
+        - customer_id
+
+  audit_file:
+    handler_type: "file"
+    level: WARNING
+    output_path: "logs/audit.log"
+    max_bytes: 52428800  # 50MB
+    backup_count: 15
+    encoding: "utf-8"
+    formatter:
+      format_type: JSON
+
+  audit_json:
+    handler_type: "file"
+    level: WARNING
+    output_path: "logs/audit.json"
+    max_bytes: 104857600  # 100MB
+    backup_count: 20
+    encoding: "utf-8"
+    formatter:
+      format_type: JSON
+
+  trading_file:
+    handler_type: "file"
+    level: INFO
+    output_path: "logs/trading.log"
+    max_bytes: 1073741824  # 1GB (高频交易需要大文件)
+    backup_count: 30
+    encoding: "utf-8"
+    formatter:
+      format_type: STRUCTURED
+      include_fields:
+        - timestamp
+        - level
+        - logger_name
+        - message
+        - trade_id
+        - symbol
+        - quantity
+        - price
+        - execution_time
+
+  risk_file:
+    handler_type: "file"
+    level: WARNING
+    output_path: "logs/risk.log"
+    max_bytes: 52428800  # 50MB
+    backup_count: 10
+    encoding: "utf-8"
+    formatter:
+      format_type: STRUCTURED
+      include_fields:
+        - timestamp
+        - level
+        - logger_name
+        - message
+        - risk_type
+        - threshold
+        - current_value
+        - action
+
+  performance_file:
+    handler_type: "file"
+    level: INFO
+    output_path: "logs/performance.log"
+    max_bytes: 20971520  # 20MB
+    backup_count: 7
+    encoding: "utf-8"
+    formatter:
+      format_type: STRUCTURED
+      include_fields:
+        - timestamp
+        - level
+        - logger_name
+        - message
+        - endpoint
+        - response_time
+        - status
+        - throughput
+
+  database_file:
+    handler_type: "file"
+    level: INFO
+    output_path: "logs/database.log"
+    max_bytes: 104857600  # 100MB
+    backup_count: 15
+    encoding: "utf-8"
+    formatter:
+      format_type: STRUCTURED
+      include_fields:
+        - timestamp
+        - level
+        - logger_name
+        - message
+        - operation
+        - table
+        - query_time
+        - rows_affected
+        - connection_pool_size
+
+# 过滤器配置
+filters:
+  error_only:
+    name: "error_only"
+    filter_type: "level"
+    conditions:
+      min_level: "ERROR"
+    action: "include"
+
+  exclude_debug:
+    name: "exclude_debug"
+    filter_type: "level"
+    conditions:
+      max_level: "INFO"
+    action: "exclude"
+
+# 专用Logger配置
+loggers:
+  business:
+    level: INFO
+    category: BUSINESS
+    handlers: ["business_file", "json_file"]
+    log_directory: "logs/business"
+
+  audit:
+    level: WARNING
+    category: AUDIT
+    handlers: ["audit_file", "audit_json"]
+    log_directory: "logs/audit"
+
+  trading:
+    level: INFO
+    category: TRADING
+    handlers: ["trading_file", "json_file"]
+    log_directory: "logs/trading"
+
+  risk:
+    level: WARNING
+    category: RISK
+    handlers: ["risk_file", "json_file"]
+    log_directory: "logs/risk"
+
+  performance:
+    level: INFO
+    category: PERFORMANCE
+    handlers: ["performance_file"]
+    log_directory: "logs/performance"
+
+  database:
+    level: INFO
+    category: DATABASE
+    handlers: ["database_file", "json_file"]
+    log_directory: "logs/database"
+
+  api:
+    level: DEBUG
+    category: GENERAL
+    handlers: ["file", "console"]
+    log_directory: "logs/api"
+
+  security:
+    level: WARNING
+    category: AUDIT
+    handlers: ["audit_file", "console"]
+    filters: ["error_only"]
+    log_directory: "logs/security"
+
+# 全局配置
+global_config:
+  encoding: "utf-8"
+  timezone: "UTC"
+  max_log_age_days: 30
+  compression: "gzip"
+  rotation_time: "midnight"
+  enable_auto_cleanup: true
+  log_retention_policy: "tiered"
+
+# 扩展配置
+extensions:
+  # 监控集成
+  monitoring:
+    enabled: true
+    metrics_prefix: "logger"
+    push_interval: 60
+
+  # 告警配置
+  alerting:
+    enabled: true
+    error_threshold: 10
+    warning_threshold: 5
+    alert_channels: ["email", "slack"]
+
+  # 分布式配置
+  distributed:
+    enabled: false
+    cluster_name: "logger-cluster"
+    discovery_endpoints: []
+
+  # 安全配置
+  security:
+    enable_encryption: false
+    encryption_key: ""
+    audit_trail: true

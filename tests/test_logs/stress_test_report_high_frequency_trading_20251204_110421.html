@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>负荷压力测试报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .metric { background: #e9ecef; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .stable { border-left: 5px solid #28a745; }
+        .unstable { border-left: 5px solid #dc3545; }
+        .concurrency-result { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .recommendation { background: #d4edda; padding: 10px; margin: 5px 0; border-radius: 3px; border-left: 4px solid #28a745; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>负荷压力测试报告</h1>
+        <p>测试场景: high_frequency_trading</p>
+        <p>描述: 高频交易场景：模拟大量快速订单</p>
+        <p>生成时间: 2025-12-04T11:04:21.370510</p>
+    </div>
+
+    <div class="metric">
+        <h2>性能极限分析</h2>
+        <p><strong>最大稳定并发数:</strong> 20</p>
+        <p><strong>推荐最大并发数:</strong> 16</p>
+        <p><strong>性能拐点:</strong> None</p>
+        <p><strong>扩展性评估:</strong> 良好扩展性</p>
+    </div>
+
+    <h2>并发测试结果</h2>
+
+    <div class="concurrency-result stable">
+        <h3>✅ 并发数: 5</h3>
+        <p>请求数: 8847/8847 |
+           吞吐量: 294.5 RPS |
+           平均响应: 16.8ms</p>
+        <p>95%响应: 30.7ms |
+           错误率: 0.00% |
+           CPU: 0.0%</p>
+        <p>内存: 86.4MB (0.1%)</p>
+    </div>
+
+    <div class="concurrency-result stable">
+        <h3>✅ 并发数: 10</h3>
+        <p>请求数: 17496/17496 |
+           吞吐量: 582.5 RPS |
+           平均响应: 17.0ms</p>
+        <p>95%响应: 30.5ms |
+           错误率: 0.00% |
+           CPU: 0.0%</p>
+        <p>内存: 91.7MB (0.1%)</p>
+    </div>
+
+    <div class="concurrency-result stable">
+        <h3>✅ 并发数: 20</h3>
+        <p>请求数: 33648/33648 |
+           吞吐量: 1120.1 RPS |
+           平均响应: 17.7ms</p>
+        <p>95%响应: 30.8ms |
+           错误率: 0.00% |
+           CPU: 0.0%</p>
+        <p>内存: 101.3MB (0.2%)</p>
+    </div>
+
+    <h2>优化建议</h2>
+
+    <div class="recommendation">
+        <strong>💡</strong> 系统最大稳定并发数: 20，建议生产环境不超过此值80%
+    </div>
+
+    <div class="recommendation">
+        <strong>💡</strong> 系统扩展性良好，可以考虑水平扩展
+    </div>
+
+</body>
+</html>

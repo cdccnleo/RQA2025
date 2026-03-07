@@ -1,0 +1,30 @@
+# 跨市场数据配置
+cross_market:
+  # 港股配置
+  hk_stock:
+    enabled: true
+    exchange: HKEX
+    trading_hours:
+      pre_market: "09:00-09:30"
+      regular: "09:30-12:00,13:00-16:00"
+      post_market: "16:00-16:10"
+    currency: HKD
+    timezone: Asia/Hong_Kong
+    
+  # 美股配置
+  us_stock:
+    enabled: true
+    exchange: NYSE
+    trading_hours:
+      pre_market: "04:00-09:30"
+      regular: "09:30-16:00"
+      post_market: "16:00-20:00"
+    currency: USD
+    timezone: America/New_York
+    
+  # 数据同步配置
+  sync:
+    realtime_interval: 5  # 实时数据更新间隔（秒）
+    batch_size: 100       # 批量处理大小
+    max_retries: 3        # 最大重试次数
+    timeout: 30           # 超时时间（秒）

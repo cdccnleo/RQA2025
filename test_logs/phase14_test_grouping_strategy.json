@@ -1,0 +1,65 @@
+{
+  "parallel_groups": {
+    "group_1_fast": [
+      "tests/unit/infrastructure/test_config_low_coverage.py",
+      "tests/unit/infrastructure/test_cache_low_coverage.py",
+      "tests/unit/data/test_data_loader_core_coverage.py"
+    ],
+    "group_2_fast": [
+      "tests/unit/features/test_features_low_coverage.py",
+      "tests/unit/ml/test_ml_core_exception_branches_coverage.py",
+      "tests/unit/strategy/test_unified_strategy_service_simple.py"
+    ],
+    "group_3_medium": [
+      "tests/integration/infrastructure/test_infrastructure_core_integration.py",
+      "tests/integration/data/test_data_processing_integration.py",
+      "tests/integration/features/test_features_processing_integration.py"
+    ],
+    "group_4_slow": [
+      "tests/e2e/test_error_handling_e2e.py",
+      "tests/e2e/test_high_concurrency_e2e.py",
+      "tests/e2e/test_data_consistency_e2e.py",
+      "tests/e2e/test_business_continuity_e2e.py"
+    ],
+    "group_5_isolated": [
+      "tests/unit/core/test_core_event_bus.py",
+      "tests/unit/core/test_core_services_comprehensive_coverage.py",
+      "tests/unit/risk/test_risk_core_management.py"
+    ]
+  },
+  "execution_order": [
+    "group_1_fast",
+    "group_2_fast",
+    "group_5_isolated",
+    "group_3_medium",
+    "group_4_slow"
+  ],
+  "dependency_warnings": {
+    "circular_dependencies": [],
+    "shared_resource_conflicts": [
+      {
+        "resource": "cache",
+        "conflicting_tests": [
+          "tests/unit/infrastructure/test_cache_low_coverage.py",
+          "tests/integration/infrastructure/test_infrastructure_core_integration.py"
+        ]
+      },
+      {
+        "resource": "database",
+        "conflicting_tests": [
+          "tests/integration/data/test_data_processing_integration.py",
+          "tests/e2e/test_data_consistency_e2e.py"
+        ]
+      }
+    ],
+    "module_import_conflicts": []
+  },
+  "optimization_recommendations": [
+    "慢速E2E测试较多，建议增加worker数量或单独执行",
+    "存在资源冲突，建议使用--dist=loadscope或减少并发",
+    "独立测试较多，可以优先并行执行",
+    "建议按执行顺序优化CI/CD流水线"
+  ],
+  "grouping_timestamp": "2025-12-06T12:00:00Z",
+  "strategy_version": "1.0"
+}

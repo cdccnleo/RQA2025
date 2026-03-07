@@ -1,0 +1,28 @@
+database:
+  host: localhost
+  name: rqa_db
+  password: encrypted_password_here
+  port: 5432
+  user: rqa_user
+logging:
+  file: logs/app.log
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+monitoring:
+  alert_threshold: 0.8
+  enabled: true
+  metrics_interval: 60
+performance:
+  cache_ttl: 300
+  max_connections: 100
+  timeout: 30
+redis:
+  host: localhost
+  password: encrypted_password_here
+  port: 6379
+security:
+  encryption_enabled: true
+  max_login_attempts: 5
+  session_timeout: 3600
+test:
+  key: test_value

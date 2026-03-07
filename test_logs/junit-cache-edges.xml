@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="5" time="81.496" timestamp="2025-11-16T21:02:34.721578+08:00" hostname="AIPC"><testcase classname="unit.data.cache.test_cache_manager_edges" name="test_set_get_exists_and_expiration" time="1.664"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     data_cache_manager:cache_manager.py:376 Cleaned up 1 expired entries
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-16 21:03:51,355 - data_cache_manager - INFO - Cleaned up 1 expired entries
+INFO:data_cache_manager:Cleaned up 1 expired entries
+
+</system-err></testcase><testcase classname="unit.data.cache.test_cache_manager_edges" name="test_delete_with_faulty_disk_cache_does_not_fail" time="0.023"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3910\popen-gw0\test_delete_with_faulty_disk_c0\cache
+ERROR    data_cache_manager:cache_manager.py:514 Failed to set cache: disk-write-fail
+ERROR    data_cache_manager:cache_manager.py:531 Failed to delete cache: disk-delete-fail
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-16 21:03:51,403 - disk_cache - INFO - DiskCache initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3910\popen-gw0\test_delete_with_faulty_disk_c0\cache
+INFO:disk_cache:DiskCache initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3910\popen-gw0\test_delete_with_faulty_disk_c0\cache
+2025-11-16 21:03:51,405 - data_cache_manager - ERROR - Failed to set cache: disk-write-fail
+ERROR:data_cache_manager:Failed to set cache: disk-write-fail
+2025-11-16 21:03:51,407 - data_cache_manager - ERROR - Failed to delete cache: disk-delete-fail
+ERROR:data_cache_manager:Failed to delete cache: disk-delete-fail
+
+</system-err></testcase><testcase classname="unit.data.cache.test_cache_manager_edges" name="test_evict_when_exceeding_max_size" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.cache.test_cache_manager_edges" name="test_clear_and_health_check_and_stats" time="0.126"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3910\popen-gw0\test_clear_and_health_check_an0\cache
+ERROR    data_cache_manager:cache_manager.py:514 Failed to set cache: disk-write-fail
+ERROR    data_cache_manager:cache_manager.py:514 Failed to set cache: disk-write-fail
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-16 21:03:51,448 - disk_cache - INFO - DiskCache initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3910\popen-gw0\test_clear_and_health_check_an0\cache
+INFO:disk_cache:DiskCache initialized with cache_dir: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3910\popen-gw0\test_clear_and_health_check_an0\cache
+2025-11-16 21:03:51,451 - data_cache_manager - ERROR - Failed to set cache: disk-write-fail
+ERROR:data_cache_manager:Failed to set cache: disk-write-fail
+2025-11-16 21:03:51,452 - data_cache_manager - ERROR - Failed to set cache: disk-write-fail
+ERROR:data_cache_manager:Failed to set cache: disk-write-fail
+2025-11-16 21:03:51,559 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-16 21:03:51,559 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+
+</system-err></testcase><testcase classname="unit.data.cache.test_cache_manager_edges" name="test_cleanup_thread_stop_on_close" time="0.132"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+INFO     data_cache_manager:cache_manager.py:306 正在停止缓存管理器...
+INFO     data_cache_manager:cache_manager.py:326 缓存管理器已停止
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-16 21:03:51,698 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-16 21:03:51,699 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+2025-11-16 21:03:51,699 - data_cache_manager - INFO - 正在停止缓存管理器...
+INFO:data_cache_manager:正在停止缓存管理器...
+2025-11-16 21:03:51,700 - data_cache_manager - INFO - 缓存管理器已停止
+INFO:data_cache_manager:缓存管理器已停止
+
+</system-err></testcase></testsuite></testsuites>

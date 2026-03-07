@@ -1,0 +1,435 @@
+{
+  "timestamp": "2025-08-23 22:58:58.905777",
+  "summary": {
+    "total_layers": 10,
+    "existing_layers": 10,
+    "total_files": 2415,
+    "total_issues": 0,
+    "total_warnings": 3,
+    "missing_critical_files": 0,
+    "naming_issues": 0,
+    "interface_issues": 0,
+    "dependency_issues": 5
+  },
+  "layer_checks": {
+    "infrastructure": {
+      "layer_name": "基础设施层",
+      "layer_path": "infrastructure",
+      "exists": true,
+      "issues": [],
+      "warnings": [
+        "文件数量过多: 922 > 700"
+      ],
+      "score": 90.0,
+      "file_count": 922,
+      "sub_components": {
+        "config": {
+          "exists": true,
+          "file_count": 148,
+          "description": "配置管理"
+        },
+        "cache": {
+          "exists": true,
+          "file_count": 140,
+          "description": "缓存系统"
+        },
+        "logging": {
+          "exists": true,
+          "file_count": 138,
+          "description": "日志系统"
+        },
+        "security": {
+          "exists": true,
+          "file_count": 76,
+          "description": "安全管理"
+        },
+        "error": {
+          "exists": true,
+          "file_count": 86,
+          "description": "错误处理"
+        },
+        "resource": {
+          "exists": true,
+          "file_count": 85,
+          "description": "资源管理"
+        },
+        "health": {
+          "exists": true,
+          "file_count": 115,
+          "description": "健康检查"
+        },
+        "utils": {
+          "exists": true,
+          "file_count": 125,
+          "description": "工具组件"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": [
+        "src\\infrastructure\\services\\__init__.py: 不合理的跨层导入: services",
+        "src\\infrastructure\\utils\\__init__.py: 不合理的跨层导入: utils"
+      ]
+    },
+    "data": {
+      "layer_name": "数据采集层",
+      "layer_path": "data",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 429,
+      "sub_components": {
+        "adapters": {
+          "exists": true,
+          "file_count": 38,
+          "description": "数据源适配器"
+        },
+        "loader": {
+          "exists": true,
+          "file_count": 65,
+          "description": "数据加载器"
+        },
+        "processing": {
+          "exists": true,
+          "file_count": 42,
+          "description": "数据处理"
+        },
+        "quality": {
+          "exists": true,
+          "file_count": 76,
+          "description": "数据质量"
+        },
+        "validation": {
+          "exists": true,
+          "file_count": 36,
+          "description": "数据验证"
+        },
+        "cache": {
+          "exists": true,
+          "file_count": 33,
+          "description": "数据缓存"
+        },
+        "monitoring": {
+          "exists": true,
+          "file_count": 48,
+          "description": "数据监控"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": []
+    },
+    "features": {
+      "layer_name": "特征处理层",
+      "layer_path": "features",
+      "exists": true,
+      "issues": [],
+      "warnings": [
+        "文件数量过多: 303 > 300"
+      ],
+      "score": 100,
+      "file_count": 303,
+      "sub_components": {
+        "engineering": {
+          "exists": true,
+          "file_count": 39,
+          "description": "特征工程"
+        },
+        "processors": {
+          "exists": true,
+          "file_count": 99,
+          "description": "特征处理器"
+        },
+        "acceleration": {
+          "exists": true,
+          "file_count": 49,
+          "description": "硬件加速"
+        },
+        "monitoring": {
+          "exists": true,
+          "file_count": 33,
+          "description": "特征监控"
+        },
+        "store": {
+          "exists": true,
+          "file_count": 25,
+          "description": "特征存储"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": []
+    },
+    "ml": {
+      "layer_name": "模型推理层",
+      "layer_path": "ml",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 135,
+      "sub_components": {
+        "models": {
+          "exists": true,
+          "file_count": 51,
+          "description": "模型定义"
+        },
+        "engine": {
+          "exists": true,
+          "file_count": 25,
+          "description": "推理引擎"
+        },
+        "ensemble": {
+          "exists": true,
+          "file_count": 22,
+          "description": "模型集成"
+        },
+        "tuning": {
+          "exists": true,
+          "file_count": 33,
+          "description": "模型调优"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": []
+    },
+    "core": {
+      "layer_name": "策略决策层",
+      "layer_path": "core",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 76,
+      "sub_components": {
+        "business_process": {
+          "exists": true,
+          "file_count": 15,
+          "description": "业务流程"
+        },
+        "event_bus": {
+          "exists": true,
+          "file_count": 10,
+          "description": "事件总线"
+        },
+        "service_container": {
+          "exists": true,
+          "file_count": 15,
+          "description": "服务容器"
+        },
+        "integration": {
+          "exists": true,
+          "file_count": 17,
+          "description": "集成管理"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": []
+    },
+    "risk": {
+      "layer_name": "风控合规层",
+      "layer_path": "risk",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 42,
+      "sub_components": {
+        "checker": {
+          "exists": true,
+          "file_count": 12,
+          "description": "风险检查"
+        },
+        "monitor": {
+          "exists": true,
+          "file_count": 8,
+          "description": "风险监控"
+        },
+        "compliance": {
+          "exists": true,
+          "file_count": 10,
+          "description": "合规检查"
+        },
+        "alert": {
+          "exists": false,
+          "file_count": 0,
+          "description": "风险告警"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": []
+    },
+    "trading": {
+      "layer_name": "交易执行层",
+      "layer_path": "trading",
+      "exists": true,
+      "issues": [],
+      "warnings": [
+        "文件数量过多: 261 > 150"
+      ],
+      "score": 100,
+      "file_count": 261,
+      "sub_components": {
+        "execution": {
+          "exists": true,
+          "file_count": 60,
+          "description": "交易执行"
+        },
+        "order": {
+          "exists": true,
+          "file_count": 40,
+          "description": "订单管理"
+        },
+        "position": {
+          "exists": true,
+          "file_count": 30,
+          "description": "仓位管理"
+        },
+        "account": {
+          "exists": true,
+          "file_count": 30,
+          "description": "账户管理"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": [
+        "src\\trading\\__init__.py: 不合理的跨层导入: trading"
+      ]
+    },
+    "backtest": {
+      "layer_name": "回测分析层",
+      "layer_path": "backtest",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 75,
+      "sub_components": {
+        "engine": {
+          "exists": true,
+          "file_count": 20,
+          "description": "回测引擎"
+        },
+        "analysis": {
+          "exists": true,
+          "file_count": 16,
+          "description": "回测分析"
+        },
+        "evaluation": {
+          "exists": true,
+          "file_count": 12,
+          "description": "策略评估"
+        },
+        "optimization": {
+          "exists": true,
+          "file_count": 5,
+          "description": "参数优化"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": [
+        "src\\backtest\\__init__.py: 不合理的跨层导入: backtest"
+      ]
+    },
+    "engine": {
+      "layer_name": "引擎层",
+      "layer_path": "engine",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 159,
+      "sub_components": {
+        "web": {
+          "exists": true,
+          "file_count": 57,
+          "description": "Web服务"
+        },
+        "realtime": {
+          "exists": true,
+          "file_count": 30,
+          "description": "实时引擎"
+        },
+        "optimization": {
+          "exists": true,
+          "file_count": 23,
+          "description": "性能优化"
+        },
+        "monitoring": {
+          "exists": true,
+          "file_count": 13,
+          "description": "引擎监控"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": [
+        "src\\engine\\__init__.py: 不合理的跨层导入: engine"
+      ]
+    },
+    "gateway": {
+      "layer_name": "API网关层",
+      "layer_path": "gateway",
+      "exists": true,
+      "issues": [],
+      "warnings": [],
+      "score": 100,
+      "file_count": 13,
+      "sub_components": {
+        "api_gateway": {
+          "exists": true,
+          "file_count": 10,
+          "description": "API网关"
+        },
+        "routing": {
+          "exists": false,
+          "file_count": 0,
+          "description": "路由管理"
+        },
+        "auth": {
+          "exists": false,
+          "file_count": 0,
+          "description": "认证授权"
+        }
+      },
+      "missing_critical_files": [],
+      "naming_issues": [],
+      "interface_issues": [],
+      "dependency_issues": []
+    }
+  },
+  "issues": [
+    {
+      "layer": "基础设施层",
+      "type": "warning",
+      "description": "文件数量过多: 922 > 700"
+    },
+    {
+      "layer": "特征处理层",
+      "type": "warning",
+      "description": "文件数量过多: 303 > 300"
+    },
+    {
+      "layer": "交易执行层",
+      "type": "warning",
+      "description": "文件数量过多: 261 > 150"
+    }
+  ],
+  "recommendations": [],
+  "overall_score": 99.0
+}

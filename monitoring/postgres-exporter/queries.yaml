@@ -1,0 +1,175 @@
+# PostgreSQL Exporter 自定义查询配置
+# 专门用于TimescaleDB指标收集
+
+pg_database:
+  query: "SELECT datname FROM pg_database WHERE datname = 'rqa2025_prod'"
+  metrics:
+    - datname:
+        usage: "LABEL"
+        description: "Database name"
+
+pg_stat_database:
+  query: "SELECT datname, blks_read, blks_hit, tup_returned, tup_fetched, tup_inserted, tup_updated, tup_deleted FROM pg_stat_database WHERE datname = 'rqa2025_prod'"
+  metrics:
+    - datname:
+        usage: "LABEL"
+        description: "Database name"
+    - blks_read:
+        usage: "COUNTER"
+        description: "Number of disk blocks read"
+    - blks_hit:
+        usage: "COUNTER"
+        description: "Number of buffer hits"
+    - tup_returned:
+        usage: "COUNTER"
+        description: "Number of rows returned by queries"
+    - tup_fetched:
+        usage: "COUNTER"
+        description: "Number of rows fetched"
+    - tup_inserted:
+        usage: "COUNTER"
+        description: "Number of rows inserted"
+    - tup_updated:
+        usage: "COUNTER"
+        description: "Number of rows updated"
+    - tup_deleted:
+        usage: "COUNTER"
+        description: "Number of rows deleted"
+
+# TimescaleDB 超表统计
+timescaledb_hypertables:
+  query: "SELECT hypertable_name, num_chunks, num_compressed_chunks, compression_enabled FROM timescaledb_information.hypertables"
+  metrics:
+    - hypertable_name:
+        usage: "LABEL"
+        description: "Hypertable name"
+    - num_chunks:
+        usage: "GAUGE"
+        description: "Number of chunks in the hypertable"
+    - num_compressed_chunks:
+        usage: "GAUGE"
+        description: "Number of compressed chunks"
+    - compression_enabled:
+        usage: "GAUGE"
+        description: "Whether compression is enabled (1=yes, 0=no)"
+
+# TimescaleDB 数据压缩统计
+timescaledb_compression:
+  query: "SELECT hypertable_name, before_compression_total_bytes, after_compression_total_bytes FROM timescaledb_information.compressed_hypertable_stats"
+  metrics:
+    - hypertable_name:
+        usage: "LABEL"
+        description: "Hypertable name"
+    - before_compression_total_bytes:
+        usage: "GAUGE"
+        description: "Total bytes before compression"
+    - after_compression_total_bytes:
+        usage: "GAUGE"
+        description: "Total bytes after compression"
+
+# TimescaleDB 分块统计
+timescaledb_chunks:
+  query: "SELECT hypertable_name, chunk_name, range_start, range_end, is_compressed FROM timescaledb_information.chunks ORDER BY range_start DESC LIMIT 100"
+  metrics:
+    - hypertable_name:
+        usage: "LABEL"
+        description: "Hypertable name"
+    - chunk_name:
+        usage: "LABEL"
+        description: "Chunk name"
+    - range_start:
+        usage: "GAUGE"
+        description: "Chunk range start timestamp"
+    - range_end:
+        usage: "GAUGE"
+        description: "Chunk range end timestamp"
+    - is_compressed:
+        usage: "GAUGE"
+        description: "Whether chunk is compressed (1=yes, 0=no)"
+
+# TimescaleDB 后台作业统计
+timescaledb_jobs:
+  query: "SELECT job_id, application_name, schedule_interval, max_runtime, max_retries, proc_name FROM timescaledb_information.jobs"
+  metrics:
+    - job_id:
+        usage: "LABEL"
+        description: "Job ID"
+    - application_name:
+        usage: "LABEL"
+        description: "Application name"
+    - schedule_interval:
+        usage: "GAUGE"
+        description: "Schedule interval in seconds"
+    - max_runtime:
+        usage: "GAUGE"
+        description: "Maximum runtime in seconds"
+    - max_retries:
+        usage: "GAUGE"
+        description: "Maximum retries"
+    - proc_name:
+        usage: "LABEL"
+        description: "Procedure name"
+
+# TimescaleDB 后台作业运行统计
+timescaledb_job_stats:
+  query: "SELECT job_id, total_runs, total_successes, total_failures, total_crashes FROM timescaledb_information.job_stats"
+  metrics:
+    - job_id:
+        usage: "LABEL"
+        description: "Job ID"
+    - total_runs:
+        usage: "COUNTER"
+        description: "Total job runs"
+    - total_successes:
+        usage: "COUNTER"
+        description: "Total successful runs"
+    - total_failures:
+        usage: "COUNTER"
+        description: "Total failed runs"
+    - total_crashes:
+        usage: "COUNTER"
+        description: "Total crashed runs"
+
+# 数据库大小统计
+database_size:
+  query: "SELECT datname, pg_database_size(datname) as size_bytes FROM pg_database WHERE datname = 'rqa2025_prod'"
+  metrics:
+    - datname:
+        usage: "LABEL"
+        description: "Database name"
+    - size_bytes:
+        usage: "GAUGE"
+        description: "Database size in bytes"
+
+# 表大小统计 (TimescaleDB超表)
+hypertable_sizes:
+  query: "SELECT hypertable_name, pg_total_relation_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as total_size_bytes, pg_table_size(format('%I.%I', hypertable_schema, hypertable_name)::regclass) as table_size_bytes FROM timescaledb_information.hypertables"
+  metrics:
+    - hypertable_name:
+        usage: "LABEL"
+        description: "Hypertable name"
+    - total_size_bytes:
+        usage: "GAUGE"
+        description: "Total hypertable size including indexes"
+    - table_size_bytes:
+        usage: "GAUGE"
+        description: "Hypertable size excluding indexes"
+
+# 连接统计
+connection_stats:
+  query: "SELECT state, count(*) as count FROM pg_stat_activity WHERE datname = 'rqa2025_prod' GROUP BY state"
+  metrics:
+    - state:
+        usage: "LABEL"
+        description: "Connection state"
+    - count:
+        usage: "GAUGE"
+        description: "Number of connections in this state"
+
+# 缓存命中率
+cache_hit_ratio:
+  query: "SELECT sum(blks_hit) * 100.0 / (sum(blks_hit) + sum(blks_read)) as cache_hit_ratio FROM pg_stat_database WHERE datname = 'rqa2025_prod'"
+  metrics:
+    - cache_hit_ratio:
+        usage: "GAUGE"
+        description: "Database cache hit ratio percentage"

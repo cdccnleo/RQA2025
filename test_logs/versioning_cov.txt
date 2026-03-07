@@ -1,0 +1,54 @@
+璀﹀憡: 鏃犳硶瀵煎叆鐩戞帶缁勪欢: No module named 'infrastructure.monitoring.services.components'
+璀﹀憡: 鏃犳硶瀵煎叆鐩戞帶缁勪欢: No module named 'src.infrastructure.monitoring.services.components'
+璀﹀憡: 鏃犳硶瀵煎叆搴旂敤灞傜洃鎺у櫒: cannot import name 'get_logger_pool' from 'infrastructure.logging.core.interfaces' (C:\PythonProject\RQA2025\src\infrastructure\logging\core\interfaces.py)
+璀﹀憡: 鏃犳硶瀵煎叆搴旂敤灞傜洃鎺у櫒: cannot import name 'get_logger_pool' from 'infrastructure.logging.core.interfaces' (C:\PythonProject\RQA2025\src\infrastructure\logging\core\interfaces.py)
+============================= test session starts =============================
+platform win32 -- Python 3.9.23, pytest-8.4.1, pluggy-1.6.0
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: C:\PythonProject\RQA2025\tests
+configfile: pytest.ini
+plugins: anyio-4.9.0, dash-3.1.1, Faker-37.4.0, hypothesis-6.135.4, asyncio-1.0.0, benchmark-5.1.0, cov-6.0.0, html-4.1.1, metadata-3.1.1, mock-3.14.1, timeout-2.4.0, xdist-3.7.0
+asyncio: mode=strict, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+created: 16/16 workers
+16 workers [263 items]
+
+...s...s..s............................................................. [ 27%]
+..............................................s...s......s.............. [ 54%]
+................................................................ss...... [ 82%]
+......ss...........s.s......................s..                          [100%][base_config] Exported names: ['ValidationResult', 'BaseConfig', 'Priority', 'ExportFormat']
+
+============================== warnings summary ===============================
+..\..\Users\AILeo\miniconda3\lib\site-packages\_pytest\config\__init__.py:1290
+  C:\Users\AILeo\miniconda3\lib\site-packages\_pytest\config\__init__.py:1290: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; anyio
+    self._mark_plugins_for_rewrite(hook, disable_autoload)
+
+..\..\Users\AILeo\miniconda3\lib\site-packages\deepdiff\helper.py:37: 16 warnings
+  C:\Users\AILeo\miniconda3\lib\site-packages\deepdiff\helper.py:37: UserWarning: The NumPy module was reloaded (imported a second time). This can in some cases result in small but subtle issues and is discouraged.
+    import numpy as np
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.9.23-final-0 -----------
+Name                                                             Stmts   Miss  Cover   Missing
+----------------------------------------------------------------------------------------------
+src\infrastructure\versioning\__init__.py                            7      0   100%
+src\infrastructure\versioning\api\__init__.py                        2      0   100%
+src\infrastructure\versioning\api\version_api.py                   125     29    77%   72, 89-90, 97, 108-110, 117, 134, 145-146, 153, 162, 172-173, 184-185, 197-198, 218-219, 233, 239-247
+src\infrastructure\versioning\api\version_api_refactored.py        127     33    74%   108, 114, 124-125, 131, 142-144, 150, 169, 180-181, 187, 196, 206-207, 219-220, 233-234, 250, 255-268, 272
+src\infrastructure\versioning\config\__init__.py                     2      0   100%
+src\infrastructure\versioning\config\config_version_manager.py     334     82    75%   37, 159, 161, 207, 227, 250-259, 278-280, 315-320, 338, 354, 374, 433-456, 495-497, 523, 528-530, 536, 550-562, 566, 606-608, 672, 675, 677-678, 697, 779-780, 783-784, 788, 799-814
+src\infrastructure\versioning\core\__init__.py                       3      0   100%
+src\infrastructure\versioning\core\interfaces.py                    56      4    93%   29, 46, 65, 78
+src\infrastructure\versioning\core\version.py                      217     49    77%   68-69, 72, 96-103, 109, 144, 157, 184, 199, 203, 207, 218, 230, 234, 238, 242, 248, 304, 316, 322, 357-361, 365-370, 375-376, 389, 400, 403, 417, 424-427, 430, 451-454
+src\infrastructure\versioning\data\__init__.py                       2      0   100%
+src\infrastructure\versioning\data\data_version_manager.py          99     11    89%   31-33, 52, 155, 161, 173, 220, 224, 249-251
+src\infrastructure\versioning\manager\__init__.py                    3      0   100%
+src\infrastructure\versioning\manager\manager.py                   105     17    84%   112, 132, 154, 191, 238-241, 258, 270, 279, 303-313
+src\infrastructure\versioning\manager\policy.py                     80      8    90%   64, 77-80, 136-139
+src\infrastructure\versioning\proxy\__init__.py                      2      0   100%
+src\infrastructure\versioning\proxy\proxy.py                        89     18    80%   90-100, 108, 133, 138-139, 155-157
+----------------------------------------------------------------------------------------------
+TOTAL                                                             1253    251    80%
+Coverage HTML written to dir test_logs/htmlcov_versioning
+
+================ 250 passed, 13 skipped, 17 warnings in 55.45s ================

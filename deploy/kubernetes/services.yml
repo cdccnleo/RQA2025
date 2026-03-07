@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-engine-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-engine
+    environment: production
+    cloud-native: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8001
+    targetPort: 8001
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-engine
+    environment: production
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-infrastructure-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-infrastructure
+    environment: production
+    cloud-native: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8002
+    targetPort: 8002
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-infrastructure
+    environment: production
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-business-service
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-business
+    environment: production
+    cloud-native: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8003
+    targetPort: 8003
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rqa2025-business
+    environment: production
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqa2025-api-gateway
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-api-gateway
+    environment: production
+    cloud-native: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 8443
+    protocol: TCP
+    name: https
+  selector:
+    app: rqa2025-api-gateway
+    environment: production 

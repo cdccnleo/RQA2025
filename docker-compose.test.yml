@@ -1,0 +1,44 @@
+services:
+  # 数据库服务
+  postgres:
+    image: postgres:13
+    container_name: rqa2025_postgres_test
+    environment:
+      POSTGRES_DB: rqa2025
+      POSTGRES_USER: rqa_user
+      POSTGRES_PASSWORD: rqa2025_secure_password
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rqa_user -d rqa2025"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis缓存服务
+  redis:
+    image: redis:6-alpine
+    container_name: rqa2025_redis_test
+    command: redis-server --appendonly yes --requirepass rqa2025_redis_password
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus监控服务
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rqa2025_prometheus_test
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

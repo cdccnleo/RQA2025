@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-08-04T06:53:31.963492",
+  "deployment_type": "lightweight",
+  "summary": {
+    "total_services": 3,
+    "successful_deployments": 1,
+    "failed_deployments": 2,
+    "healthy_services": 1,
+    "success_rate": 33.33333333333333,
+    "health_rate": 33.33333333333333
+  },
+  "deployments": [
+    {
+      "service": "database_redis",
+      "status": "success",
+      "deployment_time": "2025-08-04T06:53:30.897382",
+      "health_check": true,
+      "performance_metrics": {
+        "container_id": "9b0f8472acefd82e6eeeccd931c182a4b796b75b158f2448e9657757a35c7c68",
+        "status": "running"
+      },
+      "details": {
+        "image": "redis:7-alpine"
+      }
+    },
+    {
+      "service": "monitoring_prometheus",
+      "status": "failed",
+      "deployment_time": "2025-08-04T06:53:30.922972",
+      "health_check": false,
+      "performance_metrics": {},
+      "details": {
+        "error": "409 Client Error for http+docker://localnpipe/v1.49/containers/create?name=rqa2025-prometheus: Conflict (\"Conflict. The container name \"/rqa2025-prometheus\" is already in use by container \"400fd0f8c5fdaa9347b5ad6b6ebeb13dbffa9bd43a007460fc4ab6999f2f7dbe\". You have to remove (or rename) that container to be able to reuse that name.\")"
+      }
+    },
+    {
+      "service": "application_api",
+      "status": "failed",
+      "deployment_time": "2025-08-04T06:53:30.952497",
+      "health_check": false,
+      "performance_metrics": {},
+      "details": {
+        "error": "409 Client Error for http+docker://localnpipe/v1.49/containers/create?name=rqa2025-api: Conflict (\"Conflict. The container name \"/rqa2025-api\" is already in use by container \"8f1acae4a010277ca21f20e7519fb7431222094898e292c3a91fcc9c344b567c\". You have to remove (or rename) that container to be able to reuse that name.\")"
+      }
+    }
+  ]
+}

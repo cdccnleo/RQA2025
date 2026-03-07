@@ -1,0 +1,178 @@
+{
+  "timestamp": 1759179390.8714998,
+  "target_directory": "src/infrastructure",
+  "summary": {
+    "total_files": 487,
+    "total_methods": 8180,
+    "high_complexity_methods": 12,
+    "avg_complexity_per_file": 2.2327244764333964
+  },
+  "complexity_distribution": {
+    "1-5": 7353,
+    "6-10": 703,
+    "11-15": 99,
+    "16-20": 13,
+    "21-30": 8,
+    "30+": 4
+  },
+  "top_complex_methods": [
+    {
+      "name": "set",
+      "complexity": 34,
+      "line": 67,
+      "file": "src/infrastructure\\config\\core\\config_manager_complete.py"
+    },
+    {
+      "name": "list_keys",
+      "complexity": 34,
+      "line": 372,
+      "file": "src/infrastructure\\config\\storage\\types\\distributedconfigstorage.py"
+    },
+    {
+      "name": "get",
+      "complexity": 31,
+      "line": 126,
+      "file": "src/infrastructure\\config\\storage\\types\\distributedconfigstorage.py"
+    },
+    {
+      "name": "validate",
+      "complexity": 31,
+      "line": 339,
+      "file": "src/infrastructure\\config\\validators\\validator_base.py"
+    },
+    {
+      "name": "set",
+      "complexity": 28,
+      "line": 536,
+      "file": "src/infrastructure\\config\\core\\config_manager_operations.py"
+    },
+    {
+      "name": "_load_config_data",
+      "complexity": 27,
+      "line": 245,
+      "file": "src/infrastructure\\config\\loaders\\database_loader.py"
+    },
+    {
+      "name": "merge_config",
+      "complexity": 23,
+      "line": 210,
+      "file": "src/infrastructure\\config\\core\\config_manager_complete.py"
+    },
+    {
+      "name": "_validate_custom",
+      "complexity": 23,
+      "line": 52,
+      "file": "src/infrastructure\\config\\validators\\specialized_validators.py"
+    },
+    {
+      "name": "health_check",
+      "complexity": 23,
+      "line": 683,
+      "file": "src/infrastructure\\logging\\core\\unified_logger.py"
+    },
+    {
+      "name": "validate_config",
+      "complexity": 22,
+      "line": 383,
+      "file": "src/infrastructure\\config\\core\\config_manager_complete.py"
+    }
+  ],
+  "performance_bottlenecks": [
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 34",
+      "file": "src/infrastructure\\config\\core\\config_manager_complete.py",
+      "method": "set",
+      "line": 67,
+      "severity": "high",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 34",
+      "file": "src/infrastructure\\config\\storage\\types\\distributedconfigstorage.py",
+      "method": "list_keys",
+      "line": 372,
+      "severity": "high",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 31",
+      "file": "src/infrastructure\\config\\storage\\types\\distributedconfigstorage.py",
+      "method": "get",
+      "line": 126,
+      "severity": "high",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 31",
+      "file": "src/infrastructure\\config\\validators\\validator_base.py",
+      "method": "validate",
+      "line": 339,
+      "severity": "high",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 28",
+      "file": "src/infrastructure\\config\\core\\config_manager_operations.py",
+      "method": "set",
+      "line": 536,
+      "severity": "high",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 27",
+      "file": "src/infrastructure\\config\\loaders\\database_loader.py",
+      "method": "_load_config_data",
+      "line": 245,
+      "severity": "high",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 23",
+      "file": "src/infrastructure\\config\\core\\config_manager_complete.py",
+      "method": "merge_config",
+      "line": 210,
+      "severity": "medium",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 23",
+      "file": "src/infrastructure\\config\\validators\\specialized_validators.py",
+      "method": "_validate_custom",
+      "line": 52,
+      "severity": "medium",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 23",
+      "file": "src/infrastructure\\logging\\core\\unified_logger.py",
+      "method": "health_check",
+      "line": 683,
+      "severity": "medium",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    },
+    {
+      "type": "high_complexity",
+      "description": "方法复杂度过高: 22",
+      "file": "src/infrastructure\\config\\core\\config_manager_complete.py",
+      "method": "validate_config",
+      "line": 383,
+      "severity": "medium",
+      "suggested_fix": "拆分方法，提取辅助函数，减少嵌套条件"
+    }
+  ],
+  "recommendations": [
+    "🔴 高优先级: 重构10个高复杂度方法，采用单一职责原则拆分方法",
+    "🔵 低优先级: 实施代码审查，对新增代码进行复杂度检查",
+    "🔵 低优先级: 建立性能基准测试，持续监控性能指标",
+    "🔵 低优先级: 优化热点路径，减少不必要的计算"
+  ]
+}

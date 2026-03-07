@@ -1,0 +1,535 @@
+# tests/unit/tools/test_doc_manager.py
+"""
+文档管理器单元测试
+
+测试覆盖:
+- 文档创建和管理
+- 文档版本控制
+- 文档搜索和检索
+- 文档发布和分发
+- 文档质量保证
+- 文档协作功能
+- 文档自动化生成
+- 文档监控和分析
+"""
+
+import pytest
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+from unittest.mock import Mock, patch, MagicMock
+
+from src.tools.core.doc_manager import (
+    DocumentMetadata,
+    DocumentVersion,
+    DocumentManager
+)
+
+
+class TestDocumentManager:
+    """文档管理器测试类"""
+
+    @pytest.fixture
+    def document_manager(self, tmp_path):
+        """DocumentManager实例"""
+        config = {
+            "document_root": str(tmp_path / "docs"),
+            "version_control": True,
+            "auto_backup": True,
+            "max_versions": 10
+        }
+        return DocumentManager(config)
+
+    @pytest.fixture
+    def sample_document_metadata(self):
+        """样本文档元数据"""
+        return DocumentMetadata(
+            doc_id="doc_001",
+            title="RQA2025 Architecture Overview",
+            version="1.2.0",
+            author="Development Team",
+            description="Comprehensive overview of RQA2025 system architecture",
+            tags=["architecture", "system", "overview"],
+            created_at=datetime.now() - timedelta(days=30),
+            updated_at=datetime.now(),
+            status="published",
+            reviewers=["reviewer1@example.com", "reviewer2@example.com"],
+            dependencies=["doc_002", "doc_003"]
+        )
+
+    def test_document_metadata_creation(self, sample_document_metadata):
+        """测试文档元数据创建"""
+        assert sample_document_metadata.doc_id == "doc_001"
+        assert sample_document_metadata.title == "RQA2025 Architecture Overview"
+        assert sample_document_metadata.version == "1.2.0"
+        assert sample_document_metadata.status == "published"
+        assert len(sample_document_metadata.tags) == 3
+        assert len(sample_document_metadata.reviewers) == 2
+
+    def test_document_creation_and_storage(self, document_manager, sample_document_metadata):
+        """测试文档创建和存储"""
+        document_content = {
+            "sections": [
+                {"title": "Introduction", "content": "System overview..."},
+                {"title": "Architecture", "content": "Detailed architecture..."}
+            ],
+            "metadata": sample_document_metadata
+        }
+
+        success = document_manager.create_document(sample_document_metadata, document_content)
+        assert success is True
+
+        # 验证文档存储
+        stored_doc = document_manager.get_document("doc_001")
+        assert stored_doc is not None
+        assert stored_doc["metadata"]["title"] == "RQA2025 Architecture Overview"
+        assert len(stored_doc["content"]["sections"]) == 2
+
+    def test_document_version_control(self, document_manager, sample_document_metadata):
+        """测试文档版本控制"""
+        # 创建初始版本
+        initial_content = {"content": "Initial version"}
+        document_manager.create_document(sample_document_metadata, initial_content)
+
+        # 更新文档创建新版本
+        updated_content = {"content": "Updated version with new features"}
+        new_version = document_manager.update_document("doc_001", updated_content, "Added new features")
+
+        assert new_version is not None
+        assert new_version.startswith("1.2.")
+
+        # 获取版本历史
+        version_history = document_manager.get_version_history("doc_001")
+        assert len(version_history) >= 2
+
+        # 回滚到上一版本
+        rollback_success = document_manager.rollback_to_version("doc_001", version_history[0]["version"])
+        assert rollback_success is True
+
+    def test_document_search_and_retrieval(self, document_manager):
+        """测试文档搜索和检索"""
+        search_engine = DocumentSearchEngine()
+
+        # 创建多个文档用于搜索
+        docs = [
+            DocumentMetadata("doc_001", "Architecture Guide", "1.0", "Author1", "System architecture",
+                           ["architecture", "guide"]),
+            DocumentMetadata("doc_002", "API Documentation", "2.1", "Author2", "API reference",
+                           ["api", "documentation"]),
+            DocumentMetadata("doc_003", "User Manual", "1.5", "Author3", "User guide",
+                           ["user", "manual", "guide"])
+        ]
+
+        for doc in docs:
+            document_manager.create_document(doc, {"content": f"Content for {doc.title}"})
+
+        # 按标签搜索
+        results = search_engine.search_by_tags(["guide"])
+        assert len(results) >= 2
+
+        # 按内容搜索
+        results = search_engine.search_by_content("architecture")
+        assert len(results) >= 1
+
+        # 按作者搜索
+        results = search_engine.search_by_author("Author1")
+        assert len(results) >= 1
+
+    def test_document_publishing(self, document_manager, sample_document_metadata, tmp_path):
+        """测试文档发布"""
+        publisher = DocumentPublisher({"output_dir": str(tmp_path / "published")})
+
+        # 创建文档
+        content = {"content": "Document content for publishing"}
+        document_manager.create_document(sample_document_metadata, content)
+
+        # 发布文档
+        publish_result = publisher.publish_document("doc_001", "html")
+        assert publish_result["success"] is True
+        assert "output_path" in publish_result
+
+        # 验证发布文件存在
+        output_path = Path(publish_result["output_path"])
+        assert output_path.exists()
+
+    def test_document_quality_checking(self, document_manager, sample_document_metadata):
+        """测试文档质量检查"""
+        quality_checker = DocumentQualityChecker()
+
+        # 创建文档
+        content = {
+            "content": "This is a test document with some content.",
+            "metadata": sample_document_metadata
+        }
+        document_manager.create_document(sample_document_metadata, content)
+
+        # 执行质量检查
+        quality_report = quality_checker.check_document_quality("doc_001")
+
+        assert quality_report is not None
+        assert "overall_score" in quality_report
+        assert "issues" in quality_report
+        assert "recommendations" in quality_report
+        assert isinstance(quality_report["overall_score"], (int, float))
+
+    def test_document_collaboration(self, document_manager, sample_document_metadata):
+        """测试文档协作功能"""
+        collaboration_manager = DocumentCollaborationManager()
+
+        # 创建文档
+        document_manager.create_document(sample_document_metadata, {"content": "Initial content"})
+
+        # 添加协作者
+        success = collaboration_manager.add_collaborator("doc_001", "collaborator@example.com", "editor")
+        assert success is True
+
+        # 记录编辑操作
+        edit_operation = {
+            "user": "collaborator@example.com",
+            "operation": "edit",
+            "section": "introduction",
+            "changes": "Updated introduction section"
+        }
+        success = collaboration_manager.record_edit("doc_001", edit_operation)
+        assert success is True
+
+        # 获取协作历史
+        history = collaboration_manager.get_collaboration_history("doc_001")
+        assert len(history) >= 1
+        assert history[0]["user"] == "collaborator@example.com"
+
+    def test_document_automation_generation(self, document_manager):
+        """测试文档自动化生成"""
+        automation_engine = DocumentAutomationEngine()
+
+        # 配置自动化生成
+        generation_config = {
+            "template": "api_documentation",
+            "source_code_path": "/path/to/source",
+            "output_format": "markdown",
+            "include_examples": True
+        }
+
+        # 生成API文档
+        result = automation_engine.generate_api_documentation(generation_config)
+        assert result["success"] is True
+        assert "generated_files" in result
+        assert len(result["generated_files"]) > 0
+
+    def test_document_analytics(self, document_manager, sample_document_metadata):
+        """测试文档分析"""
+        analytics = DocumentAnalytics()
+
+        # 创建多个文档
+        docs = []
+        for i in range(5):
+            doc = DocumentMetadata(
+                f"doc_{i:03d}",
+                f"Document {i}",
+                "1.0",
+                f"Author{i}",
+                f"Description for document {i}",
+                ["tag1", "tag2"]
+            )
+            docs.append(doc)
+            document_manager.create_document(doc, {"content": f"Content {i}"})
+
+        # 执行文档分析
+        analysis_result = analytics.analyze_document_usage(docs)
+
+        assert analysis_result is not None
+        assert "total_documents" in analysis_result
+        assert "popular_tags" in analysis_result
+        assert "author_contributions" in analysis_result
+        assert "usage_patterns" in analysis_result
+
+    def test_document_backup_and_recovery(self, document_manager, sample_document_metadata, tmp_path):
+        """测试文档备份和恢复"""
+        # 创建文档
+        content = {"content": "Important document content"}
+        document_manager.create_document(sample_document_metadata, content)
+
+        # 执行备份
+        backup_path = tmp_path / "doc_backup.zip"
+        backup_result = document_manager.create_backup(str(backup_path))
+        assert backup_result["success"] is True
+        assert backup_path.exists()
+
+        # 模拟数据丢失
+        document_manager.documents.clear()
+
+        # 从备份恢复
+        recovery_result = document_manager.restore_from_backup(str(backup_path))
+        assert recovery_result["success"] is True
+
+        # 验证恢复
+        restored_doc = document_manager.get_document("doc_001")
+        assert restored_doc is not None
+        assert restored_doc["content"]["content"] == "Important document content"
+
+    def test_document_access_control(self, document_manager, sample_document_metadata):
+        """测试文档访问控制"""
+        # 设置访问权限
+        permissions = {
+            "read_users": ["user1@example.com", "user2@example.com"],
+            "write_users": ["user1@example.com"],
+            "admin_users": ["admin@example.com"]
+        }
+
+        success = document_manager.set_document_permissions("doc_001", permissions)
+        assert success is True
+
+        # 测试权限检查
+        can_read = document_manager.check_permission("doc_001", "user1@example.com", "read")
+        assert can_read is True
+
+        can_write = document_manager.check_permission("doc_001", "user2@example.com", "write")
+        assert can_write is False  # user2只有读权限
+
+        can_admin = document_manager.check_permission("doc_001", "user1@example.com", "admin")
+        assert can_admin is False  # user1不是管理员
+
+    def test_document_workflow_management(self, document_manager, sample_document_metadata):
+        """测试文档工作流管理"""
+        # 创建文档工作流
+        workflow_config = {
+            "stages": [
+                {"name": "draft", "approvers": ["reviewer1@example.com"]},
+                {"name": "review", "approvers": ["reviewer2@example.com", "reviewer3@example.com"]},
+                {"name": "approval", "approvers": ["manager@example.com"]},
+                {"name": "published", "approvers": []}
+            ],
+            "auto_transition": True
+        }
+
+        success = document_manager.create_document_workflow("doc_001", workflow_config)
+        assert success is True
+
+        # 提交审核
+        review_result = document_manager.submit_for_review("doc_001", "reviewer1@example.com")
+        assert review_result["submitted"] is True
+
+        # 批准文档
+        approval_result = document_manager.approve_document("doc_001", "reviewer1@example.com", "Looks good")
+        assert approval_result["approved"] is True
+
+        # 获取工作流状态
+        status = document_manager.get_workflow_status("doc_001")
+        assert status["current_stage"] in ["draft", "review", "approval", "published"]
+
+    def test_document_template_management(self, document_manager):
+        """测试文档模板管理"""
+        # 创建文档模板
+        template = {
+            "name": "api_documentation_template",
+            "description": "Template for API documentation",
+            "structure": {
+                "sections": ["introduction", "endpoints", "examples", "changelog"],
+                "required_fields": ["title", "version", "author"]
+            },
+            "styles": {
+                "font_family": "Arial",
+                "font_size": 12,
+                "line_spacing": 1.5
+            }
+        }
+
+        success = document_manager.create_document_template("api_template", template)
+        assert success is True
+
+        # 使用模板创建文档
+        doc_data = {
+            "title": "User API Documentation",
+            "version": "1.0",
+            "author": "API Team"
+        }
+
+        new_doc_id = document_manager.create_document_from_template("api_template", doc_data)
+        assert new_doc_id is not None
+
+        # 验证模板应用
+        created_doc = document_manager.get_document(new_doc_id)
+        assert created_doc is not None
+        assert created_doc["metadata"]["title"] == "User API Documentation"
+
+    def test_document_internationalization(self, document_manager, sample_document_metadata):
+        """测试文档国际化"""
+        # 设置多语言支持
+        languages = ["en", "zh", "es", "fr"]
+
+        for lang in languages:
+            success = document_manager.set_document_language("doc_001", lang)
+            assert success is True
+
+        # 获取语言特定内容
+        zh_content = document_manager.get_document_content("doc_001", "zh")
+        assert zh_content is not None
+
+        # 翻译文档
+        translation_result = document_manager.translate_document("doc_001", "en", "es")
+        assert translation_result["translated"] is True
+
+    def test_document_performance_monitoring(self, document_manager):
+        """测试文档性能监控"""
+        # 执行一些文档操作
+        for i in range(10):
+            doc = DocumentMetadata(
+                f"perf_doc_{i}",
+                f"Performance Test Doc {i}",
+                "1.0",
+                "Test Author",
+                f"Performance test document {i}",
+                ["performance", "test"]
+            )
+            document_manager.create_document(doc, {"content": f"Content {i}"})
+
+        # 获取性能指标
+        performance_metrics = document_manager.get_performance_metrics()
+
+        assert performance_metrics is not None
+        assert "total_documents" in performance_metrics
+        assert "average_load_time" in performance_metrics
+        assert "search_performance" in performance_metrics
+        assert "storage_utilization" in performance_metrics
+
+    def test_document_audit_trail(self, document_manager, sample_document_metadata):
+        """测试文档审计跟踪"""
+        # 创建文档
+        document_manager.create_document(sample_document_metadata, {"content": "Test content"})
+
+        # 执行一些操作
+        document_manager.update_document("doc_001", {"content": "Updated content"})
+        document_manager.get_document("doc_001")
+
+        # 获取审计跟踪
+        audit_trail = document_manager.get_audit_trail("doc_001")
+
+        assert audit_trail is not None
+        assert isinstance(audit_trail, list)
+        assert len(audit_trail) >= 2  # 创建 + 更新 + 读取
+
+        # 验证审计条目
+        for entry in audit_trail:
+            assert "timestamp" in entry
+            assert "action" in entry
+            assert "user" in entry
+            assert entry["action"] in ["create", "update", "read", "delete"]
+
+    def test_document_compliance_monitoring(self, document_manager, sample_document_metadata):
+        """测试文档合规监控"""
+        # 设置合规规则
+        compliance_rules = {
+            "retention_period": 2555,  # 7年
+            "classification": "internal",
+            "access_logging": True,
+            "version_control": True
+        }
+
+        success = document_manager.set_compliance_rules("doc_001", compliance_rules)
+        assert success is True
+
+        # 执行合规检查
+        compliance_report = document_manager.check_document_compliance("doc_001")
+
+        assert compliance_report is not None
+        assert "compliance_status" in compliance_report
+        assert "violations" in compliance_report
+        assert "retention_compliance" in compliance_report
+
+    def test_document_cloud_integration(self, document_manager, sample_document_metadata):
+        """测试文档云集成"""
+        # 配置云存储
+        cloud_config = {
+            "provider": "aws_s3",
+            "bucket": "rqa2025-docs",
+            "region": "us-east-1",
+            "auto_sync": True
+        }
+
+        success = document_manager.configure_cloud_storage(cloud_config)
+        assert success is True
+
+        # 同步到云端
+        sync_result = document_manager.sync_to_cloud("doc_001")
+        assert sync_result["uploaded"] is True
+
+        # 从云端下载
+        download_result = document_manager.download_from_cloud("doc_001")
+        assert download_result["downloaded"] is True
+
+    def test_document_collaborative_editing(self, document_manager, sample_document_metadata):
+        """测试文档协作编辑"""
+        # 启用实时协作
+        success = document_manager.enable_real_time_collaboration("doc_001")
+        assert success is True
+
+        # 模拟并发编辑
+        edit_operations = [
+            {"user": "user1", "operation": "insert", "position": 10, "content": "New text"},
+            {"user": "user2", "operation": "delete", "position": 20, "length": 5},
+            {"user": "user3", "operation": "update", "position": 30, "content": "Updated content"}
+        ]
+
+        for operation in edit_operations:
+            result = document_manager.apply_collaborative_edit("doc_001", operation)
+            assert result["applied"] is True
+
+        # 获取协作状态
+        collaboration_status = document_manager.get_collaboration_status("doc_001")
+        assert collaboration_status["active_users"] >= 0
+        assert "edit_conflicts" in collaboration_status
+
+    def test_document_content_analysis(self, document_manager, sample_document_metadata):
+        """测试文档内容分析"""
+        # 创建包含丰富内容的文档
+        rich_content = {
+            "content": """
+            This document covers the RQA2025 trading system architecture.
+            It includes components like strategy engine, risk management,
+            order execution, and market data processing. The system uses
+            advanced algorithms for high-frequency trading and provides
+            comprehensive risk controls.
+            """,
+            "metadata": sample_document_metadata
+        }
+
+        document_manager.create_document(sample_document_metadata, rich_content)
+
+        # 执行内容分析
+        content_analysis = document_manager.analyze_document_content("doc_001")
+
+        assert content_analysis is not None
+        assert "word_count" in content_analysis
+        assert "readability_score" in content_analysis
+        assert "key_topics" in content_analysis
+        assert "sentiment_analysis" in content_analysis
+
+        # 验证关键主题识别
+        assert "trading" in content_analysis["key_topics"]
+        assert "risk" in content_analysis["key_topics"]
+        assert "architecture" in content_analysis["key_topics"]
+
+    def test_document_export_import(self, document_manager, sample_document_metadata, tmp_path):
+        """测试文档导出导入"""
+        # 创建文档
+        content = {"content": "Document for export/import testing"}
+        document_manager.create_document(sample_document_metadata, content)
+
+        # 导出文档
+        export_path = tmp_path / "exported_doc.json"
+        export_result = document_manager.export_document("doc_001", str(export_path))
+        assert export_result["success"] is True
+        assert export_path.exists()
+
+        # 创建新文档管理器实例
+        new_manager = DocumentManager({"document_root": str(tmp_path / "new_docs")})
+
+        # 导入文档
+        import_result = new_manager.import_document(str(export_path))
+        assert import_result["success"] is True
+        assert import_result["document_id"] is not None
+
+        # 验证导入的文档
+        imported_doc = new_manager.get_document(import_result["document_id"])
+        assert imported_doc is not None
+        assert imported_doc["content"]["content"] == "Document for export/import testing"

@@ -1,0 +1,1721 @@
+#!/usr/bin/env python3
+"""
+分布式协调器
+
+从coordinator.py拆分后的主入口模块。
+
+Author: RQA2025 Development Team
+Date: 2025-11-01
+"""
+
+# 导入所有组件
+from .models import (
+    NodeStatus,
+    TaskStatus,
+    TaskPriority,
+    NodeInfo,
+    DistributedTask,
+    ClusterStats
+)
+from .scheduling_engine import SchedulingEngine
+from .queue_engine import QueueEngine
+from .priority_engine import PriorityEngine
+from .load_balancer import LoadBalancer
+from .coordinator_core import (
+    DistributedCoordinator,
+    get_distributed_coordinator,
+    submit_distributed_task,
+    get_cluster_status
+)
+
+__all__ = [
+    # 枚举和数据模型
+    'NodeStatus',
+    'TaskStatus',
+    'TaskPriority',
+    'NodeInfo',
+    'DistributedTask',
+    'ClusterStats',
+    
+    # 引擎组件
+    'SchedulingEngine',
+    'QueueEngine',
+    'PriorityEngine',
+    'LoadBalancer',
+    
+    # 主协调器
+    'DistributedCoordinator',
+    'get_distributed_coordinator',
+    'submit_distributed_task',
+    'get_cluster_status'
+]
+
+
+class NodeStatus(Enum):
+
+    """节点状态"""
+    ONLINE = "online"
+    OFFLINE = "offline"
+    BUSY = "busy"
+    MAINTENANCE = "maintenance"
+    ERROR = "error"
+
+
+class TaskStatus(Enum):
+
+    """任务状态"""
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+    TIMEOUT = "timeout"
+
+
+class TaskPriority(Enum):
+
+    """任务优先级"""
+    LOW = 1
+    NORMAL = 2
+    HIGH = 3
+    CRITICAL = 4
+
+
+@dataclass
+class NodeInfo:
+
+    """节点信息"""
+    node_id: str
+    hostname: str
+    ip_address: str
+    status: NodeStatus = NodeStatus.ONLINE
+    cpu_cores: int = 4
+    memory_gb: float = 8.0
+    gpu_devices: List[int] = field(default_factory=list)
+    last_heartbeat: datetime = field(default_factory=datetime.now)
+    active_tasks: Set[str] = field(default_factory=set)
+    capabilities: Set[str] = field(default_factory=set)
+    load_factor: float = 0.0  # 0 - 1, 负载因子
+
+
+@dataclass
+class DistributedTask:
+
+    """分布式任务"""
+    task_id: str
+    task_type: str
+    priority: TaskPriority = TaskPriority.NORMAL
+    status: TaskStatus = TaskStatus.PENDING
+    assigned_node: Optional[str] = None
+    created_time: datetime = field(default_factory=datetime.now)
+    started_time: Optional[datetime] = None
+    completed_time: Optional[datetime] = None
+    timeout_seconds: int = 3600
+    retry_count: int = 0
+    max_retries: int = 3
+    dependencies: Set[str] = field(default_factory=set)
+    data: Dict[str, Any] = field(default_factory=dict)
+    result: Optional[Any] = None
+    error_message: Optional[str] = None
+
+
+@dataclass
+class ClusterStats:
+
+    """集群统计信息"""
+    total_nodes: int = 0
+    online_nodes: int = 0
+    total_tasks: int = 0
+    running_tasks: int = 0
+    completed_tasks: int = 0
+    failed_tasks: int = 0
+    avg_load_factor: float = 0.0
+    total_cpu_cores: int = 0
+    total_memory_gb: float = 0.0
+    total_gpu_devices: int = 0
+
+
+class SchedulingEngine:
+    """调度引擎 - 负责智能任务调度"""
+
+    def __init__(self):
+        self.scheduling_strategy = "priority_based"  # priority_based, deadline_based, resource_aware
+
+    def schedule_task(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo],
+                      task_queue: List[str]) -> Optional[str]:
+        """
+        智能调度任务到最佳节点
+
+        Args:
+            task: 待调度任务
+            available_nodes: 可用节点
+            task_queue: 当前任务队列
+
+        Returns:
+            Optional[str]: 分配的节点ID，None表示无法调度
+        """
+        try:
+            if not available_nodes:
+                return None
+
+            if self.scheduling_strategy == "priority_based":
+                return self._priority_based_scheduling(task, available_nodes, task_queue)
+            elif self.scheduling_strategy == "deadline_based":
+                return self._deadline_based_scheduling(task, available_nodes)
+            elif self.scheduling_strategy == "resource_aware":
+                return self._resource_aware_scheduling(task, available_nodes)
+            else:
+                # 默认使用负载均衡器选择
+                load_balancer = LoadBalancer()
+                return load_balancer.select_node(task, available_nodes)
+
+        except Exception as e:
+            logger.error(f"任务调度失败: {e}")
+            return None
+
+    def _priority_based_scheduling(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo],
+                                   task_queue: List[str]) -> Optional[str]:
+        """基于优先级的调度"""
+        # 高优先级任务优先调度到低负载节点
+        if task.priority in [TaskPriority.HIGH, TaskPriority.CRITICAL]:
+            # 为高优先级任务选择最佳节点
+            return self._select_best_node_for_priority(task, available_nodes)
+
+        # 普通任务使用负载均衡
+        load_balancer = LoadBalancer()
+        load_balancer.strategy = "least_loaded"
+        return load_balancer.select_node(task, available_nodes)
+
+    def _deadline_based_scheduling(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+        """基于截止时间的调度"""
+        # 计算任务的紧急程度
+        urgency_score = self._calculate_task_urgency(task)
+
+        if urgency_score > 0.8:  # 紧急任务
+            return self._select_fastest_node(available_nodes)
+        else:
+            load_balancer = LoadBalancer()
+            return load_balancer.select_node(task, available_nodes)
+
+    def _resource_aware_scheduling(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+        """基于资源感知的调度"""
+        task_requirements = self._analyze_task_requirements(task)
+
+        best_node = None
+        best_score = 0
+
+        for node_id, node in available_nodes.items():
+            score = self._calculate_resource_match_score(node, task_requirements)
+            if score > best_score:
+                best_score = score
+                best_node = node_id
+
+        return best_node
+
+    def _select_best_node_for_priority(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+        """为高优先级任务选择最佳节点"""
+        # 选择负载最低且资源充足的节点
+        eligible_nodes = {}
+        for node_id, node in available_nodes.items():
+            if node.load_factor < 0.7:  # 负载低于70%
+                eligible_nodes[node_id] = node
+
+        if not eligible_nodes:
+            return None
+
+        # 选择负载最低的节点
+        return min(eligible_nodes.items(), key=lambda x: x[1].load_factor)[0]
+
+    def _select_fastest_node(self, available_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+        """选择最快的节点（基于CPU核心数和负载）"""
+        if not available_nodes:
+            return None
+
+        def node_speed_score(node: NodeInfo) -> float:
+            return node.cpu_cores * (1 - node.load_factor)
+
+        return max(available_nodes.items(), key=lambda x: node_speed_score(x[1]))[0]
+
+    def _analyze_task_requirements(self, task: DistributedTask) -> Dict[str, Any]:
+        """分析任务资源需求"""
+        requirements = {
+            'cpu_required': 1,
+            'memory_required': 1.0,
+            'gpu_required': 0,
+            'estimated_time': 60  # 默认1分钟
+        }
+
+        # 根据任务类型调整需求
+        if 'ml' in task.task_type.lower():
+            requirements['cpu_required'] = 2
+            requirements['memory_required'] = 4.0
+            requirements['gpu_required'] = 1
+            requirements['estimated_time'] = 600  # 10分钟
+        elif 'data_processing' in task.task_type.lower():
+            requirements['cpu_required'] = 4
+            requirements['memory_required'] = 8.0
+            requirements['estimated_time'] = 300  # 5分钟
+
+        return requirements
+
+    def _calculate_resource_match_score(self, node: NodeInfo, requirements: Dict[str, Any]) -> float:
+        """计算节点与任务需求的匹配度"""
+        cpu_score = min(node.cpu_cores / requirements['cpu_required'], 1.0)
+        memory_score = min(node.memory_gb / requirements['memory_required'], 1.0)
+        gpu_score = 1.0 if len(node.gpu_devices) >= requirements['gpu_required'] else 0.0
+        load_score = 1 - node.load_factor
+
+        # 加权平均分
+        return (cpu_score * 0.3 + memory_score * 0.3 + gpu_score * 0.2 + load_score * 0.2)
+
+    def _calculate_task_urgency(self, task: DistributedTask) -> float:
+        """计算任务紧急程度 (0-1)"""
+        if task.timeout_seconds <= 0:
+            return 0.0
+
+        elapsed = (datetime.now() - task.created_time).total_seconds()
+        time_ratio = elapsed / task.timeout_seconds
+
+        # 基于时间比例和优先级计算紧急程度
+        priority_weight = task.priority.value / 4.0  # 0-1
+        urgency = min(time_ratio + priority_weight, 1.0)
+
+        return urgency
+
+
+class QueueEngine:
+    """队列引擎 - 负责任务队列管理"""
+
+    def __init__(self):
+        self.max_queue_size = 1000
+        self.queue_strategy = "priority_fifo"  # priority_fifo, deadline_fifo, balanced
+
+    def add_task_to_queue(self, task: DistributedTask, task_queue: List[str]) -> bool:
+        """
+        添加任务到队列
+
+        Args:
+            task: 待添加任务
+            task_queue: 任务队列
+
+        Returns:
+            bool: 是否成功添加
+        """
+        try:
+            if len(task_queue) >= self.max_queue_size:
+                logger.warning("任务队列已满，无法添加新任务")
+                return False
+
+            # 根据策略插入到合适位置
+            insert_position = self._find_insert_position(task, task_queue)
+
+            if insert_position >= 0:
+                task_queue.insert(insert_position, task.task_id)
+                return True
+            else:
+                task_queue.append(task.task_id)
+                return True
+
+        except Exception as e:
+            logger.error(f"添加任务到队列失败: {e}")
+            return False
+
+    def remove_task_from_queue(self, task_id: str, task_queue: List[str]) -> bool:
+        """从队列中移除任务"""
+        try:
+            if task_id in task_queue:
+                task_queue.remove(task_id)
+                return True
+            return False
+        except Exception as e:
+            logger.error(f"从队列移除任务失败: {e}")
+            return False
+
+    def reorder_queue(self, task_queue: List[str], tasks: Dict[str, DistributedTask]) -> None:
+        """重新排序任务队列"""
+        try:
+            if self.queue_strategy == "priority_fifo":
+                self._sort_by_priority(task_queue, tasks)
+            elif self.queue_strategy == "deadline_fifo":
+                self._sort_by_deadline(task_queue, tasks)
+            elif self.queue_strategy == "balanced":
+                self._sort_balanced(task_queue, tasks)
+        except Exception as e:
+            logger.error(f"队列重排序失败: {e}")
+
+    def _find_insert_position(self, task: DistributedTask, task_queue: List[str]) -> int:
+        """找到任务在队列中的插入位置"""
+        if self.queue_strategy == "priority_fifo":
+            return self._find_priority_position(task, task_queue)
+        return -1  # 追加到末尾
+
+    def _find_priority_position(self, task: DistributedTask, task_queue: List[str]) -> int:
+        """根据优先级找到插入位置"""
+        # 简化实现：高优先级插入到前面
+        if task.priority in [TaskPriority.CRITICAL, TaskPriority.HIGH]:
+            return 0  # 插入到最前面
+        return -1  # 追加到末尾
+
+    def _sort_by_priority(self, task_queue: List[str], tasks: Dict[str, DistributedTask]) -> None:
+        """按优先级排序"""
+        def get_sort_key(task_id: str) -> int:
+            if task_id in tasks:
+                task = tasks[task_id]
+                # 优先级越高，排序越前
+                priority_score = task.priority.value * 100
+                # 年龄惩罚：等待越久的同优先级任务优先
+                age_penalty = int((datetime.now() - task.created_time).total_seconds() / 60)
+                return priority_score + age_penalty
+            return 0
+
+        task_queue.sort(key=get_sort_key, reverse=True)
+
+    def _sort_by_deadline(self, task_queue: List[str], tasks: Dict[str, DistributedTask]) -> None:
+        """按截止时间排序"""
+        def get_deadline_urgency(task_id: str) -> float:
+            if task_id in tasks:
+                task = tasks[task_id]
+                if task.timeout_seconds <= 0:
+                    return 0
+
+                elapsed = (datetime.now() - task.created_time).total_seconds()
+                urgency = elapsed / task.timeout_seconds
+                return min(urgency, 1.0)
+            return 0
+
+        task_queue.sort(key=get_deadline_urgency, reverse=True)
+
+    def _sort_balanced(self, task_queue: List[str], tasks: Dict[str, DistributedTask]) -> None:
+        """平衡排序（优先级+截止时间）"""
+        def get_balanced_score(task_id: str) -> float:
+            if task_id in tasks:
+                task = tasks[task_id]
+
+                # 优先级分数 (0-100)
+                priority_score = task.priority.value * 25
+
+                # 截止时间分数 (0-100)
+                deadline_score = 0
+                if task.timeout_seconds > 0:
+                    elapsed = (datetime.now() - task.created_time).total_seconds()
+                    deadline_score = min(elapsed / task.timeout_seconds, 1.0) * 100
+
+                return priority_score + deadline_score
+            return 0
+
+        task_queue.sort(key=get_balanced_score, reverse=True)
+
+
+class PriorityEngine:
+    """优先级引擎 - 负责任务优先级管理"""
+
+    def __init__(self):
+        self.dynamic_priority_enabled = True
+        self.aging_enabled = True
+        self.aging_interval_minutes = 5
+
+    def calculate_task_priority(self, task: DistributedTask, queue_length: int,
+                                system_load: float) -> TaskPriority:
+        """
+        动态计算任务优先级
+
+        Args:
+            task: 任务对象
+            queue_length: 当前队列长度
+            system_load: 系统负载 (0-1)
+
+        Returns:
+            TaskPriority: 计算后的优先级
+        """
+        base_priority = task.priority
+
+        if not self.dynamic_priority_enabled:
+            return base_priority
+
+        # 队列长度影响
+        queue_factor = min(queue_length / 50, 1.0)  # 队列长度超过50开始影响
+
+        # 系统负载影响
+        load_factor = system_load
+
+        # 综合计算
+        priority_boost = int((queue_factor + load_factor) * 2)
+
+        # 应用老化机制
+        if self.aging_enabled:
+            age_minutes = (datetime.now() - task.created_time).total_seconds() / 60
+            aging_boost = int(age_minutes / self.aging_interval_minutes)
+            priority_boost += aging_boost
+
+        # 计算新优先级
+        new_priority_value = min(base_priority.value + priority_boost, TaskPriority.CRITICAL.value)
+        return TaskPriority(new_priority_value)
+
+    def should_preempt(self, running_task: DistributedTask, pending_task: DistributedTask) -> bool:
+        """
+        判断是否应该抢占运行中的任务
+
+        Args:
+            running_task: 正在运行的任务
+            pending_task: 待处理任务
+
+        Returns:
+            bool: 是否应该抢占
+        """
+        # 只有更高优先级的任务才能抢占
+        if pending_task.priority.value <= running_task.priority.value:
+            return False
+
+        # CRITICAL优先级任务可以抢占任何任务
+        if pending_task.priority == TaskPriority.CRITICAL:
+            return True
+
+        # HIGH优先级任务只能抢占NORMAL及以下
+        if pending_task.priority == TaskPriority.HIGH:
+            return running_task.priority.value <= TaskPriority.NORMAL.value
+
+        return False
+
+    def get_preemption_candidates(self, pending_task: DistributedTask,
+                                  running_tasks: Dict[str, DistributedTask]) -> List[str]:
+        """
+        获取可被抢占的任务列表
+
+        Args:
+            pending_task: 待处理任务
+            running_tasks: 运行中的任务
+
+        Returns:
+            List[str]: 可被抢占的任务ID列表
+        """
+        candidates = []
+
+        for task_id, task in running_tasks.items():
+            if self.should_preempt(task, pending_task):
+                candidates.append(task_id)
+
+        return candidates
+
+    def apply_aging(self, tasks: Dict[str, DistributedTask]) -> None:
+        """应用老化机制到所有任务"""
+        if not self.aging_enabled:
+            return
+
+        current_time = datetime.now()
+
+        for task in tasks.values():
+            if task.status == TaskStatus.PENDING:
+                age_minutes = (current_time - task.created_time).total_seconds() / 60
+                aging_levels = int(age_minutes / self.aging_interval_minutes)
+
+                if aging_levels > 0:
+                    old_priority = task.priority.value
+                    new_priority_value = min(old_priority + aging_levels,
+                                             TaskPriority.CRITICAL.value)
+
+                    if new_priority_value > old_priority:
+                        task.priority = TaskPriority(new_priority_value)
+                        logger.debug(
+                            f"任务 {task.task_id} 优先级因老化从 {old_priority} 提升到 {new_priority_value}")
+
+
+class LoadBalancer:
+
+    """高级负载均衡器"""
+
+    def __init__(self):
+
+        # adaptive, round_robin, weighted_round_robin, least_loaded, capability_based, random, response_time
+        self.strategy = "adaptive"
+        self.round_robin_index = 0  # 轮询索引
+        self.node_weights = {}  # 节点权重
+        self.response_times = {}  # 节点响应时间历史
+        self.max_response_time_history = 100  # 最大响应时间历史记录数
+        self.adaptive_threshold = 0.8  # 自适应切换阈值
+
+    def select_node(self, task: DistributedTask, available_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+        """选择执行任务的节点"""
+        if not available_nodes:
+            return None
+
+        # 过滤出符合条件的节点
+        eligible_nodes = self._filter_eligible_nodes(task, available_nodes)
+        if not eligible_nodes:
+            return None
+
+        # 自适应策略选择
+        if self.strategy == "adaptive":
+            return self._adaptive_selection(task, eligible_nodes)
+
+        # 具体策略选择
+        strategy_map = {
+            "round_robin": self._round_robin_selection,
+            "weighted_round_robin": self._weighted_round_robin_selection,
+            "least_loaded": self._least_loaded_selection,
+            "capability_based": self._capability_based_selection,
+            "random": self._random_selection,
+            "response_time": self._response_time_selection
+        }
+
+        selector = strategy_map.get(self.strategy, self._round_robin_selection)
+
+        if self.strategy in ["round_robin", "weighted_round_robin", "random"]:
+            return selector(list(eligible_nodes.keys()), eligible_nodes)
+        else:
+            return selector(task, eligible_nodes)
+
+    def _filter_eligible_nodes(self, task: DistributedTask, nodes: Dict[str, NodeInfo]) -> Dict[str, NodeInfo]:
+        """过滤符合条件的节点"""
+        eligible = {}
+
+        for node_id, node in nodes.items():
+            if node.status != NodeStatus.ONLINE:
+                continue
+
+            # 检查节点负载
+            if node.load_factor > 0.9:  # 负载超过90 % 的节点不分配任务
+                continue
+
+            # 检查任务依赖
+            if not self._check_task_dependencies(task, node):
+                continue
+
+            eligible[node_id] = node
+
+        return eligible
+
+    def _round_robin_selection(self, node_ids: List[str], nodes: Optional[Dict[str, NodeInfo]] = None) -> str:
+        """轮询选择"""
+        if not node_ids:
+            return None
+
+        # 使用内部索引实现真正的轮询
+        index = self.round_robin_index % len(node_ids)
+        selected_node = node_ids[index]
+        self.round_robin_index += 1
+        return selected_node
+
+    def _least_loaded_selection(self, task: Optional[DistributedTask] = None, nodes: Optional[Dict[str, NodeInfo]] = None) -> str:
+        """选择负载最小的节点"""
+        if nodes is None:
+            return None
+        return min(nodes.items(), key=lambda x: x[1].load_factor)[0]
+
+    def _capability_based_selection(self, task: DistributedTask, nodes: Dict[str, NodeInfo]) -> str:
+        """基于能力的节点选择"""
+        # 根据任务类型选择最合适的节点
+        task_requirements = self._get_task_requirements(task)
+
+        best_node = None
+        best_score = 0
+
+        for node_id, node in nodes.items():
+            score = self._calculate_node_score(node, task_requirements)
+            if score > best_score:
+                best_score = score
+                best_node = node_id
+
+        return best_node
+
+    def _check_task_dependencies(self, task: DistributedTask, node: NodeInfo) -> bool:
+        """检查任务依赖"""
+        # 这里应该实现任务依赖检查逻辑
+        # 例如：检查依赖的任务是否在此节点上运行
+        return True
+
+    def _get_task_requirements(self, task: DistributedTask) -> Dict[str, Any]:
+        """获取任务要求"""
+        requirements = {
+            'cpu_required': 1,
+            'memory_required': 1.0,
+            'gpu_required': False,
+            'capabilities_required': set()
+        }
+
+        # 根据任务类型设置要求
+        if task.task_type == 'ml_training':
+            requirements.update({
+                'cpu_required': 4,
+                'memory_required': 8.0,
+                'gpu_required': True
+            })
+        elif task.task_type == 'data_processing':
+            requirements.update({
+                'cpu_required': 2,
+                'memory_required': 4.0
+            })
+
+        return requirements
+
+    def _calculate_node_score(self, node: NodeInfo, requirements: Dict[str, Any]) -> float:
+        """计算节点匹配分数"""
+        score = 0.0
+
+        # CPU分数
+        cpu_score = min(node.cpu_cores / requirements['cpu_required'], 1.0)
+        score += cpu_score * 0.3
+
+        # 内存分数
+        memory_score = min(node.memory_gb / requirements['memory_required'], 1.0)
+        score += memory_score * 0.3
+
+        # GPU分数
+        if requirements['gpu_required']:
+            gpu_score = 1.0 if node.gpu_devices else 0.0
+        else:
+            gpu_score = 0.5  # 如果不需要GPU，给中性分数
+        score += gpu_score * 0.2
+
+        # 负载分数（负载越低分数越高）
+        load_score = 1.0 - node.load_factor
+        score += load_score * 0.2
+
+        return score
+
+    def _adaptive_selection(self, task: DistributedTask, eligible_nodes: Dict[str, NodeInfo]) -> Optional[str]:
+        """自适应负载均衡策略"""
+        if not eligible_nodes:
+            return None
+
+        # 计算系统负载状态
+        avg_load = sum(node.load_factor for node in eligible_nodes.values()) / len(eligible_nodes)
+
+        # 根据负载状态选择策略
+        if avg_load > self.adaptive_threshold:
+            # 高负载时，使用最小负载策略
+            return self._least_loaded_selection(eligible_nodes)
+        elif task.priority in [TaskPriority.HIGH, TaskPriority.CRITICAL]:
+            # 高优先级任务使用能力匹配
+            return self._capability_based_selection(task, eligible_nodes)
+        else:
+            # 正常负载使用轮询
+            return self._round_robin_selection(list(eligible_nodes.keys()), eligible_nodes)
+
+    def _weighted_round_robin_selection(self, node_ids: List[str], nodes: Dict[str, NodeInfo]) -> str:
+        """加权轮询选择"""
+        if not node_ids:
+            return None
+
+        # 计算节点权重（基于CPU核心数和可用内存）
+        weights = {}
+        for node_id in node_ids:
+            node = nodes[node_id]
+            # 权重 = CPU核心数 + 内存GB数 + GPU数量
+            weight = node.cpu_cores + node.memory_gb + len(node.gpu_devices)
+            weights[node_id] = max(weight, 1)  # 最小权重为1
+
+        # 使用加权轮询算法
+        total_weight = sum(weights.values())
+        if total_weight == 0:
+            return node_ids[0]
+
+        # 找到当前应该选择的节点
+        current_weight_sum = 0
+        for node_id in node_ids:
+            current_weight_sum += weights[node_id]
+            if current_weight_sum >= (self.round_robin_index % total_weight) + 1:
+                self.round_robin_index += 1
+                return node_id
+
+        # 默认返回第一个
+        self.round_robin_index += 1
+        return node_ids[0]
+
+    def _random_selection(self, node_ids: List[str], nodes: Dict[str, NodeInfo]) -> str:
+        """随机选择"""
+        import secrets
+        return secrets.choice(node_ids)
+
+    def _response_time_selection(self, task: DistributedTask, eligible_nodes: Dict[str, NodeInfo]) -> str:
+        """基于响应时间的选择"""
+        if not eligible_nodes:
+            return None
+
+        # 计算每个节点的平均响应时间
+        node_scores = {}
+        for node_id, node in eligible_nodes.items():
+            avg_response_time = self._get_average_response_time(node_id)
+            # 响应时间越短分数越高（0-1之间）
+            score = 1.0 / (1.0 + avg_response_time) if avg_response_time > 0 else 1.0
+            # 考虑负载因子
+            load_penalty = node.load_factor
+            final_score = score * (1 - load_penalty)
+            node_scores[node_id] = final_score
+
+        # 选择分数最高的节点
+        return max(node_scores.items(), key=lambda x: x[1])[0]
+
+    def record_response_time(self, node_id: str, response_time: float):
+        """记录节点响应时间"""
+        if node_id not in self.response_times:
+            self.response_times[node_id] = []
+
+        self.response_times[node_id].append(response_time)
+
+        # 保持历史记录数量限制
+        if len(self.response_times[node_id]) > self.max_response_time_history:
+            self.response_times[node_id].pop(0)
+
+    def _get_average_response_time(self, node_id: str) -> float:
+        """获取节点的平均响应时间"""
+        if node_id not in self.response_times or not self.response_times[node_id]:
+            return 1.0  # 默认1秒
+
+        return sum(self.response_times[node_id]) / len(self.response_times[node_id])
+
+    def update_node_weight(self, node_id: str, weight: int):
+        """更新节点权重"""
+        self.node_weights[node_id] = max(weight, 1)
+
+    def get_strategy_stats(self) -> Dict[str, Any]:
+        """获取负载均衡策略统计信息"""
+        return {
+            "current_strategy": self.strategy,
+            "round_robin_index": self.round_robin_index,
+            "node_weights": self.node_weights.copy(),
+            "response_time_nodes": list(self.response_times.keys()),
+            "adaptive_threshold": self.adaptive_threshold
+        }
+
+
+class DistributedCoordinator:
+
+    """
+    分布式协调器
+
+    主要功能：
+    1. 节点管理和监控
+    2. 任务调度和分配
+    3. 负载均衡
+    4. 故障恢复
+    5. 资源调度
+    6. 性能监控
+    """
+
+    def __init__(self):
+
+        self.nodes: Dict[str, NodeInfo] = {}
+        self.tasks: Dict[str, DistributedTask] = {}
+        self.task_queue = []
+        self.completed_tasks = []
+
+        # 组件
+        self.load_balancer = LoadBalancer()
+        self.scheduling_engine = SchedulingEngine()
+        self.queue_engine = QueueEngine()
+        self.priority_engine = PriorityEngine()
+        self.executor = ThreadPoolExecutor(max_workers=10)
+
+        # 统计信息
+        self.stats = ClusterStats()
+
+        # 锁
+        self._lock = threading.RLock()
+
+        # 监控线程
+        self._monitoring = True
+        self._monitor_thread = threading.Thread(target=self._cluster_monitor, daemon=True)
+        self._monitor_thread.start()
+
+        # 故障恢复线程
+        self._recovery_thread = threading.Thread(target=self._failure_recovery, daemon=True)
+        self._recovery_thread.start()
+
+        logger.info("分布式协调器初始化完成")
+
+    def register_node(self, node_info: NodeInfo) -> bool:
+        """注册节点"""
+        with self._lock:
+            try:
+                self.nodes[node_info.node_id] = node_info
+                self._update_cluster_stats()
+
+                # 同步状态到所有节点
+                self._sync_cluster_state()
+
+                logger.info(f"节点 {node_info.node_id} ({node_info.hostname}) 已注册")
+
+                # 发布节点注册事件
+                event_bus.publish_sync({
+                    'event_type': 'node_registered',
+                    'node_id': node_info.node_id,
+                    'node_info': {
+                        'hostname': node_info.hostname,
+                        'ip_address': node_info.ip_address,
+                        'cpu_cores': node_info.cpu_cores,
+                        'memory_gb': node_info.memory_gb,
+                        'gpu_devices': node_info.gpu_devices
+                    }
+                })
+
+                return True
+
+            except Exception as e:
+                logger.error(f"节点注册失败: {e}")
+                return False
+
+    def unregister_node(self, node_id: str) -> bool:
+        """注销节点"""
+        with self._lock:
+            try:
+                if node_id in self.nodes:
+                    node = self.nodes[node_id]
+
+                    # 重新分配该节点上的任务
+                    self._reassign_node_tasks(node_id)
+
+                    del self.nodes[node_id]
+                    self._update_cluster_stats()
+
+                    # 同步状态到所有节点
+                    self._sync_cluster_state()
+
+                    logger.info(f"节点 {node_id} 已注销")
+
+                    # 发布节点注销事件
+                    event_bus.publish_sync({
+                        'event_type': 'node_unregistered',
+                        'node_id': node_id
+                    })
+
+                    return True
+
+                return False
+
+            except Exception as e:
+                logger.error(f"节点注销失败: {e}")
+                return False
+
+    def submit_task(self, task_type: str, data: Dict[str, Any],
+
+
+                    priority: TaskPriority = TaskPriority.NORMAL,
+                    timeout_seconds: int = 3600) -> str:
+        """提交任务"""
+        with self._lock:
+            try:
+                task_id = str(uuid.uuid4())
+
+                task = DistributedTask(
+                    task_id=task_id,
+                    task_type=task_type,
+                    priority=priority,
+                    timeout_seconds=timeout_seconds,
+                    data=data
+                )
+
+                self.tasks[task_id] = task
+                self.task_queue.append(task_id)
+
+                # 按优先级排序任务队列
+                self._sort_task_queue()
+
+                logger.info(f"任务 {task_id} ({task_type}) 已提交")
+
+                # 使用队列引擎添加任务到队列
+                success = self.queue_engine.add_task_to_queue(task, self.task_queue)
+                if not success:
+                    logger.warning(f"任务 {task_id} 添加到队列失败")
+                    return ""
+
+                # 尝试立即调度任务
+                self._schedule_pending_tasks()
+
+                return task_id
+
+            except Exception as e:
+                logger.error(f"任务提交失败: {e}")
+                return ""
+
+    def cancel_task(self, task_id: str) -> bool:
+        """取消任务"""
+        with self._lock:
+            try:
+                if task_id in self.tasks:
+                    task = self.tasks[task_id]
+
+                    if task.status == TaskStatus.RUNNING:
+                        # 通知节点取消任务
+                        self._notify_node_cancel_task(task.assigned_node, task_id)
+
+                    task.status = TaskStatus.CANCELLED
+                    task.completed_time = datetime.now()
+
+                    logger.info(f"任务 {task_id} 已取消")
+                    return True
+
+                return False
+
+            except Exception as e:
+                logger.error(f"任务取消失败: {e}")
+                return False
+
+    def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """获取任务状态"""
+        with self._lock:
+            if task_id in self.tasks:
+                task = self.tasks[task_id]
+                return {
+                    'task_id': task.task_id,
+                    'task_type': task.task_type,
+                    'status': task.status.value,
+                    'assigned_node': task.assigned_node,
+                    'created_time': task.created_time.isoformat(),
+                    'started_time': task.started_time.isoformat() if task.started_time else None,
+                    'completed_time': task.completed_time.isoformat() if task.completed_time else None,
+                    'progress': self._calculate_task_progress(task),
+                    'result': task.result,
+                    'error_message': task.error_message
+                }
+            return None
+
+    def get_cluster_status(self) -> Dict[str, Any]:
+        """获取集群状态"""
+        with self._lock:
+            self._update_cluster_stats()
+
+            return {
+                'stats': {
+                    'total_nodes': self.stats.total_nodes,
+                    'online_nodes': self.stats.online_nodes,
+                    'total_tasks': self.stats.total_tasks,
+                    'running_tasks': self.stats.running_tasks,
+                    'completed_tasks': self.stats.completed_tasks,
+                    'failed_tasks': self.stats.failed_tasks,
+                    'avg_load_factor': self.stats.avg_load_factor,
+                    'total_cpu_cores': self.stats.total_cpu_cores,
+                    'total_memory_gb': self.stats.total_memory_gb,
+                    'total_gpu_devices': self.stats.total_gpu_devices
+                },
+                'nodes': {
+                    node_id: {
+                        'hostname': node.hostname,
+                        'status': node.status.value,
+                        'cpu_cores': node.cpu_cores,
+                        'memory_gb': node.memory_gb,
+                        'gpu_devices': len(node.gpu_devices),
+                        'load_factor': node.load_factor,
+                        'active_tasks': len(node.active_tasks)
+                    }
+                    for node_id, node in self.nodes.items()
+                },
+                'tasks': {
+                    task_id: self.get_task_status(task_id)
+                    for task_id in list(self.tasks.keys())[:10]  # 只返回最近10个任务
+                }
+            }
+
+    def _schedule_pending_tasks(self):
+        """调度待处理任务"""
+        try:
+            # 获取可用的在线节点
+            available_nodes = {
+                node_id: node for node_id, node in self.nodes.items()
+                if node.status == NodeStatus.ONLINE
+            }
+
+            if not available_nodes:
+                logger.warning("没有可用的在线节点")
+                return
+
+            # 应用优先级老化
+            self.priority_engine.apply_aging(self.tasks)
+
+            # 重新排序队列
+            self.queue_engine.reorder_queue(self.task_queue, self.tasks)
+
+            # 处理待调度任务
+            scheduled_count = 0
+            for task_id in self.task_queue[:]:
+                if scheduled_count >= 10:  # 每次最多调度10个任务
+                    break
+
+                if task_id in self.tasks:
+                    task = self.tasks[task_id]
+
+                    if task.status == TaskStatus.PENDING:
+                        # 使用调度引擎选择执行节点
+                        assigned_node = self.scheduling_engine.schedule_task(
+                            task, available_nodes, self.task_queue)
+
+                        if assigned_node:
+                            # 检查是否需要抢占
+                            preemption_needed = self._check_preemption_needed(task, assigned_node)
+
+                            if preemption_needed:
+                                # 执行抢占
+                                if not self._execute_preemption(task, assigned_node):
+                                    logger.warning(f"任务 {task_id} 抢占失败，跳过调度")
+                                    continue
+
+                            # 分配任务到节点
+                            if self._assign_task_to_node(task, assigned_node):
+                                # 使用队列引擎移除任务
+                                self.queue_engine.remove_task_from_queue(task_id, self.task_queue)
+                                scheduled_count += 1
+                                logger.info(f"任务 {task_id} 已分配到节点 {assigned_node}")
+                            else:
+                                logger.warning(f"任务 {task_id} 分配到节点 {assigned_node} 失败")
+                        else:
+                            logger.debug(f"任务 {task_id} 未能找到合适的执行节点")
+
+        except Exception as e:
+            logger.error(f"任务调度异常: {e}")
+
+    def _check_preemption_needed(self, task: DistributedTask, node_id: str) -> bool:
+        """
+        检查是否需要抢占节点上的任务
+
+        Args:
+            task: 待调度任务
+            node_id: 目标节点ID
+
+        Returns:
+            bool: 是否需要抢占
+        """
+        if node_id not in self.nodes:
+            return False
+
+        node = self.nodes[node_id]
+
+        # 如果节点没有达到最大并发限制，不需要抢占
+        if len(node.active_tasks) < node.cpu_cores * 2:  # 假设每个CPU核心可运行2个任务
+            return False
+
+        # 检查是否有可被抢占的任务
+        running_tasks = {
+            task_id: self.tasks[task_id]
+            for task_id in node.active_tasks
+            if task_id in self.tasks and self.tasks[task_id].status == TaskStatus.RUNNING
+        }
+
+        preemption_candidates = self.priority_engine.get_preemption_candidates(task, running_tasks)
+        return len(preemption_candidates) > 0
+
+    def _execute_preemption(self, task: DistributedTask, node_id: str) -> bool:
+        """
+        执行任务抢占
+
+        Args:
+            task: 待调度任务
+            node_id: 目标节点ID
+
+        Returns:
+            bool: 抢占是否成功
+        """
+        try:
+            if node_id not in self.nodes:
+                return False
+
+            node = self.nodes[node_id]
+
+            # 获取运行中的任务
+            running_tasks = {
+                task_id: self.tasks[task_id]
+                for task_id in node.active_tasks
+                if task_id in self.tasks and self.tasks[task_id].status == TaskStatus.RUNNING
+            }
+
+            # 获取可抢占的任务
+            preemption_candidates = self.priority_engine.get_preemption_candidates(
+                task, running_tasks)
+
+            if not preemption_candidates:
+                return False
+
+            # 抢占优先级最低的任务
+            task_to_preempt = min(
+                preemption_candidates,
+                key=lambda tid: running_tasks[tid].priority.value
+            )
+
+            # 取消被抢占的任务
+            success = self._notify_node_cancel_task(node_id, task_to_preempt)
+            if success:
+                # 从节点活跃任务中移除
+                if task_to_preempt in node.active_tasks:
+                    node.active_tasks.remove(task_to_preempt)
+
+                # 更新被抢占任务状态
+                if task_to_preempt in self.tasks:
+                    preempted_task = self.tasks[task_to_preempt]
+                    preempted_task.status = TaskStatus.CANCELLED
+                    preempted_task.error_message = f"任务被更高优先级任务 {task.task_id} 抢占"
+
+                    # 重新加入队列等待调度
+                    self.queue_engine.add_task_to_queue(preempted_task, self.task_queue)
+
+                logger.info(f"任务 {task_to_preempt} 被任务 {task.task_id} 抢占")
+                return True
+            else:
+                logger.warning(f"任务 {task_to_preempt} 取消失败")
+                return False
+
+        except Exception as e:
+            logger.error(f"执行抢占失败: {e}")
+            return False
+
+    def _assign_task_to_node(self, task: DistributedTask, node_id: str) -> bool:
+        """分配任务到节点"""
+        try:
+            if node_id not in self.nodes:
+                return False
+
+            node = self.nodes[node_id]
+
+            # 更新任务状态
+            task.assigned_node = node_id
+            task.status = TaskStatus.RUNNING
+            task.started_time = datetime.now()
+
+            # 更新节点状态
+            node.active_tasks.add(task.task_id)
+            self._update_node_load_factor(node)
+
+            # 通知节点执行任务
+            self._notify_node_execute_task(node_id, task)
+
+            return True
+
+        except Exception as e:
+            logger.error(f"任务分配失败: {e}")
+            return False
+
+    def _notify_node_execute_task(self, node_id: str, task: DistributedTask):
+        """通知节点执行任务"""
+        try:
+            # 这里应该实现实际的节点通信逻辑
+            # 例如：通过网络发送任务到节点
+
+            # 模拟异步任务执行
+            self.executor.submit(self._simulate_task_execution, node_id, task)
+
+        except Exception as e:
+            logger.error(f"任务执行通知失败: {e}")
+
+    def _simulate_task_execution(self, node_id: str, task: DistributedTask):
+        """模拟任务执行（用于演示）"""
+        try:
+            # 模拟任务执行时间
+            execution_time = 5  # 5秒
+            time.sleep(execution_time)
+
+            # 模拟任务完成
+            task.status = TaskStatus.COMPLETED
+            task.completed_time = datetime.now()
+            task.result = {"success": True, "execution_time": execution_time}
+
+            # 更新节点状态
+            if node_id in self.nodes:
+                node = self.nodes[node_id]
+                node.active_tasks.discard(task.task_id)
+                self._update_node_load_factor(node)
+
+            logger.info(f"任务 {task.task_id} 在节点 {node_id} 上执行完成")
+
+        except Exception as e:
+            logger.error(f"任务执行异常: {e}")
+            task.status = TaskStatus.FAILED
+            task.error_message = str(e)
+
+    def _notify_node_cancel_task(self, node_id: str, task_id: str):
+        """通知节点取消任务"""
+        try:
+            # 这里应该实现实际的节点通信逻辑
+            logger.info(f"通知节点 {node_id} 取消任务 {task_id}")
+
+        except Exception as e:
+            logger.error(f"任务取消通知失败: {e}")
+
+    def _reassign_node_tasks(self, node_id: str):
+        """重新分配节点的任务"""
+        try:
+            if node_id not in self.nodes:
+                return
+
+            node = self.nodes[node_id]
+            tasks_to_reassign = list(node.active_tasks)
+
+            for task_id in tasks_to_reassign:
+                if task_id in self.tasks:
+                    task = self.tasks[task_id]
+                    task.status = TaskStatus.PENDING
+                    task.assigned_node = None
+                    self.task_queue.append(task_id)
+
+            # 重新排序任务队列
+            self._sort_task_queue()
+
+            logger.info(f"节点 {node_id} 的 {len(tasks_to_reassign)} 个任务已重新分配")
+
+        except Exception as e:
+            logger.error(f"任务重新分配失败: {e}")
+
+    def _sort_task_queue(self):
+        """排序任务队列（按优先级）"""
+
+        def get_priority(task_id):
+
+            if task_id in self.tasks:
+                return self.tasks[task_id].priority.value
+            return 0
+
+        self.task_queue.sort(key=get_priority, reverse=True)
+
+    def _update_node_load_factor(self, node: NodeInfo):
+        """更新节点负载因子"""
+        try:
+            # 基于活跃任务数量和CPU核心数计算负载
+            task_load = len(node.active_tasks) / max(node.cpu_cores, 1)
+
+            # 限制在0 - 1范围内
+            node.load_factor = min(max(task_load, 0.0), 1.0)
+
+        except Exception as e:
+            logger.error(f"节点负载因子更新失败: {e}")
+
+    def _update_cluster_stats(self):
+        """更新集群统计信息"""
+        try:
+            self.stats.total_nodes = len(self.nodes)
+            self.stats.online_nodes = sum(1 for node in self.nodes.values()
+                                          if node.status == NodeStatus.ONLINE)
+            self.stats.total_tasks = len(self.tasks)
+            self.stats.running_tasks = sum(
+                1 for task in self.tasks.values() if task.status == TaskStatus.RUNNING)
+            self.stats.completed_tasks = sum(
+                1 for task in self.tasks.values() if task.status == TaskStatus.COMPLETED)
+            self.stats.failed_tasks = sum(1 for task in self.tasks.values()
+                                          if task.status == TaskStatus.FAILED)
+
+            if self.nodes:
+                self.stats.avg_load_factor = sum(
+                    node.load_factor for node in self.nodes.values()) / len(self.nodes)
+                self.stats.total_cpu_cores = sum(node.cpu_cores for node in self.nodes.values())
+                self.stats.total_memory_gb = sum(node.memory_gb for node in self.nodes.values())
+                self.stats.total_gpu_devices = sum(len(node.gpu_devices)
+                                                   for node in self.nodes.values())
+
+        except Exception as e:
+            logger.error(f"集群统计更新失败: {e}")
+
+    def _calculate_task_progress(self, task: DistributedTask) -> float:
+        """计算任务进度"""
+        try:
+            if task.status == TaskStatus.COMPLETED:
+                return 1.0
+            elif task.status == TaskStatus.PENDING:
+                return 0.0
+            elif task.status == TaskStatus.RUNNING:
+                # 基于运行时间估算进度
+                if task.started_time:
+                    elapsed = (datetime.now() - task.started_time).total_seconds()
+                    estimated_total = task.timeout_seconds
+                    return min(elapsed / estimated_total, 0.99)
+                return 0.0
+            else:
+                return 0.0
+
+        except Exception as e:
+            return 0.0
+
+    def _cluster_monitor(self):
+        """集群监控线程"""
+        while self._monitoring:
+            try:
+                # 检查节点心跳
+                self._check_node_heartbeats()
+
+                # 检查超时任务
+                self._check_timeout_tasks()
+
+                # 调度待处理任务
+                self._schedule_pending_tasks()
+
+                # 更新统计信息
+                self._update_cluster_stats()
+
+                time.sleep(30)  # 每30秒检查一次
+
+            except Exception as e:
+                logger.error(f"集群监控异常: {e}")
+                time.sleep(60)
+
+    def _check_node_heartbeats(self):
+        """检查节点心跳"""
+        try:
+            current_time = datetime.now()
+            timeout_threshold = timedelta(minutes=5)
+
+            for node_id, node in list(self.nodes.items()):
+                if current_time - node.last_heartbeat > timeout_threshold:
+                    if node.status == NodeStatus.ONLINE:
+                        logger.warning(f"节点 {node_id} 心跳超时，标记为离线")
+                        node.status = NodeStatus.OFFLINE
+
+                        # 重新分配该节点的任务
+                        self._reassign_node_tasks(node_id)
+
+        except Exception as e:
+            logger.error(f"心跳检查异常: {e}")
+
+    def _check_timeout_tasks(self):
+        """检查超时任务"""
+        try:
+            current_time = datetime.now()
+
+            for task_id, task in list(self.tasks.items()):
+                if task.status == TaskStatus.RUNNING and task.started_time:
+                    elapsed = (current_time - task.started_time).total_seconds()
+
+                    if elapsed > task.timeout_seconds:
+                        logger.warning(
+                            f"任务 {task_id} 执行超时 ({elapsed:.1f}s > {task.timeout_seconds}s)")
+
+                        # 标记任务为超时
+                        task.status = TaskStatus.TIMEOUT
+                        task.completed_time = current_time
+                        task.error_message = f"任务执行超时: {elapsed:.1f}秒"
+
+                        # 如果有分配的节点，更新节点状态
+                        if task.assigned_node and task.assigned_node in self.nodes:
+                            node = self.nodes[task.assigned_node]
+                            node.active_tasks.discard(task_id)
+                            self._update_node_load_factor(node)
+
+        except Exception as e:
+            logger.error(f"超时检查异常: {e}")
+
+    def _failure_recovery(self):
+        """故障恢复线程"""
+        while self._monitoring:
+            try:
+                # 检查失败的任务
+                self._recover_failed_tasks()
+
+                # 检查失败的节点
+                self._recover_failed_nodes()
+
+                time.sleep(300)  # 每5分钟检查一次
+
+            except Exception as e:
+                logger.error(f"故障恢复异常: {e}")
+                time.sleep(60)
+
+    def _recover_failed_tasks(self):
+        """恢复失败的任务"""
+        try:
+            for task_id, task in list(self.tasks.items()):
+                if task.status == TaskStatus.FAILED and task.retry_count < task.max_retries:
+                    # 重新提交任务
+                    task.status = TaskStatus.PENDING
+                    task.retry_count += 1
+                    task.assigned_node = None
+                    task.started_time = None
+
+                    if task_id not in self.task_queue:
+                        self.task_queue.append(task_id)
+
+                    logger.info(f"重新提交失败的任务 {task_id} (重试次数: {task.retry_count})")
+
+        except Exception as e:
+            logger.error(f"任务恢复异常: {e}")
+
+    def _recover_failed_nodes(self):
+        """恢复失败的节点"""
+        try:
+            # 这里应该实现节点故障恢复逻辑
+            # 例如：尝试重启节点、迁移到备用节点等
+            pass
+
+        except Exception as e:
+            logger.error(f"节点恢复异常: {e}")
+
+    def sync_cluster_config(self, config: Dict[str, Any]) -> bool:
+        """
+        同步集群配置到所有节点
+
+        Args:
+            config: 配置字典
+
+        Returns:
+            bool: 同步是否成功
+        """
+        try:
+            with self._lock:
+                # 更新本地配置
+                self.cluster_config = config
+
+                # 同步配置到所有在线节点
+                for node_id, node in self.nodes.items():
+                    if node.status == NodeStatus.ONLINE:
+                        self._sync_config_to_node(node_id, config)
+
+                logger.info(
+                    f"集群配置已同步到 {len([n for n in self.nodes.values() if n.status == NodeStatus.ONLINE])} 个节点")
+
+                # 发布配置同步事件
+                event_bus.publish_sync({
+                    'event_type': 'cluster_config_synced',
+                    'config': config
+                })
+
+                return True
+
+        except Exception as e:
+            logger.error(f"集群配置同步失败: {e}")
+            return False
+
+    def authenticate_node(self, node_id: str, credentials: Dict[str, Any]) -> bool:
+        """
+        节点身份认证
+
+        Args:
+            node_id: 节点ID
+            credentials: 认证凭据
+
+        Returns:
+            bool: 认证是否成功
+        """
+        try:
+            # 简单的认证逻辑（实际应使用更安全的认证机制）
+            required_fields = ['token', 'hostname', 'ip_address']
+
+            for field in required_fields:
+                if field not in credentials:
+                    logger.warning(f"节点 {node_id} 认证失败: 缺少必要字段 {field}")
+                    return False
+
+            # 验证token（这里使用简单的字符串比较，实际应使用加密验证）
+            expected_token = self._generate_node_token(node_id, credentials['hostname'])
+            if credentials['token'] != expected_token:
+                logger.warning(f"节点 {node_id} 认证失败: token无效")
+                return False
+
+            logger.info(f"节点 {node_id} 认证成功")
+            return True
+
+        except Exception as e:
+            logger.error(f"节点认证失败: {e}")
+            return False
+
+    def update_node_status(self, node_id: str, status: NodeStatus, additional_info: Optional[Dict[str, Any]] = None) -> bool:
+        """
+        更新节点状态
+
+        Args:
+            node_id: 节点ID
+            status: 新状态
+            additional_info: 额外信息
+
+        Returns:
+            bool: 更新是否成功
+        """
+        with self._lock:
+            try:
+                if node_id not in self.nodes:
+                    logger.warning(f"节点 {node_id} 不存在，无法更新状态")
+                    return False
+
+                old_status = self.nodes[node_id].status
+                self.nodes[node_id].status = status
+
+                # 更新最后心跳时间
+                if status == NodeStatus.ONLINE:
+                    self.nodes[node_id].last_heartbeat = datetime.now()
+
+                # 处理状态变更
+                if old_status != status:
+                    self._handle_node_status_change(node_id, old_status, status, additional_info)
+
+                self._update_cluster_stats()
+                self._sync_cluster_state()
+
+                logger.info(f"节点 {node_id} 状态已更新: {old_status.value} -> {status.value}")
+                return True
+
+            except Exception as e:
+                logger.error(f"更新节点状态失败: {e}")
+                return False
+
+    def get_cluster_config(self) -> Dict[str, Any]:
+        """
+        获取集群配置
+
+        Returns:
+            Dict[str, Any]: 集群配置
+        """
+        with self._lock:
+            return getattr(self, 'cluster_config', {
+                'coordinator_id': 'main-coordinator',
+                'heartbeat_interval': 30,
+                'task_timeout': 3600,
+                'max_concurrent_tasks': 100,
+                'load_balance_strategy': 'round_robin'
+            })
+
+    def _sync_cluster_state(self) -> None:
+        """同步集群状态到所有节点"""
+        try:
+            cluster_state = {
+                'nodes': {
+                    node_id: {
+                        'hostname': node.hostname,
+                        'ip_address': node.ip_address,
+                        'status': node.status.value,
+                        'cpu_cores': node.cpu_cores,
+                        'memory_gb': node.memory_gb,
+                        'gpu_devices': node.gpu_devices,
+                        'load_factor': node.load_factor,
+                        'active_tasks': list(node.active_tasks),
+                        'capabilities': list(node.capabilities)
+                    }
+                    for node_id, node in self.nodes.items()
+                },
+                'stats': {
+                    'total_nodes': self.stats.total_nodes,
+                    'online_nodes': self.stats.online_nodes,
+                    'avg_load_factor': self.stats.avg_load_factor
+                },
+                'timestamp': datetime.now().isoformat()
+            }
+
+            # 广播状态到所有在线节点
+            for node_id, node in self.nodes.items():
+                if node.status == NodeStatus.ONLINE:
+                    self._broadcast_state_to_node(node_id, cluster_state)
+
+        except Exception as e:
+            logger.error(f"集群状态同步失败: {e}")
+
+    def _sync_config_to_node(self, node_id: str, config: Dict[str, Any]) -> None:
+        """同步配置到指定节点"""
+        try:
+            # 这里应该实现实际的网络通信
+            # 目前使用事件总线模拟
+            event_bus.publish_sync({
+                'event_type': 'node_config_update',
+                'node_id': node_id,
+                'config': config
+            })
+        except Exception as e:
+            logger.error(f"配置同步到节点 {node_id} 失败: {e}")
+
+    def _broadcast_state_to_node(self, node_id: str, state: Dict[str, Any]) -> None:
+        """广播状态到指定节点"""
+        try:
+            # 这里应该实现实际的网络通信
+            # 目前使用事件总线模拟
+            event_bus.publish_sync({
+                'event_type': 'cluster_state_update',
+                'node_id': node_id,
+                'state': state
+            })
+        except Exception as e:
+            logger.error(f"状态广播到节点 {node_id} 失败: {e}")
+
+    def _handle_node_status_change(self, node_id: str, old_status: NodeStatus,
+                                   new_status: NodeStatus, additional_info: Optional[Dict[str, Any]]) -> None:
+        """处理节点状态变更"""
+        try:
+            if new_status == NodeStatus.OFFLINE and old_status == NodeStatus.ONLINE:
+                # 节点离线，重新分配任务
+                self._reassign_node_tasks(node_id)
+
+            elif new_status == NodeStatus.ONLINE and old_status != NodeStatus.ONLINE:
+                # 节点上线，同步最新状态
+                self._sync_cluster_state()
+
+            # 发布状态变更事件
+            event_bus.publish_sync({
+                'event_type': 'node_status_changed',
+                'node_id': node_id,
+                'old_status': old_status.value,
+                'new_status': new_status.value,
+                'additional_info': additional_info or {}
+            })
+
+        except Exception as e:
+            logger.error(f"处理节点状态变更失败: {e}")
+
+    def _generate_node_token(self, node_id: str, hostname: str) -> str:
+        """生成节点认证token（简化实现）"""
+        # 实际应该使用更安全的token生成机制
+        import hashlib
+        token_string = f"{node_id}:{hostname}:{getattr(self, 'cluster_secret', 'rqa2025-secret')}"
+        return hashlib.sha256(token_string.encode()).hexdigest()[:32]
+
+    def shutdown(self):
+        """关闭分布式协调器"""
+        logger.info("正在关闭分布式协调器...")
+
+        self._monitoring = False
+
+        # 等待监控线程结束
+        if self._monitor_thread.is_alive():
+            self._monitor_thread.join(timeout=10)
+
+        # 等待恢复线程结束
+        if self._recovery_thread.is_alive():
+            self._recovery_thread.join(timeout=10)
+
+        # 关闭执行器
+        self.executor.shutdown(wait=True)
+
+        logger.info("分布式协调器已关闭")
+
+
+# 全局分布式协调器实例
+_distributed_coordinator = None
+
+
+def get_distributed_coordinator() -> DistributedCoordinator:
+    """获取分布式协调器实例"""
+    global _distributed_coordinator
+
+    if _distributed_coordinator is None:
+        _distributed_coordinator = DistributedCoordinator()
+
+    return _distributed_coordinator
+
+
+# 便捷函数
+
+def submit_distributed_task(task_type: str, data: Dict[str, Any],
+
+
+                            priority: TaskPriority = TaskPriority.NORMAL) -> str:
+    """提交分布式任务的便捷函数"""
+    coordinator = get_distributed_coordinator()
+    return coordinator.submit_task(task_type, data, priority)
+
+
+def get_cluster_status() -> Dict[str, Any]:
+    """获取集群状态的便捷函数"""
+    coordinator = get_distributed_coordinator()
+    return coordinator.get_cluster_status()
+
+
+if __name__ == "__main__":
+    # 示例用法
+    coordinator = DistributedCoordinator()
+
+    # 注册示例节点
+    node1 = NodeInfo(
+        node_id="node_001",
+        hostname="worker - 01",
+        ip_address="192.168.1.101",
+        cpu_cores=8,
+        memory_gb=16.0,
+        gpu_devices=[0]
+    )
+
+    coordinator.register_node(node1)
+
+    # 提交示例任务
+    task_id = coordinator.submit_task("ml_training", {"model": "resnet", "dataset": "imagenet"})
+    logger.info(f"已提交任务: {task_id}")
+
+    # 获取集群状态
+    status = coordinator.get_cluster_status()
+    logger.info(f"集群状态: {json.dumps(status, indent=2, default=str)}")

@@ -1,0 +1,12 @@
+groups:
+- name: rqa_alerts
+  rules:
+  - alert: HighResponseTime
+    annotations:
+      description: '响应时间超过200ms (阈值: 200.0)'
+      summary: 响应时间超过200ms
+    expr: response_time > 200
+    for: 5m
+    labels:
+      service: rqa
+      severity: warning

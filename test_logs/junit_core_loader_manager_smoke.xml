@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="1" skipped="0" tests="7" time="102.124" timestamp="2025-11-16T14:24:54.318359+08:00" hostname="AIPC"><testcase classname="unit.data.core.test_data_loader_file_basic" name="test_file_loader_load_and_validate_csv_success" time="0.828"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     FileDataLoader:data_loader.py:121 成功加载数据: C:\Users\AILeo\AppData\Local\Temp\tmpbulg9mgc.csv, 行数: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:FileDataLoader:成功加载数据: C:\Users\AILeo\AppData\Local\Temp\tmpbulg9mgc.csv, 行数: 2
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_smoke" name="test_data_manager_basic_health_and_config_validation" time="0.762"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     data_manager:data_manager.py:1258 DataManager shutdown completed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 14:26:32,315 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+INFO:data_manager:DataManager shutdown completed
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_factories" name="test_create_data_loader_variants" time="0.744"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_factories" name="test_api_and_database_loader_simple_paths" time="0.033"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     APIDataLoader:data_loader.py:264 从API加载数据: http://x/endpoint
+WARNING  APIDataLoader:data_loader.py:286 API数据加载器不支持保存操作
+ERROR    DatabaseDataLoader:data_loader.py:197 数据库连接字符串未配置
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:APIDataLoader:从API加载数据: http://x/endpoint
+WARNING:APIDataLoader:API数据加载器不支持保存操作
+ERROR:DatabaseDataLoader:数据库连接字符串未配置
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_manager_smoke" name="test_data_manager_store_and_metadata_cycle" time="0.092"><failure message="AssertionError: assert ({'data_type': 'test', 'end_date': '2024-01-31', 'start_date': '2024-01-01', 'symbol': 'X'} and None == 'X_test')&#10; +  where None = &lt;built-in method get of dict object at 0x00000286AD159400&gt;('key')&#10; +    where &lt;built-in method get of dict object at 0x00000286AD159400&gt; = {'data_type': 'test', 'end_date': '2024-01-31', 'start_date': '2024-01-01', 'symbol': 'X'}.get">tests\unit\data\core\test_data_manager_smoke.py:27: in test_data_manager_store_and_metadata_cycle
+    assert meta and meta.get("key") == key
+E   AssertionError: assert ({'data_type': 'test', 'end_date': '2024-01-31', 'start_date': '2024-01-01', 'symbol': 'X'} and None == 'X_test')
+E    +  where None = &lt;built-in method get of dict object at 0x00000286AD159400&gt;('key')
+E    +    where &lt;built-in method get of dict object at 0x00000286AD159400&gt; = {'data_type': 'test', 'end_date': '2024-01-31', 'start_date': '2024-01-01', 'symbol': 'X'}.get</failure><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  data_manager:data_manager.py:459 统一基础设施集成层不可用，使用标准logging
+WARNING  data_manager:data_manager.py:495 使用降级基础设施服务
+WARNING  data_manager:data_manager.py:516 降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 使用降级缓存管理器
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 核心服务注册完成
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     data_manager:data_manager.py:1301 开始存储数据，类型: cache
+INFO     data_manager:data_manager.py:1360 数据存储完成，结果: {'cache_key': 'stored_data_-5444469505444007595', 'status': 'cached'}
+INFO     data_manager:data_manager.py:1258 DataManager shutdown completed
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:data_manager:统一基础设施集成层不可用，使用标准logging
+WARNING:data_manager:使用降级基础设施服务
+WARNING:data_manager:降级缓存初始化失败: No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 14:26:32,374 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:使用降级缓存管理器
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:核心服务注册完成
+INFO:data_manager:DataManager initialized successfully
+INFO:data_manager:开始存储数据，类型: cache
+INFO:data_manager:数据存储完成，结果: {'cache_key': 'stored_data_-5444469505444007595', 'status': 'cached'}
+INFO:data_manager:DataManager shutdown completed
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_basic" name="test_file_loader_unsupported_format_and_missing_file" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:101 文件不存在: not_exists.csv
+ERROR    FileDataLoader:data_loader.py:117 不支持的文件格式: zzz
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:文件不存在: not_exists.csv
+ERROR:FileDataLoader:不支持的文件格式: zzz
+
+</system-err></testcase><testcase classname="unit.data.core.test_data_loader_file_basic" name="test_file_loader_save_respects_validate_and_formats" time="0.030"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    FileDataLoader:data_loader.py:70 缺少必需列: ['b']
+INFO     FileDataLoader:data_loader.py:164 成功保存数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3677\popen-gw0\test_file_loader_save_respects0\ok.csv, 行数: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:FileDataLoader:缺少必需列: ['b']
+INFO:FileDataLoader:成功保存数据: C:\Users\AILeo\AppData\Local\Temp\pytest-of-AILeo\pytest-3677\popen-gw0\test_file_loader_save_respects0\ok.csv, 行数: 1
+
+</system-err></testcase></testsuite></testsuites>

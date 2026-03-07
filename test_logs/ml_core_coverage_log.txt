@@ -1,0 +1,542 @@
+警告: 无法导入应用层监控器: No module named 'infrastructure'
+============================= test session starts =============================
+platform win32 -- Python 3.9.23, pytest-8.4.1, pluggy-1.5.0
+rootdir: C:\PythonProject\RQA2025\tests
+configfile: pytest.ini
+plugins: anyio-4.7.0, dash-2.14.2, Faker-37.3.0, asyncio-1.1.0, cov-6.0.0, mock-3.14.1, timeout-2.4.0, xdist-3.6.1
+asyncio: mode=strict, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 300.0s
+timeout method: thread
+timeout func_only: False
+created: 16/16 workers
+🔥 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 < 0.8
+🔥 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 < 0.8
+16 workers [280 items]
+
+scheduling tests via LoadScheduling
+
+tests\unit\ml\core\test_error_handling_unit.py::test_default_recovery_strategy_recover_data_error 
+tests\unit\ml\core\test_exceptions_unit.py::test_model_training_error_includes_model_type 
+tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_failure_keeps_error_unresolved 
+tests\unit\ml\core\test_inference_service_simple.py::test_start_when_already_running_returns_true 
+tests\unit\ml\core\test_exceptions_unit.py::test_validate_model_exists_missing 
+tests\unit\ml\core\test_inference_service_simple.py::test_predict_synchronous 
+tests\unit\ml\core\test_ml_core_alias_unit.py::test_ml_core_import_success 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_predict_with_numpy_input_path 
+tests\unit\ml\core\test_inference_service_simple.py::test_start_async_executes_in_background 
+tests\unit\ml\core\test_error_handling_unit.py::test_resource_exhaustion_error_sets_context 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_save_model_missing_id_returns_false 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_feature_preprocessing_with_missing_columns 
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_error_with_recovery_strategy 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_lstm_placeholder 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_cross_validate_exception_reraises 
+tests\unit\ml\core\test_error_handling_unit.py::test_register_helpers_expose_handler 
+[gw5] [  0%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_model_training_error_includes_model_type 
+tests\unit\ml\core\test_exceptions_unit.py::test_handle_ml_exception_wraps_generic 
+[gw6] [  0%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_validate_model_exists_missing 
+[gw5] [  1%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_handle_ml_exception_wraps_generic 
+[gw10] [  1%] PASSED tests\unit\ml\core\test_ml_core_alias_unit.py::test_ml_core_import_success 
+[gw8] [  1%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_start_when_already_running_returns_true 
+[gw4] [  2%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_resource_exhaustion_error_sets_context 
+tests\unit\ml\core\test_exceptions_unit.py::test_handle_ml_exception_passthrough 
+tests\unit\ml\core\test_inference_service_simple.py::test_stop_is_noop_when_service_not_running 
+[gw2] [  2%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_failure_keeps_error_unresolved 
+[gw1] [  2%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_default_recovery_strategy_recover_data_error 
+tests\unit\ml\core\test_error_handling_unit.py::test_default_recovery_strategy_recover_inference_error 
+[gw5] [  3%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_handle_ml_exception_passthrough 
+tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_condition_prevents_execution 
+[gw13] [  3%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_cross_validate_exception_reraises 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_calculate_metrics_with_different_shapes 
+tests\unit\ml\core\test_ml_core_alias_unit.py::test_ml_core_import_fallback 
+tests\unit\ml\core\test_error_handling_unit.py::test_error_history_trim_limits_size 
+[gw0] [  3%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_handle_error_with_recovery_strategy 
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_plain_exception_updates_statistics 
+[gw8] [  4%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_stop_is_noop_when_service_not_running 
+[gw3] [  4%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_register_helpers_expose_handler 
+tests\unit\ml\core\test_error_handling_unit.py::test_get_error_statistics_convenience_function 
+[gw12] [  5%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_save_model_missing_id_returns_false 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_create_feature_processor_variants 
+[gw2] [  5%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_condition_prevents_execution 
+[gw11] [  5%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_predict_with_numpy_input_path 
+[gw1] [  6%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_default_recovery_strategy_recover_inference_error 
+tests\unit\ml\core\test_exceptions_unit.py::test_configuration_error_includes_key 
+[gw9] [  6%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_start_async_executes_in_background 
+[gw10] [  6%] PASSED tests\unit\ml\core\test_ml_core_alias_unit.py::test_ml_core_import_fallback 
+[gw7] [  7%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_predict_synchronous 
+tests\unit\ml\core\test_inference_service_simple.py::test_predict_batch_dataframe 
+tests\unit\ml\core\test_inference_service_simple.py::test_submit_request_requires_running_service 
+[gw13] [  7%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_calculate_metrics_with_different_shapes 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_config_validation_edge_cases 
+[gw6] [  7%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_configuration_error_includes_key 
+tests\unit\ml\core\test_exceptions_unit.py::test_resource_exhaustion_error_records_resource 
+[gw6] [  8%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_resource_exhaustion_error_records_resource 
+tests\unit\ml\core\test_error_handling_unit.py::test_resource_recovery_applies_for_non_critical 
+[gw12] [  8%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_create_feature_processor_variants 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_get_feature_importance_missing_attributes_returns_none 
+tests\unit\ml\core\test_inference_service_simple.py::test_predict_requires_running_service 
+[gw0] [  8%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_handle_plain_exception_updates_statistics 
+[gw3] [  9%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_get_error_statistics_convenience_function 
+tests\unit\ml\core\test_error_handling_unit.py::test_ml_error_handler_decorator_handles_exception 
+[gw9] [  9%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_predict_requires_running_service 
+tests\unit\ml\core\test_exceptions_unit.py::test_validate_data_shape_length_mismatch 
+[gw5] [ 10%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_validate_data_shape_length_mismatch 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_model_save_load_with_file_operations 
+[gw7] [ 10%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_predict_batch_dataframe 
+[gw4] [ 10%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_error_history_trim_limits_size 
+[gw8] [ 11%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_submit_request_requires_running_service 
+[gw15] [ 11%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_feature_preprocessing_with_missing_columns 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_evaluate_model_propagates_errors 
+tests\unit\ml\core\test_error_handling_unit.py::test_export_error_report_includes_active_errors 
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_existing_mLError_and_resolution_flow 
+[gw3] [ 11%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_ml_error_handler_decorator_handles_exception 
+tests\unit\ml\core\test_error_handling_unit.py::test_error_callbacks_failure_is_logged 
+[gw14] [ 12%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_lstm_placeholder 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_sklearn_import_failure 
+[gw11] [ 12%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_evaluate_model_propagates_errors 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_create_model_xgb_success 
+[gw2] [ 12%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_export_error_report_includes_active_errors 
+[gw12] [ 13%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_get_feature_importance_missing_attributes_returns_none 
+[gw13] [ 13%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_config_validation_edge_cases 
+[gw11] [ 13%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_create_model_xgb_success 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_fallback_on_adapter_failure 
+[gw15] [ 14%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_fallback_on_adapter_failure 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_force_fallback_env_var 
+[gw1] [ 14%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_resource_recovery_applies_for_non_critical 
+[gw4] [ 15%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_error_callbacks_failure_is_logged 
+tests\unit\ml\core\test_inference_service_simple.py::test_submit_request_timeout_falls_back_to_inline_processing 
+[gw9] [ 15%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_submit_request_timeout_falls_back_to_inline_processing 
+[gw5] [ 15%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_model_save_load_with_file_operations 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_predict_with_invalid_model_id 
+[gw5] [ 16%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_predict_with_invalid_model_id 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_module_import_adapter_failure_uses_defaults 
+[gw10] [ 16%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_module_import_adapter_failure_uses_defaults 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_predict_with_pandas_data_processing 
+tests\unit\ml\core\test_inference_service_simple.py::test_start_initializes_event_loop 
+[gw8] [ 16%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_start_initializes_event_loop 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_train_model_with_exception_logging 
+tests\unit\ml\core\test_inference_service_simple.py::test_submit_request 
+[gw15] [ 17%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_force_fallback_env_var 
+[gw7] [ 17%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_submit_request 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_invalid_type 
+tests\unit\ml\core\test_exceptions_unit.py::test_validate_data_shape_expected_features 
+[gw14] [ 17%] FAILED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_sklearn_import_failure 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_xgboost_fallback 
+[gw13] [ 18%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_invalid_type 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_import_error 
+[gw14] [ 18%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_xgboost_fallback 
+[gw0] [ 18%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_handle_existing_mLError_and_resolution_flow 
+tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_priority_applies_highest_priority_first 
+tests\unit\ml\core\test_error_handling_unit.py::test_handle_error_returns_existing_error_and_respects_max_attempts 
+[gw8] [ 19%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_train_model_with_exception_logging 
+[gw6] [ 19%] PASSED tests\unit\ml\core\test_exceptions_unit.py::test_validate_data_shape_expected_features 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_fit_failure 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_file_not_found 
+[gw1] [ 20%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_handle_error_returns_existing_error_and_respects_max_attempts 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_get_feature_importance_exception_returns_none 
+[gw12] [ 20%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_get_feature_importance_exception_returns_none 
+[gw13] [ 20%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_import_error 
+[gw6] [ 21%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_fit_failure 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_robust 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_success 
+[gw0] [ 21%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_recovery_strategy_priority_applies_highest_priority_first 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_success 
+[gw12] [ 21%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_robust 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_minmax 
+[gw8] [ 22%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_file_not_found 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_joblib_load_failure 
+[gw5] [ 22%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_predict_with_pandas_data_processing 
+tests\unit\ml\core\test_error_handling_unit.py::test_get_error_statistics_recovery_success_rate 
+[gw6] [ 22%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_success 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_not_found 
+[gw1] [ 23%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_success 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_with_dataframe 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_invalid_type 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_delete_model_exception_returns_false 
+[gw2] [ 23%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_get_error_statistics_recovery_success_rate 
+[gw12] [ 23%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_minmax 
+[gw6] [ 24%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_not_found 
+tests\unit\ml\core\test_error_handling_unit.py::test_logger_fallback_when_adapter_raises 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_import_error 
+[gw13] [ 24%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_invalid_type 
+[gw11] [ 25%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_delete_model_exception_returns_false 
+[gw0] [ 25%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_import_error 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_exception 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_invalid_type 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_without_fit 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_exception_during_creation 
+[gw12] [ 25%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_invalid_type 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_success 
+[gw13] [ 26%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_create_feature_processor_exception_during_creation 
+[gw1] [ 26%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_with_dataframe 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_missing_model_id 
+[gw0] [ 26%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_success 
+tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_prepare_helpers_numpy_paths 
+[gw8] [ 27%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_joblib_load_failure 
+[gw2] [ 27%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_exception 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_with_numpy_array 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_success 
+[gw11] [ 27%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_without_fit 
+[gw0] [ 28%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_with_numpy_array 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_exception 
+[gw2] [ 28%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_success 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_with_numpy_array 
+[gw11] [ 28%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_exception 
+[gw10] [ 29%] PASSED tests\unit\ml\core\test_ml_core_edge_cases_unit.py::test_prepare_helpers_numpy_paths 
+[gw2] [ 29%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_with_numpy_array 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_importances 
+tests\unit\ml\core\test_ml_core_helpers.py::test_prepare_features_with_dataframe 
+tests\unit\ml\core\test_error_handling_unit.py::test_model_load_error_includes_model_id 
+tests\unit\ml\core\test_inference_service_simple.py::test_process_request_records_failures 
+tests\unit\ml\core\test_inference_service_simple.py::test_get_service_status 
+[gw9] [ 30%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_process_request_records_failures 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_evaluate_model_with_prediction_failure 
+[gw7] [ 30%] PASSED tests\unit\ml\core\test_inference_service_simple.py::test_get_service_status 
+tests\unit\ml\core\test_ml_core_helpers_additional.py::test_ml_core_fallback_applies_default_config 
+[gw4] [ 30%] FAILED tests\unit\ml\core\test_error_handling_unit.py::test_logger_fallback_when_adapter_raises 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_names 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_without_cache_flag_triggers_default_services 
+[gw14] [ 31%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_evaluate_model_with_prediction_failure 
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_feature_processor_registers_processor 
+[gw15] [ 31%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_initialization_without_cache_flag_triggers_default_services 
+tests\unit\ml\core\test_ml_core_helpers.py::test_preprocess_features_handles_exception 
+[gw3] [ 31%] PASSED tests\unit\ml\core\test_error_handling_unit.py::test_model_load_error_includes_model_id 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_predict_logs_and_raises_on_failure 
+[gw9] [ 32%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_create_feature_processor_registers_processor 
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_random_forest_merges_defaults 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_lstm_uses_simple_network 
+[gw7] [ 32%] PASSED tests\unit\ml\core\test_ml_core_helpers_additional.py::test_ml_core_fallback_applies_default_config 
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_preprocess_features_with_non_pandas_data 
+tests\unit\ml\core\test_ml_core_helpers_additional.py::test_train_model_handles_validation_error 
+[gw14] [ 32%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_lstm_uses_simple_network 
+[gw10] [ 33%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_prepare_features_with_dataframe 
+[gw5] [ 33%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_preprocess_features_with_non_pandas_data 
+tests\unit\ml\core\test_ml_core_helpers.py::test_prepare_target_returns_numpy_array 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_simple_neural_network_defaults 
+[gw14] [ 33%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_create_simple_neural_network_defaults 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_feature_processor_invalid_type 
+[gw7] [ 34%] PASSED tests\unit\ml\core\test_ml_core_helpers_additional.py::test_train_model_handles_validation_error 
+tests\unit\ml\core\test_ml_core_helpers_additional.py::test_train_model_wraps_exceptions 
+[gw10] [ 34%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_prepare_target_returns_numpy_array 
+[gw5] [ 35%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_create_feature_processor_invalid_type 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_transform_failure 
+tests\unit\ml\core\test_ml_core_helpers.py::test_save_list_delete_model_workflow 
+[gw3] [ 35%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_predict_logs_and_raises_on_failure 
+[gw15] [ 35%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_preprocess_features_handles_exception 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_fit_and_transform_missing_processor_raise 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_with_config 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_not_found 
+[gw5] [ 36%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_fit_and_transform_missing_processor_raise 
+tests\unit\ml\core\test_ml_core_helpers.py::test_calculate_metrics_failure_returns_empty_dict 
+[gw10] [ 36%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_save_list_delete_model_workflow 
+[gw12] [ 36%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_with_config 
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_without_model_cache_flag_applies_defaults 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_evaluate_model_returns_metrics 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_not_found 
+tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_success 
+[gw13] [ 37%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_fit_feature_processor_not_found 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_not_found 
+[gw7] [ 37%] PASSED tests\unit\ml\core\test_ml_core_helpers_additional.py::test_train_model_wraps_exceptions 
+[gw12] [ 37%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_initialization_without_model_cache_flag_applies_defaults 
+[gw0] [ 38%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_fit_feature_processor_not_found 
+tests\unit\ml\core\test_ml_core_unit.py::test_prepare_features_else_branch 
+tests\unit\ml\core\test_ml_core_unit.py::test_train_and_predict_linear_model 
+[gw2] [ 38%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_transform_features_not_found 
+[gw6] [ 38%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_transform_features_transform_failure 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_cross_validate_with_numpy_inputs 
+[gw15] [ 39%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_calculate_metrics_failure_returns_empty_dict 
+tests\unit\ml\core\test_ml_core_helpers.py::test_save_model_failure_returns_false 
+[gw9] [ 39%] FAILED tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_random_forest_merges_defaults 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_get_feature_importance_variants 
+tests\unit\ml\core\test_ml_core_unit.py::test_get_feature_importance_with_importances 
+[gw13] [ 40%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_get_feature_importance_with_importances 
+tests\unit\ml\core\test_ml_core_unit.py::test_save_load_and_delete_model 
+[gw15] [ 40%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_save_model_failure_returns_false 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_predict_requires_existing_model 
+tests\unit\ml\core\test_ml_core_unit.py::test_evaluate_model_exception_handling 
+tests\unit\ml\core\test_ml_core_helpers.py::test_calculate_metrics_returns_expected_keys 
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_xgb_importerror_fallbacks 
+[gw0] [ 40%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_prepare_features_else_branch 
+tests\unit\ml\core\test_ml_core_unit.py::test_predict_model_not_found 
+[gw7] [ 41%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_predict_requires_existing_model 
+[gw5] [ 41%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_get_feature_importance_variants 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_preprocess_features_missing_columns_returns_original_values 
+[gw9] [ 41%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_xgb_importerror_fallbacks 
+tests\unit\ml\core\test_ml_core_helpers.py::test_create_simple_neural_network_importerror_fallback 
+[gw10] [ 42%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_calculate_metrics_returns_expected_keys 
+[gw9] [ 42%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_create_simple_neural_network_importerror_fallback 
+tests\unit\ml\core\test_ml_core_helpers.py::test_load_model_failure_returns_none 
+[gw15] [ 42%] PASSED tests\unit\ml\core\test_ml_core_helpers.py::test_load_model_failure_returns_none 
+[gw1] [ 43%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_missing_model_id 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_standard 
+[gw0] [ 43%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_predict_model_not_found 
+tests\unit\ml\core\test_ml_core_unit.py::test_predict_exception_handling 
+[gw1] [ 43%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureProcessor::test_create_feature_processor_standard 
+[gw11] [ 44%] FAILED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_importances 
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_coef 
+[gw14] [ 44%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_preprocess_features_missing_columns_returns_original_values 
+[gw3] [ 45%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_evaluate_model_returns_metrics 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_random_forest_merges_defaults 
+[gw4] [ 45%] FAILED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_names 
+[gw6] [ 45%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_cross_validate_with_numpy_inputs 
+[gw2] [ 46%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_evaluate_model_exception_handling 
+tests\unit\ml\core\test_ml_core_save_load_unit.py::test_save_and_load_model 
+[gw3] [ 46%] FAILED tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_random_forest_merges_defaults 
+tests\unit\ml\core\test_ml_core_unit.py::test_create_model_rf_type 
+tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_xgb_import_error_fallback 
+[gw12] [ 46%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_train_and_predict_linear_model 
+tests\unit\ml\core\test_ml_core_unit.py::test_create_model_invalid_type 
+[gw3] [ 47%] PASSED tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_xgb_import_error_fallback 
+[gw11] [ 47%] PASSED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_coef 
+[gw0] [ 47%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_predict_exception_handling 
+[gw12] [ 48%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_create_model_invalid_type 
+[gw8] [ 48%] PASSED tests\unit\ml\core\test_ml_core_exception_branches_supplement.py::test_load_model_success 
+tests\unit\ml\core\test_ml_core_unit.py::test_feature_processor_workflow 
+[gw13] [ 48%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_save_load_and_delete_model 
+[gw8] [ 49%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_feature_processor_workflow 
+tests\unit\ml\core\test_ml_core_unit.py::test_cross_validate_returns_metrics 
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_force_fallback_and_null_adapters 
+[gw8] [ 49%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_initialization_force_fallback_and_null_adapters 
+tests\unit\ml\core\test_ml_core_unit.py::test_train_model_exception_path 
+[gw13] [ 50%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_cross_validate_returns_metrics 
+[gw6] [ 50%] PASSED tests\unit\ml\core\test_ml_core_save_load_unit.py::test_save_and_load_model 
+tests\unit\ml\core\test_ml_core_unit.py::test_initialization_fallback 
+[gw8] [ 50%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_train_model_exception_path 
+[gw6] [ 51%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_initialization_fallback 
+[gw2] [ 51%] FAILED tests\unit\ml\core\test_ml_core_unit.py::test_create_model_rf_type 
+tests\unit\ml\core\test_ml_core_unit.py::test_create_model_xgb_with_import_error 
+[gw2] [ 51%] PASSED tests\unit\ml\core\test_ml_core_unit.py::test_create_model_xgb_with_import_error 🔥 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 < 0.8
+🔥 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 < 0.8
+
+
+=================================== ERRORS ====================================
+_ ERROR collecting unit/ml/core/test_process_orchestrator_coverage_supplement.py _
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\python.py:498: in importtestmodule
+    mod = import_path(
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1030: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1007: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:986: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:680: in _load_unlocked
+    ???
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\assertion\rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\assertion\rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "C:\PythonProject\RQA2025\tests\unit\ml\core\test_process_orchestrator_coverage_supplement.py", line 16
+E       import sys
+E       ^
+E   SyntaxError: invalid syntax
+------------------------------- Captured stdout -------------------------------
+🔥 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 < 0.8
+🔥 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 < 0.8
+______ ERROR collecting unit/ml/core/test_process_orchestrator_worker.py ______
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\python.py:498: in importtestmodule
+    mod = import_path(
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1030: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1007: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:986: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:680: in _load_unlocked
+    ???
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\assertion\rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\assertion\rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "C:\PythonProject\RQA2025\tests\unit\ml\core\test_process_orchestrator_worker.py", line 7
+E       import sys
+E       ^
+E   SyntaxError: invalid syntax
+_______ ERROR collecting unit/ml/core/test_unified_ml_interface_unit.py _______
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\python.py:498: in importtestmodule
+    mod = import_path(
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1030: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1007: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:986: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:680: in _load_unlocked
+    ???
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\assertion\rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\site-packages\_pytest\assertion\rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+C:\Users\AILeo\miniconda3\envs\rqa\lib\ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "C:\PythonProject\RQA2025\tests\unit\ml\core\test_unified_ml_interface_unit.py", line 11
+E       import sys
+E       ^
+E   SyntaxError: invalid syntax
+================================== FAILURES ===================================
+____ TestMLCoreExceptionBranches.test_create_model_sklearn_import_failure _____
+[gw14] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+tests\unit\ml\core\test_ml_core_exception_branches_coverage.py:128: in test_create_model_sklearn_import_failure
+    core._create_model("linear")
+E   AssertionError: (<class 'ModuleNotFoundError'>, <class 'ImportError'>) not raised
+---------------------------- Captured stderr call -----------------------------
+INFO:ml.core.ml_core:初始化ML核心
+------------------------------ Captured log call ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:84 初始化ML核心
+__________________ test_logger_fallback_when_adapter_raises ___________________
+[gw4] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+tests\unit\ml\core\test_error_handling_unit.py:498: in test_logger_fallback_when_adapter_raises
+    assert reloaded.logger.name == "src.ml.core.error_handling"
+E   AssertionError: assert 'ml.core.error_handling' == 'src.ml.core.error_handling'
+E     
+E     [0m[91m- src.ml.core.error_handling[39;49;00m[90m[39;49;00m
+E     ? ----[90m[39;49;00m
+E     [92m+ ml.core.error_handling[39;49;00m[90m[39;49;00m
+_______________ test_create_model_random_forest_merges_defaults _______________
+[gw9] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+tests\unit\ml\core\test_ml_core_helpers.py:98: in test_create_model_random_forest_merges_defaults
+    model = ml_core._create_model("r", {"n_estimators": 10})
+src\ml\core\ml_core.py:285: in _create_model
+    raise ValueError(f"不支持的模型类型: {model_type}")
+E   ValueError: 不支持的模型类型: r
+---------------------------- Captured stderr setup ----------------------------
+INFO:ml.core.ml_core:初始化ML核心
+----------------------------- Captured log setup ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:84 初始化ML核心
+---------------------------- Captured stderr call -----------------------------
+ERROR:ml.core.ml_core:创建模型失败 r: 不支持的模型类型: r
+------------------------------ Captured log call ------------------------------
+[1m[31mERROR   [0m ml.core.ml_core:ml_core.py:288 创建模型失败 r: 不支持的模型类型: r
+_ TestMLCoreFeatureImportance.test_get_feature_importance_with_feature_importances _
+[gw11] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+src\ml\core\ml_core.py:141: in train_model
+    model = self._create_model(model_type, model_params)
+src\ml\core\ml_core.py:285: in _create_model
+    raise ValueError(f"不支持的模型类型: {model_type}")
+E   ValueError: 不支持的模型类型: r
+
+The above exception was the direct cause of the following exception:
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py:201: in test_get_feature_importance_with_feature_importances
+    model_id = ml_core.train_model(sample_data, y, model_type='r')
+src\ml\core\exceptions.py:78: in wrapper
+    return func(*args, **kwargs)
+src\ml\core\ml_core.py:153: in train_model
+    raise ModelTrainingError(error_msg, model_type) from e
+E   ml.core.exceptions.ModelTrainingError: 模型训练失败 - r: 模型训练失败: 不支持的模型类型: r
+---------------------------- Captured stderr setup ----------------------------
+INFO:ml.core.ml_core:初始化ML核心
+----------------------------- Captured log setup ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:84 初始化ML核心
+---------------------------- Captured stderr call -----------------------------
+INFO:ml.core.ml_core:开始训练 r 模型
+ERROR:ml.core.ml_core:创建模型失败 r: 不支持的模型类型: r
+ERROR:ml.core.ml_core:模型训练失败: 不支持的模型类型: r
+------------------------------ Captured log call ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:133 开始训练 r 模型
+[31m[1mERROR   [0m ml.core.ml_core:ml_core.py:288 创建模型失败 r: 不支持的模型类型: r
+[31m[1mERROR   [0m ml.core.ml_core:ml_core.py:152 模型训练失败: 不支持的模型类型: r
+_ TestMLCoreFeatureImportance.test_get_feature_importance_with_feature_names __
+[gw4] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+src\ml\core\ml_core.py:141: in train_model
+    model = self._create_model(model_type, model_params)
+src\ml\core\ml_core.py:285: in _create_model
+    raise ValueError(f"不支持的模型类型: {model_type}")
+E   ValueError: 不支持的模型类型: r
+
+The above exception was the direct cause of the following exception:
+tests\unit\ml\core\test_ml_core_feature_processor_coverage.py:233: in test_get_feature_importance_with_feature_names
+    model_id = ml_core.train_model(
+src\ml\core\exceptions.py:78: in wrapper
+    return func(*args, **kwargs)
+src\ml\core\ml_core.py:153: in train_model
+    raise ModelTrainingError(error_msg, model_type) from e
+E   ml.core.exceptions.ModelTrainingError: 模型训练失败 - r: 模型训练失败: 不支持的模型类型: r
+---------------------------- Captured stderr setup ----------------------------
+INFO:ml.core.ml_core:初始化ML核心
+----------------------------- Captured log setup ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:84 初始化ML核心
+---------------------------- Captured stderr call -----------------------------
+INFO:ml.core.ml_core:开始训练 r 模型
+ERROR:ml.core.ml_core:创建模型失败 r: 不支持的模型类型: r
+ERROR:ml.core.ml_core:模型训练失败: 不支持的模型类型: r
+------------------------------ Captured log call ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:133 开始训练 r 模型
+[31m[1mERROR   [0m ml.core.ml_core:ml_core.py:288 创建模型失败 r: 不支持的模型类型: r
+[31m[1mERROR   [0m ml.core.ml_core:ml_core.py:152 模型训练失败: 不支持的模型类型: r
+_______________ test_create_model_random_forest_merges_defaults _______________
+[gw3] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+tests\unit\ml\core\test_ml_core_models_additional.py:68: in test_create_model_random_forest_merges_defaults
+    model = core._create_model("r", {"n_estimators": 10})
+src\ml\core\ml_core.py:285: in _create_model
+    raise ValueError(f"不支持的模型类型: {model_type}")
+E   ValueError: 不支持的模型类型: r
+---------------------------- Captured stderr call -----------------------------
+INFO:ml.core.ml_core:初始化ML核心
+ERROR:ml.core.ml_core:创建模型失败 r: 不支持的模型类型: r
+------------------------------ Captured log call ------------------------------
+[32mINFO    [0m ml.core.ml_core:ml_core.py:84 初始化ML核心
+[31m[1mERROR   [0m ml.core.ml_core:ml_core.py:288 创建模型失败 r: 不支持的模型类型: r
+__________________________ test_create_model_rf_type __________________________
+[gw2] win32 -- Python 3.9.23 C:\Users\AILeo\miniconda3\envs\rqa\python.exe
+tests\unit\ml\core\test_ml_core_unit.py:230: in test_create_model_rf_type
+    model = core._create_model("r", {"n_estimators": 50})
+src\ml\core\ml_core.py:285: in _create_model
+    raise ValueError(f"不支持的模型类型: {model_type}")
+E   ValueError: 不支持的模型类型: r
+---------------------------- Captured stderr call -----------------------------
+INFO:src.ml.core.ml_core:初始化ML核心
+ERROR:src.ml.core.ml_core:创建模型失败 r: 不支持的模型类型: r
+------------------------------ Captured log call ------------------------------
+[32mINFO    [0m src.ml.core.ml_core:ml_core.py:84 初始化ML核心
+[1m[31mERROR   [0m src.ml.core.ml_core:ml_core.py:288 创建模型失败 r: 不支持的模型类型: r
+
+---------- coverage: platform win32, python 3.9.23-final-0 -----------
+Name                                  Stmts   Miss   Cover   Missing
+--------------------------------------------------------------------
+src\ml\core\__init__.py                   1      1   0.00%   6
+src\ml\core\constants.py                 26     26   0.00%   9-52
+src\ml\core\error_handling.py           222      1  99.55%   161
+src\ml\core\exceptions.py                48     48   0.00%   9-129
+src\ml\core\feature_engineering.py        2      0 100.00%
+src\ml\core\inference_service.py         98     98   0.00%   4-191
+src\ml\core\integration_tests.py         58     58   0.00%   6-174
+src\ml\core\ml_core.py                  266    266   0.00%   7-572
+src\ml\core\ml_service.py                72     40  44.44%   82, 87, 90, 95, 98, 101, 104, 111-127, 137-144, 151-152, 155-159, 165-166, 180-191, 199, 204
+src\ml\core\model_manager.py             14      0 100.00%
+src\ml\core\monitoring_dashboard.py      89     56  37.08%   37-40, 43-45, 48, 51-57, 62-64, 70-72, 84-86, 89-92, 95-125, 132, 136, 140, 144, 148
+src\ml\core\performance_monitor.py      157     86  45.22%   70-71, 74-75, 78-79, 82-86, 89-102, 105-106, 109-110, 114-122, 132-134, 142-149, 152-159, 162, 189, 192, 195, 198-200, 205-218, 222-225, 228, 231, 234, 237-240, 247, 251, 268-271, 281-284, 294-297
+src\ml\core\process_builder.py           85     62  27.06%   20, 25-28, 34, 93-124, 135-144, 147-150, 153-154, 157-158, 161-162, 165-166, 169-183, 186-193, 196-197, 207, 221-223, 237-242, 255-259
+src\ml\core\process_orchestrator.py     271    157  42.07%   182-197, 201-211, 215-227, 231-250, 254-305, 309-338, 342-347, 351, 355-381, 385-386, 390-398, 416-424, 428-434, 438-444, 448-452, 456-461, 465, 498, 511, 516, 521, 526
+src\ml\core\step_executors.py           311    271  12.86%   52-54, 63-67, 71, 75-80, 84-89, 93-97, 106-150, 154-168, 177-227, 236-310, 319-396, 405-501, 510-559, 568-638, 645-657
+src\ml\core\unified_ml_interface.py     105    105   0.00%   8-747
+--------------------------------------------------------------------
+TOTAL                                  1825   1275  30.14%
+
+=========================== short test summary info ===========================
+ERROR tests\unit\ml\core\test_process_orchestrator_coverage_supplement.py
+ERROR tests\unit\ml\core\test_process_orchestrator_worker.py
+ERROR tests\unit\ml\core\test_unified_ml_interface_unit.py
+FAILED tests\unit\ml\core\test_ml_core_exception_branches_coverage.py::TestMLCoreExceptionBranches::test_create_model_sklearn_import_failure
+FAILED tests\unit\ml\core\test_error_handling_unit.py::test_logger_fallback_when_adapter_raises
+FAILED tests\unit\ml\core\test_ml_core_helpers.py::test_create_model_random_forest_merges_defaults
+FAILED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_importances
+FAILED tests\unit\ml\core\test_ml_core_feature_processor_coverage.py::TestMLCoreFeatureImportance::test_get_feature_importance_with_feature_names
+FAILED tests\unit\ml\core\test_ml_core_models_additional.py::test_create_model_random_forest_merges_defaults
+FAILED tests\unit\ml\core\test_ml_core_unit.py::test_create_model_rf_type - V...
+!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!! xdist.dsession.Interrupted: stopping after 5 failures !!!!!!!!!!!!
+======= 7 failed, 138 passed, 1 warning, 3 errors in 180.37s (0:03:00) ========

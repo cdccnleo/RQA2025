@@ -1,0 +1,597 @@
+{
+  "timestamp": "2025-12-17T19:17:23.213489",
+  "analysis_summary": {
+    "overall_quality": "good",
+    "risk_level": "high",
+    "optimization_potential": 2
+  },
+  "test_priorities": [
+    {
+      "module": "infrastructure\\cache\\core\\multi_level_cache",
+      "priority": "critical",
+      "reason": "高风险评分(201.0)",
+      "estimated_effort": "2-3周",
+      "expected_impact": "降低风险评分60.3"
+    },
+    {
+      "module": "features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities",
+      "priority": "critical",
+      "reason": "高风险评分(181.6)",
+      "estimated_effort": "2-3周",
+      "expected_impact": "降低风险评分54.5"
+    },
+    {
+      "module": "core\\integration\\adapters\\features_adapter",
+      "priority": "critical",
+      "reason": "高风险评分(164.6)",
+      "estimated_effort": "2-3周",
+      "expected_impact": "降低风险评分49.4"
+    },
+    {
+      "module": "infrastructure\\config\\core\\config_manager_complete",
+      "priority": "critical",
+      "reason": "高风险评分(149.6)",
+      "estimated_effort": "2-3周",
+      "expected_impact": "降低风险评分44.9"
+    },
+    {
+      "module": "risk\\models\\risk_calculation_engine",
+      "priority": "critical",
+      "reason": "高风险评分(144.9)",
+      "estimated_effort": "2-3周",
+      "expected_impact": "降低风险评分43.5"
+    },
+    {
+      "module": "trading\\order_manager",
+      "priority": "high",
+      "reason": "覆盖率差距20.0%(当前70.0%)",
+      "estimated_effort": "1-2周",
+      "expected_impact": "覆盖率提升至84.0%"
+    },
+    {
+      "module": "app",
+      "priority": "high",
+      "reason": "覆盖率差距20.0%(当前70.0%)",
+      "estimated_effort": "1-2周",
+      "expected_impact": "覆盖率提升至84.0%"
+    },
+    {
+      "module": "ml\\core\\process_orchestrator",
+      "priority": "high",
+      "reason": "覆盖率差距19.9%(当前70.1%)",
+      "estimated_effort": "1-2周",
+      "expected_impact": "覆盖率提升至84.0%"
+    },
+    {
+      "module": "system_wide",
+      "priority": "high",
+      "reason": "通过分析代码复杂度(313)和功能数量(153)，AI判断此模块需要重点关注...",
+      "estimated_effort": "1-2周",
+      "expected_impact": "降低系统整体风险评分20%"
+    }
+  ],
+  "test_case_suggestions": [
+    {
+      "module": "infrastructure\\cache\\core\\multi_level_cache",
+      "test_type": "complexity_based",
+      "description": "为infrastructure\\cache\\core\\multi_level_cache的高复杂度函数(313复杂度)生成深度测试",
+      "suggested_tests": [
+        "路径覆盖测试 - 覆盖所有执行路径",
+        "边界条件测试 - 测试极限输入值",
+        "异常处理测试 - 验证错误处理逻辑",
+        "性能测试 - 监控执行时间"
+      ],
+      "priority": "high",
+      "estimated_tests": 313
+    },
+    {
+      "module": "infrastructure\\cache\\core\\multi_level_cache",
+      "test_type": "integration_based",
+      "description": "为infrastructure\\cache\\core\\multi_level_cache的153个函数生成集成测试",
+      "suggested_tests": [
+        "模块内函数协作测试",
+        "数据流完整性测试",
+        "状态转换测试",
+        "并发访问测试"
+      ],
+      "priority": "medium",
+      "estimated_tests": 51
+    },
+    {
+      "module": "features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities",
+      "test_type": "complexity_based",
+      "description": "为features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities的高复杂度函数(358复杂度)生成深度测试",
+      "suggested_tests": [
+        "路径覆盖测试 - 覆盖所有执行路径",
+        "边界条件测试 - 测试极限输入值",
+        "异常处理测试 - 验证错误处理逻辑",
+        "性能测试 - 监控执行时间"
+      ],
+      "priority": "high",
+      "estimated_tests": 358
+    },
+    {
+      "module": "features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities",
+      "test_type": "integration_based",
+      "description": "为features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities的106个函数生成集成测试",
+      "suggested_tests": [
+        "模块内函数协作测试",
+        "数据流完整性测试",
+        "状态转换测试",
+        "并发访问测试"
+      ],
+      "priority": "medium",
+      "estimated_tests": 35
+    },
+    {
+      "module": "core\\integration\\adapters\\features_adapter",
+      "test_type": "complexity_based",
+      "description": "为core\\integration\\adapters\\features_adapter的高复杂度函数(208复杂度)生成深度测试",
+      "suggested_tests": [
+        "路径覆盖测试 - 覆盖所有执行路径",
+        "边界条件测试 - 测试极限输入值",
+        "异常处理测试 - 验证错误处理逻辑",
+        "性能测试 - 监控执行时间"
+      ],
+      "priority": "high",
+      "estimated_tests": 208
+    },
+    {
+      "module": "core\\integration\\adapters\\features_adapter",
+      "test_type": "integration_based",
+      "description": "为core\\integration\\adapters\\features_adapter的146个函数生成集成测试",
+      "suggested_tests": [
+        "模块内函数协作测试",
+        "数据流完整性测试",
+        "状态转换测试",
+        "并发访问测试"
+      ],
+      "priority": "medium",
+      "estimated_tests": 48
+    },
+    {
+      "module": "system_wide",
+      "test_type": "boundary_enhancement",
+      "description": "当前边界条件测试不足，建议大幅增加",
+      "suggested_tests": [
+        "等价类测试 - 划分有效等价类",
+        "边界值分析测试 - 测试边界值",
+        "决策表测试 - 覆盖条件组合",
+        "状态转换测试 - 验证状态变化",
+        "错误猜测测试 - 基于经验的错误测试"
+      ],
+      "priority": "high",
+      "estimated_tests": 18108
+    },
+    {
+      "module": "system_wide",
+      "test_type": "exception_handling",
+      "description": "异常处理测试覆盖不足",
+      "suggested_tests": [
+        "标准异常测试 - 测试常见异常",
+        "自定义异常测试 - 测试业务异常",
+        "异常传播测试 - 验证异常正确传递",
+        "异常恢复测试 - 测试从异常中恢复",
+        "边界异常测试 - 测试极端情况下的异常"
+      ],
+      "priority": "medium",
+      "estimated_tests": 12072
+    }
+  ],
+  "execution_strategy": {
+    "phased_approach": {
+      "phase_1_critical": [
+        {
+          "module": "infrastructure\\cache\\core\\multi_level_cache",
+          "priority": "critical",
+          "reason": "高风险评分(201.0)",
+          "estimated_effort": "2-3周",
+          "expected_impact": "降低风险评分60.3"
+        },
+        {
+          "module": "features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities",
+          "priority": "critical",
+          "reason": "高风险评分(181.6)",
+          "estimated_effort": "2-3周",
+          "expected_impact": "降低风险评分54.5"
+        },
+        {
+          "module": "core\\integration\\adapters\\features_adapter",
+          "priority": "critical",
+          "reason": "高风险评分(164.6)",
+          "estimated_effort": "2-3周",
+          "expected_impact": "降低风险评分49.4"
+        },
+        {
+          "module": "infrastructure\\config\\core\\config_manager_complete",
+          "priority": "critical",
+          "reason": "高风险评分(149.6)",
+          "estimated_effort": "2-3周",
+          "expected_impact": "降低风险评分44.9"
+        },
+        {
+          "module": "risk\\models\\risk_calculation_engine",
+          "priority": "critical",
+          "reason": "高风险评分(144.9)",
+          "estimated_effort": "2-3周",
+          "expected_impact": "降低风险评分43.5"
+        }
+      ],
+      "phase_2_high": [
+        {
+          "module": "trading\\order_manager",
+          "priority": "high",
+          "reason": "覆盖率差距20.0%(当前70.0%)",
+          "estimated_effort": "1-2周",
+          "expected_impact": "覆盖率提升至84.0%"
+        },
+        {
+          "module": "app",
+          "priority": "high",
+          "reason": "覆盖率差距20.0%(当前70.0%)",
+          "estimated_effort": "1-2周",
+          "expected_impact": "覆盖率提升至84.0%"
+        },
+        {
+          "module": "ml\\core\\process_orchestrator",
+          "priority": "high",
+          "reason": "覆盖率差距19.9%(当前70.1%)",
+          "estimated_effort": "1-2周",
+          "expected_impact": "覆盖率提升至84.0%"
+        },
+        {
+          "module": "system_wide",
+          "priority": "high",
+          "reason": "通过分析代码复杂度(313)和功能数量(153)，AI判断此模块需要重点关注...",
+          "estimated_effort": "1-2周",
+          "expected_impact": "降低系统整体风险评分20%"
+        }
+      ],
+      "phase_3_medium": [],
+      "phase_4_continuous": []
+    },
+    "resource_allocation": {
+      "parallel_execution": 4,
+      "time_allocation": {
+        "phase_1": "1-2周",
+        "phase_2": "2-3周",
+        "phase_3": "2-4周",
+        "phase_4": "持续进行"
+      },
+      "team_distribution": {
+        "senior_developers": 2,
+        "qa_engineers": 3,
+        "devops_engineers": 1
+      }
+    },
+    "automation_strategy": {
+      "ci_cd_integration": true,
+      "automated_regression": true,
+      "performance_monitoring": true,
+      "coverage_tracking": true,
+      "risk_assessment": true
+    },
+    "monitoring_and_control": {
+      "daily_progress_tracking": true,
+      "weekly_quality_reviews": true,
+      "monthly_optimization_reviews": true,
+      "automated_alerts": true,
+      "stakeholder_reports": true
+    }
+  },
+  "monitoring_plan": {
+    "coverage_monitoring": {
+      "frequency": "daily",
+      "metrics": [
+        "line_coverage",
+        "branch_coverage",
+        "function_coverage"
+      ],
+      "thresholds": {
+        "line_coverage": 80,
+        "branch_coverage": 75,
+        "function_coverage": 85
+      },
+      "alerts": true
+    },
+    "quality_monitoring": {
+      "frequency": "continuous",
+      "metrics": [
+        "test_pass_rate",
+        "build_success_rate",
+        "performance_regression"
+      ],
+      "thresholds": {
+        "test_pass_rate": 99,
+        "build_success_rate": 95,
+        "performance_regression": 5
+      },
+      "alerts": true
+    },
+    "risk_monitoring": {
+      "frequency": "weekly",
+      "metrics": [
+        "risk_score_trend",
+        "uncovered_high_risk_areas",
+        "security_vulnerabilities"
+      ],
+      "analysis": [
+        {
+          "module": "infrastructure\\cache\\core\\multi_level_cache",
+          "risk_score": 201.0,
+          "estimated_coverage": 76.1064727689149,
+          "complexity": 313,
+          "functions": 153,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 infrastructure\\cache\\core\\multi_level_cache 增加更多单元测试",
+            "考虑重构 infrastructure\\cache\\core\\multi_level_cache 以降低复杂度",
+            "为 infrastructure\\cache\\core\\multi_level_cache 添加集成测试",
+            "实施 infrastructure\\cache\\core\\multi_level_cache 的性能基准测试",
+            "加强 infrastructure\\cache\\core\\multi_level_cache 的边界条件测试"
+          ]
+        },
+        {
+          "module": "features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities",
+          "risk_score": 181.59999999999997,
+          "estimated_coverage": 72.28235830942683,
+          "complexity": 358,
+          "functions": 106,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities 增加更多单元测试",
+            "考虑重构 features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities 以降低复杂度",
+            "为 features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities 添加集成测试",
+            "实施 features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities 的性能基准测试",
+            "加强 features\\acceleration\\gpu\\gpu_scheduler_modules\\utilities 的边界条件测试"
+          ]
+        },
+        {
+          "module": "core\\integration\\adapters\\features_adapter",
+          "risk_score": 164.6,
+          "estimated_coverage": 79.77200794979487,
+          "complexity": 208,
+          "functions": 146,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 core\\integration\\adapters\\features_adapter 增加更多单元测试",
+            "考虑重构 core\\integration\\adapters\\features_adapter 以降低复杂度",
+            "为 core\\integration\\adapters\\features_adapter 添加集成测试",
+            "实施 core\\integration\\adapters\\features_adapter 的性能基准测试",
+            "加强 core\\integration\\adapters\\features_adapter 的边界条件测试"
+          ]
+        },
+        {
+          "module": "infrastructure\\config\\core\\config_manager_complete",
+          "risk_score": 149.59999999999997,
+          "estimated_coverage": 79.5541950757669,
+          "complexity": 228,
+          "functions": 116,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 infrastructure\\config\\core\\config_manager_complete 增加更多单元测试",
+            "考虑重构 infrastructure\\config\\core\\config_manager_complete 以降低复杂度",
+            "为 infrastructure\\config\\core\\config_manager_complete 添加集成测试",
+            "实施 infrastructure\\config\\core\\config_manager_complete 的性能基准测试",
+            "加强 infrastructure\\config\\core\\config_manager_complete 的边界条件测试"
+          ]
+        },
+        {
+          "module": "risk\\models\\risk_calculation_engine",
+          "risk_score": 144.89999999999998,
+          "estimated_coverage": 85.08162847470967,
+          "complexity": 308,
+          "functions": 75,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 risk\\models\\risk_calculation_engine 增加更多单元测试",
+            "考虑重构 risk\\models\\risk_calculation_engine 以降低复杂度",
+            "为 risk\\models\\risk_calculation_engine 添加集成测试",
+            "实施 risk\\models\\risk_calculation_engine 的性能基准测试",
+            "加强 risk\\models\\risk_calculation_engine 的边界条件测试"
+          ]
+        },
+        {
+          "module": "mobile\\core\\mobile_trading",
+          "risk_score": 124.0,
+          "estimated_coverage": 88.03667764242965,
+          "complexity": 229,
+          "functions": 79,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 mobile\\core\\mobile_trading 增加更多单元测试",
+            "考虑重构 mobile\\core\\mobile_trading 以降低复杂度",
+            "为 mobile\\core\\mobile_trading 添加集成测试",
+            "实施 mobile\\core\\mobile_trading 的性能基准测试",
+            "加强 mobile\\core\\mobile_trading 的边界条件测试"
+          ]
+        },
+        {
+          "module": "infrastructure\\cache\\utils\\cache_utils",
+          "risk_score": 110.5,
+          "estimated_coverage": 88.47573643198957,
+          "complexity": 128,
+          "functions": 103,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 infrastructure\\cache\\utils\\cache_utils 增加更多单元测试",
+            "考虑重构 infrastructure\\cache\\utils\\cache_utils 以降低复杂度",
+            "为 infrastructure\\cache\\utils\\cache_utils 添加集成测试",
+            "实施 infrastructure\\cache\\utils\\cache_utils 的性能基准测试",
+            "加强 infrastructure\\cache\\utils\\cache_utils 的边界条件测试"
+          ]
+        },
+        {
+          "module": "infrastructure\\cache\\core\\cache_manager",
+          "risk_score": 110.19999999999999,
+          "estimated_coverage": 72.0884256556548,
+          "complexity": 183,
+          "functions": 79,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 infrastructure\\cache\\core\\cache_manager 增加更多单元测试",
+            "考虑重构 infrastructure\\cache\\core\\cache_manager 以降低复杂度",
+            "为 infrastructure\\cache\\core\\cache_manager 添加集成测试",
+            "实施 infrastructure\\cache\\core\\cache_manager 的性能基准测试",
+            "加强 infrastructure\\cache\\core\\cache_manager 的边界条件测试"
+          ]
+        },
+        {
+          "module": "core\\event_bus\\core",
+          "risk_score": 100.89999999999999,
+          "estimated_coverage": 65.16590656638824,
+          "complexity": 131,
+          "functions": 88,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 core\\event_bus\\core 增加更多单元测试",
+            "提高 core\\event_bus\\core 的测试覆盖率，当前约65.2%",
+            "考虑重构 core\\event_bus\\core 以降低复杂度",
+            "为 core\\event_bus\\core 添加集成测试",
+            "实施 core\\event_bus\\core 的性能基准测试",
+            "加强 core\\event_bus\\core 的边界条件测试"
+          ]
+        },
+        {
+          "module": "data\\loader\\stock_loader",
+          "risk_score": 97.1,
+          "estimated_coverage": 78.29970657372427,
+          "complexity": 186,
+          "functions": 59,
+          "risk_level": "high",
+          "recommendations": [
+            "为高复杂度模块 data\\loader\\stock_loader 增加更多单元测试",
+            "考虑重构 data\\loader\\stock_loader 以降低复杂度",
+            "为 data\\loader\\stock_loader 添加集成测试",
+            "实施 data\\loader\\stock_loader 的性能基准测试",
+            "加强 data\\loader\\stock_loader 的边界条件测试"
+          ]
+        }
+      ],
+      "alerts": true
+    },
+    "progress_monitoring": {
+      "frequency": "daily",
+      "metrics": [
+        "planned_vs_actual",
+        "milestone_completion",
+        "resource_utilization"
+      ],
+      "reporting": {
+        "daily_standups": true,
+        "weekly_reports": true,
+        "monthly_reviews": true
+      }
+    }
+  },
+  "implementation_roadmap": {
+    "timeline": {
+      "week_1_2": {
+        "focus": "critical_risk_mitigation",
+        "objectives": [
+          "解决最高风险区域",
+          "建立基础测试框架"
+        ],
+        "deliverables": [
+          "关键模块测试覆盖",
+          "风险评估报告"
+        ],
+        "success_criteria": [
+          "风险评分降低30%",
+          "测试通过率100%"
+        ]
+      },
+      "week_3_4": {
+        "focus": "coverage_expansion",
+        "objectives": [
+          "扩展测试覆盖范围",
+          "完善测试用例"
+        ],
+        "deliverables": [
+          "覆盖率提升至85%+",
+          "测试用例文档"
+        ],
+        "success_criteria": [
+          "覆盖率达标",
+          "测试用例完整性95%+"
+        ]
+      },
+      "week_5_6": {
+        "focus": "quality_optimization",
+        "objectives": [
+          "优化测试质量",
+          "自动化测试流程"
+        ],
+        "deliverables": [
+          "CI/CD集成",
+          "自动化测试报告"
+        ],
+        "success_criteria": [
+          "自动化率90%+",
+          "反馈周期<15分钟"
+        ]
+      },
+      "ongoing": {
+        "focus": "continuous_improvement",
+        "objectives": [
+          "持续监控和改进",
+          "新技术 adoption"
+        ],
+        "deliverables": [
+          "质量趋势报告",
+          "技术改进建议"
+        ],
+        "success_criteria": [
+          "质量持续提升",
+          "技术栈现代化"
+        ]
+      }
+    },
+    "milestones": [
+      {
+        "name": "Phase 1 Complete",
+        "date": "Week 2",
+        "criteria": "Critical risks mitigated"
+      },
+      {
+        "name": "80% Coverage Achieved",
+        "date": "Week 4",
+        "criteria": "Coverage targets met"
+      },
+      {
+        "name": "Automation Complete",
+        "date": "Week 6",
+        "criteria": "CI/CD fully integrated"
+      },
+      {
+        "name": "Continuous Monitoring",
+        "date": "Ongoing",
+        "criteria": "Quality metrics tracked"
+      }
+    ],
+    "dependencies": {
+      "infrastructure": [
+        "测试环境稳定",
+        "CI/CD管道可用"
+      ],
+      "team_readiness": [
+        "培训完成",
+        "工具熟悉"
+      ],
+      "stakeholder_alignment": [
+        "需求明确",
+        "优先级一致"
+      ],
+      "technical_feasibility": [
+        "技术栈支持",
+        "工具可用性"
+      ]
+    },
+    "risks_and_mitigations": {
+      "schedule_delays": "实施敏捷方法，优先级排序，风险监控",
+      "resource_constraints": "合理分配资源，渐进式实施，外部支持",
+      "technical_challenges": "原型验证，专家咨询，备用方案",
+      "scope_creep": "明确范围控制，变更管理，利益相关者沟通"
+    }
+  }
+}

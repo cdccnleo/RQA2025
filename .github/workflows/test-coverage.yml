@@ -1,0 +1,229 @@
+name: Test Coverage & Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.9']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~\AppData\Local\pip\Cache
+          %CONDA%\pkgs
+        key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
+
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: latest
+        python-version: ${{ matrix.python-version }}
+        environment-file: environment.yml
+        activate-environment: test
+
+    - name: Install dependencies
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        pip install -r requirements.txt
+        pip install pytest pytest-cov coverage pytest-html
+
+    - name: Run core data layer tests
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        python scripts/testing/test_runner_fixed.py
+
+    - name: Run full test coverage
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        python -m pytest tests/unit/data/ --cov=src.data --cov-report=xml --cov-report=html --cov-fail-under=15
+
+    - name: Generate coverage report
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        python scripts/testing/test_coverage_monitor.py
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    - name: Upload HTML coverage report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: coverage-html
+        path: htmlcov/
+        retention-days: 30
+
+    - name: Upload automation reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: automation-reports
+        path: reports/
+        retention-days: 30
+
+  quality-check:
+    runs-on: windows-latest
+    needs: test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: latest
+        python-version: '3.9'
+        environment-file: environment.yml
+        activate-environment: test
+
+    - name: Install quality tools
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        pip install flake8 black isort mypy
+
+    - name: Run code quality checks
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        # Code formatting check
+        python -m black --check src/ tests/ scripts/
+
+        # Import sorting check
+        python -m isort --check-only --diff src/ tests/ scripts/
+
+        # Linting check
+        python -m flake8 src/ tests/ scripts/ --max-line-length=120 --extend-ignore=E203,W503
+
+    - name: Run type checking
+      shell: bash -l {0}
+      run: |
+        conda activate test
+        python -m mypy src/ --ignore-missing-imports --show-error-codes
+
+  security-scan:
+    runs-on: windows-latest
+    needs: test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install security tools
+      run: |
+        pip install safety bandit
+
+    - name: Run security checks
+      run: |
+        # Check for vulnerable dependencies
+        pip freeze > requirements-frozen.txt
+        python -m safety check --file requirements-frozen.txt --json --output safety-report.json || true
+
+        # Static application security testing
+        python -m bandit -r src/ -f json -o bandit-report.json || true
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          safety-report.json
+          bandit-report.json
+        retention-days: 30
+
+  automation-summary:
+    runs-on: ubuntu-latest
+    needs: [test, quality-check, security-scan]
+    if: always()
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download test artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: automation-reports
+        path: reports/
+
+    - name: Generate summary report
+      run: |
+        echo "# 🧪 测试自动化执行总结" > summary.md
+        echo "" >> summary.md
+        echo "## 📊 执行状态" >> summary.md
+
+        if [ "${{ needs.test.result }}" == "success" ]; then
+          echo "✅ 测试执行: 通过" >> summary.md
+        else
+          echo "❌ 测试执行: 失败" >> summary.md
+        fi
+
+        if [ "${{ needs.quality-check.result }}" == "success" ]; then
+          echo "✅ 代码质量检查: 通过" >> summary.md
+        else
+          echo "❌ 代码质量检查: 失败" >> summary.md
+        fi
+
+        if [ "${{ needs.security-scan.result }}" == "success" ]; then
+          echo "✅ 安全扫描: 通过" >> summary.md
+        else
+          echo "❌ 安全扫描: 失败" >> summary.md
+        fi
+
+        echo "" >> summary.md
+        echo "## 📈 覆盖率目标" >> summary.md
+        echo "- 数据层覆盖率目标: 80%" >> summary.md
+        echo "- 当前覆盖率状态: 15-25%" >> summary.md
+        echo "- 持续改进中..." >> summary.md
+
+        echo "" >> summary.md
+        echo "## 🎯 下一步工作" >> summary.md
+        echo "- 扩展更多模块测试覆盖率" >> summary.md
+        echo "- 优化测试执行性能" >> summary.md
+        echo "- 完善CI/CD集成" >> summary.md
+
+    - name: Upload summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: execution-summary
+        path: summary.md

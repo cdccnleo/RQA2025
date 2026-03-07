@@ -1,0 +1,73 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class 
+-------------------------------- live log call --------------------------------
+2025-11-16 23:39:47 [ WARNING] data_manager: 缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄩ檷绾ф柟妗? cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+2025-11-16 23:39:47 [ WARNING] data_manager: 缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄦ爣鍑唋ogging
+2025-11-16 23:39:47 [ WARNING] data_manager: 浣跨敤闄嶇骇鍩虹璁炬柦鏈嶅姟
+2025-11-16 23:39:47 [ WARNING] data_manager: 闄嶇骇缂撳瓨鍒濆鍖栧け璐? No module named 'src.data.core.cache'
+2025-11-16 23:39:47 [ WARNING] data_manager: StockDataLoader not available
+2025-11-16 23:39:47 [ WARNING] data_manager: IndexDataLoader not available
+2025-11-16 23:39:47 [ WARNING] data_manager: NewsDataLoader not available
+2025-11-16 23:39:47 [ WARNING] data_manager: FinancialDataLoader not available
+FAILED                                                                   [ 50%]
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols FAILED [100%]
+
+================================== FAILURES ===================================
+__________ test_create_enhanced_data_integration_uses_exported_class __________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:26: in test_create_enhanced_data_integration_uses_exported_class
+    assert isinstance(instance, DummyIntegration)
+E   AssertionError: assert False
+E    +  where False = isinstance(<src.data.integration.enhanced_integration_manager.EnhancedDataIntegrationManager object at 0x000002370EE046A0>, <class 'RQA2025.tests.unit.data.integration.test_enhanced_data_integration_entrypoint.test_create_enhanced_data_integration_uses_exported_class.<locals>.DummyIntegration'>)
+---------------------------- Captured stderr call -----------------------------
+WARNING:data_manager:缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄩ檷绾ф柟妗? cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING:data_manager:缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄦ爣鍑唋ogging
+WARNING:data_manager:浣跨敤闄嶇骇鍩虹璁炬柦鏈嶅姟
+WARNING:data_manager:闄嶇骇缂撳瓨鍒濆鍖栧け璐? No module named 'src.data.core.cache'
+INFO:data_registry:DataRegistry initialized
+2025-11-16 23:39:47,560 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+INFO:data_manager:浣跨敤闄嶇骇缂撳瓨绠＄悊鍣?
+WARNING:data_manager:StockDataLoader not available
+WARNING:data_manager:IndexDataLoader not available
+WARNING:data_manager:NewsDataLoader not available
+WARNING:data_manager:FinancialDataLoader not available
+INFO:data_manager:鏍稿績鏈嶅姟娉ㄥ唽瀹屾垚
+INFO:data_manager:DataManager initialized successfully
+2025-11-16 23:39:47,564 - disk_cache - INFO - DiskCache initialized with cache_dir: enhanced_cache
+INFO:disk_cache:DiskCache initialized with cache_dir: enhanced_cache
+INFO:enhanced_integration_manager:澧炲己鐗堟暟鎹泦鎴愮鐞嗗櫒鍒濆鍖栧畬鎴?
+------------------------------ Captured log call ------------------------------
+WARNING  data_manager:data_manager.py:28 缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄩ檷绾ф柟妗? cannot import name 'get_data_adapter' from 'src.core.integration' (unknown location)
+WARNING  data_manager:data_manager.py:459 缁熶竴鍩虹璁炬柦闆嗘垚灞備笉鍙敤锛屼娇鐢ㄦ爣鍑唋ogging
+WARNING  data_manager:data_manager.py:495 浣跨敤闄嶇骇鍩虹璁炬柦鏈嶅姟
+WARNING  data_manager:data_manager.py:516 闄嶇骇缂撳瓨鍒濆鍖栧け璐? No module named 'src.data.core.cache'
+INFO     data_registry:registry.py:36 DataRegistry initialized
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     data_manager:data_manager.py:245 浣跨敤闄嶇骇缂撳瓨绠＄悊鍣?
+WARNING  data_manager:data_manager.py:847 StockDataLoader not available
+WARNING  data_manager:data_manager.py:853 IndexDataLoader not available
+WARNING  data_manager:data_manager.py:860 NewsDataLoader not available
+WARNING  data_manager:data_manager.py:867 FinancialDataLoader not available
+INFO     data_manager:data_manager.py:578 鏍稿績鏈嶅姟娉ㄥ唽瀹屾垚
+INFO     data_manager:data_manager.py:269 DataManager initialized successfully
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: enhanced_cache
+INFO     enhanced_integration_manager:enhanced_integration_manager.py:500 澧炲己鐗堟暟鎹泦鎴愮鐞嗗櫒鍒濆鍖栧畬鎴?
+_________________ test_entrypoint_reexports_expected_symbols __________________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:48: in test_entrypoint_reexports_expected_symbols
+    assert expected_symbols <= exported
+E   AssertionError: assert {'ConnectionP...nConfig', ...} <= {'AlertConfig...Monitor', ...}
+E     
+E     Extra items in the left set:
+E     'FinancialDataOptimizer'
+E     'IntegrationConfig'
+E     'DynamicThreadPoolManager'
+E     'get_integration_stats'
+E     'MemoryOptimizer'...
+E     
+E     ...Full output truncated (5 lines hidden), use '-vv' to show
+=========================== short test summary info ===========================
+FAILED tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class
+FAILED tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols
+============================== 2 failed in 1.05s ==============================

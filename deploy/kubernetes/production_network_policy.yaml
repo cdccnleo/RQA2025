@@ -1,0 +1,448 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rqa2025-production-network-policy
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-production
+    environment: production
+    cloud-native: "true"
+spec:
+  podSelector:
+    matchLabels:
+      environment: production
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # API Gateway can receive traffic from anywhere
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 9090
+  # Backend services can only receive traffic from API Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app: rqa2025-api-gateway
+          environment: production
+    ports:
+    - protocol: TCP
+      port: 8001
+    - protocol: TCP
+      port: 8002
+    - protocol: TCP
+      port: 8003
+    - protocol: TCP
+      port: 8004
+    - protocol: TCP
+      port: 8005
+    - protocol: TCP
+      port: 8006
+    - protocol: TCP
+      port: 8007
+    - protocol: TCP
+      port: 8008
+    - protocol: TCP
+      port: 8009
+    - protocol: TCP
+      port: 9090
+  # Monitoring services can receive traffic from backend services
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 9090
+  # Database services can only receive traffic from backend services
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 9090
+  # Cache services can only receive traffic from backend services
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow HTTP/HTTPS to external services
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  # Allow internal communication between services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+    ports:
+    - protocol: TCP
+      port: 8001
+    - protocol: TCP
+      port: 8002
+    - protocol: TCP
+      port: 8003
+    - protocol: TCP
+      port: 8004
+    - protocol: TCP
+      port: 8005
+    - protocol: TCP
+      port: 8006
+    - protocol: TCP
+      port: 8007
+    - protocol: TCP
+      port: 8008
+    - protocol: TCP
+      port: 8009
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 6379
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rqa2025-api-gateway-network-policy
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-api-gateway
+    environment: production
+    cloud-native: "true"
+    tier: frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: rqa2025-api-gateway
+      environment: production
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow external traffic to API Gateway
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow API Gateway to communicate with backend services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 8001
+    - protocol: TCP
+      port: 8002
+    - protocol: TCP
+      port: 8003
+    - protocol: TCP
+      port: 8004
+    - protocol: TCP
+      port: 8005
+    - protocol: TCP
+      port: 8006
+    - protocol: TCP
+      port: 8007
+    - protocol: TCP
+      port: 8008
+    - protocol: TCP
+      port: 8009
+    - protocol: TCP
+      port: 9090
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rqa2025-backend-network-policy
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-backend
+    environment: production
+    cloud-native: "true"
+    tier: backend
+spec:
+  podSelector:
+    matchLabels:
+      environment: production
+      tier: backend
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from API Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app: rqa2025-api-gateway
+          environment: production
+    ports:
+    - protocol: TCP
+      port: 8001
+    - protocol: TCP
+      port: 8002
+    - protocol: TCP
+      port: 8003
+    - protocol: TCP
+      port: 8004
+    - protocol: TCP
+      port: 8005
+    - protocol: TCP
+      port: 8006
+    - protocol: TCP
+      port: 8007
+    - protocol: TCP
+      port: 8008
+    - protocol: TCP
+      port: 8009
+    - protocol: TCP
+      port: 9090
+  # Allow traffic from other backend services
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 8001
+    - protocol: TCP
+      port: 8002
+    - protocol: TCP
+      port: 8003
+    - protocol: TCP
+      port: 8004
+    - protocol: TCP
+      port: 8005
+    - protocol: TCP
+      port: 8006
+    - protocol: TCP
+      port: 8007
+    - protocol: TCP
+      port: 8008
+    - protocol: TCP
+      port: 8009
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow communication with database services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: database
+    ports:
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 9090
+  # Allow communication with cache services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: cache
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 9090
+  # Allow communication with monitoring services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 3000
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rqa2025-database-network-policy
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-database
+    environment: production
+    cloud-native: "true"
+    tier: database
+spec:
+  podSelector:
+    matchLabels:
+      environment: production
+      tier: database
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Only allow traffic from backend services
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow communication with monitoring services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rqa2025-cache-network-policy
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-cache
+    environment: production
+    cloud-native: "true"
+    tier: cache
+spec:
+  podSelector:
+    matchLabels:
+      environment: production
+      tier: cache
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Only allow traffic from backend services
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: backend
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow communication with monitoring services
+  - to:
+    - podSelector:
+        matchLabels:
+          environment: production
+          tier: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rqa2025-monitoring-network-policy
+  namespace: rqa2025-production
+  labels:
+    app: rqa2025-monitoring
+    environment: production
+    cloud-native: "true"
+    tier: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      environment: production
+      tier: monitoring
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from all services for monitoring
+  - from:
+    - podSelector:
+        matchLabels:
+          environment: production
+    ports:
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 9093
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow communication with external monitoring services
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443

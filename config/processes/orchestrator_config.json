@@ -1,0 +1,276 @@
+{
+  "orchestrator_name": "business_process_orchestrator",
+  "version": "1.0.0",
+  "description": "业务流程编排器配置",
+  "author": "RQA Team",
+  "created_date": "2025-01-27",
+  
+  "general": {
+    "max_instances": 20,
+    "default_timeout_seconds": 300,
+    "enable_auto_scaling": true,
+    "enable_process_monitoring": true,
+    "enable_performance_metrics": true,
+    "log_level": "INFO"
+  },
+  
+  "process_management": {
+    "process_types": {
+      "trading_cycle": {
+        "enabled": true,
+        "max_concurrent": 10,
+        "priority": "high",
+        "timeout_seconds": 300,
+        "retry_count": 3,
+        "retry_delay_seconds": 30
+      },
+      "data_processing": {
+        "enabled": true,
+        "max_concurrent": 15,
+        "priority": "medium",
+        "timeout_seconds": 600,
+        "retry_count": 2,
+        "retry_delay_seconds": 60
+      },
+      "model_training": {
+        "enabled": true,
+        "max_concurrent": 5,
+        "priority": "medium",
+        "timeout_seconds": 1800,
+        "retry_count": 1,
+        "retry_delay_seconds": 300
+      },
+      "risk_assessment": {
+        "enabled": true,
+        "max_concurrent": 8,
+        "priority": "high",
+        "timeout_seconds": 120,
+        "retry_count": 2,
+        "retry_delay_seconds": 15
+      }
+    },
+    
+    "process_templates": {
+      "trading_cycle_basic": {
+        "base_process": "trading_cycle_process",
+        "variations": {
+          "conservative": {
+            "risk_tolerance": "low",
+            "position_sizing": "fixed",
+            "max_position": 500
+          },
+          "aggressive": {
+            "risk_tolerance": "high",
+            "position_sizing": "kelly_criterion",
+            "max_position": 2000
+          },
+          "balanced": {
+            "risk_tolerance": "moderate",
+            "position_sizing": "risk_parity",
+            "max_position": 1000
+          }
+        }
+      }
+    }
+  },
+  
+  "scheduling": {
+    "scheduler_type": "priority_based",
+    "max_queue_size": 100,
+    "queue_timeout_seconds": 3600,
+    "priority_levels": {
+      "critical": 1,
+      "high": 2,
+      "medium": 3,
+      "low": 4,
+      "background": 5
+    },
+    "scheduling_rules": [
+      {
+        "rule_name": "trading_hours_priority",
+        "condition": "time between 09:30 and 16:00",
+        "action": "boost_priority",
+        "boost_factor": 2
+      },
+      {
+        "rule_name": "market_volatility_priority",
+        "condition": "volatility > threshold",
+        "action": "boost_priority",
+        "boost_factor": 1.5
+      },
+      {
+        "rule_name": "resource_availability",
+        "condition": "cpu_usage < 70% and memory_usage < 80%",
+        "action": "allow_more_processes",
+        "max_additional": 5
+      }
+    ]
+  },
+  
+  "resource_management": {
+    "resource_limits": {
+      "cpu_cores": 8,
+      "memory_mb": 16384,
+      "disk_gb": 100,
+      "network_mbps": 1000
+    },
+    "resource_allocation": {
+      "cpu_per_process": 1,
+      "memory_per_process_mb": 512,
+      "disk_per_process_gb": 5
+    },
+    "resource_monitoring": {
+      "check_interval_seconds": 30,
+      "alert_thresholds": {
+        "cpu_usage": 80,
+        "memory_usage": 85,
+        "disk_usage": 90,
+        "network_usage": 80
+      }
+    }
+  },
+  
+  "monitoring": {
+    "metrics_collection": {
+      "enabled": true,
+      "collection_interval_seconds": 60,
+      "retention_hours": 24,
+      "metrics": [
+        "process_count",
+        "process_success_rate",
+        "average_duration",
+        "resource_usage",
+        "queue_length",
+        "error_rate"
+      ]
+    },
+    
+    "alerts": {
+      "enabled": true,
+      "alert_channels": ["email", "slack", "webhook"],
+      "alert_rules": [
+        {
+          "name": "high_error_rate",
+          "condition": "error_rate > 0.1",
+          "severity": "warning",
+          "cooldown_minutes": 15
+        },
+        {
+          "name": "resource_exhaustion",
+          "condition": "cpu_usage > 90% or memory_usage > 95%",
+          "severity": "critical",
+          "cooldown_minutes": 5
+        },
+        {
+          "name": "queue_overflow",
+          "condition": "queue_length > 80",
+          "severity": "warning",
+          "cooldown_minutes": 10
+        }
+      ]
+    },
+    
+    "logging": {
+      "level": "INFO",
+      "format": "json",
+      "output": ["file", "console"],
+      "file_rotation": {
+        "max_size_mb": 100,
+        "backup_count": 5
+      }
+    }
+  },
+  
+  "error_handling": {
+    "global_error_strategy": "continue_on_error",
+    "process_error_strategies": {
+      "trading_cycle": "retry_then_pause",
+      "data_processing": "retry_then_skip",
+      "model_training": "retry_then_fallback",
+      "risk_assessment": "retry_then_manual"
+    },
+    "error_notification": {
+      "email": ["admin@rqa.com", "trading@rqa.com"],
+      "slack": "#system-alerts",
+      "webhook": "https://alerts.rqa.com/webhook"
+    },
+    "error_recovery": {
+      "auto_restart": true,
+      "restart_delay_seconds": 60,
+      "max_restart_attempts": 3,
+      "circuit_breaker": {
+        "enabled": true,
+        "failure_threshold": 5,
+        "recovery_timeout_seconds": 300
+      }
+    }
+  },
+  
+  "performance": {
+    "optimization": {
+      "enable_process_pooling": true,
+      "enable_connection_pooling": true,
+      "enable_caching": true,
+      "cache_ttl_seconds": 3600
+    },
+    "scaling": {
+      "auto_scaling": true,
+      "min_instances": 5,
+      "max_instances": 20,
+      "scaling_thresholds": {
+        "cpu_usage": 70,
+        "memory_usage": 75,
+        "queue_length": 50
+      },
+      "scaling_cooldown_seconds": 300
+    }
+  },
+  
+  "security": {
+    "authentication": {
+      "enabled": true,
+      "method": "jwt",
+      "token_expiry_hours": 24
+    },
+    "authorization": {
+      "enabled": true,
+      "role_based_access": true,
+      "roles": ["admin", "operator", "viewer"]
+    },
+    "audit_logging": {
+      "enabled": true,
+      "log_level": "INFO",
+      "retention_days": 90
+    }
+  },
+  
+  "integration": {
+    "external_services": {
+      "event_bus": {
+        "url": "tcp://localhost:5555",
+        "timeout_seconds": 30,
+        "retry_count": 3
+      },
+      "service_registry": {
+        "url": "http://localhost:8080",
+        "timeout_seconds": 10,
+        "retry_count": 2
+      },
+      "metrics_collector": {
+        "url": "http://localhost:9090",
+        "timeout_seconds": 15,
+        "retry_count": 2
+      }
+    },
+    "api": {
+      "enabled": true,
+      "port": 8081,
+      "host": "0.0.0.0",
+      "cors_enabled": true,
+      "rate_limiting": {
+        "enabled": true,
+        "requests_per_minute": 100
+      }
+    }
+  }
+}

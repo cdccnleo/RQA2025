@@ -1,0 +1,12 @@
+groups:
+- name: rqa_alerts
+  rules:
+  - alert: LowThroughput
+    annotations:
+      description: '吞吐量低于500 req/s (阈值: 500.0)'
+      summary: 吞吐量低于500 req/s
+    expr: throughput < 500
+    for: 10m
+    labels:
+      service: rqa
+      severity: warning

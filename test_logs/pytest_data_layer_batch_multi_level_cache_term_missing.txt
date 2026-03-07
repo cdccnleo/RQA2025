@@ -1,0 +1,30 @@
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_redis_enabled PASSED [ 64%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_redis_init_failure 
+-------------------------------- live log call --------------------------------
+2025-11-17 10:13:29 [   ERROR] __name__: Failed to initialize Redis cache: Redis connection failed
+PASSED                                                                   [ 66%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_special_value_types PASSED [ 69%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_dataframe PASSED [ 71%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_concurrent_access PASSED [ 74%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_large_data PASSED [ 76%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_get_from_memory_direct PASSED [ 79%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_get_from_memory_nonexistent PASSED [ 82%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_set_to_memory PASSED [ 84%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_get_from_disk_nonexistent PASSED [ 87%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_set_to_disk PASSED [ 89%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_get_from_redis_nonexistent PASSED [ 92%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_set_to_redis PASSED [ 94%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_cleanup_expired_memory PASSED [ 97%]
+tests\unit\data\cache\test_multi_level_cache_edges2.py::test_multi_level_cache_cleanup_expired_disk PASSED [100%]
+
+------------------------------ coverage ------------------------------
+Name                                  Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------
+src\data\cache\multi_level_cache.py     265     89    66%   7-15, 138-144, 172-173, 176-178, 206, 209-211, 242-244, 270, 288-289, 293-294, 299-302, 307, 312-314, 317-318, 323, 329, 380-382, 411-412, 421-425, 429-438, 447-454, 460-488
+src\data\edge\edge_node.py              295     53    82%   96, 98, 153-155, 164-178, 186-201, 333-334, 369, 393-402, 424-426, 449-455, 463-465, 484, 486, 488, 492-494, 510-512, 533-535
+-------------------------------------------------------------------
+TOTAL                                   560    142    75%
+Coverage XML written to file test_logs\coverage-data-layer-batch-multi-level-cache.xml
+
+
+============================= 39 passed in 5.45s ==============================

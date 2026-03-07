@@ -1,0 +1,57 @@
+"""
+base_components 模块
+
+提供 base_components 相关功能
+"""
+
+
+from abc import ABC, abstractmethod
+from datetime import datetime
+from typing import Dict, Any, Optional, List
+import logging
+import time
+
+logger = logging.getLogger(__name__)
+
+class ComponentFactory:
+    """统一组件工厂 - 消除代码重复"""
+
+    def __init__(self):
+        self._components = {}
+        self._factories = {}
+
+    def create_component(self, component_type: str, config: Dict[str, Any] = None):
+        """创建组件"""
+        try:
+            # 首先尝试使用注册的工厂
+            if component_type in self._factories:
+                return self._factories[component_type](config or {})
+
+            # 回退到通用创建逻辑
+            component = self._create_component_instance(component_type, config or {})
+            if component and hasattr(component, 'initialize'):
+                if component.initialize(config or {}):
+                    return component
+            return component
+        except Exception as e:
+            print(f"创建组件失败 {component_type}: {e}")
+            return None
+
+    def _create_component_instance(self, component_type: str, config: Dict[str, Any]):
+        """创建组件实例"""
+        # 通用组件创建逻辑
+        return None
+
+    def register_factory(self, component_type: str, factory_func):
+        """注册组件工厂函数"""
+        self._factories[component_type] = factory_func
+
+    def unregister_factory(self, component_type: str):
+        """注销组件工厂函数"""
+        self._factories.pop(component_type, None)
+
+    def get_registered_types(self) -> List[str]:
+        """获取所有已注册的组件类型"""
+        return list(self._factories.keys())
+
+#!/usr/bin/env python3\n"""\n统一Base组件工厂\n\n合并所有base_*.py模板文件为统一的管理架构\n    生成时间: 2025 - 08 - 24 09:59:54\n"""\n\nclass IBaseComponent(ABC):\n\n    """Base组件接口"""\n\n    @abstractmethod\n\n    def get_info(self) -> Dict[str, Any]:\n    """文档字符串"""\n\n        """获取组件信息"""\n        pass\n\n    @abstractmethod\n\n    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:\n    """文档字符串"""\n\n        """处理数据"""\n        pass\n\n    @abstractmethod\n\n    def get_status(self) -> Dict[str, Any]:\n    """文档字符串"""\n\n        """获取组件状态"""\n        pass\n\n    @abstractmethod\n\n    def get_base_id(self) -> int:\n    """文档字符串"""\n\n        """获取base ID"""\n        pass\n\nclass BaseComponent(IBaseComponent):\n\n    """统一Base组件实现"""\n\n    def __init__(self, base_id: int, component_type: str = "Base"):\n\n        """初始化组件"""\n        self.base_id = base_id\n        self.component_type = component_type\n        self.component_name = f"{component_type}_Component_{base_id}"\n        self.creation_time = datetime.now()\n\n    def get_base_id(self) -> int:\n    """文档字符串"""\n\n        """获取base ID"""\n        return self.base_id\n\n    def get_info(self) -> Dict[str, Any]:\n    """文档字符串"""\n\n        """获取组件信息"""\n        return {\n            "base_id": self.base_id,\n            "component_name": self.component_name,\n            "component_type": self.component_type,\n            "creation_time": self.creation_time.isoformat(),\n            "description": "统一{self.component_type}组件实现",\n            "version": "2.0.0",\n            "type": "unified_infrastructure_utils_component"\n        }\n\n    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:\n    """文档字符串"""\n\n        """处理数据"""\n        try:\n            result = {\n                "base_id": self.base_id,\n                "component_name": self.component_name,\n                "component_type": self.component_type,\n                "input_data": data,\n                "processed_at": datetime.now().isoformat(),\n                "status": "success",\n                "result": f"Processed by {self.component_name}",\n                "processing_type": "unified_base_processing"\n            }\n            return result\n        except Exception as e:\n            return {\n                "base_id": self.base_id,\n                "component_name": self.component_name,\n                "component_type": self.component_type,\n                "input_data": data,\n                "processed_at": datetime.now().isoformat(),\n                "status": "error",\n                "error": str(e),\n                "error_type": type(e).__name__\n            }\n\n    def get_status(self) -> Dict[str, Any]:\n    """文档字符串"""\n\n        """获取组件状态"""\n        return {\n            "base_id": self.base_id,\n            "component_name": self.component_name,\n            "component_type": self.component_type,\n            "status": "active",\n            "creation_time": self.creation_time.isoformat(),\n            "health": "good"\n        }\n\nclass BaseComponentFactory:\n\n    """Base组件工厂"""\n\n    # 支持的base ID列表\n    SUPPORTED_BASE_IDS = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71, 77, 83, 89]\n\n    @staticmethod\n\n    def create_component(base_id: int) -> BaseComponent:\n    """文档字符串"""\n\n        """创建指定ID的base组件"""\n        if base_id not in BaseComponentFactory.SUPPORTED_BASE_IDS:\n            raise ValueError(f"不支持的base ID: {base_id}。支持的ID: {BaseComponentFactory.SUPPORTED_BASE_IDS}")\n\n        return BaseComponent(base_id, "Base")\n\n    @staticmethod\n\n    def get_available_bases() -> List[int]:\n    """文档字符串"""\n\n        """获取所有可用的base ID"""\n        return sorted(list(BaseComponentFactory.SUPPORTED_BASE_IDS))\n\n    @staticmethod\n\n    def create_all_bases() -> Dict[int, BaseComponent]:\n    """文档字符串"""\n\n        """创建所有可用base"""\n        return {\n            base_id: BaseComponent(base_id, "Base")\n            for base_id in BaseComponentFactory.SUPPORTED_BASE_IDS\n        }\n\n    @staticmethod\n\n    def get_factory_info() -> Dict[str, Any]:\n    """文档字符串"""\n\n        """获取工厂信息"""\n        return {\n            "factory_name": "BaseComponentFactory",\n            "version": "2.0.0",\n            "total_bases": len(BaseComponentFactory.SUPPORTED_BASE_IDS),\n            "supported_ids": sorted(list(BaseComponentFactory.SUPPORTED_BASE_IDS)),\n            "created_at": datetime.now().isoformat(),\n            "description": "统一{component_type}组件工厂，替代原有的{len(files)}个模板化文件"\n        }\n\n# 向后兼容：创建旧的组件实例\n\ndef create_base_base_component_5():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(5)\n\ndef create_base_base_component_11():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(11)\n\ndef create_base_base_component_17():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(17)\n\ndef create_base_base_component_23():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(23)\n\ndef create_base_base_component_29():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(29)\n\ndef create_base_base_component_35():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(35)\n\ndef create_base_base_component_41():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(41)\n\ndef create_base_base_component_47():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(47)\n\ndef create_base_base_component_53():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(53)\n\ndef create_base_base_component_59():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(59)\n\ndef create_base_base_component_65():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(65)\n\ndef create_base_base_component_71():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(71)\n\ndef create_base_base_component_77():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(77)\n\ndef create_base_base_component_83():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(83)\n\ndef create_base_base_component_89():\n    """文档字符串"""\n\n    return BaseComponentFactory.create_component(89)\n\n__all__ = [\n    "IBaseComponent",\n    "BaseComponent",\n    "BaseComponentFactory",\n    "create_base_base_component_5",\n    "create_base_base_component_11",\n    "create_base_base_component_17",\n    "create_base_base_component_23",\n    "create_base_base_component_29",\n    "create_base_base_component_35",\n    "create_base_base_component_41",\n    "create_base_base_component_47",\n    "create_base_base_component_53",\n    "create_base_base_component_59",\n    "create_base_base_component_65",\n    "create_base_base_component_71",\n    "create_base_base_component_77",\n    "create_base_base_component_83",\n    "create_base_base_component_89",\n]\n

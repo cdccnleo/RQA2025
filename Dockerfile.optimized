@@ -1,0 +1,272 @@
+# RQA2025 风险控制层 - 优化版 Dockerfile
+# 使用多阶段构建和最佳实践优化镜像大小和安全
+
+# =============================================================================
+# 第一阶段：依赖分析和安全扫描
+# =============================================================================
+FROM python:3.9-slim as dependency-analyzer
+
+WORKDIR /tmp
+
+# 复制依赖文件
+COPY requirements.txt requirements-gpu.txt ./
+
+# 安装安全扫描工具
+RUN pip install --no-cache-dir safety bandit
+
+# 分析依赖安全性
+RUN safety check --file requirements.txt --output json || true
+RUN bandit -r /tmp -f json -o /tmp/security-report.json || true
+
+# =============================================================================
+# 第二阶段：构建依赖层
+# =============================================================================
+FROM python:3.9-slim as dependency-builder
+
+# 设置工作目录
+WORKDIR /build
+
+# 安装构建依赖
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    libpq-dev \
+    libxml2-dev \
+    libxslt-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖文件
+COPY requirements.txt ./
+
+# 创建虚拟环境并安装依赖
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 安装Python依赖
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 清理缓存
+RUN find /opt/venv -type f -name "*.pyc" -delete
+RUN find /opt/venv -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+
+# =============================================================================
+# 第三阶段：GPU依赖层
+# =============================================================================
+FROM nvidia/cuda:11.8-base-ubuntu20.04 as gpu-dependency-builder
+
+# 安装Python和构建工具
+RUN apt-get update && apt-get install -y \
+    python3.9 \
+    python3.9-venv \
+    python3.9-dev \
+    build-essential \
+    gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建虚拟环境
+RUN python3.9 -m venv /opt/venv-gpu
+ENV PATH="/opt/venv-gpu/bin:$PATH"
+
+# 复制GPU依赖文件
+COPY requirements-gpu.txt ./
+
+# 安装GPU依赖
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -r requirements-gpu.txt
+
+# =============================================================================
+# 第四阶段：应用构建层
+# =============================================================================
+FROM python:3.9-slim as application-builder
+
+# 安装必要的运行时库
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    libxml2 \
+    libxslt1.1 \
+    libjpeg62-turbo \
+    zlib1g \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建应用用户
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 设置工作目录
+WORKDIR /app
+
+# 从依赖层复制虚拟环境
+COPY --from=dependency-builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 复制应用代码
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+
+# 创建必要的目录
+RUN mkdir -p /app/logs /app/cache /app/data
+RUN chown -R appuser:appuser /app
+
+# 切换到非root用户
+USER appuser
+
+# 设置Python路径
+ENV PYTHONPATH="/app/src:$PYTHONPATH"
+ENV PYTHONUNBUFFERED=1
+
+# =============================================================================
+# 第五阶段：GPU应用层
+# =============================================================================
+FROM nvidia/cuda:11.8-runtime-ubuntu20.04 as gpu-application
+
+# 安装Python运行时
+RUN apt-get update && apt-get install -y \
+    python3.9 \
+    python3.9-venv \
+    libpq5 \
+    libxml2 \
+    libxslt1.1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建应用用户
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 设置工作目录
+WORKDIR /app
+
+# 从GPU依赖层复制虚拟环境
+COPY --from=gpu-dependency-builder /opt/venv-gpu /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 复制应用代码
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+
+# 创建必要的目录
+RUN mkdir -p /app/logs /app/cache /app/data
+RUN chown -R appuser:appuser /app
+
+# 切换到非root用户
+USER appuser
+
+# 设置Python路径
+ENV PYTHONPATH="/app/src:$PYTHONPATH"
+ENV PYTHONUNBUFFERED=1
+
+# GPU配置
+ENV CUDA_VISIBLE_DEVICES=0
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+# =============================================================================
+# 第六阶段：生产镜像
+# =============================================================================
+FROM application-builder as production
+
+# 设置环境变量
+ENV ENVIRONMENT=production
+ENV LOG_LEVEL=INFO
+
+# 暴露端口
+EXPOSE 8080 9090
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# 启动命令
+CMD ["python", "-m", "src.core.api_gateway"]
+
+# =============================================================================
+# GPU生产镜像
+# =============================================================================
+FROM gpu-application as gpu-production
+
+# 设置环境变量
+ENV ENVIRONMENT=production
+ENV LOG_LEVEL=INFO
+ENV GPU_ENABLED=true
+
+# 暴露端口
+EXPOSE 8081 9091
+
+# GPU健康检查
+HEALTHCHECK --interval=30s --timeout=15s --start-period=60s --retries=3 \
+    CMD python -c "import cupy as cp; print('GPU available:', cp.cuda.is_available())" && \
+        curl -f http://localhost:8081/health || exit 1
+
+# 启动命令
+CMD ["python", "-m", "src.risk.gpu_accelerated_risk_calculator"]
+
+# =============================================================================
+# 开发镜像
+# =============================================================================
+FROM application-builder as development
+
+# 安装开发工具
+USER root
+RUN pip install --no-cache-dir \
+    pytest \
+    pytest-asyncio \
+    pytest-cov \
+    black \
+    flake8 \
+    mypy \
+    jupyter \
+    jupyterlab
+
+# 重新切换到应用用户
+USER appuser
+
+# 设置开发环境变量
+ENV ENVIRONMENT=development
+ENV LOG_LEVEL=DEBUG
+
+# 暴露Jupyter端口
+EXPOSE 8888
+
+# 开发启动命令
+CMD ["python", "-m", "src.core.api_gateway"]
+
+# =============================================================================
+# 轻量级监控镜像
+# =============================================================================
+FROM python:3.9-alpine as monitoring
+
+WORKDIR /app
+
+# 安装轻量级依赖
+RUN apk add --no-cache \
+    curl \
+    ca-certificates
+
+# 复制虚拟环境
+COPY --from=dependency-builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 复制监控代码
+COPY src/monitoring/ ./src/monitoring/
+
+# 创建应用用户
+RUN addgroup -g 1000 appuser && \
+    adduser -D -s /bin/sh -u 1000 -G appuser appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+EXPOSE 9090
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:9090/health || exit 1
+
+CMD ["python", "-m", "src.monitoring.metrics_collector"]

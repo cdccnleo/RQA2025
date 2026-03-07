@@ -1,0 +1,18 @@
+"""
+数据API路由模块
+"""
+
+from fastapi import APIRouter
+
+# 创建数据API路由器
+router = APIRouter(prefix="/api/data", tags=["数据API"])
+
+@router.get("/")
+async def get_data():
+    """获取数据"""
+    return {"message": "数据API端点", "status": "active"}
+
+@router.get("/status")
+async def get_data_status():
+    """获取数据状态"""
+    return {"status": "healthy", "data_available": True}

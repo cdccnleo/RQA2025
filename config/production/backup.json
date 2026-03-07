@@ -1,0 +1,27 @@
+{
+  "backup": {
+    "database": {
+      "schedule": "0 2 * * *",
+      "retention_days": 30,
+      "compression": true,
+      "encryption": true
+    },
+    "config": {
+      "schedule": "0 3 * * *",
+      "retention_days": 90,
+      "include_secrets": false
+    },
+    "logs": {
+      "schedule": "0 */4 * * *",
+      "retention_days": 7,
+      "compression": true
+    },
+    "storage": {
+      "type": "s3",
+      "bucket": "rqa2025-backups",
+      "region": "us-east-1",
+      "access_key": null,
+      "secret_key": null
+    }
+  }
+}

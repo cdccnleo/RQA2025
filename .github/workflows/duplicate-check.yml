@@ -1,0 +1,84 @@
+name: Code Duplicate Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/infrastructure/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/infrastructure/**'
+
+jobs:
+  duplicate-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: python/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run duplicate detection
+      run: |
+        python scripts/automated_duplicate_detection.py --strict
+
+    - name: Upload duplicate report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: duplicate-detection-report
+        path: duplicate_detection_report.json
+
+    - name: Comment on PR
+      if: github.event_name == 'pull_request' && failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('duplicate_detection_report.json', 'utf8'));
+
+          const summary = report.summary;
+          const severity = report.severity_assessment;
+
+          const comment = `## 🚨 代码重复检测报告
+
+          ### 📊 检测结果
+          - 🔍 扫描文件: **${summary.total_files}**
+          - ⚠️ 重复函数: **${summary.duplicate_functions}** 组
+          - ⚠️ 重复类: **${summary.duplicate_classes}** 组
+          - 🔢 总重复次数: **${summary.total_occurrences}**
+
+          ### ⚠️ 严重程度: **${severity.overall_severity.toUpperCase()}**
+
+          **风险评估:** ${severity.risk_assessment}
+
+          ### 🎯 最严重重复
+          ${severity.most_severe_duplicate ?
+            `- 类型: ${severity.most_severe_duplicate.type}
+          - 重复次数: ${severity.most_severe_duplicate.occurrences}
+          - 签名: \`${severity.most_severe_duplicate.signature.substring(0, 100)}...\`` :
+            '无严重重复'}
+
+          ### 💡 建议改进
+          ${report.recommendations.slice(0, 3).map(rec => `- ${rec}`).join('\\n')}
+
+          ---
+          *此报告由自动化代码重复检测生成。如有疑问，请联系架构师。*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+

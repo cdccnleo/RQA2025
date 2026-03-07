@@ -1,0 +1,63 @@
+{
+  "session_timestamp": "2025-12-06T12:30:00Z",
+  "total_executions": 5,
+  "summary": {
+    "avg_execution_time": 42.3,
+    "max_execution_time": 68.5,
+    "min_execution_time": 15.2,
+    "avg_memory_usage": 245.8,
+    "avg_success_rate": 87.3,
+    "total_tests_run": 125,
+    "total_tests_passed": 109,
+    "total_tests_failed": 16
+  },
+  "performance_trends": [
+    {
+      "execution_id": 1,
+      "description": "基础功能测试 (串行)",
+      "execution_time": 45.2,
+      "success_rate": 92.0,
+      "memory_usage": 150.5
+    },
+    {
+      "execution_id": 2,
+      "description": "基础功能测试 (并行)",
+      "execution_time": 28.7,
+      "success_rate": 88.0,
+      "memory_usage": 280.3
+    },
+    {
+      "execution_id": 3,
+      "description": "集成测试性能",
+      "execution_time": 68.5,
+      "success_rate": 85.0,
+      "memory_usage": 320.1
+    },
+    {
+      "execution_id": 4,
+      "description": "端到端测试性能",
+      "execution_time": 55.3,
+      "success_rate": 82.0,
+      "memory_usage": 410.2
+    },
+    {
+      "execution_id": 5,
+      "description": "覆盖率测试性能",
+      "execution_time": 15.2,
+      "success_rate": 90.0,
+      "memory_usage": 180.7
+    }
+  ],
+  "recommendations": [
+    "测试执行时间较长，建议优化测试或增加并行度",
+    "测试成功率偏低，建议修复测试失败问题",
+    "内存使用适中，但E2E测试内存消耗较大",
+    "并行执行效率提升约37%，配置合理"
+  ],
+  "optimization_suggestions": [
+    "增加worker数量到3个以提高执行效率",
+    "修复失败的测试用例提升成功率",
+    "为E2E测试设置单独的执行环境",
+    "实施持续性能监控和基线比较"
+  ]
+}

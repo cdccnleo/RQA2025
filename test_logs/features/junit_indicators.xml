@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="6" time="0.933" timestamp="2025-11-16T13:05:34.704514+08:00" hostname="AIPC"><testcase classname="unit.features.indicators.test_volatility_calculator" name="test_calculate_returns_empty_for_empty_input" time="0.184"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.indicators.volatility_calculator:volatility_calculator.py:42 输入数据为空
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.indicators.volatility_calculator:输入数据为空
+
+</system-err></testcase><testcase classname="unit.features.indicators.test_volatility_calculator" name="test_calculate_handles_missing_required_columns" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.indicators.volatility_calculator:volatility_calculator.py:89 数据缺少必要列: ['high', 'low']
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.indicators.volatility_calculator:数据缺少必要列: ['high', 'low']
+
+</system-err></testcase><testcase classname="unit.features.indicators.test_volatility_calculator" name="test_calculate_generates_core_indicators_and_signals" time="0.040"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.indicators.volatility_calculator:volatility_calculator.py:78 波动率指标计算完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.indicators.volatility_calculator:波动率指标计算完成
+
+</system-err></testcase><testcase classname="unit.features.indicators.test_volatility_calculator_unit" name="test_calculate_adds_expected_columns" time="0.031"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.features.indicators.volatility_calculator:volatility_calculator.py:78 波动率指标计算完成
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.features.indicators.volatility_calculator:波动率指标计算完成
+
+</system-err></testcase><testcase classname="unit.features.indicators.test_volatility_calculator_unit" name="test_calculate_handles_missing_required_columns" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.features.indicators.volatility_calculator:volatility_calculator.py:89 数据缺少必要列: ['high', 'low']
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.features.indicators.volatility_calculator:数据缺少必要列: ['high', 'low']
+
+</system-err></testcase><testcase classname="unit.features.indicators.test_volatility_calculator_unit" name="test_calculate_with_none_returns_empty" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.features.indicators.volatility_calculator:volatility_calculator.py:42 输入数据为空
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.features.indicators.volatility_calculator:输入数据为空
+
+</system-err></testcase></testsuite></testsuites>

@@ -1,0 +1,1782 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="RQA2025_Test_Suite" errors="0" failures="0" skipped="0" tests="210" time="87.102" timestamp="2025-11-17T06:17:24.888888+08:00" hostname="AIPC"><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_coerce_config_invalid_type" time="0.609"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_init_with_positional_args" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_check_data_quality_generates_metrics_and_alerts" time="0.692"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_calculate_completeness_metrics_empty_dataframe" time="0.712"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_validate_dict_missing_fields" time="0.645"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_quality_level_mapping" time="0.669"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,382 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,387 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_history_aggregation_empty_and_single_type" time="0.911"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_init_with_dict_config" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_monitor_quality_real_time_generates_full_report" time="1.408"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:179 Real - time quality monitoring completed in 0.64s
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+INFO:src.data.quality.enhanced_quality_monitor_v2:Real - time quality monitoring completed in 0.64s
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_validate_exception_handling" time="0.055"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.unified_quality_monitor:unified_quality_monitor.py:220 数据验证失败: 模拟异常
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.unified_quality_monitor:数据验证失败: 模拟异常
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_load_config_exception" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_check_quality_handles_rule_exception" time="0.726"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.data_quality_monitor:data_quality_monitor.py:529 规则 broken 执行失败: boom
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:752 邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.00
+质量等级: critical
+异常数量: 0
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:757 短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.00
+质量等级: critical
+异常数量: 0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.data_quality_monitor:规则 broken 执行失败: boom
+INFO:src.data.quality.data_quality_monitor:邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.00
+质量等级: critical
+异常数量: 0
+INFO:src.data.quality.data_quality_monitor:短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.00
+质量等级: critical
+异常数量: 0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_validate_dataframe_missing_values_and_ranges" time="0.821"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_monitor_baseline" name="test_monitor_records_history_and_triggers_alert" time="0.687"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_validator_handles_none_data" time="0.701"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_generate_alerts_and_recommendations" time="0.044"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,447 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,450 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_monitor_baseline" name="test_monitor_with_high_scores_does_not_alert" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponentFactory" name="test_create_component_with_supported_id" time="0.705"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_check_data_quality_with_real_data_updates_trends" time="0.184"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponentFactory" name="test_create_component_with_supported_id" time="0.721"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_validator_structured_data_missing_fields" time="0.080"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_validator_module" name="test_validate_dataframe_collects_metrics_and_errors" time="0.849"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponentFactory" name="test_create_component_with_invalid_id_raises" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_monitor_baseline" name="test_generate_report_filters_by_days" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_normalize_data_type_database_table" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponentFactory" name="test_create_component_with_invalid_id_raises" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_assurance_components_unit" name="test_assurance_component_info_status_and_process" time="0.704"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor" name="test_check_completeness_handles_missing_values" time="0.834"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:179 检查数据完整性...
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,522 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,527 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,528 - advanced_quality_monitor - INFO - 检查数据完整性...
+INFO:advanced_quality_monitor:检查数据完整性...
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_calculate_completeness_metrics_single_cell" time="0.016"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponentFactory" name="test_get_available_ids_and_create_all" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_add_rule_non_callable_raises" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponentFactory" name="test_get_factory_info_contains_expected_fields" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponentFactory" name="test_get_available_ids_and_create_all" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_normalize_data_type_stream_api" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_register_health_checks_exception" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_initialize_quality_monitoring_exception" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_monitor_quality_with_stubbed_checks" time="0.066"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:605 开始监控数据质量: unit
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:650 数据质量监控完成，总体分数: 81.2%
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,495 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,498 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,532 - advanced_quality_monitor - INFO - 开始监控数据质量: unit
+INFO:advanced_quality_monitor:开始监控数据质量: unit
+2025-11-17 06:18:45,534 - advanced_quality_monitor - INFO - 数据质量监控完成，总体分数: 81.2%
+INFO:advanced_quality_monitor:数据质量监控完成，总体分数: 81.2%
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_clear_rules_removes_all_custom_rules" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_check_quality_resolves_quality_and_alert_levels" time="0.018"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.data_quality_monitor:data_quality_monitor.py:732 数据质量告警: 【WARNING】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: trade
+数据形状: (3, 1)
+总体得分: 0.75
+质量等级: fair
+异常数量: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.data_quality_monitor:数据质量告警: 【WARNING】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: trade
+数据形状: (3, 1)
+总体得分: 0.75
+质量等级: fair
+异常数量: 1
+
+</system-err></testcase><testcase classname="unit.data.quality.test_assurance_components_unit" name="test_assurance_factory_supported_ids_and_create_all" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_normalize_data_type_default" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponentFactory" name="test_get_factory_info_contains_expected_fields" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_initialize_quality_baselines_exception" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_calculate_metrics_clamps_values" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_check_thresholds_reports_violations" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_validate_dict_payload_missing_fields" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_check_quality_exception_handling" time="0.082"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_get_quality_trends" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,573 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,576 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_validator_stream_data_invalid_price" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_validator_api_data_sentiment_range" time="0.038"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validation_history_accumulates_results" time="0.031"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_repair_data_disabled" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.unified_quality_monitor:unified_quality_monitor.py:374 自动修复已禁用
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.unified_quality_monitor:自动修复已禁用
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_validate_custom_rule_and_exception_path" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_repair_data_enabled_low_confidence" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_repair_data_exception_handling" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.unified_quality_monitor:unified_quality_monitor.py:393 数据修复失败: 模拟复制失败
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.unified_quality_monitor:数据修复失败: 模拟复制失败
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_generate_summary_report_with_and_without_history" time="0.022"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:752 邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (2, 1)
+总体得分: 0.55
+质量等级: critical
+异常数量: 1
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:757 短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (2, 1)
+总体得分: 0.55
+质量等级: critical
+异常数量: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.data_quality_monitor:邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (2, 1)
+总体得分: 0.55
+质量等级: critical
+异常数量: 1
+INFO:src.data.quality.data_quality_monitor:短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (2, 1)
+总体得分: 0.55
+质量等级: critical
+异常数量: 1
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_validator_module" name="test_validate_dict_payload_reports_missing_field" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_strict_mode_affects_validation" time="0.028"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_get_quality_and_anomaly_history_filters_by_days" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:752 邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.40
+质量等级: critical
+异常数量: 1
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:757 短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.40
+质量等级: critical
+异常数量: 1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.data_quality_monitor:邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.40
+质量等级: critical
+异常数量: 1
+INFO:src.data.quality.data_quality_monitor:短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: unknown
+数据形状: (3, 1)
+总体得分: 0.40
+质量等级: critical
+异常数量: 1
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor" name="test_check_accuracy_with_reference_data" time="0.059"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:213 检查数据准确性...
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,598 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,600 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,601 - advanced_quality_monitor - INFO - 检查数据准确性...
+INFO:advanced_quality_monitor:检查数据准确性...
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_validator_module" name="test_validate_with_unsupported_type" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_is_probably_numeric_column_heuristics" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_export_report_json" time="0.096"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,626 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,629 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_monitor_check_quality_generates_metrics" time="0.117"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_get_quality_report_filters_by_type_and_time" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_is_probably_numeric_column_empty_sample" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_export_report_formats_and_errors" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_validator_module" name="test_custom_rules_and_history_tracking" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_validator_module" name="test_add_rule_requires_callable" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_is_probably_numeric_column_mixed_types" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_validate_duplicates_detected" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_history_aggregation_multiple_types" time="0.134"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=news, 质量分数=0.64, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=news, 质量分数=0.64, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_get_quality_report_with_default_time_range" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor" name="test_check_timeliness_without_timestamp_column" time="0.020"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:341 检查数据时效性...
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,667 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,669 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,670 - advanced_quality_monitor - INFO - 检查数据时效性...
+INFO:advanced_quality_monitor:检查数据时效性...
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_check_quality_auto_repair_enabled" time="0.052"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.unified_quality_monitor:unified_quality_monitor.py:374 自动修复已禁用
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.72
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.72, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.unified_quality_monitor:自动修复已禁用
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.72
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.72, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_trend_analyzer_detects_direction" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_value_ranges_boundary_values" time="0.021"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_validate_unsupported_type_returns_error" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor" name="test_monitor_quality_generates_alerts_and_history" time="0.093"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:605 开始监控数据质量: unknown
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:179 检查数据完整性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:213 检查数据准确性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:274 检查数据一致性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:341 检查数据时效性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:410 检查数据有效性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:490 检查数据可靠性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:650 数据质量监控完成，总体分数: 71.5%
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,714 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,717 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,719 - advanced_quality_monitor - INFO - 开始监控数据质量: unknown
+INFO:advanced_quality_monitor:开始监控数据质量: unknown
+2025-11-17 06:18:45,719 - advanced_quality_monitor - INFO - 检查数据完整性...
+INFO:advanced_quality_monitor:检查数据完整性...
+2025-11-17 06:18:45,726 - advanced_quality_monitor - INFO - 检查数据准确性...
+INFO:advanced_quality_monitor:检查数据准确性...
+2025-11-17 06:18:45,742 - advanced_quality_monitor - INFO - 检查数据一致性...
+INFO:advanced_quality_monitor:检查数据一致性...
+2025-11-17 06:18:45,749 - advanced_quality_monitor - INFO - 检查数据时效性...
+INFO:advanced_quality_monitor:检查数据时效性...
+2025-11-17 06:18:45,760 - advanced_quality_monitor - INFO - 检查数据有效性...
+INFO:advanced_quality_monitor:检查数据有效性...
+2025-11-17 06:18:45,767 - advanced_quality_monitor - INFO - 检查数据可靠性...
+INFO:advanced_quality_monitor:检查数据可靠性...
+2025-11-17 06:18:45,776 - advanced_quality_monitor - INFO - 数据质量监控完成，总体分数: 71.5%
+INFO:advanced_quality_monitor:数据质量监控完成，总体分数: 71.5%
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_value_ranges_outside_bounds" time="0.017"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_monitor_baseline" name="test_create_alert_message_contains_details" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_cleanup_old_data_prunes_history" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_check_data_quality_returns_scores" time="0.076"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:179 检查数据完整性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:213 检查数据准确性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:274 检查数据一致性...
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,722 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,725 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,729 - advanced_quality_monitor - INFO - 检查数据完整性...
+INFO:advanced_quality_monitor:检查数据完整性...
+2025-11-17 06:18:45,749 - advanced_quality_monitor - INFO - 检查数据准确性...
+INFO:advanced_quality_monitor:检查数据准确性...
+2025-11-17 06:18:45,778 - advanced_quality_monitor - INFO - 检查数据一致性...
+INFO:advanced_quality_monitor:检查数据一致性...
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_periodic_quality_check_warns_on_declining_trend" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  enhanced_quality_monitor:enhanced_quality_monitor.py:490 质量指标 overall 呈下降趋势，强度: 0.9
+WARNING  enhanced_quality_monitor:enhanced_quality_monitor.py:490 质量指标 other 呈下降趋势，强度: 0.9
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:enhanced_quality_monitor:质量指标 overall 呈下降趋势，强度: 0.9
+WARNING:enhanced_quality_monitor:质量指标 other 呈下降趋势，强度: 0.9
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_calculate_quality_metrics_exception" time="0.012"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.unified_quality_monitor:unified_quality_monitor.py:804 计算质量指标失败: 模拟一致性计算失败
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.unified_quality_monitor:计算质量指标失败: 模拟一致性计算失败
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_duplicates_empty_dataframe" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_statistical_anomaly_detector_reports" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponentFactory" name="test_shim_functions_create_components" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_calculate_consistency_exception" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_monitor_data_source_management" time="0.039"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.76
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=crypto, 质量分数=0.76, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.76
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=crypto, 质量分数=0.76, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_duplicates_single_row" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestCalculateMetrics" name="test_calculate_metrics_normal" time="0.109"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_calculate_timeliness_exception" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_dict_payload_none_values" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_detect_anomalies_exception" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.unified_quality_monitor:unified_quality_monitor.py:874 异常检测失败: 模拟统计计算失败
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.unified_quality_monitor:异常检测失败: 模拟统计计算失败
+
+</system-err></testcase><testcase classname="unit.data.quality.test_assurance_components_unit" name="test_assurance_factory_invalid_id_raises" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_trend_insufficient_data" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_dict_payload_all_none" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRecordMetrics" name="test_record_metrics_basic" time="0.098"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponentFactory" name="test_shim_functions_create_components" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_numeric_types_with_nan" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_generate_alerts_with_cooldown" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_trend_calculation_boundaries" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetMetricsHistory" name="test_get_metrics_history_default" time="0.126"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_generate_recommendations_all_conditions" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_alert_cooldown_extreme_values" time="0.090"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.99): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.99): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.99): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.99): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_missing_values_all_missing" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestCalculateMetrics" name="test_calculate_metrics_empty_data" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_register_alert_handler_invalid" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestExportReport" name="test_export_report_json" time="0.100"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_get_quality_history_with_type" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_missing_values_no_missing" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedDataValidatorAdditional" name="test_get_validation_rules" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_get_quality_history_all_types" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRecordMetrics" name="test_record_metrics_with_custom_timestamp" time="0.029"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_custom_rule_returns_non_list" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_get_quality_metrics_for_type_empty" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestTrackMetrics" name="test_track_metrics_with_dataframe" time="0.032"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:752 邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: df_test
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:757 短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: df_test
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.data_quality_monitor:邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: df_test
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+INFO:src.data.quality.data_quality_monitor:短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:45
+数据源: df_test
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_custom_rule_returns_empty_list" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_additional" name="test_auto_repair_numeric_and_categorical" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_calculate_trend_insufficient_data" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_validator_module" name="test_is_probably_numeric_column_sampling_logic" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_empty_dataframe" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestTrackMetrics" name="test_track_metrics_with_model" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_calculate_trend_improving" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_alert_cooldown_large_value" time="0.084"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.99): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.99): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.99): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.99): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestComponentFactoryBehavior" name="test_create_component_success" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestMonitorInitializationVariants" name="test_init_with_legacy_dict" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_dataframe_with_all_numeric_columns" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestExportReport" name="test_export_report_csv" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_calculate_trend_declining" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetMetricsHistory" name="test_get_metrics_history_with_limit" time="0.088"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestComponentFactoryBehavior" name="test_create_component_when_initialize_fails" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestMonitorInitializationVariants" name="test_init_with_metrics_enabled" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_generate_report_no_history" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_dataframe_with_mixed_numeric_and_string" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges" name="test_validate_empty_dict_payload" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_generate_report_invalid_period" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestComponentFactory" name="test_create_component_success" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor" name="test_export_report_creates_json_file" time="0.101"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:605 开始监控数据质量: binance
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:179 检查数据完整性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:213 检查数据准确性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:274 检查数据一致性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:341 检查数据时效性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:410 检查数据有效性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:490 检查数据可靠性...
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:650 数据质量监控完成，总体分数: 99.8%
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,986 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,988 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+2025-11-17 06:18:45,989 - advanced_quality_monitor - INFO - 开始监控数据质量: binance
+INFO:advanced_quality_monitor:开始监控数据质量: binance
+2025-11-17 06:18:45,989 - advanced_quality_monitor - INFO - 检查数据完整性...
+INFO:advanced_quality_monitor:检查数据完整性...
+2025-11-17 06:18:45,993 - advanced_quality_monitor - INFO - 检查数据准确性...
+INFO:advanced_quality_monitor:检查数据准确性...
+2025-11-17 06:18:45,998 - advanced_quality_monitor - INFO - 检查数据一致性...
+INFO:advanced_quality_monitor:检查数据一致性...
+2025-11-17 06:18:46,001 - advanced_quality_monitor - INFO - 检查数据时效性...
+INFO:advanced_quality_monitor:检查数据时效性...
+2025-11-17 06:18:46,003 - advanced_quality_monitor - INFO - 检查数据有效性...
+INFO:advanced_quality_monitor:检查数据有效性...
+2025-11-17 06:18:46,005 - advanced_quality_monitor - INFO - 检查数据可靠性...
+INFO:advanced_quality_monitor:检查数据可靠性...
+2025-11-17 06:18:46,008 - advanced_quality_monitor - INFO - 数据质量监控完成，总体分数: 99.8%
+INFO:advanced_quality_monitor:数据质量监控完成，总体分数: 99.8%
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_generate_report_exception" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.unified_quality_monitor:unified_quality_monitor.py:1039 生成质量报告失败: 模拟过滤失败
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.unified_quality_monitor:生成质量报告失败: 模拟过滤失败
+
+</system-err></testcase><testcase classname="unit.data.quality.test_advanced_quality_monitor_unit" name="test_track_metrics_dataframe_and_invalid" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     disk_cache:disk_cache.py:76 DiskCache initialized with cache_dir: cache
+INFO     advanced_quality_monitor:advanced_quality_monitor.py:175 AdvancedQualityMonitor initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+2025-11-17 06:18:45,985 - disk_cache - INFO - DiskCache initialized with cache_dir: cache
+INFO:disk_cache:DiskCache initialized with cache_dir: cache
+2025-11-17 06:18:45,987 - advanced_quality_monitor - INFO - AdvancedQualityMonitor initialized
+INFO:advanced_quality_monitor:AdvancedQualityMonitor initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestComponentFactory" name="test_create_component_when_initialize_fails" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_filter_by_period_all" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor" name="test_quality_alert_manager_records_history" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  enhanced_quality_monitor:enhanced_quality_monitor.py:653 质量异常: 整体质量分数过低: 0.40
+WARNING  enhanced_quality_monitor:enhanced_quality_monitor.py:653 质量异常: 数据完整性过低: 0.60
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:enhanced_quality_monitor:质量异常: 整体质量分数过低: 0.40
+WARNING:enhanced_quality_monitor:质量异常: 数据完整性过低: 0.60
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_filter_by_period_1h" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_unit" name="test_check_quality_with_threshold_alert_and_handler" time="0.101"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.95): 0.79
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.79, 阈值=0.95, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.95): 0.79
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.79, 阈值=0.95, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor" name="test_monitor_health_check_warning_when_inactive" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_generate_report_recommendations_all_conditions" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestCheckThresholds" name="test_check_thresholds_normal" time="0.034"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRegisterAlertHandler" name="test_register_alert_handler" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_check_data_quality" time="0.071"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_multiple_sources_concurrent_evaluation" time="0.167"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=news, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=macro, 质量分数=0.64, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=news, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=macro, 质量分数=0.64, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestCalculateMetrics" name="test_calculate_metrics_rule_exception" time="0.025"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_core_edges3" name="test_normalize_data_type_variants_and_history_aggregation" time="0.156"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=api, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=api, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRecordMetrics" name="test_record_metrics_with_custom_source" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestTrackMetrics" name="test_track_metrics_with_invalid_data" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:752 邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: invalid
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:757 短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: invalid
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.data_quality_monitor:邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: invalid
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+INFO:src.data.quality.data_quality_monitor:短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: invalid
+数据形状: (0, 0)
+总体得分: 0.50
+质量等级: critical
+异常数量: 2
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetQualityHistory" name="test_get_quality_history_with_reports" time="0.065"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetMetricsHistory" name="test_get_metrics_history_empty" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_get_alerts_resolved" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGenerateSummaryReport" name="test_generate_summary_report_with_history" time="0.083"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_unit" name="test_monitor_source_metrics_and_alerts_flow" time="0.398"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.90): 0.80
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.90): 0.80
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.80, 阈值=0.90, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetAnomalyHistory" name="test_get_anomaly_history_with_anomalies" time="0.028"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestExportReport" name="test_export_report_invalid_format" time="0.031"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestQualityCheckResult" name="test_quality_check_result_attributes" time="0.041"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_resolve_alert_no_alerts" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestMonitorInitializationVariants" name="test_init_with_empty_metrics_enabled" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestComponentFactoryBehavior" name="test_create_component_handles_exceptions" time="0.008"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.monitor_components:monitor_components.py:25 创建组件失败: mock failure
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.monitor_components:创建组件失败: mock failure
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_health_check_exception" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_detect_anomalies_flags_low_scores_and_outliers" time="0.014"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestAutoRepairFeature" name="test_auto_repair_enabled" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_core_edges2" name="test_validate_duration_tracking" time="0.010"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRecommendationsAndAlerts" name="test_generate_recommendations_poor_quality" time="0.032"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_export_quality_report_serializes_enums" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_normalize_data_type_string" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRulesWithSpecificColumns" name="test_completeness_rule_with_specific_columns" time="0.055"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.data_quality_monitor:data_quality_monitor.py:732 数据质量告警: 【INFO】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: test
+数据形状: (5, 3)
+总体得分: 0.88
+质量等级: good
+异常数量: 2
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.data_quality_monitor:数据质量告警: 【INFO】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: test
+数据形状: (5, 3)
+总体得分: 0.88
+质量等级: good
+异常数量: 2
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_enhanced" name="test_check_quality_auto_repair_thresholds_and_alerts" time="0.015"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:752 邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: unit
+数据形状: (3, 1)
+总体得分: 0.20
+质量等级: critical
+异常数量: 1
+INFO     src.data.quality.data_quality_monitor:data_quality_monitor.py:757 短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: unit
+数据形状: (3, 1)
+总体得分: 0.20
+质量等级: critical
+异常数量: 1
+--------------------------------- Captured Out ---------------------------------
+#x1F525 Logger池告警 [WARNING]: Logger池命中率过低: 0.00 &lt; 0.8
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.data_quality_monitor:邮件告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: unit
+数据形状: (3, 1)
+总体得分: 0.20
+质量等级: critical
+异常数量: 1
+INFO:src.data.quality.data_quality_monitor:短信告警: 【CRITICAL】数据质量告警
+时间: 2025-11-17 06:18:46
+数据源: unit
+数据形状: (3, 1)
+总体得分: 0.20
+质量等级: critical
+异常数量: 1
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_analyze_quality_trends_requires_history" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestComponentFactory" name="test_create_component_handles_exceptions" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+ERROR    src.data.quality.quality_components:quality_components.py:24 创建组件失败: mock failure
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+ERROR:src.data.quality.quality_components:创建组件失败: mock failure
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_history_max_limit_boundary" time="0.479"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:895 数据质量告警 - stock: 数据有效性不足: 0.50
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 数据质量告警 - stock: 数据有效性不足: 0.50
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:数据质量告警 - stock: 数据有效性不足: 0.50
+WARNING:src.data.quality.unified_quality_monitor:数据质量告警 - stock: 数据有效性不足: 0.50
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=1
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponent" name="test_get_info_and_status" time="0.003"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_generate_repair_suggestions_returns_messages" time="0.013"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestCheckThresholds" name="test_check_thresholds_with_violations" time="0.024"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRegisterAlertHandler" name="test_register_alert_handler_duplicate" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_components_unit" name="test_quality_validator_component_info_status_process" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_generate_quality_alerts_merges_metric_and_anomaly" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_core_edges3" name="test_alert_threshold_trigger_and_handler_called" time="0.056"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.99): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.99): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.99, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetQualityHistory" name="test_get_quality_history_filtered_by_days" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor.TestUnifiedQualityMonitorAdditional" name="test_normalize_data_type_none" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponent" name="test_get_info_status_and_validate" time="0.004"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGenerateSummaryReport" name="test_generate_summary_report_empty" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_shutdown_joins_monitor_thread" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:772 EnhancedQualityMonitorV2 shutdown
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 shutdown
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestGetAnomalyHistory" name="test_get_anomaly_history_filtered" time="0.027"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestQualityCheckResult" name="test_quality_check_result_to_dict" time="0.026"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_enhanced_quality_monitor_v2" name="test_check_quality_trends_logs_warning" time="0.009"><system-out>--------------------------------- Captured Log ---------------------------------
+INFO     src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:127 EnhancedQualityMonitorV2 initialized
+WARNING  src.data.quality.enhanced_quality_monitor_v2:enhanced_quality_monitor_v2.py:659 Quality trend decreasing for accuracy: 0.18
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+INFO:src.data.quality.enhanced_quality_monitor_v2:EnhancedQualityMonitorV2 initialized
+WARNING:src.data.quality.enhanced_quality_monitor_v2:Quality trend decreasing for accuracy: 0.18
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRecommendationsAndAlerts" name="test_trigger_alert_critical" time="0.011"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestAutoRepairFeature" name="test_auto_repair_disabled" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_comprehensive.TestRulesWithSpecificColumns" name="test_accuracy_rule_with_numeric_columns" time="0.052"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_core_edges2" name="test_unknown_type_and_failed_validation_triggers_issues" time="0.036"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.74
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.74, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.74
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.74, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_data_quality_monitor_enhanced" name="test_record_metrics_and_history_truncation" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_monitor_components.TestMonitorComponent" name="test_process_success_and_error" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_validator_components_unit" name="test_quality_validator_factory_supported_and_invalid" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_core_edges3" name="test_register_alert_handler_type_error" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_quality_components.TestQualityComponent" name="test_process_success_and_error_wrapping" time="0.005"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_unit" name="test_resolve_alerts_and_thresholds" time="0.085"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.99): 0.79
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.79, 阈值=0.99, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.99): 0.79
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.79, 阈值=0.99, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_metrics_for_type_empty_history" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_trend_stable_boundary" time="0.007"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_trend_improving_and_declining" time="0.006"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_history_filtering_by_nonexistent_type" time="0.083"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+
+</system-err></testcase><testcase classname="unit.data.quality.test_unified_quality_monitor_aggregation_edges" name="test_quality_aggregation_with_mixed_types" time="0.268"><system-out>--------------------------------- Captured Log ---------------------------------
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.68
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=news, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:627 质量分数低于阈值(0.80): 0.64
+WARNING  src.data.quality.unified_quality_monitor:unified_quality_monitor.py:711 质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.68
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=stock, 质量分数=0.68, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=news, 质量分数=0.64, 阈值=0.80, 异常数量=0
+WARNING:src.data.quality.unified_quality_monitor:质量分数低于阈值(0.80): 0.64
+WARNING:src.data.quality.unified_quality_monitor:质量阈值违规: 数据类型=crypto, 质量分数=0.64, 阈值=0.80, 异常数量=0
+
+</system-err></testcase></testsuite></testsuites>

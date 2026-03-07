@@ -1,0 +1,122 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "自动化运维与质量监控仪表盘",
+    "tags": ["automation", "quality", "ops"],
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "5m",
+    "panels": [
+      {
+        "type": "stat",
+        "title": "日志总量",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "A",
+          "query": "*",
+          "metrics": [{"type": "count"}]
+        }],
+        "gridPos": {"x": 0, "y": 0, "w": 4, "h": 4}
+      },
+      {
+        "type": "gauge",
+        "title": "同步成功率",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "B",
+          "query": "event_type:sync_success",
+          "metrics": [{"type": "count"}]
+        }],
+        "fieldConfig": {"defaults": {"min": 0, "max": 100}},
+        "gridPos": {"x": 4, "y": 0, "w": 4, "h": 4}
+      },
+      {
+        "type": "gauge",
+        "title": "同步失败率",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "C",
+          "query": "event_type:sync_fail OR event_type:sync_exception",
+          "metrics": [{"type": "count"}]
+        }],
+        "fieldConfig": {"defaults": {"min": 0, "max": 100}},
+        "gridPos": {"x": 8, "y": 0, "w": 4, "h": 4}
+      },
+      {
+        "type": "piechart",
+        "title": "各平台同步异常分布",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "D",
+          "query": "event_type:sync_fail OR event_type:sync_exception",
+          "bucketAggs": [{"type": "terms", "field": "platform.keyword", "id": "1"}],
+          "metrics": [{"type": "count"}]
+        }],
+        "gridPos": {"x": 0, "y": 4, "w": 6, "h": 6}
+      },
+      {
+        "type": "timeseries",
+        "title": "告警次数趋势",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "E",
+          "query": "event_type:alert",
+          "metrics": [{"type": "count"}],
+          "bucketAggs": [{"type": "date_histogram", "field": "timestamp", "id": "1", "settings": {"interval": "1d"}}]
+        }],
+        "gridPos": {"x": 6, "y": 4, "w": 6, "h": 6}
+      },
+      {
+        "type": "barchart",
+        "title": "自愈操作触发频率",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "F",
+          "query": "event_type:sync_fallback",
+          "metrics": [{"type": "count"}],
+          "bucketAggs": [{"type": "terms", "field": "platform.keyword", "id": "1"}]
+        }],
+        "gridPos": {"x": 0, "y": 10, "w": 6, "h": 6}
+      },
+      {
+        "type": "heatmap",
+        "title": "近30天自动化健康度",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "refId": "G",
+          "query": "*",
+          "metrics": [{"type": "count"}],
+          "bucketAggs": [
+            {"type": "date_histogram", "field": "timestamp", "id": "1", "settings": {"interval": "1d"}},
+            {"type": "terms", "field": "level.keyword", "id": "2"}
+          ]
+        }],
+        "gridPos": {"x": 6, "y": 10, "w": 6, "h": 6}
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "平台",
+          "type": "query",
+          "datasource": "Elasticsearch",
+          "query": "platform.keyword"
+        },
+        {
+          "name": "事件类型",
+          "type": "query",
+          "datasource": "Elasticsearch",
+          "query": "event_type.keyword"
+        },
+        {
+          "name": "级别",
+          "type": "query",
+          "datasource": "Elasticsearch",
+          "query": "level.keyword"
+        }
+      ]
+    }
+  },
+  "overwrite": true
+} 

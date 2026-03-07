@@ -1,0 +1,963 @@
+{
+  "review_summary": {
+    "timestamp": "2025-09-21 22:15:20.781593",
+    "files_analyzed": 37,
+    "fragments_analyzed": 479,
+    "clone_groups_found": 47,
+    "refactoring_opportunities": 30,
+    "risk_level": "🔴 高风险",
+    "avg_similarity": 0.3762986714934964
+  },
+  "detailed_results": {
+    "detection_time": "2025-09-21T22:15:20.781593",
+    "total_files_analyzed": 37,
+    "total_fragments_analyzed": 479,
+    "total_clone_groups": 47,
+    "analysis_duration": 179.60580897331238,
+    "memory_usage": 0.0,
+    "config_used": {
+      "similarity": {
+        "exact_clone": 0.95,
+        "similar_clone": 0.8,
+        "semantic_clone": 0.6,
+        "weak_clone": 0.3,
+        "text_weight": 0.2,
+        "ast_weight": 0.4,
+        "semantic_weight": 0.3,
+        "normalized_weight": 0.1
+      },
+      "analysis": {
+        "min_fragment_size": 3,
+        "max_fragment_size": 100,
+        "extract_functions": true,
+        "extract_classes": true,
+        "extract_methods": true,
+        "extract_blocks": false,
+        "extract_statements": false,
+        "ignore_imports": true,
+        "ignore_comments": true,
+        "ignore_docstrings": true,
+        "normalize_variables": true,
+        "analyze_ast": true
+      },
+      "performance": {
+        "max_files_to_analyze": 50,
+        "max_fragments_per_file": 100,
+        "similarity_cache_size": 10000,
+        "parallel_processing": true,
+        "max_workers": 4,
+        "analysis_timeout": 300,
+        "similarity_timeout": 60
+      },
+      "refactoring": {
+        "enable_suggestions": true,
+        "min_group_size_for_refactor": 2,
+        "suggest_method_extraction": true,
+        "suggest_class_extraction": true,
+        "suggest_utility_creation": true,
+        "suggest_config_extraction": true,
+        "enable_auto_fix": false,
+        "auto_fix_min_confidence": 0.9
+      },
+      "output_format": "json",
+      "output_file": null,
+      "include_details": true,
+      "include_source_code": false,
+      "file_patterns": [
+        "*.py"
+      ],
+      "exclude_patterns": [
+        "test_*.py",
+        "*_test.py"
+      ],
+      "exclude_dirs": [
+        "__pycache__",
+        ".git",
+        "node_modules"
+      ]
+    },
+    "statistics": {
+      "total_groups": 47,
+      "total_fragments": 141,
+      "avg_similarity": 0.3762986714934964,
+      "clone_types": {
+        "weak": 39,
+        "exact": 4,
+        "semantic": 4
+      },
+      "files_affected": 16,
+      "avg_group_size": 3.0,
+      "exact_clones": 4,
+      "similar_clones": 0,
+      "semantic_clones": 4
+    },
+    "clone_groups": [
+      {
+        "group_id": "e3ec762e",
+        "fragment_count": 2,
+        "similarity_score": 0.32432432432432434,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "20-54",
+        "total_lines": 66,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "c9fc32a2",
+        "fragment_count": 2,
+        "similarity_score": 0.30687830687830686,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "53-89",
+        "total_lines": 66,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "cfe54933",
+        "fragment_count": 2,
+        "similarity_score": 0.28806584362139914,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "88-146",
+        "total_lines": 107,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "3d9735ca",
+        "fragment_count": 15,
+        "similarity_score": 0.16666666666666652,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py"
+        ],
+        "line_range": "150-222",
+        "total_lines": 45,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "b45e5e0f",
+        "fragment_count": 7,
+        "similarity_score": 0.29544740973312406,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\core\\cache_manager.py",
+          "src/infrastructure/cache\\utils\\base_cache_component.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py",
+          "src/infrastructure/cache\\backends\\client_components.py"
+        ],
+        "line_range": "26-181",
+        "total_lines": 40,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "556a34e3",
+        "fragment_count": 2,
+        "similarity_score": 1.0,
+        "clone_type": "exact",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "33-38",
+        "total_lines": 8,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "84e267a9",
+        "fragment_count": 4,
+        "similarity_score": 0.3128747795414462,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\utils\\base_cache_component.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py",
+          "src/infrastructure/cache\\core\\cache_components.py"
+        ],
+        "line_range": "35-213",
+        "total_lines": 19,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "e7d31763",
+        "fragment_count": 2,
+        "similarity_score": 0.3,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "57-67",
+        "total_lines": 14,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "03bd7fe7",
+        "fragment_count": 2,
+        "similarity_score": 0.6666666666666666,
+        "clone_type": "semantic",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "65-73",
+        "total_lines": 10,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "7e316b59",
+        "fragment_count": 2,
+        "similarity_score": 0.31746031746031744,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "72-82",
+        "total_lines": 14,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "d4ce836b",
+        "fragment_count": 2,
+        "similarity_score": 0.2857142857142857,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "80-89",
+        "total_lines": 12,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "824a31bb",
+        "fragment_count": 2,
+        "similarity_score": 0.6666666666666666,
+        "clone_type": "semantic",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "102-113",
+        "total_lines": 14,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "1813c558",
+        "fragment_count": 2,
+        "similarity_score": 0.6666666666666666,
+        "clone_type": "semantic",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "112-121",
+        "total_lines": 8,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "c5526ba4",
+        "fragment_count": 2,
+        "similarity_score": 0.6666666666666666,
+        "clone_type": "semantic",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "119-132",
+        "total_lines": 14,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "785f4cdc",
+        "fragment_count": 2,
+        "similarity_score": 0.31746031746031744,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\backends\\client_components.py",
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "129-146",
+        "total_lines": 22,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "89120ebf",
+        "fragment_count": 3,
+        "similarity_score": 0.2857142857142857,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py",
+          "src/infrastructure/cache\\core\\cache_components.py"
+        ],
+        "line_range": "48-55",
+        "total_lines": 9,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "40d39c6f",
+        "fragment_count": 5,
+        "similarity_score": 0.2467592592592592,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\core\\cache_manager.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py",
+          "src/infrastructure/cache\\core\\cache_components.py"
+        ],
+        "line_range": "80-171",
+        "total_lines": 55,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "7c0dbaea",
+        "fragment_count": 2,
+        "similarity_score": 0.25641025641025644,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\core\\cache_manager.py"
+        ],
+        "line_range": "1611-1632",
+        "total_lines": 20,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "da5a2305",
+        "fragment_count": 2,
+        "similarity_score": 0.2948717948717949,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\core\\cache_manager.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py"
+        ],
+        "line_range": "66-125",
+        "total_lines": 26,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "d0fd8756",
+        "fragment_count": 5,
+        "similarity_score": 0.3,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\core\\cache_manager.py",
+          "src/infrastructure/cache\\interfaces\\component_interfaces.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py"
+        ],
+        "line_range": "87-171",
+        "total_lines": 40,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "c24e334b",
+        "fragment_count": 3,
+        "similarity_score": 0.16666666666666666,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\core\\optimizer_components.py"
+        ],
+        "line_range": "143-155",
+        "total_lines": 9,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "f1348ad4",
+        "fragment_count": 2,
+        "similarity_score": 0.26666666666666666,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\consistency_manager.py",
+          "src/infrastructure/cache\\monitoring\\performance_monitor.py"
+        ],
+        "line_range": "199-302",
+        "total_lines": 14,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "778cf18d",
+        "fragment_count": 2,
+        "similarity_score": 0.3194444444444445,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\consistency_manager.py"
+        ],
+        "line_range": "301-342",
+        "total_lines": 41,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "6b609242",
+        "fragment_count": 2,
+        "similarity_score": 0.2891566265060241,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\distributed_cache_manager.py"
+        ],
+        "line_range": "276-297",
+        "total_lines": 37,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "3e926127",
+        "fragment_count": 3,
+        "similarity_score": 0.27063629676334594,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\unified_sync.py"
+        ],
+        "line_range": "96-161",
+        "total_lines": 43,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "0499aa57",
+        "fragment_count": 2,
+        "similarity_score": 0.27106227106227104,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\unified_sync.py"
+        ],
+        "line_range": "112-233",
+        "total_lines": 33,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "96547c2b",
+        "fragment_count": 2,
+        "similarity_score": 0.2631578947368421,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\unified_sync.py"
+        ],
+        "line_range": "164-294",
+        "total_lines": 57,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "510c8b49",
+        "fragment_count": 2,
+        "similarity_score": 0.25925925925925924,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\unified_sync.py"
+        ],
+        "line_range": "192-215",
+        "total_lines": 22,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "68507655",
+        "fragment_count": 2,
+        "similarity_score": 0.2641509433962264,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\distributed\\unified_sync.py"
+        ],
+        "line_range": "236-261",
+        "total_lines": 24,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "0ae977e0",
+        "fragment_count": 14,
+        "similarity_score": 0.25735936197086945,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\exceptions\\cache_exceptions.py"
+        ],
+        "line_range": "68-243",
+        "total_lines": 279,
+        "suggestion_count": 3
+      },
+      {
+        "group_id": "e76f2ca6",
+        "fragment_count": 3,
+        "similarity_score": 0.4871794871794872,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\interfaces\\component_interfaces.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py"
+        ],
+        "line_range": "30-48",
+        "total_lines": 24,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "79031e71",
+        "fragment_count": 2,
+        "similarity_score": 1.0,
+        "clone_type": "exact",
+        "files": [
+          "src/infrastructure/cache\\interfaces\\component_interfaces.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py"
+        ],
+        "line_range": "51-64",
+        "total_lines": 22,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "954de601",
+        "fragment_count": 2,
+        "similarity_score": 1.0,
+        "clone_type": "exact",
+        "files": [
+          "src/infrastructure/cache\\interfaces\\component_interfaces.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py"
+        ],
+        "line_range": "64-78",
+        "total_lines": 24,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "d2ccb057",
+        "fragment_count": 2,
+        "similarity_score": 1.0,
+        "clone_type": "exact",
+        "files": [
+          "src/infrastructure/cache\\interfaces\\component_interfaces.py",
+          "src/infrastructure/cache\\interfaces\\cache_interfaces.py"
+        ],
+        "line_range": "78-87",
+        "total_lines": 14,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "754f7580",
+        "fragment_count": 3,
+        "similarity_score": 0.2888888888888889,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\interfaces\\data_structures.py"
+        ],
+        "line_range": "116-134",
+        "total_lines": 15,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "44a0b3bd",
+        "fragment_count": 2,
+        "similarity_score": 0.2333333333333333,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\monitoring\\business_metrics_plugin.py"
+        ],
+        "line_range": "139-154",
+        "total_lines": 8,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "95a9d075",
+        "fragment_count": 2,
+        "similarity_score": 0.30409356725146197,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\monitoring\\performance_monitor.py"
+        ],
+        "line_range": "40-106",
+        "total_lines": 120,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "774d6718",
+        "fragment_count": 2,
+        "similarity_score": 0.2777777777777778,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\monitoring\\performance_monitor.py"
+        ],
+        "line_range": "50-137",
+        "total_lines": 6,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "9628b31f",
+        "fragment_count": 2,
+        "similarity_score": 0.24390243902439024,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\monitoring\\performance_monitor.py"
+        ],
+        "line_range": "448-522",
+        "total_lines": 46,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "90e19b17",
+        "fragment_count": 3,
+        "similarity_score": 0.3,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\strategies\\cache_strategy_manager.py"
+        ],
+        "line_range": "759-771",
+        "total_lines": 9,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "8b7dc8a7",
+        "fragment_count": 2,
+        "similarity_score": 0.2828282828282828,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\strategies\\cache_strategy_manager.py"
+        ],
+        "line_range": "152-284",
+        "total_lines": 20,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "1ea8478c",
+        "fragment_count": 2,
+        "similarity_score": 0.2857142857142857,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\utils\\cache_utils.py"
+        ],
+        "line_range": "599-606",
+        "total_lines": 6,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "f6cee5f1",
+        "fragment_count": 3,
+        "similarity_score": 0.2847323821551979,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\utils\\cache_utils.py"
+        ],
+        "line_range": "627-645",
+        "total_lines": 49,
+        "suggestion_count": 1
+      },
+      {
+        "group_id": "78813fb9",
+        "fragment_count": 2,
+        "similarity_score": 0.3042071197411003,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\utils\\cache_utils.py"
+        ],
+        "line_range": "69-99",
+        "total_lines": 55,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "1f7a382c",
+        "fragment_count": 2,
+        "similarity_score": 0.27272727272727276,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\utils\\cache_utils.py"
+        ],
+        "line_range": "294-304",
+        "total_lines": 10,
+        "suggestion_count": 0
+      },
+      {
+        "group_id": "54d7e30b",
+        "fragment_count": 4,
+        "similarity_score": 0.25,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\utils\\cache_utils.py"
+        ],
+        "line_range": "306-324",
+        "total_lines": 16,
+        "suggestion_count": 2
+      },
+      {
+        "group_id": "3dc8781e",
+        "fragment_count": 2,
+        "similarity_score": 0.2777777777777778,
+        "clone_type": "weak",
+        "files": [
+          "src/infrastructure/cache\\utils\\cache_utils.py"
+        ],
+        "line_range": "326-334",
+        "total_lines": 8,
+        "suggestion_count": 0
+      }
+    ],
+    "refactoring_opportunities": [
+      {
+        "group_id": "3d9735ca",
+        "similarity": 0.16666666666666652,
+        "fragment_count": 15,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共15处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "0ae977e0",
+        "similarity": 0.25735936197086945,
+        "fragment_count": 14,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共14处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "b45e5e0f",
+        "similarity": 0.29544740973312406,
+        "fragment_count": 7,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共7处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "40d39c6f",
+        "similarity": 0.2467592592592592,
+        "fragment_count": 5,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共5处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "d0fd8756",
+        "similarity": 0.3,
+        "fragment_count": 5,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共5处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "84e267a9",
+        "similarity": 0.3128747795414462,
+        "fragment_count": 4,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共4处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "54d7e30b",
+        "similarity": 0.25,
+        "fragment_count": 4,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共4处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "89120ebf",
+        "similarity": 0.2857142857142857,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "c24e334b",
+        "similarity": 0.16666666666666666,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "3e926127",
+        "similarity": 0.27063629676334594,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "e76f2ca6",
+        "similarity": 0.4871794871794872,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "754f7580",
+        "similarity": 0.2888888888888889,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "90e19b17",
+        "similarity": 0.3,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "f6cee5f1",
+        "similarity": 0.2847323821551979,
+        "fragment_count": 3,
+        "type": "extract_method",
+        "description": "将重复代码提取为公共方法，共3处使用",
+        "impact": "high",
+        "complexity": "medium"
+      },
+      {
+        "group_id": "3d9735ca",
+        "similarity": 0.16666666666666652,
+        "fragment_count": 15,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "0ae977e0",
+        "similarity": 0.25735936197086945,
+        "fragment_count": 14,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "0ae977e0",
+        "similarity": 0.25735936197086945,
+        "fragment_count": 14,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "b45e5e0f",
+        "similarity": 0.29544740973312406,
+        "fragment_count": 7,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "40d39c6f",
+        "similarity": 0.2467592592592592,
+        "fragment_count": 5,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "d0fd8756",
+        "similarity": 0.3,
+        "fragment_count": 5,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "84e267a9",
+        "similarity": 0.3128747795414462,
+        "fragment_count": 4,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "54d7e30b",
+        "similarity": 0.25,
+        "fragment_count": 4,
+        "type": "create_utility_class",
+        "description": "创建工具类封装重复逻辑",
+        "impact": "medium",
+        "complexity": "high"
+      },
+      {
+        "group_id": "e76f2ca6",
+        "similarity": 0.4871794871794872,
+        "fragment_count": 3,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "7c0dbaea",
+        "similarity": 0.25641025641025644,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "da5a2305",
+        "similarity": 0.2948717948717949,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "778cf18d",
+        "similarity": 0.3194444444444445,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "6b609242",
+        "similarity": 0.2891566265060241,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "0499aa57",
+        "similarity": 0.27106227106227104,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "79031e71",
+        "similarity": 1.0,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      },
+      {
+        "group_id": "95a9d075",
+        "similarity": 0.30409356725146197,
+        "fragment_count": 2,
+        "type": "extract_configuration",
+        "description": "将配置逻辑提取到配置文件中",
+        "impact": "medium",
+        "complexity": "low"
+      }
+    ]
+  }
+}

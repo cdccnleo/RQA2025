@@ -1,0 +1,313 @@
+extensions: {}
+filters: {}
+global_config:
+  compression: gzip
+  encoding: utf-8
+  max_log_age_days: 30
+  rotation_time: midnight
+  timezone: UTC
+handlers:
+  audit_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: &id001 !!python/object/apply:infrastructure.logging.core.interfaces.LogFormat
+      - json
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - category
+      options: {}
+    handler_type: file
+    level: &id002 !!python/object/apply:infrastructure.logging.core.interfaces.LogLevel
+    - WARNING
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/audit.log
+  audit_json:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id001
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - category
+      options: {}
+    handler_type: file
+    level: *id002
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/audit.json
+  business_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: &id004 !!python/object/apply:infrastructure.logging.core.interfaces.LogFormat
+      - structured
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - category
+      - order_id
+      - amount
+      options: {}
+    handler_type: file
+    level: &id003 !!python/object/apply:infrastructure.logging.core.interfaces.LogLevel
+    - INFO
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/business.log
+  console:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+      format_type: !!python/object/apply:infrastructure.logging.core.interfaces.LogFormat
+      - simple
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - category
+      options: {}
+    handler_type: console
+    level: *id003
+    max_bytes: 10485760
+    options: {}
+    output_path: null
+  database_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id004
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - operation
+      - table
+      - query_time
+      - rows_affected
+      options: {}
+    handler_type: file
+    level: *id003
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/database.log
+  file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id004
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - category
+      options: {}
+    handler_type: file
+    level: !!python/object/apply:infrastructure.logging.core.interfaces.LogLevel
+    - DEBUG
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/app.log
+  json_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id001
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - category
+      options: {}
+    handler_type: file
+    level: *id003
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/app.json
+  performance_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id004
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - endpoint
+      - response_time
+      - status
+      options: {}
+    handler_type: file
+    level: *id003
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/performance.log
+  risk_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id004
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - risk_type
+      - threshold
+      - current_value
+      options: {}
+    handler_type: file
+    level: *id002
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/risk.log
+  trading_file:
+    backup_count: 5
+    encoding: utf-8
+    filters: []
+    formatter:
+      custom_fields: {}
+      date_format: '%Y-%m-%d %H:%M:%S'
+      exclude_fields: []
+      format_template: null
+      format_type: *id004
+      include_fields:
+      - timestamp
+      - level
+      - logger_name
+      - message
+      - trade_id
+      - symbol
+      - price
+      - quantity
+      options: {}
+    handler_type: file
+    level: *id003
+    max_bytes: 10485760
+    options: {}
+    output_path: logs/trading.log
+loggers:
+  audit:
+    category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+    - audit
+    handlers:
+    - audit_file
+    - audit_json
+    level: *id002
+    log_directory: logs/audit
+  business:
+    category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+    - business
+    handlers:
+    - business_file
+    level: *id003
+    log_directory: logs/business
+  database:
+    category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+    - database
+    handlers:
+    - database_file
+    level: *id003
+    log_directory: logs/database
+  performance:
+    category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+    - performance
+    handlers:
+    - performance_file
+    level: *id003
+    log_directory: logs/performance
+  risk:
+    category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+    - risk
+    handlers:
+    - risk_file
+    level: *id002
+    log_directory: logs/risk
+  trading:
+    category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+    - trading
+    handlers:
+    - trading_file
+    level: *id003
+    log_directory: logs/trading
+manager:
+  async_queue_size: 1000
+  default_category: !!python/object/apply:infrastructure.logging.core.interfaces.LogCategory
+  - general
+  default_format: *id004
+  default_level: *id003
+  enable_async: true
+  enable_performance_monitoring: true
+  enable_statistics: true
+  error_handling: ignore
+  flush_interval: 1.0
+  log_directory: !!python/object/apply:pathlib.WindowsPath
+  - logs
+pool:
+  cleanup_interval: 60
+  enable_lru: true
+  enabled: true
+  idle_timeout: 300
+  initial_size: 10
+  max_size: 100
+  preload_loggers: []
+version: '1.0'

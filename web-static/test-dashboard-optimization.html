@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard优化功能测试页面</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="common/websocket_manager.js"></script>
+    <script src="common/ui_components.js"></script>
+    <script src="common/toast.js"></script>
+    <script src="common/api_cache.js"></script>
+    <script src="common/api_client.js"></script>
+    <script src="common/performance_monitor.js"></script>
+    <script src="common/error_reporter.js"></script>
+    <script src="common/request_queue.js"></script>
+    <style>
+        .test-section {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .test-result {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .test-pass {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .test-fail {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .test-pending {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Dashboard优化功能测试页面</h1>
+        
+        <!-- Toast通知测试 -->
+        <div class="test-section bg-white">
+            <h2 class="text-xl font-semibold mb-4">1. Toast通知测试</h2>
+            <div class="space-x-2 mb-4">
+                <button onclick="testToastSuccess()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                    测试成功通知
+                </button>
+                <button onclick="testToastError()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    测试错误通知
+                </button>
+                <button onclick="testToastWarning()" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                    测试警告通知
+                </button>
+                <button onclick="testToastInfo()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    测试信息通知
+                </button>
+                <button onclick="testToastMultiple()" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
+                    测试多个Toast
+                </button>
+            </div>
+            <div id="toast-test-result" class="test-result test-pending">
+                等待测试...
+            </div>
+        </div>
+
+        <!-- UI组件测试 -->
+        <div class="test-section bg-white">
+            <h2 class="text-xl font-semibold mb-4">2. UI组件测试</h2>
+            <div class="space-x-2 mb-4">
+                <button onclick="testShowLoading()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    测试加载状态
+                </button>
+                <button onclick="testShowError()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    测试错误状态
+                </button>
+                <button onclick="testShowEmpty()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                    测试空状态
+                </button>
+            </div>
+            <div id="ui-test-container" class="border border-gray-300 rounded p-4 min-h-[100px] bg-gray-50">
+                <p class="text-gray-500">UI测试容器 - 点击按钮查看效果</p>
+            </div>
+            <div id="ui-test-result" class="test-result test-pending mt-4">
+                等待测试...
+            </div>
+        </div>
+
+        <!-- WebSocket管理器测试 -->
+        <div class="test-section bg-white">
+            <h2 class="text-xl font-semibold mb-4">3. WebSocket管理器测试</h2>
+            <div class="space-x-2 mb-4">
+                <button onclick="testWebSocketManager()" class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+                    测试WebSocket管理器
+                </button>
+                <button onclick="testWebSocketConnection()" class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+                    测试WebSocket连接
+                </button>
+            </div>
+            <div id="websocket-test-result" class="test-result test-pending">
+                等待测试...
+            </div>
+            <div id="websocket-log" class="mt-4 p-4 bg-gray-100 rounded font-mono text-sm max-h-48 overflow-y-auto">
+                <div class="text-gray-500">WebSocket日志将显示在这里...</div>
+            </div>
+        </div>
+
+        <!-- API缓存测试 -->
+        <div class="test-section bg-white">
+            <h2 class="text-xl font-semibold mb-4">4. API缓存测试</h2>
+            <div class="space-x-2 mb-4">
+                <button onclick="testAPICache()" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+                    测试API缓存
+                </button>
+            </div>
+            <div id="cache-test-result" class="test-result test-pending">
+                等待测试...
+            </div>
+        </div>
+
+        <!-- 类定义测试 -->
+        <div class="test-section bg-white">
+            <h2 class="text-xl font-semibold mb-4">5. 类定义测试</h2>
+            <button onclick="testClassDefinitions()" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 mb-4">
+                测试所有类定义
+            </button>
+            <div id="class-test-result" class="test-result test-pending">
+                等待测试...
+            </div>
+        </div>
+
+        <!-- 自动测试 -->
+        <div class="test-section bg-white">
+            <h2 class="text-xl font-semibold mb-4">6. 自动测试</h2>
+            <button onclick="runAllTests()" class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 font-semibold">
+                运行所有测试
+            </button>
+            <div id="auto-test-result" class="test-result test-pending mt-4">
+                等待测试...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast测试函数
+        function testToastSuccess() {
+            showSuccess('这是一条成功消息');
+            updateTestResult('toast-test-result', 'pass', '✅ 成功通知已显示（绿色Toast）');
+        }
+
+        function testToastError() {
+            showError('这是一条错误消息');
+            updateTestResult('toast-test-result', 'pass', '✅ 错误通知已显示（红色Toast）');
+        }
+
+        function testToastWarning() {
+            showWarning('这是一条警告消息');
+            updateTestResult('toast-test-result', 'pass', '✅ 警告通知已显示（黄色Toast）');
+        }
+
+        function testToastInfo() {
+            showInfo('这是一条信息消息');
+            updateTestResult('toast-test-result', 'pass', '✅ 信息通知已显示（蓝色Toast）');
+        }
+
+        function testToastMultiple() {
+            showSuccess('消息1：成功');
+            setTimeout(() => showError('消息2：错误'), 200);
+            setTimeout(() => showWarning('消息3：警告'), 400);
+            setTimeout(() => showInfo('消息4：信息'), 600);
+            updateTestResult('toast-test-result', 'pass', '✅ 多个Toast已显示（应该堆叠显示）');
+        }
+
+        // UI组件测试函数
+        function testShowLoading() {
+            const container = document.getElementById('ui-test-container');
+            showLoading('ui-test-container', '正在加载测试数据...');
+            updateTestResult('ui-test-result', 'pass', '✅ 加载状态已显示（带旋转图标）');
+            setTimeout(() => {
+                container.innerHTML = '<p class="text-green-600">✅ 数据加载完成</p>';
+            }, 2000);
+        }
+
+        function testShowError() {
+            showError('ui-test-container', new Error('这是一个测试错误'));
+            updateTestResult('ui-test-result', 'pass', '✅ 错误状态已显示（带错误图标和消息）');
+        }
+
+        function testShowEmpty() {
+            showEmpty('ui-test-container', '暂无测试数据');
+            updateTestResult('ui-test-result', 'pass', '✅ 空状态已显示（带信息图标）');
+        }
+
+        // WebSocket管理器测试
+        function testWebSocketManager() {
+            const log = document.getElementById('websocket-log');
+            let result = '✅ WebSocket管理器测试结果：<br>';
+            
+            // 检查类是否存在
+            if (typeof UnifiedWebSocketManager !== 'undefined') {
+                result += '✅ UnifiedWebSocketManager 类已定义<br>';
+                try {
+                    const manager = new UnifiedWebSocketManager();
+                    result += '✅ UnifiedWebSocketManager 实例化成功<br>';
+                } catch (e) {
+                    result += '❌ UnifiedWebSocketManager 实例化失败: ' + e.message + '<br>';
+                }
+            } else {
+                result += '❌ UnifiedWebSocketManager 类未定义<br>';
+            }
+
+            // 检查便捷函数
+            const functions = [
+                'connectDashboardMetricsWebSocket',
+                'connectDataCacheWebSocket',
+                'connectDataQualityWebSocket'
+            ];
+            
+            functions.forEach(func => {
+                if (typeof window[func] !== 'undefined') {
+                    result += `✅ ${func} 函数已定义<br>`;
+                } else {
+                    result += `❌ ${func} 函数未定义<br>`;
+                }
+            });
+
+            log.innerHTML = result;
+            updateTestResult('websocket-test-result', result.includes('❌') ? 'fail' : 'pass', result);
+        }
+
+        function testWebSocketConnection() {
+            const log = document.getElementById('websocket-log');
+            log.innerHTML = '正在测试WebSocket连接...<br>';
+            
+            // 尝试连接到测试端点（如果后端服务运行）
+            if (typeof connectDataCacheWebSocket !== 'undefined') {
+                try {
+                    const manager = connectDataCacheWebSocket({
+                        onMessage: (data) => {
+                            log.innerHTML += '✅ 收到WebSocket消息: ' + JSON.stringify(data).substring(0, 100) + '<br>';
+                        },
+                        onError: (error) => {
+                            log.innerHTML += '⚠️ WebSocket错误: ' + error.message + '<br>';
+                            log.innerHTML += '（这可能是正常的，如果后端服务未运行）<br>';
+                        },
+                        onOpen: () => {
+                            log.innerHTML += '✅ WebSocket连接已建立<br>';
+                        },
+                        onClose: () => {
+                            log.innerHTML += '⚠️ WebSocket连接已关闭<br>';
+                        },
+                        fallbackLoad: async () => {
+                            log.innerHTML += 'ℹ️ 使用轮询回退模式（WebSocket不可用时）<br>';
+                        }
+                    });
+                    
+                    setTimeout(() => {
+                        log.innerHTML += '<br>✅ WebSocket连接测试完成（检查上面的日志）<br>';
+                    }, 2000);
+                } catch (e) {
+                    log.innerHTML += '❌ WebSocket连接测试失败: ' + e.message + '<br>';
+                }
+            } else {
+                log.innerHTML += '❌ connectDataCacheWebSocket 函数未定义<br>';
+            }
+        }
+
+        // API缓存测试
+        function testAPICache() {
+            let result = '✅ API缓存测试结果：<br>';
+            
+            // 检查APICache类
+            if (typeof APICache !== 'undefined') {
+                result += '✅ APICache 类已定义<br>';
+                try {
+                    const cache = new APICache(60000);
+                    cache.set('test-key', 'test-value', 5000);
+                    const value = cache.get('test-key');
+                    if (value === 'test-value') {
+                        result += '✅ 缓存存储和读取功能正常<br>';
+                    } else {
+                        result += '❌ 缓存读取失败<br>';
+                    }
+                } catch (e) {
+                    result += '❌ APICache 测试失败: ' + e.message + '<br>';
+                }
+            } else {
+                result += '❌ APICache 类未定义<br>';
+            }
+
+            // 检查APIClient类
+            if (typeof APIClient !== 'undefined') {
+                result += '✅ APIClient 类已定义<br>';
+            } else {
+                result += '❌ APIClient 类未定义<br>';
+            }
+
+            updateTestResult('cache-test-result', result.includes('❌') ? 'fail' : 'pass', result);
+        }
+
+        // 类定义测试
+        function testClassDefinitions() {
+            let result = '✅ 类定义测试结果：<br>';
+            const classes = [
+                'UnifiedWebSocketManager',
+                'APICache',
+                'APIClient',
+                'PerformanceMonitor',
+                'ErrorReporter',
+                'RequestQueue'
+            ];
+
+            classes.forEach(className => {
+                if (typeof window[className] !== 'undefined') {
+                    result += `✅ ${className} 类已定义<br>`;
+                } else {
+                    result += `❌ ${className} 类未定义<br>`;
+                }
+            });
+
+            updateTestResult('class-test-result', result.includes('❌') ? 'fail' : 'pass', result);
+        }
+
+        // 运行所有测试
+        function runAllTests() {
+            updateTestResult('auto-test-result', 'pending', '正在运行所有测试...');
+            
+            // 测试类定义
+            testClassDefinitions();
+            
+            // 测试Toast
+            setTimeout(() => {
+                testToastSuccess();
+            }, 500);
+            
+            // 测试UI组件
+            setTimeout(() => {
+                testShowLoading();
+            }, 1500);
+            
+            // 测试WebSocket管理器
+            setTimeout(() => {
+                testWebSocketManager();
+            }, 2500);
+            
+            // 测试API缓存
+            setTimeout(() => {
+                testAPICache();
+            }, 3500);
+            
+            // 最终结果
+            setTimeout(() => {
+                updateTestResult('auto-test-result', 'pass', '✅ 所有测试已完成！请检查各个测试部分的结果。');
+            }, 4500);
+        }
+
+        // 更新测试结果
+        function updateTestResult(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            element.className = 'test-result';
+            
+            if (status === 'pass') {
+                element.classList.add('test-pass');
+            } else if (status === 'fail') {
+                element.classList.add('test-fail');
+            } else {
+                element.classList.add('test-pending');
+            }
+            
+            element.innerHTML = message;
+        }
+
+        // 页面加载时自动运行类定义测试
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Dashboard优化功能测试页面已加载');
+            testClassDefinitions();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,57 @@
+{
+  "overall_status": "failed",
+  "summary": {
+    "total_checks": 5,
+    "successful": 1,
+    "warnings": 0,
+    "failed": 4,
+    "success_rate": "20.0%"
+  },
+  "validation_results": {
+    "database": {
+      "status": "failed",
+      "details": {
+        "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused (0x0000274D/10061)\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)\n\tIs the server running on that host and accepting TCP/IP connections?\n",
+        "connection": "failed"
+      },
+      "timestamp": 1755895663.4326272
+    },
+    "redis": {
+      "status": "failed",
+      "details": {
+        "error": "Error 10061 connecting to localhost:6379. 由于目标计算机积极拒绝，无法连接。.",
+        "connection": "failed"
+      },
+      "timestamp": 1755895667.5842664
+    },
+    "api_service": {
+      "status": "failed",
+      "details": {
+        "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000026C62287610>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+        "connection": "failed"
+      },
+      "timestamp": 1755895671.6923864
+    },
+    "monitoring": {
+      "status": "failed",
+      "details": {
+        "error": "HTTPConnectionPool(host='localhost', port=9090): Max retries exceeded with url: /-/healthy (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000026C622A50A0>: Failed to establish a new connection: [WinError 10061] 由于目标计算机积极拒绝，无法连接。'))",
+        "connection": "failed"
+      },
+      "timestamp": 1755895675.7967777
+    },
+    "system_resources": {
+      "status": "success",
+      "details": {
+        "cpu_usage": "5.4%",
+        "memory_usage": "31.2%",
+        "disk_usage": "83.2%",
+        "network_bytes_sent": 3495929924,
+        "network_bytes_recv": 1922578356
+      },
+      "timestamp": 1755895679.8859997
+    }
+  },
+  "validation_time": 17.495519161224365,
+  "timestamp": 1755895680.9281464
+}

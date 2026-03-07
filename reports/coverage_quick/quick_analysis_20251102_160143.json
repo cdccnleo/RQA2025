@@ -1,0 +1,682 @@
+{
+  "report_type": "RQA2025 快速覆盖率分析",
+  "generated_at": "2025-11-02T16:01:43.109194",
+  "disclaimer": "注意：这是基于代码结构的快速估算，非实际运行覆盖率",
+  "overall": {
+    "total_layers": 21,
+    "layers_with_code": 21,
+    "average_coverage_estimate": 56.65,
+    "total_source_files": 2004,
+    "total_source_lines": 569024,
+    "total_test_files": 597,
+    "total_test_lines": 285133,
+    "test_to_code_ratio": 0.5
+  },
+  "coverage_distribution": {
+    "high_coverage_80plus": {
+      "count": 6,
+      "layers": [
+        "distributed",
+        "adapters",
+        "boundary",
+        "monitoring",
+        "security",
+        "utils"
+      ]
+    },
+    "medium_coverage_60_80": {
+      "count": 3,
+      "layers": [
+        "async",
+        "optimization",
+        "trading"
+      ]
+    },
+    "low_coverage_below_60": {
+      "count": 12,
+      "layers": [
+        "infrastructure",
+        "core",
+        "data",
+        "automation",
+        "features",
+        "gateway",
+        "ml",
+        "mobile",
+        "resilience",
+        "risk",
+        "strategy",
+        "streaming"
+      ]
+    },
+    "no_tests": {
+      "count": 0,
+      "layers": []
+    }
+  },
+  "layer_details": [
+    {
+      "layer": "infrastructure",
+      "exists": true,
+      "source": {
+        "files": 789,
+        "lines": 206244,
+        "functions": 11726,
+        "classes": 2333
+      },
+      "tests": {
+        "files": 17,
+        "lines": 5576,
+        "test_functions": 184,
+        "test_classes": 35,
+        "test_file_list": [
+          "tests\\unit\\infrastructure\\test_infrastructure_priority.py",
+          "tests\\unit\\infrastructure\\test_infrastructure_runner.py",
+          "tests\\unit\\infrastructure\\test_unified_infrastructure.py",
+          "tests\\unit\\infrastructure\\base\\test_additional_infrastructure.py",
+          "tests\\unit\\infrastructure\\base\\test_base_infrastructure.py",
+          "tests\\unit\\infrastructure\\base\\test_comprehensive_infrastructure.py",
+          "tests\\unit\\infrastructure\\config\\test_infrastructure_index.py",
+          "tests\\unit\\infrastructure\\core\\test_infrastructure_service_provider.py",
+          "tests\\unit\\infrastructure\\error\\test_infrastructure_error_handler.py",
+          "tests\\unit\\infrastructure\\interfaces\\test_infrastructure_services.py"
+        ]
+      },
+      "coverage_estimate": 1.59,
+      "test_to_code_ratio": 0.03,
+      "function_coverage_estimate": 1.57
+    },
+    {
+      "layer": "core",
+      "exists": true,
+      "source": {
+        "files": 183,
+        "lines": 48465,
+        "functions": 3510,
+        "classes": 786
+      },
+      "tests": {
+        "files": 95,
+        "lines": 40383,
+        "test_functions": 1846,
+        "test_classes": 317,
+        "test_file_list": [
+          "tests\\unit\\test_ml_core_refactored.py",
+          "tests\\unit\\async\\test_async_core_processor.py",
+          "tests\\unit\\core\\test_api_gateway_core.py",
+          "tests\\unit\\core\\test_core_module_deep_coverage.py",
+          "tests\\unit\\core\\test_core_module_depth_coverage.py",
+          "tests\\unit\\core\\test_core_optimization_ai_performance_optimizer.py",
+          "tests\\unit\\core\\test_core_optimization_documentation_enhancer.py",
+          "tests\\unit\\core\\test_core_optimization_performance_monitor.py",
+          "tests\\unit\\core\\test_core_optimization_testing_enhancer.py",
+          "tests\\unit\\core\\test_core_services_comprehensive.py"
+        ]
+      },
+      "coverage_estimate": 51.55,
+      "test_to_code_ratio": 0.83,
+      "function_coverage_estimate": 52.59
+    },
+    {
+      "layer": "data",
+      "exists": true,
+      "source": {
+        "files": 194,
+        "lines": 53166,
+        "functions": 3060,
+        "classes": 638
+      },
+      "tests": {
+        "files": 98,
+        "lines": 48488,
+        "test_functions": 1935,
+        "test_classes": 371,
+        "test_file_list": [
+          "tests\\unit\\async\\test_async_data_processor.py",
+          "tests\\unit\\async\\test_async_data_processor_fixed.py",
+          "tests\\unit\\async\\test_async_data_processor_integration.py",
+          "tests\\unit\\core\\core_services\\test_database_service_mock.py",
+          "tests\\unit\\core\\integration\\test_data_layer_adapter.py",
+          "tests\\unit\\data\\test_data_adapters.py",
+          "tests\\unit\\data\\test_data_cache.py",
+          "tests\\unit\\data\\test_data_integration.py",
+          "tests\\unit\\data\\test_data_interfaces.py",
+          "tests\\unit\\data\\test_data_lake_manager.py"
+        ]
+      },
+      "coverage_estimate": 59.83,
+      "test_to_code_ratio": 0.91,
+      "function_coverage_estimate": 63.24
+    },
+    {
+      "layer": "distributed",
+      "exists": true,
+      "source": {
+        "files": 20,
+        "lines": 3656,
+        "functions": 177,
+        "classes": 28
+      },
+      "tests": {
+        "files": 11,
+        "lines": 6951,
+        "test_functions": 358,
+        "test_classes": 50,
+        "test_file_list": [
+          "tests\\unit\\distributed\\test_distributed_coordinator.py",
+          "tests\\unit\\infrastructure\\cache\\test_distributed_cache.py",
+          "tests\\unit\\infrastructure\\cache\\test_distributed_cache_enhanced.py",
+          "tests\\unit\\infrastructure\\cache\\test_distributed_cache_manager_enhanced.py",
+          "tests\\unit\\infrastructure\\config\\test_storage_distributedconfigstorage.py",
+          "tests\\unit\\infrastructure\\distributed\\test_distributed_lock.py",
+          "tests\\unit\\infrastructure\\distributed\\test_distributed_lock_comprehensive.py",
+          "tests\\unit\\infrastructure\\distributed\\test_distributed_monitoring.py",
+          "tests\\unit\\infrastructure\\distributed\\test_distributed_system_comprehensive.py",
+          "tests\\unit\\infrastructure\\logging\\test_distributed_monitoring.py"
+        ]
+      },
+      "coverage_estimate": 100.0,
+      "test_to_code_ratio": 1.9,
+      "function_coverage_estimate": 100
+    },
+    {
+      "layer": "adapters",
+      "exists": true,
+      "source": {
+        "files": 13,
+        "lines": 3411,
+        "functions": 179,
+        "classes": 35
+      },
+      "tests": {
+        "files": 14,
+        "lines": 7443,
+        "test_functions": 249,
+        "test_classes": 46,
+        "test_file_list": [
+          "tests\\unit\\adapters\\test_adapters_deep_coverage.py",
+          "tests\\unit\\adapters\\test_adapters_integration_deep.py",
+          "tests\\unit\\adapters\\test_market_adapters.py",
+          "tests\\unit\\core\\test_business_adapters.py",
+          "tests\\unit\\data\\test_data_adapters.py",
+          "tests\\unit\\data\\adapters\\test_data_adapters_functional_validation_mock.py",
+          "tests\\unit\\infrastructure\\health\\test_adapters.py",
+          "tests\\unit\\infrastructure\\health\\test_adapters_core_coverage.py",
+          "tests\\unit\\infrastructure\\health\\test_adapters_targeted.py",
+          "tests\\unit\\infrastructure\\health\\test_core_adapters.py"
+        ]
+      },
+      "coverage_estimate": 100.0,
+      "test_to_code_ratio": 2.18,
+      "function_coverage_estimate": 100
+    },
+    {
+      "layer": "async",
+      "exists": true,
+      "source": {
+        "files": 34,
+        "lines": 8269,
+        "functions": 308,
+        "classes": 69
+      },
+      "tests": {
+        "files": 18,
+        "lines": 6468,
+        "test_functions": 271,
+        "test_classes": 64,
+        "test_file_list": [
+          "tests\\unit\\async\\test_async_core_processor.py",
+          "tests\\unit\\async\\test_async_data_processor.py",
+          "tests\\unit\\async\\test_async_data_processor_fixed.py",
+          "tests\\unit\\async\\test_async_data_processor_integration.py",
+          "tests\\unit\\async\\test_async_processor_advanced.py",
+          "tests\\unit\\async\\test_simple_async.py",
+          "tests\\unit\\infrastructure\\health\\test_phase5_async_exception_complete.py",
+          "tests\\unit\\infrastructure\\logging\\test_async_log_processor.py",
+          "tests\\unit\\infrastructure\\messaging\\test_async_message_queue_comprehensive.py",
+          "tests\\unit\\infrastructure\\resource\\test_async_error_handling.py"
+        ]
+      },
+      "coverage_estimate": 71.56,
+      "test_to_code_ratio": 0.78,
+      "function_coverage_estimate": 87.99
+    },
+    {
+      "layer": "automation",
+      "exists": true,
+      "source": {
+        "files": 38,
+        "lines": 23602,
+        "functions": 720,
+        "classes": 190
+      },
+      "tests": {
+        "files": 7,
+        "lines": 4910,
+        "test_functions": 168,
+        "test_classes": 15,
+        "test_file_list": [
+          "tests\\unit\\automation\\test_automation_engine.py",
+          "tests\\unit\\automation\\test_automation_integration.py",
+          "tests\\unit\\automation\\test_automation_layer_advanced.py",
+          "tests\\unit\\automation\\test_simple_automation.py",
+          "tests\\unit\\infrastructure\\health\\test_automation_monitor.py",
+          "tests\\unit\\infrastructure\\health\\test_automation_monitor_comprehensive.py",
+          "tests\\unit\\infrastructure\\resource\\test_automation_execution.py"
+        ]
+      },
+      "coverage_estimate": 18.99,
+      "test_to_code_ratio": 0.21,
+      "function_coverage_estimate": 23.33
+    },
+    {
+      "layer": "boundary",
+      "exists": true,
+      "source": {
+        "files": 3,
+        "lines": 802,
+        "functions": 30,
+        "classes": 7
+      },
+      "tests": {
+        "files": 20,
+        "lines": 6508,
+        "test_functions": 326,
+        "test_classes": 39,
+        "test_file_list": [
+          "tests\\unit\\boundary\\test_boundary_optimizer.py",
+          "tests\\unit\\core\\test_container_boundary.py",
+          "tests\\unit\\core\\test_event_bus_boundary.py",
+          "tests\\unit\\core\\test_orchestrator_boundary.py",
+          "tests\\unit\\infrastructure\\test_boundary_conditions.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_manager_boundary.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_manager_boundary_conditions.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_utils_boundary.py",
+          "tests\\unit\\infrastructure\\cache\\test_mixins_boundary.py",
+          "tests\\unit\\infrastructure\\cache\\test_multi_level_cache_boundary.py"
+        ]
+      },
+      "coverage_estimate": 100.0,
+      "test_to_code_ratio": 8.11,
+      "function_coverage_estimate": 100
+    },
+    {
+      "layer": "features",
+      "exists": true,
+      "source": {
+        "files": 153,
+        "lines": 40931,
+        "functions": 2124,
+        "classes": 371
+      },
+      "tests": {
+        "files": 12,
+        "lines": 5764,
+        "test_functions": 168,
+        "test_classes": 45,
+        "test_file_list": [
+          "tests\\unit\\core\\integration\\test_features_layer_adapter.py",
+          "tests\\unit\\extension\\test_extension_features.py",
+          "tests\\unit\\features\\test_features_basic.py",
+          "tests\\unit\\features\\test_features_core_functions.py",
+          "tests\\unit\\features\\test_features_pipeline_deep_coverage.py",
+          "tests\\unit\\features\\test_features_pipeline_simple.py",
+          "tests\\unit\\features\\test_features_priority.py",
+          "tests\\unit\\features\\test_features_real_coverage.py",
+          "tests\\unit\\infrastructure\\logging\\test_logging_advanced_features.py",
+          "tests\\integration\\test_core_features_integration.py"
+        ]
+      },
+      "coverage_estimate": 8.13,
+      "test_to_code_ratio": 0.14,
+      "function_coverage_estimate": 7.91
+    },
+    {
+      "layer": "gateway",
+      "exists": true,
+      "source": {
+        "files": 45,
+        "lines": 10199,
+        "functions": 628,
+        "classes": 126
+      },
+      "tests": {
+        "files": 17,
+        "lines": 10816,
+        "test_functions": 323,
+        "test_classes": 55,
+        "test_file_list": [
+          "tests\\unit\\core\\test_api_gateway.py",
+          "tests\\unit\\core\\test_api_gateway_advanced.py",
+          "tests\\unit\\core\\test_api_gateway_comprehensive.py",
+          "tests\\unit\\core\\test_api_gateway_core.py",
+          "tests\\unit\\core\\test_api_gateway_simple.py",
+          "tests\\unit\\core\\test_gateway_module_depth_coverage.py",
+          "tests\\unit\\gateway\\test_api_gateway.py",
+          "tests\\unit\\gateway\\test_api_gateway_advanced.py",
+          "tests\\unit\\gateway\\test_api_gateway_integration.py",
+          "tests\\unit\\gateway\\test_gateway_core_api.py"
+        ]
+      },
+      "coverage_estimate": 56.31,
+      "test_to_code_ratio": 1.06,
+      "function_coverage_estimate": 51.43
+    },
+    {
+      "layer": "ml",
+      "exists": true,
+      "source": {
+        "files": 97,
+        "lines": 27385,
+        "functions": 1357,
+        "classes": 326
+      },
+      "tests": {
+        "files": 14,
+        "lines": 5492,
+        "test_functions": 172,
+        "test_classes": 26,
+        "test_file_list": [
+          "tests\\unit\\test_ml_core_refactored.py",
+          "tests\\unit\\infrastructure\\config\\test_loaders_toml.py",
+          "tests\\unit\\infrastructure\\config\\test_loaders_yaml.py",
+          "tests\\unit\\ml\\test_ml_core_algorithms.py",
+          "tests\\unit\\ml\\test_ml_enhanced_priority.py",
+          "tests\\unit\\ml\\test_ml_high_impact_priority.py",
+          "tests\\unit\\ml\\test_ml_pipeline_deep_coverage.py",
+          "tests\\unit\\ml\\test_ml_pipeline_fixed.py",
+          "tests\\unit\\ml\\test_ml_pipeline_simple.py",
+          "tests\\unit\\ml\\test_ml_service.py"
+        ]
+      },
+      "coverage_estimate": 12.42,
+      "test_to_code_ratio": 0.2,
+      "function_coverage_estimate": 12.68
+    },
+    {
+      "layer": "mobile",
+      "exists": true,
+      "source": {
+        "files": 16,
+        "lines": 3742,
+        "functions": 120,
+        "classes": 23
+      },
+      "tests": {
+        "files": 1,
+        "lines": 1155,
+        "test_functions": 62,
+        "test_classes": 1,
+        "test_file_list": [
+          "tests\\unit\\mobile\\test_mobile_trading.py"
+        ]
+      },
+      "coverage_estimate": 38.41,
+      "test_to_code_ratio": 0.31,
+      "function_coverage_estimate": 51.67
+    },
+    {
+      "layer": "monitoring",
+      "exists": true,
+      "source": {
+        "files": 31,
+        "lines": 10463,
+        "functions": 494,
+        "classes": 100
+      },
+      "tests": {
+        "files": 67,
+        "lines": 31398,
+        "test_functions": 1307,
+        "test_classes": 202,
+        "test_file_list": [
+          "tests\\unit\\data\\test_data_monitoring.py",
+          "tests\\unit\\data\\monitoring\\test_monitoring_components_mock.py",
+          "tests\\unit\\features\\test_monitoring_module_depth_coverage.py",
+          "tests\\unit\\infrastructure\\test_monitoring_production.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_exceptions_monitoring.py",
+          "tests\\unit\\infrastructure\\cache\\test_monitoring.py",
+          "tests\\unit\\infrastructure\\cache\\test_performance_monitoring_comprehensive.py",
+          "tests\\unit\\infrastructure\\config\\test_cloud_enhanced_monitoring.py",
+          "tests\\unit\\infrastructure\\config\\test_cloud_enhanced_monitoring_coverage.py",
+          "tests\\unit\\infrastructure\\config\\test_monitoring_core.py"
+        ]
+      },
+      "coverage_estimate": 100.0,
+      "test_to_code_ratio": 3.0,
+      "function_coverage_estimate": 100
+    },
+    {
+      "layer": "optimization",
+      "exists": true,
+      "source": {
+        "files": 48,
+        "lines": 18956,
+        "functions": 775,
+        "classes": 152
+      },
+      "tests": {
+        "files": 29,
+        "lines": 16755,
+        "test_functions": 717,
+        "test_classes": 102,
+        "test_file_list": [
+          "tests\\unit\\core\\test_core_optimization_ai_performance_optimizer.py",
+          "tests\\unit\\core\\test_core_optimization_documentation_enhancer.py",
+          "tests\\unit\\core\\test_core_optimization_performance_monitor.py",
+          "tests\\unit\\core\\test_core_optimization_testing_enhancer.py",
+          "tests\\unit\\core\\test_optimization_implementer.py",
+          "tests\\unit\\core\\test_short_term_optimizations.py",
+          "tests\\unit\\data\\performance\\test_performance_optimization_mock.py",
+          "tests\\unit\\infrastructure\\config\\test_optimization_strategies.py",
+          "tests\\unit\\infrastructure\\core\\test_optimization_verification.py",
+          "tests\\unit\\infrastructure\\resource\\test_optimization_config.py"
+        ]
+      },
+      "coverage_estimate": 76.72,
+      "test_to_code_ratio": 0.88,
+      "function_coverage_estimate": 92.52
+    },
+    {
+      "layer": "resilience",
+      "exists": true,
+      "source": {
+        "files": 7,
+        "lines": 2249,
+        "functions": 117,
+        "classes": 34
+      },
+      "tests": {
+        "files": 1,
+        "lines": 1398,
+        "test_functions": 41,
+        "test_classes": 6,
+        "test_file_list": [
+          "tests\\unit\\resilience\\test_resilience_layer_advanced.py"
+        ]
+      },
+      "coverage_estimate": 35.94,
+      "test_to_code_ratio": 0.62,
+      "function_coverage_estimate": 35.04
+    },
+    {
+      "layer": "risk",
+      "exists": true,
+      "source": {
+        "files": 58,
+        "lines": 20421,
+        "functions": 922,
+        "classes": 247
+      },
+      "tests": {
+        "files": 28,
+        "lines": 15354,
+        "test_functions": 461,
+        "test_classes": 88,
+        "test_file_list": [
+          "tests\\unit\\core\\integration\\test_risk_layer_adapter.py",
+          "tests\\unit\\risk\\test_advanced_risk_models.py",
+          "tests\\unit\\risk\\test_realtime_risk_monitor.py",
+          "tests\\unit\\risk\\test_risk_assessment.py",
+          "tests\\unit\\risk\\test_risk_calculation_engine.py",
+          "tests\\unit\\risk\\test_risk_calculators.py",
+          "tests\\unit\\risk\\test_risk_compliance.py",
+          "tests\\unit\\risk\\test_risk_component_1.py",
+          "tests\\unit\\risk\\test_risk_control_priority.py",
+          "tests\\unit\\risk\\test_risk_core_business_logic.py"
+        ]
+      },
+      "coverage_estimate": 48.04,
+      "test_to_code_ratio": 0.75,
+      "function_coverage_estimate": 50.0
+    },
+    {
+      "layer": "security",
+      "exists": true,
+      "source": {
+        "files": 4,
+        "lines": 1915,
+        "functions": 71,
+        "classes": 14
+      },
+      "tests": {
+        "files": 31,
+        "lines": 15368,
+        "test_functions": 591,
+        "test_classes": 118,
+        "test_file_list": [
+          "tests\\unit\\core\\test_security_advanced.py",
+          "tests\\unit\\data\\security\\test_data_security_mock.py",
+          "tests\\unit\\infrastructure\\error\\test_security_filter.py",
+          "tests\\unit\\infrastructure\\error\\test_security_filter_comprehensive.py",
+          "tests\\unit\\infrastructure\\logging\\test_security_filter.py",
+          "tests\\unit\\infrastructure\\security\\test_api_security.py",
+          "tests\\unit\\infrastructure\\security\\test_data_security.py",
+          "tests\\unit\\infrastructure\\security\\test_network_security.py",
+          "tests\\unit\\infrastructure\\security\\test_security_assessment.py",
+          "tests\\unit\\infrastructure\\security\\test_security_compliance.py"
+        ]
+      },
+      "coverage_estimate": 100.0,
+      "test_to_code_ratio": 8.03,
+      "function_coverage_estimate": 100
+    },
+    {
+      "layer": "strategy",
+      "exists": true,
+      "source": {
+        "files": 167,
+        "lines": 58092,
+        "functions": 3131,
+        "classes": 650
+      },
+      "tests": {
+        "files": 46,
+        "lines": 23571,
+        "test_functions": 920,
+        "test_classes": 159,
+        "test_file_list": [
+          "tests\\unit\\core\\test_strategy_service.py",
+          "tests\\unit\\data\\cache\\test_lfu_strategy.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_strategy_manager_coverage_enhancement.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_strategy_manager_enhanced.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_strategy_manager_targeted.py",
+          "tests\\unit\\infrastructure\\cache\\test_lru_strategy_edge_cases.py",
+          "tests\\unit\\infrastructure\\config\\test_config_strategy.py",
+          "tests\\unit\\infrastructure\\config\\test_strategy_base_comprehensive.py",
+          "tests\\unit\\infrastructure\\config\\test_strategy_loaders.py",
+          "tests\\unit\\infrastructure\\config\\test_strategy_manager.py"
+        ]
+      },
+      "coverage_estimate": 27.37,
+      "test_to_code_ratio": 0.41,
+      "function_coverage_estimate": 29.38
+    },
+    {
+      "layer": "streaming",
+      "exists": true,
+      "source": {
+        "files": 26,
+        "lines": 6462,
+        "functions": 338,
+        "classes": 69
+      },
+      "tests": {
+        "files": 3,
+        "lines": 1694,
+        "test_functions": 47,
+        "test_classes": 13,
+        "test_file_list": [
+          "tests\\unit\\streaming\\test_streaming_deep_coverage.py",
+          "tests\\unit\\streaming\\test_streaming_priority.py",
+          "tests\\integration\\test_data_streaming_processing_integration.py"
+        ]
+      },
+      "coverage_estimate": 14.63,
+      "test_to_code_ratio": 0.26,
+      "function_coverage_estimate": 13.91
+    },
+    {
+      "layer": "trading",
+      "exists": true,
+      "source": {
+        "files": 69,
+        "lines": 19183,
+        "functions": 935,
+        "classes": 282
+      },
+      "tests": {
+        "files": 44,
+        "lines": 22019,
+        "test_functions": 632,
+        "test_classes": 108,
+        "test_file_list": [
+          "tests\\unit\\core\\test_integration_trading_adapter.py",
+          "tests\\unit\\core\\integration\\test_trading_layer_adapter.py",
+          "tests\\unit\\mobile\\test_mobile_trading.py",
+          "tests\\unit\\monitoring\\test_trading_monitor.py",
+          "tests\\unit\\trading\\test_live_trading.py",
+          "tests\\unit\\trading\\test_multi_market_concurrent_trading.py",
+          "tests\\unit\\trading\\test_trading_core_business_logic.py",
+          "tests\\unit\\trading\\test_trading_core_business_logic_simple.py",
+          "tests\\unit\\trading\\test_trading_core_priority.py",
+          "tests\\unit\\trading\\test_trading_engine.py"
+        ]
+      },
+      "coverage_estimate": 68.1,
+      "test_to_code_ratio": 1.15,
+      "function_coverage_estimate": 67.59
+    },
+    {
+      "layer": "utils",
+      "exists": true,
+      "source": {
+        "files": 9,
+        "lines": 1411,
+        "functions": 48,
+        "classes": 10
+      },
+      "tests": {
+        "files": 24,
+        "lines": 7622,
+        "test_functions": 547,
+        "test_classes": 135,
+        "test_file_list": [
+          "tests\\unit\\infrastructure\\cache\\test_cache_utils.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_utils_boundary.py",
+          "tests\\unit\\infrastructure\\cache\\test_cache_utils_enhanced.py",
+          "tests\\unit\\infrastructure\\config\\test_core_config_factory_utils.py",
+          "tests\\unit\\infrastructure\\logging\\test_logging_utils.py",
+          "tests\\unit\\infrastructure\\logging\\test_utils_formatters.py",
+          "tests\\unit\\infrastructure\\utils\\test_data_utils.py",
+          "tests\\unit\\infrastructure\\utils\\test_date_utils.py",
+          "tests\\unit\\infrastructure\\utils\\test_file_utils_basic.py",
+          "tests\\unit\\infrastructure\\utils\\test_math_utils_basic.py"
+        ]
+      },
+      "coverage_estimate": 100.0,
+      "test_to_code_ratio": 5.4,
+      "function_coverage_estimate": 100
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+jaeger:
+  agent:
+    host: jaeger-agent
+    port: 6831
+  collector:
+    host: jaeger-collector
+    port: 14268
+  query:
+    host: jaeger-query
+    port: 16686
+sampling:
+  default_strategy:
+    param: 0.1
+    type: probabilistic
+services:
+- api-service
+- business-service
+- model-service
+- trading-service
+- cache-service
+- validation-service

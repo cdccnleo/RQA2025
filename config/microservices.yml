@@ -1,0 +1,159 @@
+# 微服务配置文件
+# 定义回测系统各个微服务的配置参数
+
+services:
+  backtest-service:
+    port: 8001
+    replicas: 2
+    cpu_limit: "1000m"
+    memory_limit: "1Gi"
+    environment:
+      LOG_LEVEL: "INFO"
+      METRICS_ENABLED: "true"
+      HEALTH_CHECK_INTERVAL: "30"
+    startup_timeout: 300
+    shutdown_timeout: 60
+    max_retries: 3
+    retry_delay: 5
+    log_level: "INFO"
+    metrics_enabled: true
+
+  data-service:
+    port: 8002
+    replicas: 1
+    cpu_limit: "500m"
+    memory_limit: "512Mi"
+    environment:
+      LOG_LEVEL: "INFO"
+      METRICS_ENABLED: "true"
+      DATA_CACHE_SIZE: "1000"
+    startup_timeout: 180
+    shutdown_timeout: 30
+    max_retries: 3
+    retry_delay: 5
+    log_level: "INFO"
+    metrics_enabled: true
+
+  strategy-service:
+    port: 8003
+    replicas: 1
+    cpu_limit: "500m"
+    memory_limit: "512Mi"
+    environment:
+      LOG_LEVEL: "INFO"
+      METRICS_ENABLED: "true"
+      STRATEGY_CACHE_SIZE: "500"
+    startup_timeout: 180
+    shutdown_timeout: 30
+    max_retries: 3
+    retry_delay: 5
+    log_level: "INFO"
+    metrics_enabled: true
+
+  monitoring-service:
+    port: 8004
+    replicas: 1
+    cpu_limit: "200m"
+    memory_limit: "256Mi"
+    environment:
+      LOG_LEVEL: "INFO"
+      METRICS_ENABLED: "true"
+      ALERT_ENABLED: "true"
+    startup_timeout: 120
+    shutdown_timeout: 30
+    max_retries: 3
+    retry_delay: 5
+    log_level: "INFO"
+    metrics_enabled: true
+
+monitoring:
+  enabled: true
+  metrics_port: 9090
+  health_check_interval: 30
+  alert_thresholds:
+    cpu_usage: 80
+    memory_usage: 80
+    error_rate: 5
+  retention:
+    metrics_days: 30
+    logs_days: 7
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  handlers:
+    console:
+      enabled: true
+      level: "INFO"
+    file:
+      enabled: true
+      level: "DEBUG"
+      filename: "logs/microservices.log"
+      max_bytes: 10485760  # 10MB
+      backup_count: 5
+
+deployment:
+  environment: "production"
+  namespace: "backtest-system"
+  image_registry: "registry.example.com"
+  image_tag: "latest"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "2000m"
+      memory: "2Gi"
+
+security:
+  enabled: true
+  authentication:
+    type: "jwt"
+    secret_key: "${JWT_SECRET_KEY}"
+  authorization:
+    enabled: true
+    roles:
+      - "admin"
+      - "user"
+      - "readonly"
+
+networking:
+  ingress:
+    enabled: true
+    host: "backtest.example.com"
+    tls:
+      enabled: true
+      secret_name: "backtest-tls"
+  service_mesh:
+    enabled: false
+    type: "istio"
+
+scaling:
+  auto_scaling:
+    enabled: true
+    min_replicas: 1
+    max_replicas: 10
+    target_cpu_utilization: 70
+    target_memory_utilization: 80
+  manual_scaling:
+    enabled: true
+    default_replicas: 2
+
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  retention_days: 30
+  storage:
+    type: "s3"
+    bucket: "backtest-backups"
+    region: "us-east-1"
+
+disaster_recovery:
+  enabled: true
+  rto: 300  # 恢复时间目标：5分钟
+  rpo: 60   # 恢复点目标：1分钟
+  backup_strategy: "incremental"
+  failover:
+    enabled: true
+    primary_region: "us-east-1"
+    secondary_region: "us-west-2" 

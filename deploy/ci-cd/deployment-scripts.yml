@@ -1,0 +1,321 @@
+# 部署脚本配置文件
+# 定义各种部署场景和自动化流程
+
+# 部署脚本配置
+deployment_scripts:
+  # 蓝绿部署配置
+  blue_green:
+    name: "蓝绿部署"
+    description: "零停机时间的蓝绿部署策略"
+    enabled: true
+    strategy:
+      type: "blue_green"
+      switch_timeout: 300
+      rollback_threshold: 0.95
+      health_check_interval: 10
+      health_check_timeout: 30
+    traffic_routing:
+      method: "weighted"
+      initial_weight: 0
+      final_weight: 100
+      step_weight: 25
+      step_interval: 30
+    rollback:
+      automatic: true
+      threshold: 0.90
+      max_attempts: 3
+      
+  # 金丝雀部署配置
+  canary:
+    name: "金丝雀部署"
+    description: "渐进式流量切换的金丝雀部署策略"
+    enabled: true
+    strategy:
+      type: "canary"
+      max_canary_replicas: 2
+      canary_weight: 10
+      promotion_threshold: 0.98
+      analysis_interval: 60
+    traffic_routing:
+      method: "weighted"
+      initial_weight: 0
+      final_weight: 100
+      step_weight: 10
+      step_interval: 120
+    rollback:
+      automatic: true
+      threshold: 0.85
+      max_attempts: 2
+      
+  # 滚动更新配置
+  rolling_update:
+    name: "滚动更新"
+    description: "传统的滚动更新部署策略"
+    enabled: true
+    strategy:
+      type: "rolling_update"
+      max_surge: 1
+      max_unavailable: 0
+      partition: 0
+    health_check:
+      initial_delay: 30
+      period: 10
+      timeout: 5
+      failure_threshold: 3
+      success_threshold: 1
+    rollback:
+      automatic: false
+      manual: true
+      max_attempts: 5
+
+# 自动化流程配置
+automation_workflows:
+  # 预部署检查流程
+  pre_deployment:
+    name: "预部署检查"
+    description: "部署前的自动化检查流程"
+    steps:
+      - name: "代码质量检查"
+        type: "static_analysis"
+        tools: ["flake8", "black", "mypy", "bandit"]
+        threshold: 0.95
+        required: true
+        
+      - name: "单元测试"
+        type: "unit_testing"
+        framework: "pytest"
+        coverage_threshold: 0.80
+        required: true
+        
+      - name: "集成测试"
+        type: "integration_testing"
+        framework: "pytest"
+        timeout: 600
+        required: true
+        
+      - name: "安全扫描"
+        type: "security_scanning"
+        tools: ["trivy", "safety", "bandit"]
+        severity_threshold: "HIGH"
+        required: true
+        
+      - name: "依赖检查"
+        type: "dependency_check"
+        tools: ["safety", "pip-audit"]
+        required: true
+        
+      - name: "许可证检查"
+        type: "license_check"
+        allowed_licenses: ["MIT", "Apache-2.0", "GPL-3.0"]
+        required: false
+        
+  # 部署流程
+  deployment:
+    name: "部署流程"
+    description: "自动化部署流程"
+    steps:
+      - name: "环境准备"
+        type: "environment_setup"
+        kubernetes_context: "auto"
+        namespace_creation: true
+        required: true
+        
+      - name: "配置验证"
+        type: "config_validation"
+        kubernetes_manifests: true
+        environment_variables: true
+        secrets: true
+        required: true
+        
+      - name: "镜像构建"
+        type: "image_build"
+        dockerfile: "auto"
+        registry_push: true
+        required: true
+        
+      - name: "Kubernetes部署"
+        type: "kubernetes_deploy"
+        manifests: "auto"
+        health_check: true
+        rollback_enabled: true
+        required: true
+        
+      - name: "服务验证"
+        type: "service_validation"
+        health_endpoints: true
+        metrics_endpoints: true
+        required: true
+        
+      - name: "性能测试"
+        type: "performance_testing"
+        load_test: true
+        stress_test: false
+        required: false
+        
+  # 后部署流程
+  post_deployment:
+    name: "后部署流程"
+    description: "部署后的自动化验证和监控流程"
+    steps:
+      - name: "健康状态检查"
+        type: "health_check"
+        endpoints: ["/health", "/ready", "/metrics"]
+        interval: 30
+        timeout: 300
+        required: true
+        
+      - name: "功能测试"
+        type: "functional_testing"
+        api_tests: true
+        ui_tests: false
+        timeout: 600
+        required: true
+        
+      - name: "监控配置"
+        type: "monitoring_setup"
+        prometheus: true
+        grafana: true
+        alerting: true
+        required: true
+        
+      - name: "日志聚合"
+        type: "logging_setup"
+        fluentd: true
+        elasticsearch: true
+        kibana: true
+        required: true
+        
+      - name: "备份策略"
+        type: "backup_setup"
+        database_backup: true
+        config_backup: true
+        required: true
+
+# 回滚策略配置
+rollback_strategies:
+  # 自动回滚
+  automatic:
+    enabled: true
+    triggers:
+      - type: "health_check_failure"
+        threshold: 3
+        window: 300
+      - type: "error_rate"
+        threshold: 0.05
+        window: 300
+      - type: "response_time"
+        threshold: 2000
+        window: 300
+      - type: "cpu_utilization"
+        threshold: 0.90
+        window: 300
+      - type: "memory_utilization"
+        threshold: 0.90
+        window: 300
+        
+  # 手动回滚
+  manual:
+    enabled: true
+    triggers:
+      - type: "user_triggered"
+        approval_required: true
+        approvers: ["devops-team", "production-deployers"]
+      - type: "scheduled"
+        cron_expression: "0 2 * * *"
+        timezone: "Asia/Shanghai"
+        
+  # 回滚配置
+  configuration:
+    max_rollback_versions: 5
+    rollback_timeout: 600
+    preserve_data: true
+    cleanup_resources: false
+    notification:
+      slack: true
+      email: true
+      webhook: false
+
+# 通知配置
+notifications:
+  # Slack通知
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channels:
+      - "#deployments"
+      - "#alerts"
+      - "#devops"
+    events:
+      - "deployment_started"
+      - "deployment_success"
+      - "deployment_failure"
+      - "rollback_started"
+      - "rollback_success"
+      - "rollback_failure"
+      
+  # 邮件通知
+  email:
+    enabled: true
+    smtp_server: "${SMTP_SERVER}"
+    smtp_port: 587
+    smtp_username: "${SMTP_USERNAME}"
+    smtp_password: "${SMTP_PASSWORD}"
+    recipients:
+      - "devops@rqa2025.com"
+      - "alerts@rqa2025.com"
+    events:
+      - "deployment_failure"
+      - "rollback_failure"
+      - "critical_alert"
+      
+  # Webhook通知
+  webhook:
+    enabled: false
+    endpoints: []
+    events: []
+
+# 监控和告警配置
+monitoring:
+  # 部署监控
+  deployment:
+    metrics:
+      - "deployment_duration"
+      - "deployment_success_rate"
+      - "rollback_rate"
+      - "service_uptime"
+      - "response_time"
+      - "error_rate"
+    alerts:
+      - name: "部署失败"
+        condition: "deployment_success_rate < 0.95"
+        severity: "critical"
+        duration: "5m"
+      - name: "回滚频率过高"
+        condition: "rollback_rate > 0.1"
+        severity: "warning"
+        duration: "10m"
+      - name: "服务响应时间过长"
+        condition: "response_time > 2000ms"
+        severity: "warning"
+        duration: "5m"
+        
+  # 资源监控
+  resources:
+    metrics:
+      - "cpu_utilization"
+      - "memory_utilization"
+      - "disk_utilization"
+      - "network_io"
+    alerts:
+      - name: "CPU使用率过高"
+        condition: "cpu_utilization > 0.90"
+        severity: "warning"
+        duration: "5m"
+      - name: "内存使用率过高"
+        condition: "memory_utilization > 0.90"
+        severity: "warning"
+        duration: "5m"
+      - name: "磁盘空间不足"
+        condition: "disk_utilization > 0.85"
+        severity: "critical"
+        duration: "2m"

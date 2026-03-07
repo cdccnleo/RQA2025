@@ -1,0 +1,124 @@
+{
+  "market_monitor": {
+    "enabled": true,
+    "update_interval_seconds": 300,
+    "analysis_window_days": 7,
+    "min_data_points": 5,
+    "thresholds": {
+      "volatility": {
+        "high": 0.05,
+        "extreme": 0.10
+      },
+      "trend": {
+        "strong_bull": 0.03,
+        "strong_bear": -0.03,
+        "sideways_range": 0.02
+      },
+      "volume": {
+        "low_liquidity": 0.3
+      }
+    },
+    "market_regime_weights": {
+      "HIGH_VOLATILITY": {
+        "description": "高波动市场状态",
+        "collection_multiplier": 0.7,
+        "batch_size_multiplier": 0.8,
+        "frequency_multiplier": 0.5,
+        "recommended_actions": [
+          "减少采集频率以保护系统稳定",
+          "增加数据质量检查",
+          "优先采集核心数据源"
+        ]
+      },
+      "BULL": {
+        "description": "牛市行情",
+        "collection_multiplier": 1.2,
+        "batch_size_multiplier": 1.1,
+        "frequency_multiplier": 0.8,
+        "recommended_actions": [
+          "适当增加采集频率",
+          "扩大采集范围",
+          "提高数据质量要求"
+        ]
+      },
+      "BEAR": {
+        "description": "熊市行情",
+        "collection_multiplier": 1.0,
+        "batch_size_multiplier": 1.0,
+        "frequency_multiplier": 1.0,
+        "recommended_actions": [
+          "保持正常采集频率",
+          "增加风险数据采集",
+          "关注市场情绪指标"
+        ]
+      },
+      "SIDEWAYS": {
+        "description": "横盘整理",
+        "collection_multiplier": 1.0,
+        "batch_size_multiplier": 1.2,
+        "frequency_multiplier": 1.5,
+        "recommended_actions": [
+          "均衡采集各数据源",
+          "优化批处理性能",
+          "监控市场变化"
+        ]
+      },
+      "LOW_LIQUIDITY": {
+        "description": "流动性不足",
+        "collection_multiplier": 0.6,
+        "batch_size_multiplier": 1.5,
+        "frequency_multiplier": 2.0,
+        "recommended_actions": [
+          "延长采集间隔",
+          "优先采集核心数据源",
+          "降低批处理大小"
+        ]
+      }
+    },
+    "data_sources": {
+      "core_stocks": {
+        "priority": "critical",
+        "max_incremental_days": 5,
+        "complement_period_days": 30,
+        "weight": 1.0
+      },
+      "major_indices": {
+        "priority": "high",
+        "max_incremental_days": 7,
+        "complement_period_days": 7,
+        "weight": 0.9
+      },
+      "all_stocks": {
+        "priority": "medium",
+        "max_incremental_days": 10,
+        "complement_period_days": 90,
+        "weight": 0.7
+      },
+      "macro_data": {
+        "priority": "low",
+        "max_incremental_days": 30,
+        "complement_period_days": 180,
+        "weight": 0.5
+      },
+      "news_data": {
+        "priority": "low",
+        "max_incremental_days": 7,
+        "complement_period_days": 30,
+        "weight": 0.6
+      }
+    },
+    "alerts": {
+      "enabled": true,
+      "regime_change_alert": true,
+      "extreme_volatility_alert": true,
+      "low_liquidity_alert": true,
+      "alert_cooldown_minutes": 30
+    },
+    "logging": {
+      "level": "INFO",
+      "regime_changes": true,
+      "performance_metrics": true,
+      "alerts": true
+    }
+  }
+}

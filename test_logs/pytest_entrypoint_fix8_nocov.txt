@@ -1,0 +1,31 @@
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+馃敟 Logger姹犲憡璀?[WARNING]: Logger姹犲懡涓巼杩囦綆: 0.00 < 0.8
+
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class ERROR [ 50%]
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols ERROR [100%]
+
+=================================== ERRORS ====================================
+_ ERROR at setup of test_create_enhanced_data_integration_uses_exported_class _
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:11: in entry_module
+    return importlib.reload(module)
+tests\conftest.py:54: in _reload_with_compat
+    return _ORIGINAL_RELOAD(module)
+tests\conftest.py:54: in _reload_with_compat
+    return _ORIGINAL_RELOAD(module)
+C:\Users\AILeo\miniconda3\lib\importlib\__init__.py:168: in reload
+    raise ModuleNotFoundError(f"spec not found for the module {name!r}", name=name)
+E   ModuleNotFoundError: spec not found for the module 'src.data.integration.enhanced_data_integration'
+________ ERROR at setup of test_entrypoint_reexports_expected_symbols _________
+tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py:11: in entry_module
+    return importlib.reload(module)
+tests\conftest.py:54: in _reload_with_compat
+    return _ORIGINAL_RELOAD(module)
+tests\conftest.py:54: in _reload_with_compat
+    return _ORIGINAL_RELOAD(module)
+C:\Users\AILeo\miniconda3\lib\importlib\__init__.py:168: in reload
+    raise ModuleNotFoundError(f"spec not found for the module {name!r}", name=name)
+E   ModuleNotFoundError: spec not found for the module 'src.data.integration.enhanced_data_integration'
+=========================== short test summary info ===========================
+ERROR tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_create_enhanced_data_integration_uses_exported_class
+ERROR tests\unit\data\integration\test_enhanced_data_integration_entrypoint.py::test_entrypoint_reexports_expected_symbols
+============================== 2 errors in 0.84s ==============================
