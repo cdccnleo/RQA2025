@@ -341,7 +341,6 @@ def get_risk_monitor():
 
 def get_risk_calculator():
     """获取风险计算器"""
-from datetime import datetime
     return get_risk_layer_adapter().get_risk_calculator()
 
 
