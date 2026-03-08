@@ -1,60 +1,42 @@
 #!/usr/bin/env python3
-"""
-批量修复F821导入错误脚本
-"""
-
+"""修复剩余的导入路径"""
+import os
 import re
-from pathlib import Path
 
-# 定义需要修复的文件和对应的导入
-typing_fixes = {
-    'src/backtest/portfolio/optimized_portfolio_optimizer.py': ['from typing import Any, Dict, List, Optional, Tuple'],
-    'src/infrastructure/integration/fallback_services.py': ['from typing import Dict, Any, List, Optional'],
-    'src/infrastructure/distributed/consul_service_discovery.py': ['from typing import Callable, Dict, Any, List, Optional'],
-}
+# 需要更新的文件列表
+files_to_update = [
+    "src/gateway/web/datasource_routes.py",
+]
 
-# 修复1: backtest/portfolio/optimized_portfolio_optimizer.py
-file1 = Path('src/backtest/portfolio/optimized_portfolio_optimizer.py')
-if file1.exists():
-    content = file1.read_text(encoding='utf-8')
-    # 检查是否已有typing导入
-    if 'from typing import' not in content and 'import typing' not in content:
-        # 在文件开头添加导入
-        lines = content.split('\n')
-        import_idx = 0
-        for i, line in enumerate(lines):
-            if line.startswith('import ') or line.startswith('from '):
-                import_idx = i + 1
-        lines.insert(import_idx, 'from typing import Any, Dict, List, Optional, Tuple')
-        file1.write_text('\n'.join(lines), encoding='utf-8')
-        print(f"✅ 已修复: {file1}")
+# 替换规则
+replacements = [
+    # 从 distributed/coordinator 导入
+    (r'from src\.infrastructure\.distributed\.coordinator\.unified_scheduler import', 
+     'from src.core.orchestration.scheduler import'),
+]
 
-# 修复2: infrastructure/integration/fallback_services.py
-file2 = Path('src/infrastructure/integration/fallback_services.py')
-if file2.exists():
-    content = file2.read_text(encoding='utf-8')
-    if 'from typing import' not in content and 'import typing' not in content:
-        lines = content.split('\n')
-        import_idx = 0
-        for i, line in enumerate(lines):
-            if line.startswith('import ') or line.startswith('from '):
-                import_idx = i + 1
-        lines.insert(import_idx, 'from typing import Dict, Any, List, Optional')
-        file2.write_text('\n'.join(lines), encoding='utf-8')
-        print(f"✅ 已修复: {file2}")
+for file_path in files_to_update:
+    if not os.path.exists(file_path):
+        print(f"⚠️ 文件不存在: {file_path}")
+        continue
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        original_content = content
+        
+        for pattern, replacement in replacements:
+            content = re.sub(pattern, replacement, content)
+        
+        if content != original_content:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            print(f"✅ 已更新: {file_path}")
+        else:
+            print(f"⏭️ 无需更新: {file_path}")
+            
+    except Exception as e:
+        print(f"❌ 更新失败 {file_path}: {e}")
 
-# 修复3: infrastructure/distributed/consul_service_discovery.py
-file3 = Path('src/infrastructure/distributed/consul_service_discovery.py')
-if file3.exists():
-    content = file3.read_text(encoding='utf-8')
-    if 'from typing import' not in content and 'import typing' not in content:
-        lines = content.split('\n')
-        import_idx = 0
-        for i, line in enumerate(lines):
-            if line.startswith('import ') or line.startswith('from '):
-                import_idx = i + 1
-        lines.insert(import_idx, 'from typing import Callable, Dict, Any, List, Optional')
-        file3.write_text('\n'.join(lines), encoding='utf-8')
-        print(f"✅ 已修复: {file3}")
-
-print("\n📝 Phase 1: 基础typing导入修复完成")
+print("\n🎉 导入路径更新完成!")

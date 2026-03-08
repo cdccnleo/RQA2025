@@ -159,7 +159,7 @@ async def get_scheduler_dashboard():
         registry = get_unified_worker_registry()
         
         # 获取统一调度器统计
-        scheduler_stats = scheduler.get_scheduler_stats()
+        scheduler_stats = scheduler.get_statistics()
         
         # 获取数据采集器数量
         data_collectors = registry.get_workers_by_type(WorkerType.DATA_COLLECTOR)
@@ -215,7 +215,7 @@ async def control_scheduler(request: dict):
         action = request.get("action", "status")
         
         # 使用统一调度器（符合架构设计）
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
@@ -289,7 +289,7 @@ async def control_scheduler(request: dict):
                         }
 
                         # 提交任务到统一调度器
-                        from src.infrastructure.distributed.coordinator.unified_scheduler import TaskType, TaskPriority
+                        from src.core.orchestration.scheduler import TaskType, TaskPriority
                         task_id = scheduler.submit_task(
                             task_type=TaskType.DATA_COLLECTION,
                             data=task_data,
@@ -403,7 +403,7 @@ async def control_scheduler(request: dict):
                 }
 
                 # 提交任务到统一调度器
-                from src.infrastructure.distributed.coordinator.unified_scheduler import TaskType, TaskPriority
+                from src.core.orchestration.scheduler import TaskType, TaskPriority
                 task_id = scheduler.submit_task(
                     task_type=TaskType.DATA_COLLECTION,
                     data=task_data,
@@ -3098,14 +3098,14 @@ async def get_auto_collection_status():
 async def get_running_tasks():
     """获取运行中的任务列表"""
     try:
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.gateway.web.task_history_manager import get_task_history_manager, TaskStatus
 
         scheduler = get_unified_scheduler()
         history_manager = get_task_history_manager()
 
         # 获取调度器统计
-        scheduler_stats = scheduler.get_scheduler_stats()
+        scheduler_stats = scheduler.get_statistics()
 
         # 从任务历史管理器获取正在运行的任务
         running_tasks = []
@@ -3293,7 +3293,7 @@ logger.info("✅ 任务状态同步回调已注册")
 async def pause_task(task_id: str):
     """暂停单个任务"""
     try:
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -3322,7 +3322,7 @@ async def pause_task(task_id: str):
 async def resume_task(task_id: str):
     """恢复单个任务"""
     try:
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -3355,7 +3355,7 @@ async def resume_task(task_id: str):
 async def cancel_task(task_id: str):
     """取消单个任务"""
     try:
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -3384,7 +3384,7 @@ async def cancel_task(task_id: str):
 async def retry_task(task_id: str):
     """重试失败任务"""
     try:
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
