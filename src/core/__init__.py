@@ -222,6 +222,31 @@ except ImportError:
         def __init__(self):
             self.name = "GracefulDegradation (fallback)"
 
+# 工具层组件（从src/utils合并）
+try:
+    from .utils.backtest.backtest_utils import BacktestUtils
+    from .utils.devtools.ci_cd_integration import CICDIntegration
+    from .utils.devtools.doc_manager import DocumentationManager
+    _utils_available = True
+except ImportError:
+    logger.warning("⚠️ Utils组件不可用，使用基础实现")
+    _utils_available = False
+
+    class BacktestUtils:
+        """回测工具基础实现"""
+        def __init__(self):
+            self.name = "BacktestUtils (fallback)"
+
+    class CICDIntegration:
+        """CI/CD集成基础实现"""
+        def __init__(self):
+            self.name = "CICDIntegration (fallback)"
+
+    class DocumentationManager:
+        """文档管理基础实现"""
+        def __init__(self):
+            self.name = "DocumentationManager (fallback)"
+
 # ============================================================================
 # 导出接口定义
 # ============================================================================
@@ -241,6 +266,11 @@ __all__ = [
     # 弹性层组件（合并后）
     'ResilienceInterface',
     'GracefulDegradation',
+
+    # 工具层组件（合并后）
+    'BacktestUtils',
+    'CICDIntegration',
+    'DocumentationManager',
 
     # 枚举和常量
     'BusinessProcessState',
@@ -266,6 +296,7 @@ COMPONENT_AVAILABILITY = {
     'optimization': _optimization_available,
     'service_framework': _service_framework_available,
     'resilience': _resilience_available,  # 弹性层组件（合并后）
+    'utils': _utils_available,  # 工具层组件（合并后）
 }
 
 # 避免重复初始化的标志
