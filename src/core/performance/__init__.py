@@ -10,7 +10,7 @@
 - Prometheus性能监控
 
 使用示例:
-    from src.utils.performance import (
+    from src.core.performance import (
         DynamicMemoryManager,
         MultiLevelCache,
         AsyncDatabasePool,

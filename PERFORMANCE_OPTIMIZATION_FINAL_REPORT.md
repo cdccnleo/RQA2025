@@ -18,12 +18,20 @@
 
 ---
 
+## 架构调整说明
+
+根据 [RQA2025架构分析报告](RQA2025_Architecture_Analysis_Report.md)，工具层 (`src/utils`) 已整合至核心层 (`src/core`)。
+
+性能优化模块已迁移至：`src/core/performance/`
+
+---
+
 ## 优化实施详情
 
 ### Phase 1: 内存管理优化 ✅
 
 #### 实施内容
-- **动态内存管理器** ([memory_manager.py](src/utils/performance/memory_manager.py))
+- **动态内存管理器** ([memory_manager.py](src/core/performance/memory_manager.py))
   - 自动垃圾回收优化
   - 内存泄漏检测（线性回归分析）
   - 内存池实现（对象复用）
@@ -32,7 +40,7 @@
 #### 核心功能
 ```python
 # 内存管理器使用示例
-from src.utils.performance import DynamicMemoryManager, MemoryConfig
+from src.core.performance import DynamicMemoryManager, MemoryConfig
 
 config = MemoryConfig(
     gc_threshold=80.0,  # 80%内存阈值触发GC
@@ -56,7 +64,7 @@ pool.release(obj)  # 复用而非销毁
 
 ### Phase 2: 异步I/O优化 ✅
 
-#### 2.1 异步数据库驱动 ([async_database.py](src/utils/performance/async_database.py))
+#### 2.1 异步数据库驱动 ([async_database.py](src/core/performance/async_database.py))
 
 ##### 实施内容
 - 基于 `asyncpg` 的异步 PostgreSQL 连接池
@@ -66,7 +74,7 @@ pool.release(obj)  # 复用而非销毁
 
 ##### 核心功能
 ```python
-from src.utils.performance import AsyncDatabasePool, PoolConfig
+from src.core.performance import AsyncDatabasePool, PoolConfig
 
 config = PoolConfig(
     min_size=5,
@@ -89,7 +97,7 @@ async with pool.acquire() as conn:
 - 连接等待时间减少 **80%**
 - 并发查询能力提升 **500%**
 
-#### 2.2 异步HTTP客户端 ([async_http.py](src/utils/performance/async_http.py))
+#### 2.2 异步HTTP客户端 ([async_http.py](src/core/performance/async_http.py))
 
 ##### 实施内容
 - 基于 `aiohttp` 的异步HTTP客户端
@@ -100,7 +108,7 @@ async with pool.acquire() as conn:
 
 ##### 核心功能
 ```python
-from src.utils.performance import AsyncHTTPClient, HTTPConfig, cached_http
+from src.core.performance import AsyncHTTPClient, HTTPConfig, cached_http
 
 config = HTTPConfig(
     timeout=30.0,
@@ -131,7 +139,7 @@ responses = await client.batch_get([
 
 ### Phase 3: 自适应批处理系统 ✅
 
-#### 实施内容 ([batch_processor.py](src/utils/performance/batch_processor.py))
+#### 实施内容 ([batch_processor.py](src/core/performance/batch_processor.py))
 
 - **三种批处理策略**
   - 时间窗口策略
@@ -154,7 +162,7 @@ responses = await client.batch_get([
 
 #### 核心功能
 ```python
-from src.utils.performance import (
+from src.core.performance import (
     BatchProcessor, BatchConfig, BatchStrategy
 )
 
@@ -185,7 +193,7 @@ result = await processor.submit(data)
 
 ### Phase 4: ML模型缓存和批推理 ✅
 
-#### 实施内容 ([ml_inference.py](src/utils/performance/ml_inference.py))
+#### 实施内容 ([ml_inference.py](src/core/performance/ml_inference.py))
 
 - **模型缓存管理器**
   - 多模型版本管理
@@ -204,7 +212,7 @@ result = await processor.submit(data)
 
 #### 核心功能
 ```python
-from src.utils.performance import (
+from src.core.performance import (
     ModelServingService, ModelConfig, ModelFramework
 )
 
@@ -238,7 +246,7 @@ result = await service.predict("price_predictor", input_data)
 
 ### Phase 5: Prometheus性能监控 ✅
 
-#### 实施内容 ([prometheus_metrics.py](src/utils/performance/prometheus_metrics.py))
+#### 实施内容 ([prometheus_metrics.py](src/core/performance/prometheus_metrics.py))
 
 - **指标收集器**
   - Counter（计数器）
@@ -264,7 +272,7 @@ result = await service.predict("price_predictor", input_data)
 
 #### 核心功能
 ```python
-from src.utils.performance import (
+from src.core.performance import (
     monitor, timed, counted, timed_block,
     start_metrics_server
 )
@@ -304,14 +312,14 @@ monitor.record_http_request(
 
 | 文件 | 行数 | 功能描述 |
 |------|------|----------|
-| [memory_manager.py](src/utils/performance/memory_manager.py) | 375 | 动态内存管理、GC优化、内存池 |
-| [multi_level_cache.py](src/utils/performance/multi_level_cache.py) | 463 | 多级缓存系统（L1/L2/L3） |
-| [async_database.py](src/utils/performance/async_database.py) | 324 | 异步PostgreSQL连接池 |
-| [async_http.py](src/utils/performance/async_http.py) | 406 | 异步HTTP客户端 |
-| [batch_processor.py](src/utils/performance/batch_processor.py) | 586 | 自适应批处理系统 |
-| [ml_inference.py](src/utils/performance/ml_inference.py) | 708 | ML模型缓存和批推理 |
-| [prometheus_metrics.py](src/utils/performance/prometheus_metrics.py) | 715 | Prometheus性能监控 |
-| [__init__.py](src/utils/performance/__init__.py) | 151 | 模块导出 |
+| [memory_manager.py](src/core/performance/memory_manager.py) | 375 | 动态内存管理、GC优化、内存池 |
+| [multi_level_cache.py](src/core/performance/multi_level_cache.py) | 463 | 多级缓存系统（L1/L2/L3） |
+| [async_database.py](src/core/performance/async_database.py) | 324 | 异步PostgreSQL连接池 |
+| [async_http.py](src/core/performance/async_http.py) | 406 | 异步HTTP客户端 |
+| [batch_processor.py](src/core/performance/batch_processor.py) | 586 | 自适应批处理系统 |
+| [ml_inference.py](src/core/performance/ml_inference.py) | 708 | ML模型缓存和批推理 |
+| [prometheus_metrics.py](src/core/performance/prometheus_metrics.py) | 715 | Prometheus性能监控 |
+| [__init__.py](src/core/performance/__init__.py) | 151 | 模块导出 |
 
 **总计：约 3,728 行高性能优化代码**
 
@@ -322,7 +330,7 @@ monitor.record_http_request(
 ### 快速开始
 
 ```python
-from src.utils.performance import (
+from src.core.performance import (
     DynamicMemoryManager,
     MultiLevelCache,
     AsyncHTTPClient,
@@ -358,7 +366,7 @@ monitor.record_http_request(
 
 #### 1. 缓存集成
 ```python
-from src.utils.performance import cached
+from src.core.performance import cached
 
 @cached(ttl=300, level=CacheLevel.L1)
 async def get_market_data(symbol: str):
@@ -368,7 +376,7 @@ async def get_market_data(symbol: str):
 
 #### 2. 数据库集成
 ```python
-from src.utils.performance import AsyncDatabasePool
+from src.core.performance import AsyncDatabasePool
 
 # 替换原有数据库连接
 pool = AsyncDatabasePool(dsn="postgresql://...")
@@ -377,7 +385,7 @@ pool = AsyncDatabasePool(dsn="postgresql://...")
 
 #### 3. HTTP客户端集成
 ```python
-from src.utils.performance import AsyncHTTPClient
+from src.core.performance import AsyncHTTPClient
 
 client = AsyncHTTPClient()
 # 使用 client.get() 替代 requests.get()
@@ -385,7 +393,7 @@ client = AsyncHTTPClient()
 
 #### 4. 批处理集成
 ```python
-from src.utils.performance import BatchProcessor
+from src.core.performance import BatchProcessor
 
 processor = BatchProcessor(your_batch_function)
 await processor.start()
@@ -471,7 +479,7 @@ curl http://localhost:9090/metrics | grep cache_hits_total
 5. **ML推理**：模型加载时间减少80%，推理吞吐量提升200%
 6. **可观测性**：完整的Prometheus监控体系
 
-所有优化模块均已实现并经过代码审查，可直接集成到现有系统中使用。
+所有优化模块均已迁移至 `src/core/performance/` 并经过代码审查，可直接集成到现有系统中使用。
 
 ---
 
