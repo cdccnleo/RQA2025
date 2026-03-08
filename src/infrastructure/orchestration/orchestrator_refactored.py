@@ -27,16 +27,42 @@ from .components import (
     ProcessInstancePool
 )
 from .configs import OrchestratorConfig
-from .models import (
-    BusinessProcessState,
-    EventType,
-    ProcessConfig,
-    ProcessInstance,
-    create_process_config,
-    create_process_instance
-)
+# 从core导入基础类
+from ...core import BusinessProcessState, EventType
 
-from ..foundation.base import BaseComponent, ComponentStatus
+# 定义ProcessConfig和ProcessInstance数据类（使用已导入的datetime）
+from dataclasses import dataclass, field
+
+@dataclass
+class ProcessConfig:
+    """流程配置"""
+    name: str
+    description: str = ""
+    timeout: int = 3600
+    retry_count: int = 3
+    parameters: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
+class ProcessInstance:
+    """流程实例"""
+    instance_id: str
+    process_name: str
+    state: str = BusinessProcessState.IDLE
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    updated_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    parameters: Dict[str, Any] = field(default_factory=dict)
+    result: Any = None
+    error: Optional[str] = None
+
+def create_process_config(name: str, **kwargs) -> ProcessConfig:
+    """创建流程配置"""
+    return ProcessConfig(name=name, **kwargs)
+
+def create_process_instance(instance_id: str, process_name: str, **kwargs) -> ProcessInstance:
+    """创建流程实例"""
+    return ProcessInstance(instance_id=instance_id, process_name=process_name, **kwargs)
+
+from ...core.foundation.base import BaseComponent, ComponentStatus
 
 logger = logging.getLogger(__name__)
 
