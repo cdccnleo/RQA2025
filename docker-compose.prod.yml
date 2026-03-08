@@ -25,6 +25,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
       - BACKUP_ENCRYPTION_KEY=${BACKUP_ENCRYPTION_KEY}
       - TZ=Asia/Shanghai
+      - AUTO_COLLECTION_START_ON_BOOT=true  # 应用启动时自动启动数据采集服务
     ports:
       - "8000:8000"
     volumes:

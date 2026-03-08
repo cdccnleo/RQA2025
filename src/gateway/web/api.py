@@ -734,6 +734,32 @@ async def lifespan(app: FastAPI):
             logger.error(f"❌ 注册任务处理器失败: {handler_error}", exc_info=True)
             print(f"❌ 注册任务处理器失败: {handler_error}")
         
+        # 🚀 启动自动采集服务（根据环境变量控制）
+        try:
+            import os
+            from src.gateway.web.data_collection_scheduler_manager import get_scheduler_manager
+            
+            # 通过环境变量控制是否自动启动，默认启用
+            auto_start = os.getenv("AUTO_COLLECTION_START_ON_BOOT", "true").lower() == "true"
+            
+            if auto_start:
+                scheduler_manager = get_scheduler_manager()
+                success = scheduler_manager.start()
+                
+                if success:
+                    logger.info("✅ 自动采集服务已启动")
+                    print("✅ 自动采集服务已启动")
+                else:
+                    logger.warning("⚠️ 自动采集服务启动失败")
+                    print("⚠️ 自动采集服务启动失败")
+            else:
+                logger.info("ℹ️ 自动采集服务未配置为自动启动（设置 AUTO_COLLECTION_START_ON_BOOT=true 启用）")
+                print("ℹ️ 自动采集服务未配置为自动启动（设置 AUTO_COLLECTION_START_ON_BOOT=true 启用）")
+                
+        except Exception as auto_collection_error:
+            logger.error(f"❌ 启动自动采集服务失败: {auto_collection_error}", exc_info=True)
+            print(f"❌ 启动自动采集服务失败: {auto_collection_error}")
+        
         # 发布应用启动完成事件（向后兼容）
         try:
             from src.core.event_bus import get_event_bus
