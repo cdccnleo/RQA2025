@@ -22,9 +22,8 @@ from .order_routing_service import (
     get_filtered_routing_decisions
 )
 
-# 导入权限控制
-from .auth_middleware import Permission, require_permission, require_any_permission, audit_log
-from .audit_logger import AuditCategory
+# 导入权限控制 - 使用FastAPI兼容的简化版
+from .simple_auth import Permission, require_permission, require_any_permission, audit_log, AuditCategory
 
 # 导入数据脱敏
 from .data_masking import DataMasker, MaskingRule
@@ -306,12 +305,11 @@ async def acknowledge_routing_alert_endpoint(
     """
     try:
         from .alert_center import get_alert_center
-        from flask import g
         
         alert_center = get_alert_center()
         
-        # 获取当前用户ID
-        user_id = getattr(g, 'user_id', 'system')
+        # 获取当前用户ID - 从请求头或默认system
+        user_id = request.headers.get('X-User-ID', 'system')
         
         success = alert_center.acknowledge_alert(
             alert_id=alert_id,
