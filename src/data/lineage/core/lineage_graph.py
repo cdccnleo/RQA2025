@@ -116,10 +116,28 @@ class LineageGraph:
             
         result = []
         visited = {start_id}
-        queue = deque([(start_id, 0)])
         
-        adj = self.reverse_adjacency if direction == "upstream" else self.adjacency
+        # 确定邻接表和起始队列
+        if direction == "upstream":
+            # 上游：从start_id开始，查找reverse_adjacency中的source
+            adj = self.reverse_adjacency
+            # 获取start_id的直接上游
+            initial_neighbors = adj.get(start_id, [])
+        else:
+            # 下游：从start_id开始，查找adjacency中的target
+            adj = self.adjacency
+            initial_neighbors = adj.get(start_id, [])
         
+        # 初始化队列
+        queue = deque()
+        for neighbor_id in initial_neighbors:
+            if neighbor_id not in visited:
+                visited.add(neighbor_id)
+                if neighbor_id in self.nodes:
+                    result.append(self.nodes[neighbor_id].asset)
+                queue.append((neighbor_id, 1))  # 深度从1开始
+        
+        # BFS遍历
         while queue:
             node_id, current_depth = queue.popleft()
             

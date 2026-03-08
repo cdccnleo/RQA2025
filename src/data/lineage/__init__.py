@@ -17,25 +17,27 @@ Data Lineage Module - 数据血缘追踪模块
 日期: 2026-03-08
 """
 
-from .core.lineage_tracker import LineageTracker
 from .core.lineage_graph import LineageGraph
 from .models.lineage_models import (
     DataAsset,
+    DataAssetType,
     LineageEdge,
     LineageNode,
     LineageType,
-    Transformation
+    Transformation,
+    LineageQuery
 )
 
 __version__ = "1.0.0"
 __all__ = [
     # 核心组件
-    "LineageTracker",
     "LineageGraph",
     # 数据模型
     "DataAsset",
+    "DataAssetType",
     "LineageEdge",
     "LineageNode",
     "LineageType",
     "Transformation",
+    "LineageQuery"
 ]
