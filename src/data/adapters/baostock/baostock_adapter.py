@@ -159,18 +159,9 @@ class BaostockAdapter(ABC):
                 
                 return df
             else:
-                # 模拟数据
-                dates = pd.date_range(start=start_date, end=end_date, freq='D')
-                df = pd.DataFrame({
-                    'date': [d.strftime('%Y-%m-%d') for d in dates],
-                    'code': [symbol] * len(dates),
-                    'open': [0.0] * len(dates),
-                    'high': [0.0] * len(dates),
-                    'low': [0.0] * len(dates),
-                    'close': [0.0] * len(dates),
-                    'volume': [0] * len(dates)
-                })
-                return df
+                # baostock模块不可用，返回空DataFrame
+                logger.error("❌ baostock模块不可用，无法获取真实数据")
+                return pd.DataFrame()
                 
         except Exception as e:
             logger.error(f"获取历史数据失败: {e}")
