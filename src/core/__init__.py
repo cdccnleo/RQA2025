@@ -166,7 +166,7 @@ except ImportError:
 
 # 系统集成管理器
 try:
-    from .integration.core.system_integration_manager import SystemIntegrationManager
+    from ..infrastructure.integration.core.system_integration_manager import SystemIntegrationManager
     _integration_available = True
 except ImportError:
     logger.warning("⚠️ SystemIntegrationManager不可用，使用基础实现")
@@ -205,8 +205,8 @@ except ImportError:
 
 # 弹性层组件（从src/resilience合并）
 try:
-    from .resilience.core.unified_resilience_interface import ResilienceInterface
-    from .resilience.degradation.graceful_degradation import GracefulDegradation
+    from ..infrastructure.resilience.core.unified_resilience_interface import ResilienceInterface
+    from ..infrastructure.resilience.degradation.graceful_degradation import GracefulDegradation
     _resilience_available = True
 except ImportError:
     logger.warning("⚠️ Resilience组件不可用，使用基础实现")
@@ -224,9 +224,7 @@ except ImportError:
 
 # 工具层组件（从src/utils合并）
 try:
-    from .utils.backtest.backtest_utils import BacktestUtils
-    from .utils.devtools.ci_cd_integration import CICDIntegration
-    from .utils.devtools.doc_manager import DocumentationManager
+    from ..infrastructure.utils.backtest.backtest_utils import BacktestUtils
     _utils_available = True
 except ImportError:
     logger.warning("⚠️ Utils组件不可用，使用基础实现")
