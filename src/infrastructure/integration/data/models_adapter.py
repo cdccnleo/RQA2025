@@ -243,10 +243,10 @@ class ModelsLayerAdapter(BaseBusinessAdapter):
     def get_feature_engineer(self):
         """获取特征工程师"""
         try:
-            from src.ml.feature_engineering import FeatureEngineer
-            return FeatureEngineer()
+            from src.ml.feature_engineering import AutomatedFeatureEngineer
+            return AutomatedFeatureEngineer()
         except ImportError:
-            logger.warning("FeatureEngineer不可用")
+            logger.warning("AutomatedFeatureEngineer不可用")
             return None
 
     # 业务流程集成方法
