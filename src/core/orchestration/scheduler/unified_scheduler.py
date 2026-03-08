@@ -451,11 +451,9 @@ class UnifiedScheduler(BaseScheduler):
 
         self._worker_manager.submit_task(task_data)
 
-        # 更新任务状态为运行中
-        await self._task_manager.update_task_status(
-            task_id=task_id,
-            status=TaskStatus.RUNNING
-        )
+        # 任务状态保持为PENDING，等待工作节点分配执行
+        # 工作节点开始执行时会通过回调更新状态为RUNNING
+        logger.debug(f"任务 {task_id} 已提交到工作队列，等待分配执行")
 
         # 发布任务开始事件
         if self._event_bus_integration and task:

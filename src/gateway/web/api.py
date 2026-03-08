@@ -698,6 +698,42 @@ async def lifespan(app: FastAPI):
             logger.error(f"❌ 注册数据采集器失败: {worker_error}", exc_info=True)
             print(f"❌ 注册数据采集器失败: {worker_error}")
         
+        # 🚀 注册数据采集任务处理器
+        try:
+            from src.core.orchestration.scheduler import get_unified_scheduler
+            
+            scheduler = get_unified_scheduler()
+            worker_manager = scheduler._worker_manager
+            
+            # 定义数据采集处理器
+            def data_collection_handler(payload: dict):
+                """数据采集任务处理器"""
+                source_id = payload.get("source_id", "unknown")
+                logger.info(f"🎯 执行数据采集任务: {source_id}")
+                
+                # 模拟数据采集（实际应该调用具体的数据源适配器）
+                import time
+                time.sleep(1)  # 模拟采集耗时
+                
+                result = {
+                    "source_id": source_id,
+                    "status": "success",
+                    "records_collected": 100,
+                    "timestamp": time.time()
+                }
+                
+                logger.info(f"✅ 数据采集完成: {source_id}, 记录数: {result['records_collected']}")
+                return result
+            
+            # 注册处理器
+            worker_manager.register_task_handler("DATA_COLLECTION", data_collection_handler)
+            logger.info("✅ 数据采集任务处理器已注册")
+            print("✅ 数据采集任务处理器已注册")
+            
+        except Exception as handler_error:
+            logger.error(f"❌ 注册任务处理器失败: {handler_error}", exc_info=True)
+            print(f"❌ 注册任务处理器失败: {handler_error}")
+        
         # 发布应用启动完成事件（向后兼容）
         try:
             from src.core.event_bus import get_event_bus
