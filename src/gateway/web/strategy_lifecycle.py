@@ -110,7 +110,7 @@ class StrategyLifecycle:
             archived_at=data.get('archived_at')
         )
         lifecycle.events = [LifecycleEvent(**e) for e in data.get('events', [])]
-        return cls
+        return lifecycle
 
 
 class StrategyLifecycleManager:

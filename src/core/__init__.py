@@ -140,7 +140,7 @@ except ImportError:
 
 # 业务流程编排器
 try:
-    from .orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+    from ..infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
     _orchestrator_available = True
 except ImportError:
     logger.warning("⚠️ BusinessProcessOrchestrator不可用，使用基础实现")
@@ -247,28 +247,28 @@ except ImportError:
 
 # 自动化层组件（从src/automation合并）
 try:
-    from .automation.core.automation_orchestrator import AutomationOrchestrator
-    from .automation.core.task_scheduler import TaskScheduler
-    from .automation.core.workflow_engine import WorkflowEngine
+    from ..infrastructure.automation.core.automation_engine import AutomationEngine
+    from ..infrastructure.automation.core.scheduler import TaskScheduler
+    from ..infrastructure.automation.core.workflow_manager import WorkflowManager
     _automation_available = True
 except ImportError:
     logger.warning("⚠️ Automation组件不可用，使用基础实现")
     _automation_available = False
 
-    class AutomationOrchestrator:
-        """自动化编排器基础实现"""
+    class AutomationEngine:
+        """自动化引擎基础实现"""
         def __init__(self):
-            self.name = "AutomationOrchestrator (fallback)"
+            self.name = "AutomationEngine (fallback)"
 
     class TaskScheduler:
         """任务调度器基础实现"""
         def __init__(self):
             self.name = "TaskScheduler (fallback)"
 
-    class WorkflowEngine:
-        """工作流引擎基础实现"""
+    class WorkflowManager:
+        """工作流管理器基础实现"""
         def __init__(self):
-            self.name = "WorkflowEngine (fallback)"
+            self.name = "WorkflowManager (fallback)"
 
 # ============================================================================
 # 导出接口定义

@@ -59,13 +59,14 @@ class DatabasePartitioner:
             
             # 检查表是否已经分区
             cursor.execute("""
-                SELECT partitioned 
+                SELECT relkind 
                 FROM pg_class 
                 WHERE relname = 'backtest_results';
             """)
             
-            partitioned = cursor.fetchone()
-            if partitioned and partitioned[0]:
+            result = cursor.fetchone()
+            # relkind = 'p' 表示分区表, 'r' 表示普通表
+            if result and result[0] == 'p':
                 logger.info("backtest_results表已经分区，跳过分区策略实施")
                 cursor.close()
                 return True
