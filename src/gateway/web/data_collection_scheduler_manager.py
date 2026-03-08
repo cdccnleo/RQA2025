@@ -253,9 +253,9 @@ class DataCollectionSchedulerManager:
             
             # 提交任务（异步方法）
             async def submit_task_async():
-                # 提交任务
+                # 提交任务（使用枚举的值，而不是枚举本身）
                 task_id = await scheduler.submit_task(
-                    task_type=TaskType.DATA_COLLECTION,
+                    task_type=TaskType.DATA_COLLECTION.value,
                     payload=task_data,
                     priority=TaskPriority.NORMAL
                 )
