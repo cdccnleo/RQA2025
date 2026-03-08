@@ -380,25 +380,28 @@ def init_security_system():
     init_rbac_system()
     init_mfa_system()
 
-    # 创建默认管理员用户
+    # 创建默认管理员用户（密码应从环境变量获取）
+    admin_password = os.getenv("ADMIN_PASSWORD", "CHANGE_ME_IN_PRODUCTION")
     security_manager.register_user(
         username="admin",
-        password="Admin@123456",
+        password=admin_password,
         roles=["super_admin"],
         require_mfa=True
     )
 
-    # 创建示例用户
+    # 创建示例用户（密码应从环境变量获取）
+    trader_password = os.getenv("TRADER_PASSWORD", "CHANGE_ME_IN_PRODUCTION")
     security_manager.register_user(
         username="trader",
-        password="Trader@123456",
+        password=trader_password,
         roles=["trader"],
         require_mfa=False
     )
 
+    analyst_password = os.getenv("ANALYST_PASSWORD", "CHANGE_ME_IN_PRODUCTION")
     security_manager.register_user(
         username="analyst",
-        password="Analyst@123456",
+        password=analyst_password,
         roles=["analyst"],
         require_mfa=False
     )

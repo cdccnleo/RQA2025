@@ -623,11 +623,12 @@ if __name__ == "__main__":
     # 初始化认证服务
     auth_service = MultiFactorAuthenticationService()
 
-    # 创建用户
+    # 创建用户（密码应从环境变量获取）
+    demo_password = os.getenv("DEMO_PASSWORD", "CHANGE_ME_IN_PRODUCTION")
     user_id = auth_service.create_user(
         username="trader001",
         email=os.getenv("EMAIL", ""),
-        password="secure_password123",
+        password=demo_password,
         role=UserRole.TRADER
     )
 
@@ -637,11 +638,11 @@ if __name__ == "__main__":
         # 设置TOTP
         auth_service.setup_mfa(user_id, AuthMethod.TOTP, {})
 
-        # 执行多因素认证
+        # 执行多因素认证（密码应从环境变量获取）
         result = auth_service.authenticate_user(
             "trader001",
             {
-                "password": "secure_password123",
+                "password": demo_password,
                 "totp_code": "123456"  # 实际应从TOTP应用获取
             },
             required_factors=[AuthMethod.PASSWORD, AuthMethod.TOTP]

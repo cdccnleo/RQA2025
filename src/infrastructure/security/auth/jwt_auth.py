@@ -331,17 +331,19 @@ authenticator = JWTAuthticator()
 
 def init_auth_system():
     """初始化认证系统"""
-    # 创建默认管理员用户
+    # 创建默认管理员用户（密码应从环境变量获取）
+    admin_password = os.getenv("ADMIN_PASSWORD", "CHANGE_ME_IN_PRODUCTION")
     authenticator.register_user(
         username="admin",
-        password="Admin@123",
+        password=admin_password,
         roles=["admin", "user"]
     )
 
-    # 创建普通用户
+    # 创建普通用户（密码应从环境变量获取）
+    trader_password = os.getenv("TRADER_PASSWORD", "CHANGE_ME_IN_PRODUCTION")
     authenticator.register_user(
         username="trader",
-        password="Trader@123",
+        password=trader_password,
         roles=["user", "trader"]
     )
 

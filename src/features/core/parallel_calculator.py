@@ -378,11 +378,11 @@ class ParallelFeatureCalculator:
         # 创建数据库连接池
         try:
             pool = await asyncpg.create_pool(
-                host='postgres',
-                port=5432,
-                database='rqa2025_prod',
-                user='rqa2025_admin',
-                password='SecurePass123!',
+                host=os.getenv('DB_HOST', 'localhost'),
+                port=int(os.getenv('DB_PORT', '5432')),
+                database=os.getenv('DB_NAME', 'rqa2025_prod'),
+                user=os.getenv('DB_USER', 'rqa2025_admin'),
+                password=os.getenv('DB_PASSWORD', 'CHANGE_ME_IN_PRODUCTION'),
                 min_size=5,
                 max_size=self.config.db_pool_size
             )
