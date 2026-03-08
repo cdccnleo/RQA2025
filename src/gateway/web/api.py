@@ -755,45 +755,144 @@ async def lifespan(app: FastAPI):
                         }
                         
                     elif "baostock" in source_id.lower():
-                        # 使用 AKShare 采集器（baostock 适配器接口不兼容，使用 AKShare 作为替代）
-                        logger.info(f"📝 数据源 {source_id} 使用 AKShare 采集器进行采集")
+                        # 使用 Baostock 适配器
+                        import asyncio
+                        from datetime import datetime, timedelta
+                        from src.data.adapters.baostock.baostock_adapter import BaostockAdapter, get_baostock_adapter
+                        from src.gateway.web.postgresql_persistence import get_db_connection
                         
-                        from src.data.collectors.akshare_collector import AKShareCollector
-                        
-                        collector = AKShareCollector()
-                        
-                        # 获取配置参数
-                        symbols = source_config.get("symbols", ["600000"])  # 默认采集浦发银行
-                        start_date = source_config.get("start_date")
-                        end_date = source_config.get("end_date")
-                        
-                        total_records = 0
-                        for symbol in symbols:
-                            # 采集数据
-                            data = collector.collect_stock_data(
-                                symbol=symbol,
-                                start_date=start_date,
-                                end_date=end_date
-                            )
+                        async def baostock_collect():
+                            # 准备配置
+                            baostock_config = {
+                                "username": source_config.get("username", ""),
+                                "password": source_config.get("password", ""),
+                                "timeout": source_config.get("timeout", 30)
+                            }
                             
-                            if data:
-                                # 保存到数据库
-                                success = collector.save_to_database(data, symbol)
-                                if success:
-                                    total_records += len(data)
-                                    logger.info(f"✅ 股票 {symbol} 数据已保存: {len(data)} 条")
-                                else:
-                                    logger.error(f"❌ 股票 {symbol} 数据保存失败")
-                            else:
-                                logger.warning(f"⚠️ 股票 {symbol} 未获取到数据")
+                            # 获取适配器实例
+                            adapter = get_baostock_adapter(baostock_config)
+                            
+                            # 连接 Baostock
+                            connected = await adapter.connect()
+                            if not connected:
+                                logger.error("❌ 无法连接到 Baostock")
+                                return 0
+                            
+                            try:
+                                # 获取配置参数
+                                symbols = source_config.get("symbols", ["sh.600000"])  # 默认采集浦发银行
+                                
+                                # 设置日期范围
+                                end_date = datetime.now()
+                                start_date = end_date - timedelta(days=30)
+                                
+                                total_records = 0
+                                
+                                for symbol in symbols:
+                                    logger.info(f"🎯 采集股票数据: {symbol}")
+                                    
+                                    # 采集数据
+                                    df = await adapter.get_historical_data(
+                                        symbol=symbol,
+                                        start_date=start_date,
+                                        end_date=end_date,
+                                        frequency='d',
+                                        adjustflag='3'
+                                    )
+                                    
+                                    if df.empty:
+                                        logger.warning(f"⚠️ 股票 {symbol} 未获取到数据")
+                                        continue
+                                    
+                                    # 保存到数据库
+                                    records_saved = await save_baostock_data_to_db(df, symbol)
+                                    total_records += records_saved
+                                    
+                                    logger.info(f"✅ 股票 {symbol} 数据已保存: {records_saved} 条")
+                                
+                                return total_records
+                                
+                            finally:
+                                await adapter.disconnect()
                         
-                        result = {
-                            "source_id": source_id,
-                            "status": "success",
-                            "records_collected": total_records,
-                            "symbols_processed": len(symbols),
-                            "timestamp": time.time()
-                        }
+                        async def save_baostock_data_to_db(df, symbol):
+                            """保存Baostock数据到数据库"""
+                            if df.empty:
+                                return 0
+                            
+                            try:
+                                conn = get_db_connection()
+                                if not conn:
+                                    logger.error("❌ 无法获取数据库连接")
+                                    return 0
+                                
+                                cursor = conn.cursor()
+                                
+                                # 准备插入语句
+                                insert_query = """
+                                    INSERT INTO akshare_stock_data (
+                                        source_id, symbol, date, open_price, high_price, low_price, close_price, 
+                                        volume, amount, data_source
+                                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                    ON CONFLICT (source_id, symbol, date, data_type) DO UPDATE SET
+                                        open_price = EXCLUDED.open_price,
+                                        high_price = EXCLUDED.high_price,
+                                        low_price = EXCLUDED.low_price,
+                                        close_price = EXCLUDED.close_price,
+                                        volume = EXCLUDED.volume,
+                                        amount = EXCLUDED.amount,
+                                        collected_at = CURRENT_TIMESTAMP
+                                """
+                                
+                                records = []
+                                for _, row in df.iterrows():
+                                    records.append((
+                                        'baostock_stock_a',
+                                        symbol,
+                                        row.get('date'),
+                                        float(row.get('open', 0)) if pd.notna(row.get('open')) else 0,
+                                        float(row.get('high', 0)) if pd.notna(row.get('high')) else 0,
+                                        float(row.get('low', 0)) if pd.notna(row.get('low')) else 0,
+                                        float(row.get('close', 0)) if pd.notna(row.get('close')) else 0,
+                                        int(float(row.get('volume', 0))) if pd.notna(row.get('volume')) else 0,
+                                        float(row.get('amount', 0)) if pd.notna(row.get('amount')) else 0,
+                                        'baostock'
+                                    ))
+                                
+                                if records:
+                                    cursor.executemany(insert_query, records)
+                                    conn.commit()
+                                
+                                cursor.close()
+                                conn.close()
+                                
+                                return len(records)
+                                
+                            except Exception as e:
+                                logger.error(f"❌ 保存数据到数据库失败: {e}")
+                                return 0
+                        
+                        # 运行异步采集
+                        try:
+                            loop = asyncio.new_event_loop()
+                            asyncio.set_event_loop(loop)
+                            total_records = loop.run_until_complete(baostock_collect())
+                            loop.close()
+                            
+                            result = {
+                                "source_id": source_id,
+                                "status": "success",
+                                "records_collected": total_records,
+                                "timestamp": time.time()
+                            }
+                        except Exception as e:
+                            logger.error(f"❌ Baostock采集失败: {e}")
+                            result = {
+                                "source_id": source_id,
+                                "status": "failed",
+                                "error": str(e),
+                                "timestamp": time.time()
+                            }
                     else:
                         # 未知数据源类型
                         logger.warning(f"⚠️ 未知数据源类型: {source_id}")
