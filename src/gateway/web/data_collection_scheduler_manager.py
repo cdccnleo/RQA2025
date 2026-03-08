@@ -221,6 +221,8 @@ class DataCollectionSchedulerManager:
             source_id: 数据源ID
             source_config: 数据源配置
         """
+        import asyncio
+        
         try:
             scheduler = get_unified_scheduler()
             
@@ -232,12 +234,24 @@ class DataCollectionSchedulerManager:
                 "submitted_at": datetime.now().isoformat()
             }
             
-            # 提交任务
-            task_id = scheduler.submit_task(
-                task_type=TaskType.DATA_COLLECTION,
-                payload=task_data,
-                priority=TaskPriority.NORMAL
-            )
+            # 提交任务（异步方法，使用asyncio.run）
+            async def submit_task_async():
+                return await scheduler.submit_task(
+                    task_type=TaskType.DATA_COLLECTION,
+                    payload=task_data,
+                    priority=TaskPriority.NORMAL
+                )
+            
+            # 在同步上下文中运行异步任务
+            try:
+                # 尝试获取当前事件循环
+                loop = asyncio.get_running_loop()
+                # 如果已经有事件循环，使用run_coroutine_threadsafe
+                future = asyncio.run_coroutine_threadsafe(submit_task_async(), loop)
+                task_id = future.result(timeout=30)
+            except RuntimeError:
+                # 没有事件循环，使用asyncio.run
+                task_id = asyncio.run(submit_task_async())
             
             # 记录已提交的任务
             task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
@@ -247,8 +261,15 @@ class DataCollectionSchedulerManager:
             
             logger.info(f"✅ 采集任务已提交: {task_id} (数据源: {source_id})")
             
+            # 验证任务是否被记录
+            try:
+                stats = scheduler.get_statistics()
+                logger.info(f"📊 提交后调度器任务统计: 总任务={stats.get('total_tasks', 0)}, 待处理={stats.get('pending_tasks', 0)}")
+            except Exception as stats_err:
+                logger.debug(f"获取调度器统计失败: {stats_err}")
+            
         except Exception as e:
-            logger.error(f"提交采集任务失败 {source_id}: {e}")
+            logger.error(f"❌ 提交采集任务失败 {source_id}: {e}", exc_info=True)
     
     def _cleanup_completed_tasks(self):
         """清理已完成的任务记录"""

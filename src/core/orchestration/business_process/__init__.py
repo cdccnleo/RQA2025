@@ -10,6 +10,18 @@
 
 from .data_collection_orchestrator import DataCollectionWorkflow, DataCollectionState, DataCollectionEvent
 
+# 导入AppStartupListener
+try:
+    from .app_startup_listener import AppStartupListener, get_app_startup_listener
+    APP_STARTUP_LISTENER_AVAILABLE = True
+except ImportError as e:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"app_startup_listener模块导入失败: {e}，跳过相关功能")
+    APP_STARTUP_LISTENER_AVAILABLE = False
+    AppStartupListener = None
+    get_app_startup_listener = None
+
 # 可选导入：service_scheduler（如果模块导入失败则跳过）
 try:
     from .service_scheduler import (
@@ -37,6 +49,8 @@ __all__ = [
     'DataCollectionWorkflow',
     'DataCollectionState',
     'DataCollectionEvent',
+    'AppStartupListener',
+    'get_app_startup_listener',
     'DataCollectionServiceScheduler',
     'get_data_collection_scheduler',
     'start_data_collection_scheduler',

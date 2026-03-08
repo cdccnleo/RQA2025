@@ -18,7 +18,7 @@ from src.core.monitoring.historical_data_monitor import (
     HistoricalTaskStatus,
     HistoricalTaskPriority
 )
-from src.infrastructure.orchestration.historical_data_scheduler import (
+from src.core.orchestration.historical_data_scheduler import (
     get_historical_data_scheduler,
     SchedulerConfig
 )

@@ -14,7 +14,7 @@ from datetime import datetime
 from fastapi import WebSocket, WebSocketDisconnect
 
 from src.core.monitoring.historical_data_monitor import get_historical_data_monitor
-from src.infrastructure.orchestration.historical_data_scheduler import get_historical_data_scheduler
+from src.core.orchestration.historical_data_scheduler import get_historical_data_scheduler
 
 logger = logging.getLogger(__name__)
 
