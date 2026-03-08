@@ -668,6 +668,36 @@ async def lifespan(app: FastAPI):
             logger.error(f"❌ 启动统一调度器失败: {scheduler_error}", exc_info=True)
             print(f"❌ 启动统一调度器失败: {scheduler_error}")
         
+        # 🚀 注册数据采集器工作节点（确保任务可以被分配执行）
+        try:
+            from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
+            
+            registry = get_unified_worker_registry()
+            
+            # 注册内置数据采集器
+            registry.register_worker(
+                worker_type=WorkerType.DATA_COLLECTOR,
+                worker_id="builtin_data_collector",
+                capabilities=["akshare", "baostock", "tushare", "yfinance"],
+                metadata={
+                    "version": "1.0.0",
+                    "type": "builtin",
+                    "max_concurrent_tasks": 5,
+                    "description": "内置数据采集器"
+                }
+            )
+            
+            logger.info("✅ 内置数据采集器工作节点已注册")
+            print("✅ 内置数据采集器工作节点已注册")
+            
+            # 验证注册
+            data_collectors = registry.get_workers_by_type(WorkerType.DATA_COLLECTOR)
+            logger.info(f"当前数据采集器数量: {len(data_collectors)}")
+            
+        except Exception as worker_error:
+            logger.error(f"❌ 注册数据采集器失败: {worker_error}", exc_info=True)
+            print(f"❌ 注册数据采集器失败: {worker_error}")
+        
         # 发布应用启动完成事件（向后兼容）
         try:
             from src.core.event_bus import get_event_bus
