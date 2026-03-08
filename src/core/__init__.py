@@ -205,17 +205,11 @@ except ImportError:
 
 # 弹性层组件（从src/resilience合并）
 try:
-    from ..infrastructure.resilience.core.unified_resilience_interface import ResilienceInterface
-    from ..infrastructure.resilience.degradation.graceful_degradation import GracefulDegradation
+    from ..infrastructure.resilience import GracefulDegradation
     _resilience_available = True
-except ImportError:
-    logger.warning("⚠️ Resilience组件不可用，使用基础实现")
+except ImportError as e:
+    logger.warning(f"⚠️ Resilience组件不可用，使用基础实现: {e}")
     _resilience_available = False
-
-    class ResilienceInterface:
-        """弹性接口基础实现"""
-        def __init__(self):
-            self.name = "ResilienceInterface (fallback)"
 
     class GracefulDegradation:
         """优雅降级基础实现"""
@@ -287,7 +281,6 @@ __all__ = [
     'ServiceFramework',
 
     # 弹性层组件（合并后）
-    'ResilienceInterface',
     'GracefulDegradation',
 
     # 工具层组件（合并后）
@@ -296,9 +289,9 @@ __all__ = [
     'DocumentationManager',
 
     # 自动化层组件（合并后）
-    'AutomationOrchestrator',
+    'AutomationEngine',
     'TaskScheduler',
-    'WorkflowEngine',
+    'WorkflowManager',
 
     # 枚举和常量
     'BusinessProcessState',

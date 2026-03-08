@@ -163,6 +163,7 @@ class AppStartupListener:
         启动后台服务
         
         包括：
+        - 统一调度器 (UnifiedScheduler)
         - 数据采集调度器
         - 其他后台服务（可扩展）
         """
@@ -172,6 +173,9 @@ class AppStartupListener:
         
         try:
             logger.info("开始启动后台服务（符合核心服务层架构设计）")
+            
+            # P0: 启动统一调度器（必须先启动，其他调度器依赖它）
+            await self._start_unified_scheduler()
             
             # 启动数据采集调度器
             await self._start_data_collection_scheduler()
@@ -183,7 +187,7 @@ class AppStartupListener:
             await self._start_model_training_executor()
 
             self._scheduler_started = True
-            logger.info("后台服务启动完成（包括历史数据采集调度器和模型训练执行器）")
+            logger.info("后台服务启动完成（包括统一调度器、历史数据采集调度器和模型训练执行器）")
             
         except Exception as e:
             logger.error(f"启动后台服务失败: {e}", exc_info=True)
@@ -216,6 +220,44 @@ class AppStartupListener:
             logger.warning(f"无法导入数据采集调度器（可选功能）: {e}")
         except Exception as e:
             logger.error(f"启动数据采集调度器失败（可选功能）: {e}", exc_info=True)
+            import traceback
+            logger.error(f"错误详情: {traceback.format_exc()}")
+            # 不抛出异常，确保不影响API服务
+
+    async def _start_unified_scheduler(self):
+        """
+        启动统一调度器 (UnifiedScheduler)
+        
+        这是P0级后台服务，必须先启动，其他调度器依赖它。
+        符合分布式协调器架构设计。
+        """
+        try:
+            from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+            
+            logger.info("准备启动统一调度器 (UnifiedScheduler)...")
+            logger.info("启动路径: app_startup_listener")
+            
+            try:
+                scheduler = get_unified_scheduler()
+                
+                # 启动调度器（ UnifiedScheduler.start() 是同步方法）
+                scheduler.start()
+                
+                # 验证调度器是否成功启动
+                if scheduler._running:
+                    logger.info("✅ 统一调度器启动成功（符合分布式协调器架构设计）")
+                    logger.info(f"   - 工作节点类型: DATA_COLLECTOR, FEATURE_WORKER, TRAINING_EXECUTOR, INFERENCE_WORKER")
+                    logger.info(f"   - 任务类型: DATA_COLLECTION, FEATURE_EXTRACTION, MODEL_TRAINING, MODEL_INFERENCE")
+                else:
+                    logger.warning("⚠️ 统一调度器启动后未运行（可选功能，不影响API服务）")
+                    
+            except Exception as scheduler_error:
+                logger.error(f"调用统一调度器启动函数失败: {scheduler_error}", exc_info=True)
+                
+        except ImportError as e:
+            logger.warning(f"无法导入统一调度器（可选功能）: {e}")
+        except Exception as e:
+            logger.error(f"启动统一调度器失败（可选功能）: {e}", exc_info=True)
             import traceback
             logger.error(f"错误详情: {traceback.format_exc()}")
             # 不抛出异常，确保不影响API服务
