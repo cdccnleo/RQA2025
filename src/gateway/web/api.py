@@ -891,6 +891,12 @@ async def lifespan(app: FastAPI):
                                 
                                 cursor = conn.cursor()
                                 
+                                # 将9位股票代码转换为6位格式（如：sh.600000 -> 600000）
+                                if len(symbol) == 9 and symbol.startswith(('sh.', 'sz.', 'bj.')):
+                                    symbol_6digit = symbol[3:]  # 去掉前缀
+                                else:
+                                    symbol_6digit = symbol
+                                
                                 # 准备插入语句
                                 insert_query = """
                                     INSERT INTO akshare_stock_data (
@@ -911,7 +917,7 @@ async def lifespan(app: FastAPI):
                                 for _, row in df.iterrows():
                                     records.append((
                                         'baostock_stock_a',
-                                        symbol,
+                                        symbol_6digit,
                                         row.get('date'),
                                         float(row.get('open', 0)) if pd.notna(row.get('open')) else 0,
                                         float(row.get('high', 0)) if pd.notna(row.get('high')) else 0,
