@@ -128,7 +128,7 @@ class SimpleTrainedModel:
 
 # 导入统一调度器（符合架构设计）
 try:
-    from src.infrastructure.distributed.coordinator.unified_scheduler import (
+    from src.core.orchestration.scheduler import (
         get_unified_scheduler, TaskType
     )
     from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType, WorkerStatus

@@ -368,7 +368,7 @@ async def create_training_job(request: Dict[str, Any]) -> Dict[str, Any]:
         while retry_count < max_retries:
             try:
                 # 使用统一调度器（符合分布式协调器架构设计）
-                from src.infrastructure.distributed.coordinator.unified_scheduler import (
+                from src.core.orchestration.scheduler import (
                     get_unified_scheduler, TaskType, TaskPriority
                 )
                 from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
@@ -624,7 +624,7 @@ async def get_scheduler_status() -> Dict[str, Any]:
     """获取模型训练调度器状态（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
@@ -670,7 +670,7 @@ async def get_scheduler_health() -> Dict[str, Any]:
     """获取模型训练调度器健康状态（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
@@ -707,7 +707,7 @@ async def start_scheduler() -> Dict[str, Any]:
     """启动模型训练调度器（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
@@ -739,7 +739,7 @@ async def stop_scheduler() -> Dict[str, Any]:
     """停止模型训练调度器（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         

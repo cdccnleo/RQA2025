@@ -337,7 +337,7 @@ class DataCollectorWorker:
     def _get_task(self) -> Optional[Dict[str, Any]]:
         """从调度器获取任务"""
         try:
-            from src.infrastructure.distributed.coordinator.unified_scheduler import (
+            from src.core.orchestration.scheduler import (
                 get_unified_scheduler
             )
             from src.infrastructure.distributed.registry.unified_worker_registry import (
@@ -574,7 +574,7 @@ class DataCollectorWorker:
             source_id: 数据源ID（用于更新最后采集时间）
         """
         try:
-            from src.infrastructure.distributed.coordinator.unified_scheduler import (
+            from src.core.orchestration.scheduler import (
                 get_unified_scheduler
             )
             

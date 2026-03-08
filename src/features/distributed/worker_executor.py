@@ -129,7 +129,7 @@ def start_worker(worker_id: str, scheduler) -> None:
 
     # 导入统一调度器和注册表
     try:
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         unified_scheduler = get_unified_scheduler()
         unified_registry = get_unified_worker_registry()

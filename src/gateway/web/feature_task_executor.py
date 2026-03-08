@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 # 导入统一调度器
 try:
-    from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler, TaskType
+    from src.core.orchestration.scheduler import get_unified_scheduler, TaskType
     from src.infrastructure.distributed.registry import WorkerType
     UNIFIED_SCHEDULER_AVAILABLE = True
 except ImportError as e:
