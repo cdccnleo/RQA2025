@@ -755,27 +755,22 @@ async def lifespan(app: FastAPI):
                         }
                         
                     elif "baostock" in source_id.lower():
-                        # 使用 baostock 适配器
-                        from src.data.adapters.baostock.baostock_adapter import BaostockAdapter
+                        # 使用 AKShare 采集器（baostock 适配器接口不兼容，使用 AKShare 作为替代）
+                        logger.info(f"📝 数据源 {source_id} 使用 AKShare 采集器进行采集")
                         
-                        # 准备配置
-                        baostock_config = {
-                            "username": source_config.get("username", ""),
-                            "password": source_config.get("password", ""),
-                            "timeout": source_config.get("timeout", 30)
-                        }
+                        from src.data.collectors.akshare_collector import AKShareCollector
                         
-                        adapter = BaostockAdapter(config=baostock_config)
+                        collector = AKShareCollector()
                         
                         # 获取配置参数
-                        symbols = source_config.get("symbols", ["sh.600000"])  # 默认采集浦发银行
+                        symbols = source_config.get("symbols", ["600000"])  # 默认采集浦发银行
                         start_date = source_config.get("start_date")
                         end_date = source_config.get("end_date")
                         
                         total_records = 0
                         for symbol in symbols:
                             # 采集数据
-                            data = adapter.collect_stock_data(
+                            data = collector.collect_stock_data(
                                 symbol=symbol,
                                 start_date=start_date,
                                 end_date=end_date
@@ -783,7 +778,7 @@ async def lifespan(app: FastAPI):
                             
                             if data:
                                 # 保存到数据库
-                                success = adapter.save_to_database(data, symbol)
+                                success = collector.save_to_database(data, symbol)
                                 if success:
                                     total_records += len(data)
                                     logger.info(f"✅ 股票 {symbol} 数据已保存: {len(data)} 条")
