@@ -22,7 +22,7 @@ from strategy.interfaces.monitoring_interfaces import (
     IMonitoringService, MetricData, Alert,
     AlertRule, MetricType
 )
-from core.integration.business_adapters import get_unified_adapter_factory
+from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
 
 # 增强的持久化支持
 try:

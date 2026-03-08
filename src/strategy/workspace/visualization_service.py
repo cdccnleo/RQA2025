@@ -20,7 +20,7 @@ from ..interfaces.strategy_interfaces import StrategyResult
 from strategy.interfaces.backtest_interfaces import BacktestResult
 from strategy.interfaces.optimization_interfaces import OptimizationResult
 from strategy.interfaces.monitoring_interfaces import MetricData
-from core.integration.business_adapters import get_unified_adapter_factory
+from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
 
 logger = logging.getLogger(__name__)
 

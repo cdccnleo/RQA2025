@@ -20,7 +20,7 @@ from strategy.interfaces.backtest_interfaces import (
     BacktestConfig, BacktestResult, BacktestMode, BacktestStatus
 )
 from ..interfaces.strategy_interfaces import IStrategyService, StrategyConfig
-from core.integration.business_adapters import get_unified_adapter_factory
+from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
 
 logger = logging.getLogger(__name__)
 

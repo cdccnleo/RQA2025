@@ -16,7 +16,7 @@ import jwt
 import hashlib
 import secrets
 
-from core.integration.business_adapters import get_unified_adapter_factory
+from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
 
 logger = logging.getLogger(__name__)
 
