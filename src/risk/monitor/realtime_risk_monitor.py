@@ -10,7 +10,7 @@ except ImportError:
             self.indicators = []
 
 try:
-    from src.core.integration import get_data_adapter
+    from src.infrastructure.integration import get_data_adapter
 except ImportError:
     def get_data_adapter():
         return None

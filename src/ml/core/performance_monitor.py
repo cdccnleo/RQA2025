@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Any, Callable, Deque, Dict, List, Optional
 
 try:  # pragma: no cover
-    from src.core.integration import get_models_adapter as _get_models_adapter
+    from src.infrastructure.integration import get_models_adapter as _get_models_adapter
 except ImportError:  # pragma: no cover
     class _FallbackModelsAdapter:
         def get_models_logger(self):

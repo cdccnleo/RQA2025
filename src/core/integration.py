@@ -6,12 +6,12 @@ def get_data_adapter():
     """延迟导入获取数据适配器（代理到包实现）"""
     try:
         # 从integration包的__init__.py导入（推荐方式）
-        from src.core.integration import get_data_adapter as _get_data_adapter
+        from src.infrastructure.integration import get_data_adapter as _get_data_adapter
         return _get_data_adapter()
     except (ImportError, AttributeError, RuntimeError) as e:
         # 如果包不存在或不可用，尝试从business_adapters模块导入
         try:
-            from src.core.integration.business_adapters import get_data_adapter as _get_data_adapter
+            from src.infrastructure.integration.business_adapters import get_data_adapter as _get_data_adapter
             return _get_data_adapter()
         except (ImportError, AttributeError, RuntimeError):
             # 最后的fallback实现

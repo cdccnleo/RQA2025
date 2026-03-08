@@ -49,7 +49,7 @@ def _get_adapter_factory():
     global _adapter_factory
     if _adapter_factory is None:
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
             _adapter_factory = get_unified_adapter_factory()
             logger.info("统一适配器工厂已获取")
         except Exception as e:
@@ -62,7 +62,7 @@ def _get_strategy_adapter():
     global _strategy_adapter
     if _strategy_adapter is None:
         try:
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             factory = _get_adapter_factory()
             if factory:
                 _strategy_adapter = factory.get_adapter(BusinessLayerType.STRATEGY)
@@ -82,7 +82,7 @@ def _get_trading_adapter():
     global _trading_adapter
     if _trading_adapter is None:
         try:
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             factory = _get_adapter_factory()
             if factory:
                 _trading_adapter = factory.get_adapter(BusinessLayerType.TRADING)

@@ -15,7 +15,7 @@ import pandas as pd
 # 集成统一基础设施集成层
 try:
     # 导入统一基础设施集成层
-    from src.core.integration import get_data_adapter
+    from src.infrastructure.integration import get_data_adapter
 
     # 基础设施集成层可用
     INFRASTRUCTURE_INTEGRATION_AVAILABLE = True

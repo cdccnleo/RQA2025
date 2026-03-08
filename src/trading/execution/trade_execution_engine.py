@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from enum import Enum
 import time
 
-from src.core.integration import get_data_adapter
+from src.infrastructure.integration import get_data_adapter
 from src.core.high_concurrency_optimizer import get_high_concurrency_optimizer
 
 # 获取统一基础设施集成层的适配器

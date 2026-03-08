@@ -652,7 +652,7 @@ async def lifespan(app: FastAPI):
         
         # 🚀 启动统一调度器（新架构）
         try:
-            from src.core.orchestration.scheduler import get_unified_scheduler
+            from src.infrastructure.orchestration.scheduler import get_unified_scheduler
             scheduler = get_unified_scheduler()
             
             logger.info("🔧 启动统一调度器...")
@@ -703,7 +703,7 @@ async def lifespan(app: FastAPI):
         
         # 🛑 停止统一调度器
         try:
-            from src.core.orchestration.scheduler import get_unified_scheduler
+            from src.infrastructure.orchestration.scheduler import get_unified_scheduler
             scheduler = get_unified_scheduler()
             
             logger.info("🛑 停止统一调度器...")

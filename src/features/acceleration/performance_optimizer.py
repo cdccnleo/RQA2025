@@ -13,7 +13,7 @@ import logging
 
 # 使用统一基础设施集成层
 try:
-    from src.core.integration import get_features_layer_adapter
+    from src.infrastructure.integration import get_features_layer_adapter
     _features_adapter = get_features_layer_adapter()
     if _features_adapter:
         logger = _features_adapter.get_logger()

@@ -21,7 +21,7 @@ from .performance_monitor import record_inference_performance, record_model_perf
 from .error_handling import handle_ml_error, InferenceError, TrainingError
 
 try:  # pragma: no cover
-    from src.core.integration import get_models_adapter as _get_models_adapter
+    from src.infrastructure.integration import get_models_adapter as _get_models_adapter
 except ImportError:  # pragma: no cover
     import logging
 

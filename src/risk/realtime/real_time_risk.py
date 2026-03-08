@@ -17,7 +17,7 @@ import threading
 import time
 import json
 
-from src.core.integration import get_data_adapter
+from src.infrastructure.integration import get_data_adapter
 
 # 获取统一基础设施集成层的适配器
 try:

@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Type
 from datetime import datetime
 from dataclasses import dataclass
 
-from src.core.integration import get_data_adapter
+from src.infrastructure.integration import get_data_adapter
 from ..interfaces.standard_interfaces import DataSourceType
 
 

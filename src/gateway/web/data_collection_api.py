@@ -27,16 +27,16 @@ except ImportError:
     Field = lambda **kwargs: None
     validator = lambda func: func
 
-from src.core.orchestration.historical_data_acquisition_service import (
+from src.infrastructure.orchestration.historical_data_acquisition_service import (
     HistoricalDataAcquisitionService,
     HistoricalDataConfig,
     DataSourceType
 )
-from src.core.orchestration.strategy_backtest_data_workflow import (
+from src.infrastructure.orchestration.strategy_backtest_data_workflow import (
     StrategyBacktestDataWorkflow,
     WorkflowConfig
 )
-from src.core.orchestration.data_quality_manager import DataQualityManager
+from src.infrastructure.orchestration.data_quality_manager import DataQualityManager
 from src.core.persistence.timescale_storage import TimescaleStorage
 from src.core.persistence.minio_storage import MinIOStorage
 from src.core.monitoring.data_collection_monitor import DataCollectionMonitor

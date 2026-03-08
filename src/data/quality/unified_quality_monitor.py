@@ -17,7 +17,7 @@ import pandas as pd
 
 # 使用统一基础设施集成层（若不可用则降级）
 try:
-    from src.core.integration import (
+    from src.infrastructure.integration import (
         get_data_adapter,
         log_data_operation, record_data_metric
     )

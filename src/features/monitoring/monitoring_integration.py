@@ -17,7 +17,7 @@ from datetime import datetime
 
 # 使用统一基础设施集成层
 try:
-    from src.core.integration import get_features_adapter
+    from src.infrastructure.integration import get_features_adapter
     _features_adapter = get_features_adapter()
     _unified_monitoring = _features_adapter.get_monitoring() if _features_adapter else None
 except ImportError:

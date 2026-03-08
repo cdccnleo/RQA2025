@@ -129,8 +129,8 @@ def start_worker(worker_id: str, scheduler) -> None:
 
     # 导入统一调度器和注册表
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         unified_scheduler = get_unified_scheduler()
         unified_registry = get_unified_worker_registry()
         logger.info(f"工作节点 {worker_id} 成功导入统一调度器")

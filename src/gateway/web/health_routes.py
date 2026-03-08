@@ -35,7 +35,7 @@ def check_data_collection_status():
     """检查数据采集状态"""
     try:
         # 检查数据采集调度器状态
-        from src.core.orchestration.business_process.service_scheduler import get_data_collection_scheduler
+        from src.infrastructure.orchestration.business_process.service_scheduler import get_data_collection_scheduler
         scheduler = get_data_collection_scheduler()
 
         if scheduler and scheduler.is_running():

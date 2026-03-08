@@ -645,7 +645,7 @@ assert config1 is config2
 ## 基本使用
 
 ```python
-from src.core.orchestration import BusinessProcessOrchestrator
+from src.infrastructure.orchestration import BusinessProcessOrchestrator
 
 # 创建编排器
 orchestrator = BusinessProcessOrchestrator()

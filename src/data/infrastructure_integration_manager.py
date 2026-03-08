@@ -13,7 +13,7 @@ from typing import Any, Optional, Dict
 
 try:
     # 统一基础设施集成层（日志、指标等）
-    from src.core.integration import (
+    from src.infrastructure.integration import (
         log_data_operation as _log_data_operation,
         record_data_metric as _record_data_metric,
         get_data_layer_adapter as _get_data_layer_adapter,

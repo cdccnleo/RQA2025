@@ -513,7 +513,7 @@ class MarketAdaptiveMonitor:
                 return
 
             # 获取当前调度器
-            from src.core.orchestration.business_process.service_scheduler import get_data_collection_scheduler
+            from src.infrastructure.orchestration.business_process.service_scheduler import get_data_collection_scheduler
             scheduler = get_data_collection_scheduler()
 
             if not scheduler or not scheduler.is_running():

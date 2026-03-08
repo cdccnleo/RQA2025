@@ -7,11 +7,11 @@
 
 from ..monitor.realtime_risk_monitor import RiskType
 try:
-    from src.core.integration.business_adapters import get_data_adapter
+    from src.infrastructure.integration.business_adapters import get_data_adapter
 except ImportError:
     # 降级方案：尝试从__init__导入
     try:
-        from src.core.integration import get_data_adapter
+        from src.infrastructure.integration import get_data_adapter
     except ImportError:
         # 如果都失败，提供一个mock实现
         def get_data_adapter(*args, **kwargs):

@@ -15,7 +15,7 @@ from pathlib import Path
 
 # 获取统一基础设施集成层的日志适配器
 try:
-    from src.core.integration import get_models_adapter
+    from src.infrastructure.integration import get_models_adapter
     models_adapter = get_models_adapter()
     logger = logging.getLogger(__name__)
 except Exception as e:

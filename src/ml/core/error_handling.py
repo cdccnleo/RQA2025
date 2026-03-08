@@ -18,7 +18,7 @@ from collections import defaultdict, Counter
 import json
 
 try:  # pragma: no cover
-    from src.core.integration import get_models_adapter as _get_models_adapter
+    from src.infrastructure.integration import get_models_adapter as _get_models_adapter
 except ImportError:  # pragma: no cover
     import logging
 

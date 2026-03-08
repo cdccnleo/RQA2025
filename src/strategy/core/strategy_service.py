@@ -26,7 +26,7 @@ from ..interfaces.monitoring_interfaces import (
     IMonitoringService, MetricData
 )
 try:
-    from src.core.integration.business_adapters import get_unified_adapter_factory
+    from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
 except ImportError:
     # 降级方案
     def get_unified_adapter_factory():
@@ -75,7 +75,7 @@ class UnifiedStrategyService(IStrategyService, IStrategyDataPreparation):
         
         # 初始化业务流程编排器（符合架构设计：业务流程编排）
         try:
-            from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+            from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
             self.orchestrator = BusinessProcessOrchestrator()
             if self.container:
                 self.container.register("business_process_orchestrator", self.orchestrator, lifecycle="singleton")
@@ -109,7 +109,7 @@ class UnifiedStrategyService(IStrategyService, IStrategyDataPreparation):
 
         # 获取基础设施服务 - 使用现有的枚举值
         try:
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
         except ImportError:
             # 降级方案
             class BusinessLayerType:

@@ -14,7 +14,7 @@ from ..core.base_loader import BaseDataLoader, LoaderConfig
 from .stock_loader import StockDataLoader
 
 # 导入标准数据采集器
-from src.core.orchestration.standard_data_collector import get_standard_data_collector
+from src.infrastructure.orchestration.standard_data_collector import get_standard_data_collector
 
 logger = logging.getLogger(__name__)
 

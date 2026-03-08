@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-from src.core.integration import get_models_adapter
+from src.infrastructure.integration import get_models_adapter
 
 # 获取统一基础设施集成层的模型层适配器
 try:

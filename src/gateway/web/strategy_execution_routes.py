@@ -79,7 +79,7 @@ def _get_orchestrator():
     
     # 降级方案：直接创建（业务流程编排器用于管理策略执行流程）
     try:
-        from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
         orchestrator = BusinessProcessOrchestrator()
         orchestrator.initialize()
         return orchestrator

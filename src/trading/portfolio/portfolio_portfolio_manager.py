@@ -10,7 +10,7 @@ import logging
 
 # 导入统一基础设施集成层
 try:
-    from src.core.integration import get_trading_layer_adapter
+    from src.infrastructure.integration import get_trading_layer_adapter
     INFRASTRUCTURE_INTEGRATION_AVAILABLE = True
 except ImportError:
     INFRASTRUCTURE_INTEGRATION_AVAILABLE = False

@@ -53,10 +53,10 @@ def submit_inference_task(
         task_priority = priority_map.get(priority.lower(), "HIGH")
         
         # 使用统一调度器提交任务
-        from src.distributed.coordinator.unified_scheduler import (
+        from src.infrastructure.distributed.coordinator.unified_scheduler import (
             get_unified_scheduler, TaskType, TaskPriority
         )
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -147,10 +147,10 @@ def submit_batch_inference_task(
         task_priority = priority_map.get(priority.lower(), "NORMAL")
         
         # 使用统一调度器提交任务
-        from src.distributed.coordinator.unified_scheduler import (
+        from src.infrastructure.distributed.coordinator.unified_scheduler import (
             get_unified_scheduler, TaskType, TaskPriority
         )
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -210,7 +210,7 @@ def get_inference_status(task_id: str) -> Dict[str, Any]:
         任务状态信息
     """
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -241,8 +241,8 @@ def get_inference_scheduler_status() -> Dict[str, Any]:
         调度器状态信息
     """
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()

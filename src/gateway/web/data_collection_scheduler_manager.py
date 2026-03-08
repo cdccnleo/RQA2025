@@ -12,7 +12,7 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 from src.gateway.web.rate_limit_parser import should_collect, parse_rate_limit
-from src.distributed.coordinator.unified_scheduler import (
+from src.infrastructure.distributed.coordinator.unified_scheduler import (
     get_unified_scheduler, TaskType, TaskPriority
 )
 
