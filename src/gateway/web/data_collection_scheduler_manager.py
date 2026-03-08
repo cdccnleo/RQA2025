@@ -235,12 +235,8 @@ class DataCollectionSchedulerManager:
             # 提交任务
             task_id = scheduler.submit_task(
                 task_type=TaskType.DATA_COLLECTION,
-                data=task_data,
-                priority=TaskPriority.NORMAL,
-                metadata={
-                    "source_id": source_id,
-                    "submitted_by": "scheduler_manager"
-                }
+                payload=task_data,
+                priority=TaskPriority.NORMAL
             )
             
             # 记录已提交的任务
