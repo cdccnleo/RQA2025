@@ -15,9 +15,9 @@ services:
       - ENVIRONMENT=production
       - HOST=0.0.0.0
       - PORT=8000
-      - DATABASE_URL=postgresql://rqa2025_admin:SecurePass123!@postgres:5432/rqa2025_prod
-      - DB_USER=rqa2025_admin
-      - DB_PASSWORD=SecurePass123!
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - SENTRY_DSN=${SENTRY_DSN}
@@ -48,9 +48,9 @@ services:
     env_file:
       - .env.production
     environment:
-      - POSTGRES_DB=rqa2025_prod
-      - POSTGRES_USER=rqa2025_admin
-      - POSTGRES_PASSWORD=SecurePass123!
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRESQL_MAX_CONNECTIONS=200
       - POSTGRESQL_SHARED_BUFFERS=512MB
     volumes:
@@ -58,12 +58,13 @@ services:
       - ./scripts/init-timescaledb.sql:/docker-entrypoint-initdb.d/init-timescaledb.sql
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
       - ./scripts/init_historical_data_tables.sql:/docker-entrypoint-initdb.d/init_historical_data_tables.sql
-    ports:
-      - "5432:5432"
+    # 安全修复：移除端口映射，仅允许内部网络访问
+    # ports:
+    #   - "5432:5432"
     networks:
       - rqa2025-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rqa2025_admin -d rqa2025_prod && psql -U rqa2025_admin -d rqa2025_prod -c 'SELECT 1 FROM timescaledb_information.hypertables LIMIT 1;'"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} && psql -U ${DB_USER} -d ${DB_NAME} -c 'SELECT 1 FROM timescaledb_information.hypertables LIMIT 1;'"]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -74,15 +75,16 @@ services:
     image: docker.m.daocloud.io/library/redis:7-alpine
     container_name: rqa2025-redis
     restart: unless-stopped
-    command: redis-server --requirepass RedisSecure123! --maxmemory 512mb --maxmemory-policy allkeys-lru
+    command: redis-server --requirepass ${REDIS_PASSWORD} --maxmemory 512mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
-    ports:
-      - "6379:6379"
+    # 安全修复：移除端口映射，仅允许内部网络访问
+    # ports:
+    #   - "6379:6379"
     networks:
       - rqa2025-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "--raw", "incr", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5

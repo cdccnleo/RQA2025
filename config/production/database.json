@@ -1,15 +1,15 @@
 {
   "database": {
-    "host": "localhost",
-    "port": 5432,
-    "name": "rqa2025_prod",
-    "user": "rqa2025_user",
-    "password": "%SoWU$KyeQ#7xBymfEw@OJu$mGbbssYS",
-    "ssl_mode": "require",
+    "host": "${DB_HOST}",
+    "port": ${DB_PORT},
+    "name": "${DB_NAME}",
+    "user": "${DB_USER}",
+    "password": "${DB_PASSWORD}",
+    "ssl_mode": "${DB_SSL_MODE}",
     "connection_pool": {
-      "min_size": 5,
-      "max_size": 20,
-      "max_idle_time": 300
+      "min_size": ${DB_POOL_MIN_SIZE},
+      "max_size": ${DB_POOL_MAX_SIZE},
+      "max_idle_time": ${DB_POOL_MAX_IDLE_TIME}
     }
   }
 }

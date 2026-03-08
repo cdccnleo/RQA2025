@@ -2,8 +2,11 @@
 """
 简单的健康检查API服务
 用于验证RQA2025生产环境部署
+
+安全更新：使用环境变量替代硬编码密码
 """
 
+import os
 from flask import Flask, jsonify
 import psycopg2
 import redis
@@ -17,21 +20,30 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# 配置
+# 从环境变量读取配置
 DB_CONFIG = {
-    'host': 'postgres',
-    'port': 5432,
-    'database': 'rqa2025',
-    'user': 'postgres',
-    'password': 'postgres'
+    'host': os.environ.get('DB_HOST', 'postgres'),
+    'port': int(os.environ.get('DB_PORT', '5432')),
+    'database': os.environ.get('DB_NAME', 'rqa2025'),
+    'user': os.environ.get('DB_USER', 'postgres'),
+    'password': os.environ.get('DB_PASSWORD', '')
 }
 
 REDIS_CONFIG = {
-    'host': 'redis',
-    'port': 6379,
-    'password': '',
-    'db': 0
+    'host': os.environ.get('REDIS_HOST', 'redis'),
+    'port': int(os.environ.get('REDIS_PORT', '6379')),
+    'password': os.environ.get('REDIS_PASSWORD', ''),
+    'db': int(os.environ.get('REDIS_DB', '0'))
 }
+
+# 验证必要的环境变量
+def validate_config():
+    """验证配置是否完整"""
+    required_vars = ['DB_PASSWORD', 'REDIS_PASSWORD']
+    missing = [var for var in required_vars if not os.environ.get(var)]
+    if missing:
+        logger.warning(f"缺少环境变量: {missing}")
+        logger.warning("请设置必要的环境变量后再启动服务")
 
 
 @app.route('/health')
@@ -192,4 +204,5 @@ def check_monitoring():
 
 if __name__ == '__main__':
     logger.info("启动健康检查API服务...")
+    validate_config()
     app.run(host='0.0.0.0', port=8000, debug=False)
