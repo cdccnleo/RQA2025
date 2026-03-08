@@ -758,7 +758,14 @@ async def lifespan(app: FastAPI):
                         # 使用 baostock 适配器
                         from src.data.adapters.baostock.baostock_adapter import BaostockAdapter
                         
-                        adapter = BaostockAdapter()
+                        # 准备配置
+                        baostock_config = {
+                            "username": source_config.get("username", ""),
+                            "password": source_config.get("password", ""),
+                            "timeout": source_config.get("timeout", 30)
+                        }
+                        
+                        adapter = BaostockAdapter(config=baostock_config)
                         
                         # 获取配置参数
                         symbols = source_config.get("symbols", ["sh.600000"])  # 默认采集浦发银行
