@@ -146,6 +146,26 @@ _lazy_imports = {
     'CompositeFilter': _lazy_import('filters.event_filters', 'CompositeFilter'),
     'FilterType': _lazy_import('filters.event_filters', 'FilterType'),
 
+    # ========== 从core层迁移的安全模块 ==========
+    # JWT认证
+    'JWTAuth': _lazy_import('auth.jwt_auth_core', 'JWTAuth'),
+    'JWTConfig': _lazy_import('auth.jwt_auth_core', 'JWTConfig'),
+    'TokenPayload': _lazy_import('auth.jwt_auth_core', 'TokenPayload'),
+    'require_auth': _lazy_import('auth.jwt_auth_core', 'require_auth'),
+    'create_token': _lazy_import('auth.jwt_auth_core', 'create_token'),
+    'verify_token': _lazy_import('auth.jwt_auth_core', 'verify_token'),
+
+    # 日志脱敏
+    'LogSanitizer': _lazy_import('filters.log_sanitizer', 'LogSanitizer'),
+    'SanitizerConfig': _lazy_import('filters.log_sanitizer', 'SanitizerConfig'),
+    'sanitize_log_message': _lazy_import('filters.log_sanitizer', 'sanitize_log_message'),
+    'SensitivePattern': _lazy_import('filters.log_sanitizer', 'SensitivePattern'),
+
+    # 安全HTTP头
+    'SecurityHeadersMiddleware': _lazy_import('components.security_headers_core', 'SecurityHeadersMiddleware'),
+    'SecurityConfig': _lazy_import('components.security_headers_core', 'SecurityConfig'),
+    'create_security_headers': _lazy_import('components.security_headers_core', 'create_security_headers'),
+
     # ========== 监控模块 ==========
     'PerformanceMonitor': _lazy_import('monitoring.performance_monitor', 'PerformanceMonitor'),
 
@@ -218,5 +238,10 @@ __all__ = [
 
     # 组件模块
     'SecurityComponent', 'AuditComponent', 'AuthComponent', 'EncryptComponent', 'PolicyComponent',
-    'BaseSecurityComponent', 'SecurityService', 'EncryptionManager'
+    'BaseSecurityComponent', 'SecurityService', 'EncryptionManager',
+
+    # 从core层迁移的安全模块
+    'JWTAuth', 'JWTConfig', 'TokenPayload', 'require_auth', 'create_token', 'verify_token',
+    'LogSanitizer', 'SanitizerConfig', 'sanitize_log_message', 'SensitivePattern',
+    'SecurityHeadersMiddleware', 'SecurityConfig', 'create_security_headers',
 ]
