@@ -203,6 +203,25 @@ except ImportError:
         def __init__(self, *args, **kwargs):
             raise RuntimeError("ServiceFramework not available") from None
 
+# 弹性层组件（从src/resilience合并）
+try:
+    from .resilience.core.unified_resilience_interface import ResilienceInterface
+    from .resilience.degradation.graceful_degradation import GracefulDegradation
+    _resilience_available = True
+except ImportError:
+    logger.warning("⚠️ Resilience组件不可用，使用基础实现")
+    _resilience_available = False
+
+    class ResilienceInterface:
+        """弹性接口基础实现"""
+        def __init__(self):
+            self.name = "ResilienceInterface (fallback)"
+
+    class GracefulDegradation:
+        """优雅降级基础实现"""
+        def __init__(self):
+            self.name = "GracefulDegradation (fallback)"
+
 # ============================================================================
 # 导出接口定义
 # ============================================================================
@@ -218,6 +237,10 @@ __all__ = [
     'SystemIntegrationManager',
     'CoreOptimizationEngine',
     'ServiceFramework',
+
+    # 弹性层组件（合并后）
+    'ResilienceInterface',
+    'GracefulDegradation',
 
     # 枚举和常量
     'BusinessProcessState',
@@ -242,6 +265,7 @@ COMPONENT_AVAILABILITY = {
     'integration': _integration_available,
     'optimization': _optimization_available,
     'service_framework': _service_framework_available,
+    'resilience': _resilience_available,  # 弹性层组件（合并后）
 }
 
 # 避免重复初始化的标志
