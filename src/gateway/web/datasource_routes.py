@@ -149,7 +149,7 @@ async def get_scheduler_dashboard():
     """获取调度器监控面板数据（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.core.orchestration.scheduler import get_unified_scheduler
         from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         import psutil
         import time

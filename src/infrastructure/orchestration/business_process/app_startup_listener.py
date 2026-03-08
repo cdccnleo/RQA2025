@@ -229,10 +229,10 @@ class AppStartupListener:
         启动统一调度器 (UnifiedScheduler)
         
         这是P0级后台服务，必须先启动，其他调度器依赖它。
-        符合分布式协调器架构设计。
+        符合核心服务层架构设计。
         """
         try:
-            from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+            from src.core.orchestration.scheduler import get_unified_scheduler
             
             logger.info("准备启动统一调度器 (UnifiedScheduler)...")
             logger.info("启动路径: app_startup_listener")
@@ -240,8 +240,8 @@ class AppStartupListener:
             try:
                 scheduler = get_unified_scheduler()
                 
-                # 启动调度器（ UnifiedScheduler.start() 是同步方法）
-                scheduler.start()
+                # 启动调度器（ UnifiedScheduler.start() 是异步方法）
+                await scheduler.start()
                 
                 # 验证调度器是否成功启动
                 if scheduler._running:

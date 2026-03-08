@@ -94,7 +94,7 @@ router = APIRouter(
 
 def get_scheduler():
     """获取调度器实例的辅助函数"""
-    from src.infrastructure.orchestration.scheduler import get_unified_scheduler
+    from src.core.orchestration.scheduler import get_unified_scheduler
     return get_unified_scheduler()
 
 

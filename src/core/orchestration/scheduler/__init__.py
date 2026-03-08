@@ -3,8 +3,10 @@
 
 提供系统唯一的调度器实现，支持任务调度、定时任务、工作进程管理等功能。
 
+架构位置: src/core/orchestration/scheduler (符合核心服务层架构设计)
+
 使用示例:
-    from src.infrastructure.orchestration.scheduler import get_unified_scheduler
+    from src.core.orchestration.scheduler import get_unified_scheduler
     
     # 获取调度器实例
     scheduler = get_unified_scheduler()
