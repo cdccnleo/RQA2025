@@ -65,8 +65,18 @@ except ImportError:
     DataCollectionServiceScheduler = None
     SERVICE_SCHEDULER_AVAILABLE = False
 
-# 导出事件系统
-from .business import EventSystem
+# 导出事件系统（可选导入）
+try:
+    from .business import Event, EventHandler, EventPublisher
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError as e:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"business事件系统导入失败: {e}，跳过相关功能")
+    EVENT_SYSTEM_AVAILABLE = False
+    Event = None
+    EventHandler = None
+    EventPublisher = None
 
 # 导出进程池
 from .pool import ProcessInstancePool
@@ -88,8 +98,10 @@ __all__ = [
     'AppStartupListener',
     'get_app_startup_listener',
     'DataCollectionServiceScheduler',
-    # 事件系统
-    'EventSystem',
+    # 事件系统（可选）
+    'Event',
+    'EventHandler',
+    'EventPublisher',
     # 进程池
     'ProcessInstancePool'
 ]
