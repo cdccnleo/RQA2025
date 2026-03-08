@@ -16,7 +16,7 @@ import socket
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 
-from src.infrastructure.orchestration.performance_optimizer import ResourceUsage
+from src.core.orchestration.performance_optimizer import ResourceUsage
 from src.core.cache.redis_cache import RedisCache
 
 

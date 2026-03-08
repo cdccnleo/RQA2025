@@ -203,7 +203,7 @@ class AIDrivenScheduler:
         """获取市场状态特征"""
         try:
             # 从市场监控器获取实时市场数据
-            from src.infrastructure.orchestration.market_adaptive_monitor import get_market_adaptive_monitor
+            from src.core.orchestration.market_adaptive_monitor import get_market_adaptive_monitor
 
             monitor = get_market_adaptive_monitor()
             regime_analysis = await monitor.get_current_regime()
@@ -248,7 +248,7 @@ class AIDrivenScheduler:
         """获取数据源特征"""
         try:
             # 从数据优先级管理器获取业务价值
-            from src.infrastructure.orchestration.data_priority_manager import get_data_priority_manager
+            from src.core.orchestration.data_priority_manager import get_data_priority_manager
 
             manager = get_data_priority_manager()
             priority = manager.get_data_priority(source_id)

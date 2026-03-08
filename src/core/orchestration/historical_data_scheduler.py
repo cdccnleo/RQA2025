@@ -34,7 +34,7 @@ from src.core.monitoring.historical_data_monitor import (
     HistoricalTaskStatus,
     HistoricalTaskPriority
 )
-from src.infrastructure.orchestration.historical_collection_config import get_historical_collection_config_manager
+from src.core.orchestration.historical_collection_config import get_historical_collection_config_manager
 from src.infrastructure.logging.core.unified_logger import get_unified_logger
 
 logger = get_unified_logger(__name__)

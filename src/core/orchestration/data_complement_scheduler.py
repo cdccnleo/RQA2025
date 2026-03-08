@@ -93,7 +93,7 @@ class DataComplementScheduler:
     def _initialize_default_schedules(self):
         """初始化默认补全调度配置"""
         # 基于数据优先级管理器的配置
-        from src.infrastructure.orchestration.data_priority_manager import get_data_priority_manager
+        from src.core.orchestration.data_priority_manager import get_data_priority_manager
         priority_manager = get_data_priority_manager()
 
         # 为不同优先级设置补全策略

@@ -254,7 +254,7 @@ class LoadBalancer:
 
         # 应用额外筛选条件
         if criteria:
-            from src.infrastructure.orchestration.business_process.service_governance import ServiceDiscovery
+            from src.core.orchestration.business_process.service_governance import ServiceDiscovery
             discovery = ServiceDiscovery(self.registry)
             available_services = discovery.discover_services(service_type, criteria)
 

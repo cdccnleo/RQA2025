@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple, Set
 import json
 
-from src.infrastructure.orchestration.data_quality_manager import DataQualityResult
+from src.core.orchestration.data_quality_manager import DataQualityResult
 from src.core.persistence.timescale_storage import TimescaleStorage
 from src.core.cache.redis_cache import RedisCache
 from src.infrastructure.integration.akshare_service import get_akshare_service

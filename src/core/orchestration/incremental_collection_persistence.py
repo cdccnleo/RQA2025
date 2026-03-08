@@ -12,7 +12,7 @@ from pathlib import Path
 import os
 
 from src.infrastructure.logging.core.unified_logger import get_unified_logger
-from src.infrastructure.orchestration.incremental_collection_strategy import CollectionWindow
+from src.core.orchestration.incremental_collection_strategy import CollectionWindow
 
 logger = get_unified_logger(__name__)
 

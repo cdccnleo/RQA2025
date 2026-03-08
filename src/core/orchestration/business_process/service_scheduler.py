@@ -53,8 +53,8 @@ except ImportError:
     _PSUTIL_AVAILABLE = False
     psutil = None
 
-from src.infrastructure.orchestration.business_process.data_collection_orchestrator import DataCollectionWorkflow
-from src.infrastructure.orchestration.business_process.scheduler_persistence import SchedulerPersistence
+from src.core.orchestration.business_process.data_collection_orchestrator import DataCollectionWorkflow
+from src.core.orchestration.business_process.scheduler_persistence import SchedulerPersistence
 from src.gateway.web.data_source_config_manager import get_data_source_config_manager
 from src.gateway.web.data_collectors import parse_rate_limit
 from src.core.event_bus.core import EventBus
@@ -62,9 +62,9 @@ from src.core.event_bus.types import EventType
 from src.infrastructure.logging.core.unified_logger import get_unified_logger
 
 # P1阶段：集成智能调度组件
-from src.infrastructure.orchestration.market_adaptive_monitor import get_market_adaptive_monitor
-from src.infrastructure.orchestration.data_priority_manager import get_data_priority_manager
-from src.infrastructure.orchestration.incremental_collection_strategy import get_incremental_collection_strategy
+from src.core.orchestration.market_adaptive_monitor import get_market_adaptive_monitor
+from src.core.orchestration.data_priority_manager import get_data_priority_manager
+from src.core.orchestration.incremental_collection_strategy import get_incremental_collection_strategy
 
 logger = get_unified_logger(__name__)
 
@@ -729,7 +729,7 @@ class DataCollectionServiceScheduler:
             except Exception as e:
                 logger.warning(f"检查市场状态失败: {e}")
                 # 使用默认状态
-                from src.infrastructure.orchestration.market_adaptive_monitor import MarketRegime, MarketRegimeAnalysis, MarketMetrics
+                from src.core.orchestration.market_adaptive_monitor import MarketRegime, MarketRegimeAnalysis, MarketMetrics
                 self.market_regime = MarketRegimeAnalysis(
                     current_regime=MarketRegime.SIDEWAYS,
                     confidence=0.5,

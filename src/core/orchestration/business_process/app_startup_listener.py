@@ -200,7 +200,7 @@ class AppStartupListener:
         符合核心服务层架构设计：业务流程编排
         """
         try:
-            from src.infrastructure.orchestration.business_process.service_scheduler import start_data_collection_scheduler
+            from src.core.orchestration.business_process.service_scheduler import start_data_collection_scheduler
             
             logger.info("准备启动数据采集调度器...")
             logger.info(f"启动路径: app_startup_listener")
@@ -268,7 +268,7 @@ class AppStartupListener:
         符合核心服务层架构设计：业务流程编排 + 定期任务调度
         """
         try:
-            from src.infrastructure.orchestration.historical_data_scheduler import get_historical_data_scheduler
+            from src.core.orchestration.historical_data_scheduler import get_historical_data_scheduler
 
             logger.info("准备启动历史数据采集调度器...")
             logger.info(f"启动路径: app_startup_listener")
@@ -333,7 +333,7 @@ class AppStartupListener:
             
             # 停止数据采集调度器
             try:
-                from src.infrastructure.orchestration.business_process.service_scheduler import stop_data_collection_scheduler
+                from src.core.orchestration.business_process.service_scheduler import stop_data_collection_scheduler
                 await stop_data_collection_scheduler()
                 logger.info("数据采集调度器已停止")
             except Exception as e:
@@ -341,7 +341,7 @@ class AppStartupListener:
 
             # 停止历史数据采集调度器
             try:
-                from src.infrastructure.orchestration.historical_data_scheduler import get_historical_data_scheduler
+                from src.core.orchestration.historical_data_scheduler import get_historical_data_scheduler
                 scheduler = get_historical_data_scheduler()
                 await scheduler.stop()
                 logger.info("历史数据采集调度器已停止")

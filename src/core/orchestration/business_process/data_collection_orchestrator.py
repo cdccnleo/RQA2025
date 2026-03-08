@@ -18,9 +18,9 @@ from enum import Enum
 from pathlib import Path
 import json
 
-from src.infrastructure.orchestration.business_process.data_collection_state_machine import StateMachineManager
-from src.infrastructure.orchestration.business_process.service_discovery import get_service_discovery, ServiceDiscovery
-from src.infrastructure.orchestration.business_process.monitoring_alerts import AlertManager, AlertLevel, DataCollectionMonitor
+from src.core.orchestration.business_process.data_collection_state_machine import StateMachineManager
+from src.core.orchestration.business_process.service_discovery import get_service_discovery, ServiceDiscovery
+from src.core.orchestration.business_process.monitoring_alerts import AlertManager, AlertLevel, DataCollectionMonitor
 from src.core.event_bus.core import EventBus
 from src.core.business_process.monitor.monitor import BusinessProcessMonitor
 from src.infrastructure.logging.core.unified_logger import get_unified_logger

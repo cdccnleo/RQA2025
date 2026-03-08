@@ -20,7 +20,7 @@ import os
 from pathlib import Path
 import json
 
-from src.infrastructure.orchestration.performance_optimizer import PerformanceMetrics
+from src.core.orchestration.performance_optimizer import PerformanceMetrics
 from src.core.cache.redis_cache import RedisCache
 
 
