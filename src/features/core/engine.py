@@ -1378,7 +1378,6 @@ class FeatureEngine:
     @property
     def standardizer(self):
         """延迟初始化特征标准化器"""
-import numpy as np
         if self._standardizer is None:
             try:
                 from ..processors.feature_standardizer import FeatureStandardizer
