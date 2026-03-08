@@ -140,10 +140,10 @@ except ImportError:
 
 # 业务流程编排器
 try:
-    from ..infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+    from .orchestration.orchestrator_refactored import BusinessProcessOrchestrator
     _orchestrator_available = True
-except ImportError:
-    logger.warning("⚠️ BusinessProcessOrchestrator不可用，使用基础实现")
+except ImportError as e:
+    logger.warning(f"⚠️ BusinessProcessOrchestrator不可用，使用基础实现: {e}")
     _orchestrator_available = False
 
     class BusinessProcessOrchestrator:

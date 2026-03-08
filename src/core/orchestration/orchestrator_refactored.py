@@ -9,13 +9,15 @@
 - 从1,182行重构为~250行协调器
 - 应用组合模式，集成5个专门组件
 - 保持100%向后兼容
+
+架构位置: src/core/orchestration (核心业务层)
 """
 
 import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
-from src.core.constants import (
+from ..constants import (
     MAX_RETRIES, MAX_RECORDS
 )
 
@@ -27,8 +29,9 @@ from .components import (
     ProcessInstancePool
 )
 from .configs import OrchestratorConfig
+
 # 从core导入基础类
-from ...core import BusinessProcessState, EventType
+from .. import BusinessProcessState, EventType
 
 # 定义ProcessConfig和ProcessInstance数据类（使用已导入的datetime）
 from dataclasses import dataclass, field
@@ -62,7 +65,7 @@ def create_process_instance(instance_id: str, process_name: str, **kwargs) -> Pr
     """创建流程实例"""
     return ProcessInstance(instance_id=instance_id, process_name=process_name, **kwargs)
 
-from ...core.foundation.base import BaseComponent, ComponentStatus
+from ..foundation.base import BaseComponent, ComponentStatus
 
 logger = logging.getLogger(__name__)
 
@@ -238,4 +241,3 @@ class BusinessProcessOrchestrator(BaseComponent):
 
 
 __all__ = ['BusinessProcessOrchestrator', 'OrchestratorConfig']
-

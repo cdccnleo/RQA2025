@@ -8,7 +8,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional
 
-from src.core.constants import (
+from ...constants import (
     MAX_RECORDS, DEFAULT_TEST_TIMEOUT, DEFAULT_TIMEOUT, SECONDS_PER_HOUR,
     MAX_RETRIES, SECONDS_PER_MINUTE, DEFAULT_BATCH_SIZE
 )
