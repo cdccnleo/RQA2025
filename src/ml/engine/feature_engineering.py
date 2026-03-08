@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 try:  # pragma: no cover
-    from src.core.integration import get_models_adapter as _get_models_adapter
+    from src.infrastructure.integration import get_models_adapter as _get_models_adapter
 except ImportError:  # pragma: no cover
     class _FallbackAdapter:
         def get_models_logger(self):

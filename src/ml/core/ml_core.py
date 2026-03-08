@@ -19,7 +19,7 @@ _FORCE_CORE_FALLBACK = os.environ.get("ML_CORE_FORCE_FALLBACK") == "1"
 try:  # pragma: no cover - 主要用于降级场景
     if _FORCE_CORE_FALLBACK:
         raise ImportError("Forced MLCore fallback for testing")
-    from src.core.integration import get_models_adapter as _get_models_adapter
+    from src.infrastructure.integration import get_models_adapter as _get_models_adapter
 except ImportError:  # pragma: no cover
     class _FallbackModelsAdapter:
         def get_models_cache_manager(self):
@@ -68,7 +68,7 @@ class MLCore:
 
         # 初始化业务流程编排器（符合架构设计：业务流程编排）
         try:
-            from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+            from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
             self.orchestrator = BusinessProcessOrchestrator()
             logger.info("ML业务流程编排器已初始化")
         except Exception as e:
@@ -77,8 +77,8 @@ class MLCore:
 
         # 优先使用统一适配器工厂（符合架构设计：统一基础设施集成）
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             adapter_factory = get_unified_adapter_factory()
             if adapter_factory:
                 # 通过统一适配器工厂获取ML层适配器

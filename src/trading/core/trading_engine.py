@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 # 使用统一基础设施集成层 - 延迟导入避免pytest环境中的导入问题
 try:
-    from src.core.integration import get_data_adapter
+    from src.infrastructure.integration import get_data_adapter
 except (ImportError, AttributeError):
     # 降级处理：如果导入失败，提供一个fallback函数
     def get_data_adapter():

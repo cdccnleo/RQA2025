@@ -9,9 +9,9 @@ import logging
 from typing import List, Dict, Any, Optional
 
 # 导入统一的AKShare服务
-from src.core.integration.akshare_service import get_akshare_service
+from src.infrastructure.integration.akshare_service import get_akshare_service
 # 导入BaoStock备用数据源服务
-from src.core.integration.baostock_service import get_baostock_service
+from src.infrastructure.integration.baostock_service import get_baostock_service
 
 logger = logging.getLogger(__name__)
 
@@ -619,7 +619,7 @@ def _get_container():
             
             # 注册业务流程编排器（符合架构设计：业务流程管理）
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
                 _container.register(
                     "business_process_orchestrator",
                     factory=lambda: BusinessProcessOrchestrator(),
@@ -631,7 +631,7 @@ def _get_container():
             
             # 注册统一适配器工厂（符合架构设计：统一基础设施集成）
             try:
-                from src.core.integration.unified_business_adapters import get_unified_adapter_factory, BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import get_unified_adapter_factory, BusinessLayerType
                 adapter_factory = get_unified_adapter_factory()
                 if adapter_factory:
                     _container.register(
@@ -661,7 +661,7 @@ def _get_adapter_factory():
             adapter_factory = container.resolve("adapter_factory")
             if adapter_factory:
                 _adapter_factory = adapter_factory
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 _data_adapter = adapter_factory.get_adapter(BusinessLayerType.DATA)
                 logger.debug("从服务容器获取统一适配器工厂")
                 return _adapter_factory
@@ -671,7 +671,7 @@ def _get_adapter_factory():
     # 降级方案：直接初始化
     if _adapter_factory is None:
         try:
-            from src.core.integration.unified_business_adapters import get_unified_adapter_factory, BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import get_unified_adapter_factory, BusinessLayerType
             _adapter_factory = get_unified_adapter_factory()
             if _adapter_factory:
                 _data_adapter = _adapter_factory.get_adapter(BusinessLayerType.DATA)
@@ -819,7 +819,7 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
         process_id = None
         if orchestrator:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
                 process_id = f"data_collection_{source_id}_{int(start_time)}"
                 process_config = ProcessConfig(
                     process_id=process_id,
@@ -839,7 +839,7 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
         # 可选：使用DataCollectionWorkflow管理数据采集业务流程（符合架构设计）
         workflow = None
         try:
-            from src.core.orchestration.business_process.data_collection_orchestrator import DataCollectionWorkflow
+            from src.infrastructure.orchestration.business_process.data_collection_orchestrator import DataCollectionWorkflow
             workflow = DataCollectionWorkflow(config={"max_retries": 3, "retry_delay": 60})
             logger.debug(f"已初始化数据采集业务流程编排器: {source_id}")
         except Exception as e:
@@ -978,7 +978,7 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
                     # 可选：使用BusinessProcessOrchestrator更新流程状态（符合架构设计）
                     if orchestrator and process_id:
                         try:
-                            from src.core.orchestration.orchestrator_refactored import BusinessProcessState
+                            from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState
                             orchestrator.update_process_state(
                                 process_id,
                                 BusinessProcessState.COMPLETED,
@@ -1095,7 +1095,7 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
             # 股票基本信息采集
             logger.info(f"开始采集股票基本信息数据源 {source_id}")
             try:
-                from src.core.integration.akshare_service import get_akshare_service
+                from src.infrastructure.integration.akshare_service import get_akshare_service
                 akshare_service = get_akshare_service()
                 
                 # 获取股票基本信息
@@ -1126,7 +1126,7 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
         # 可选：使用BusinessProcessOrchestrator更新流程状态（符合架构设计）
         if orchestrator and process_id:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState
                 orchestrator.update_process_state(
                     process_id,
                     BusinessProcessState.COMPLETED,
@@ -1248,7 +1248,7 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
         orchestrator = _get_orchestrator()
         if orchestrator and process_id:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState
                 orchestrator.update_process_state(
                     process_id,
                     BusinessProcessState.FAILED,

@@ -128,10 +128,10 @@ class SimpleTrainedModel:
 
 # 导入统一调度器（符合架构设计）
 try:
-    from src.distributed.coordinator.unified_scheduler import (
+    from src.infrastructure.distributed.coordinator.unified_scheduler import (
         get_unified_scheduler, TaskType
     )
-    from src.distributed.registry import get_unified_worker_registry, WorkerType, WorkerStatus
+    from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType, WorkerStatus
     UNIFIED_SCHEDULER_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"无法导入统一调度器: {e}")

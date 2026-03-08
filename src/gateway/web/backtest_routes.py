@@ -82,7 +82,7 @@ def _get_orchestrator():
     
     # 降级方案：直接创建（业务流程编排器用于管理回测流程）
     try:
-        from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
         orchestrator = BusinessProcessOrchestrator()
         orchestrator.initialize()
         return orchestrator
@@ -182,7 +182,7 @@ async def run_backtest_endpoint(request: BacktestRequest):
         process_id = None
         if orchestrator:
             try:
-                from src.core.orchestration.models.process_models import BusinessProcessState
+                from src.infrastructure.orchestration.models.process_models import BusinessProcessState
                 import time
                 backtest_id_preview = f"backtest_{request.strategy_id}_{int(time.time())}"
                 process_id = f"backtest_run_{backtest_id_preview}_{int(time.time())}"
@@ -298,7 +298,7 @@ async def run_backtest_endpoint(request: BacktestRequest):
         # 更新业务流程状态（符合架构设计：业务流程编排）
         if orchestrator and process_id:
             try:
-                from src.core.orchestration.models.process_models import BusinessProcessState
+                from src.infrastructure.orchestration.models.process_models import BusinessProcessState
                 orchestrator.update_process_state(
                     process_id=process_id,
                     new_state=BusinessProcessState.COMPLETED,

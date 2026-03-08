@@ -53,7 +53,7 @@ def _get_container():
             
             # 注册业务流程编排器（符合架构设计：业务流程编排）
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
                 orchestrator = BusinessProcessOrchestrator()
                 orchestrator.initialize()
                 _container.register(
@@ -101,7 +101,7 @@ def _get_orchestrator():
     
     # 降级方案：直接创建（业务流程编排器用于管理风险控制流程）
     try:
-        from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
         orchestrator = BusinessProcessOrchestrator()
         orchestrator.initialize()
         return orchestrator
@@ -288,7 +288,7 @@ async def get_risk_control_stage(stage_id: str) -> Dict[str, Any]:
         orchestrator = _get_orchestrator()
         if orchestrator:
             try:
-                from src.core.orchestration.types import BusinessProcessState
+                from src.infrastructure.orchestration.types import BusinessProcessState
                 # 根据步骤ID映射到流程状态
                 stage_state_mapping = {
                     "monitoring": BusinessProcessState.MONITORING,

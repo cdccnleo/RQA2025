@@ -16,7 +16,7 @@ from datetime import datetime
 from enum import Enum
 
 # 导入统一工作节点注册表（从分布式协调器层）
-from src.distributed.registry import (
+from src.infrastructure.distributed.registry import (
     get_unified_worker_registry,
     WorkerType,
     WorkerStatus as UnifiedWorkerStatus

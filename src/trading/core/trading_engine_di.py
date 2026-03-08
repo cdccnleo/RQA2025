@@ -6,7 +6,7 @@ RQA2025 交易引擎 - 依赖注入版本
 
 对比原版本 (trading_engine.py) 的硬编码依赖：
 - 直接导入: from src.infrastructure.logging.core.unified_logger import get_unified_logger
-- 直接导入: from src.core.integration import get_data_adapter
+- 直接导入: from src.infrastructure.integration import get_data_adapter
 - 直接导入: from src.infrastructure import SystemMonitor
 
 新版本通过构造函数注入基础设施服务依赖。

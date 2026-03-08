@@ -18,7 +18,7 @@ from src.core.monitoring.historical_data_monitor import (
     HistoricalTaskStatus,
     HistoricalTaskPriority
 )
-from src.core.orchestration.historical_data_scheduler import (
+from src.infrastructure.orchestration.historical_data_scheduler import (
     get_historical_data_scheduler,
     SchedulerConfig
 )
@@ -938,7 +938,7 @@ class GlobalConfigUpdate(BaseModel):
 
 
 # 导入配置管理器
-from src.core.orchestration.historical_collection_config import get_historical_collection_config_manager
+from src.infrastructure.orchestration.historical_collection_config import get_historical_collection_config_manager
 config_manager = get_historical_collection_config_manager()
 
 
@@ -991,7 +991,7 @@ async def get_collection_rules():
 async def add_collection_rule(rule: CollectionRuleConfig):
     """添加新的采集规则"""
     try:
-        from src.core.orchestration.historical_collection_config import CollectionRule
+        from src.infrastructure.orchestration.historical_collection_config import CollectionRule
 
         new_rule = CollectionRule(
             name=rule.name,

@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 import json
 
-from src.core.integration import get_data_adapter
+from src.infrastructure.integration import get_data_adapter
 from ...interfaces.standard_interfaces import DataSourceType
 
 

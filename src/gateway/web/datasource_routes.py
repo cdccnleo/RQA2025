@@ -84,7 +84,7 @@ def _get_container():
             
             # 注册业务流程编排器（符合架构设计：业务流程管理）
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
                 _container.register(
                     "business_process_orchestrator",
                     factory=lambda: BusinessProcessOrchestrator(),
@@ -149,8 +149,8 @@ async def get_scheduler_dashboard():
     """获取调度器监控面板数据（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         import psutil
         import time
         from datetime import datetime
@@ -215,8 +215,8 @@ async def control_scheduler(request: dict):
         action = request.get("action", "status")
         
         # 使用统一调度器（符合架构设计）
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -289,7 +289,7 @@ async def control_scheduler(request: dict):
                         }
 
                         # 提交任务到统一调度器
-                        from src.distributed.coordinator.unified_scheduler import TaskType, TaskPriority
+                        from src.infrastructure.distributed.coordinator.unified_scheduler import TaskType, TaskPriority
                         task_id = scheduler.submit_task(
                             task_type=TaskType.DATA_COLLECTION,
                             data=task_data,
@@ -403,7 +403,7 @@ async def control_scheduler(request: dict):
                 }
 
                 # 提交任务到统一调度器
-                from src.distributed.coordinator.unified_scheduler import TaskType, TaskPriority
+                from src.infrastructure.distributed.coordinator.unified_scheduler import TaskType, TaskPriority
                 task_id = scheduler.submit_task(
                     task_type=TaskType.DATA_COLLECTION,
                     data=task_data,
@@ -753,7 +753,7 @@ async def create_or_get_data_sources(request: Request):
         process_id = None
         if orchestrator:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
                 process_id = f"data_source_create_{source_id}_{int(time.time())}"
                 process_config = ProcessConfig(
                     process_id=process_id,
@@ -795,7 +795,7 @@ async def create_or_get_data_sources(request: Request):
         # 可选：使用BusinessProcessOrchestrator更新流程状态为完成（符合架构设计）
         if orchestrator and process_id:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState
                 orchestrator.update_process_state(
                     process_id,
                     BusinessProcessState.COMPLETED,
@@ -1020,7 +1020,7 @@ async def update_data_source_api(source_id: str, updated_source: dict):
 
         # 通知调度器重新加载配置
         try:
-            from src.core.orchestration.business_process.service_scheduler import get_data_collection_scheduler
+            from src.infrastructure.orchestration.business_process.service_scheduler import get_data_collection_scheduler
             scheduler = get_data_collection_scheduler()
             if scheduler.reload_data_sources():
                 logger.info(f"已通知调度器重新加载数据源配置")
@@ -1034,7 +1034,7 @@ async def update_data_source_api(source_id: str, updated_source: dict):
         process_id = None
         if orchestrator:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
                 process_id = f"data_source_update_{source_id}_{int(time.time())}"
                 process_config = ProcessConfig(
                     process_id=process_id,
@@ -1076,7 +1076,7 @@ async def update_data_source_api(source_id: str, updated_source: dict):
         # 可选：使用BusinessProcessOrchestrator更新流程状态为完成（符合架构设计）
         if orchestrator and process_id:
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessState
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState
                 orchestrator.update_process_state(
                     process_id,
                     BusinessProcessState.COMPLETED,
@@ -1121,7 +1121,7 @@ async def delete_data_source_api(source_id: str):
                 process_id = None
                 if orchestrator:
                     try:
-                        from src.core.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
+                        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState, ProcessConfig
                         process_id = f"data_source_delete_{source_id}_{int(time.time())}"
                         process_config = ProcessConfig(
                             process_id=process_id,
@@ -1165,7 +1165,7 @@ async def delete_data_source_api(source_id: str):
                 # 可选：使用BusinessProcessOrchestrator更新流程状态为完成（符合架构设计）
                 if orchestrator and process_id:
                     try:
-                        from src.core.orchestration.orchestrator_refactored import BusinessProcessState
+                        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessState
                         orchestrator.update_process_state(
                             process_id,
                             BusinessProcessState.COMPLETED,
@@ -3098,7 +3098,7 @@ async def get_auto_collection_status():
 async def get_running_tasks():
     """获取运行中的任务列表"""
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         from src.gateway.web.task_history_manager import get_task_history_manager, TaskStatus
 
         scheduler = get_unified_scheduler()
@@ -3293,7 +3293,7 @@ logger.info("✅ 任务状态同步回调已注册")
 async def pause_task(task_id: str):
     """暂停单个任务"""
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -3322,7 +3322,7 @@ async def pause_task(task_id: str):
 async def resume_task(task_id: str):
     """恢复单个任务"""
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -3355,7 +3355,7 @@ async def resume_task(task_id: str):
 async def cancel_task(task_id: str):
     """取消单个任务"""
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         
@@ -3384,7 +3384,7 @@ async def cancel_task(task_id: str):
 async def retry_task(task_id: str):
     """重试失败任务"""
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         

@@ -945,7 +945,7 @@ def _configure_other_routes(app: FastAPI, api_service):
             raise HTTPException(status_code=503, detail="服务不可用")
 
         try:
-            from src.core.integration.data_source_manager import get_data_source_manager
+            from src.infrastructure.integration.data_source_manager import get_data_source_manager
             data_source_manager = get_data_source_manager()
             
             # 获取股票基本信息
@@ -983,7 +983,7 @@ def _configure_other_routes(app: FastAPI, api_service):
             raise HTTPException(status_code=503, detail="服务不可用")
 
         try:
-            from src.core.integration.data_source_manager import get_data_source_manager
+            from src.infrastructure.integration.data_source_manager import get_data_source_manager
             data_source_manager = get_data_source_manager()
             
             # 获取数据源统计信息
@@ -1020,7 +1020,7 @@ def _configure_other_routes(app: FastAPI, api_service):
             raise HTTPException(status_code=503, detail="服务不可用")
 
         try:
-            from src.core.integration.data_source_manager import get_data_source_manager
+            from src.infrastructure.integration.data_source_manager import get_data_source_manager
             data_source_manager = get_data_source_manager()
             
             # 获取股票数据用于质量评估

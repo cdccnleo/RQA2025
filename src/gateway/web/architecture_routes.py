@@ -45,7 +45,7 @@ def _get_container():
             
             # 注册业务流程编排器（符合架构设计：业务流程编排）
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
                 orchestrator = BusinessProcessOrchestrator()
                 orchestrator.initialize()
                 _container.register(

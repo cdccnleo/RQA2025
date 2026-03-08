@@ -27,8 +27,8 @@ def _get_adapter_factory():
     global _adapter_factory
     if _adapter_factory is None:
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             _adapter_factory = get_unified_adapter_factory()
             if _adapter_factory:
                 global _features_adapter, _data_adapter
@@ -51,7 +51,7 @@ def _get_data_adapter():
     adapter_factory = _get_adapter_factory()
     if adapter_factory and not _data_adapter:
         try:
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             _data_adapter = adapter_factory.get_adapter(BusinessLayerType.DATA)
             if _data_adapter:
                 logger.info("数据层适配器已获取（用于特征工程数据流集成）")
@@ -230,10 +230,10 @@ def create_feature_task(
                     task_id = task.get('task_id')
                     logger.info(f"🚀 特征引擎创建的任务准备提交到统一调度器: {task_id}")
                     
-                    from src.distributed.coordinator.unified_scheduler import (
+                    from src.infrastructure.distributed.coordinator.unified_scheduler import (
                         get_unified_scheduler, TaskType, TaskPriority
                     )
-                    from src.distributed.registry import get_unified_worker_registry, WorkerType
+                    from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
                     
                     scheduler = get_unified_scheduler()
                     registry = get_unified_worker_registry()
@@ -327,10 +327,10 @@ def create_feature_task(
         
         try:
             # 使用统一调度器（符合架构设计）
-            from src.distributed.coordinator.unified_scheduler import (
+            from src.infrastructure.distributed.coordinator.unified_scheduler import (
                 get_unified_scheduler, TaskType, TaskPriority
             )
-            from src.distributed.registry import get_unified_worker_registry, WorkerType
+            from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
             
             logger.info(f"📦 正在导入统一调度器...")
             scheduler = get_unified_scheduler()
@@ -779,7 +779,7 @@ def resubmit_pending_tasks() -> int:
         
         # 提交任务到统一调度器
         try:
-            from src.distributed.coordinator.unified_scheduler import (
+            from src.infrastructure.distributed.coordinator.unified_scheduler import (
                 get_unified_scheduler, TaskType, TaskPriority
             )
             scheduler = get_unified_scheduler()
@@ -829,8 +829,8 @@ def start_scheduler() -> bool:
     """
     try:
         logger.info("开始启动统一调度器（符合架构设计）")
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -897,7 +897,7 @@ def initialize_feature_engineering_system() -> bool:
         # 2. 初始化事件监听器（使用统一调度器）
         try:
             from src.features.core.event_listeners import initialize_event_listeners
-            from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+            from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
             
             # 获取事件总线
             event_bus = _get_event_bus()
@@ -949,7 +949,7 @@ def stop_scheduler() -> bool:
         是否成功停止
     """
     try:
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         scheduler = get_unified_scheduler()
         
         if scheduler._running:

@@ -17,7 +17,7 @@ from .stream_models import StreamEvent
 
 # 获取统一基础设施集成层的日志适配器
 try:
-    from src.core.integration import get_models_adapter
+    from src.infrastructure.integration import get_models_adapter
     models_adapter = get_models_adapter()
     from src.infrastructure.logging.core.interfaces import get_logger
     logger = get_logger(__name__)

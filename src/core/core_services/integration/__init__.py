@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 try:
     from .service_integration_manager import ServiceIntegrationManager
     from .service_registry import ServiceRegistry
-    from src.core.integration.services.service_communicator import ServiceCommunicator
-    from src.core.integration.services.service_discovery import ServiceDiscoveryClient as ServiceDiscovery
+    from src.infrastructure.integration.services.service_communicator import ServiceCommunicator
+    from src.infrastructure.integration.services.service_discovery import ServiceDiscoveryClient as ServiceDiscovery
     from .cache_manager import CacheManager
     from .connection_pool import ConnectionPool
     from .integration_monitor import PerformanceMonitor as IntegrationMonitor

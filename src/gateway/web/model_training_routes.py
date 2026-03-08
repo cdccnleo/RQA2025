@@ -108,7 +108,7 @@ def _get_orchestrator():
     
     # 降级方案：直接创建（业务流程编排器已在MLCore中集成，这里提供全局访问点）
     try:
-        from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
         orchestrator = BusinessProcessOrchestrator()
         orchestrator.initialize()
         return orchestrator
@@ -278,7 +278,7 @@ async def create_training_job(request: Dict[str, Any]) -> Dict[str, Any]:
         process_id = None
         if orchestrator:
             try:
-                from src.core.orchestration.models.process_models import BusinessProcessState
+                from src.infrastructure.orchestration.models.process_models import BusinessProcessState
                 job_id_preview = f"job_{int(time.time())}"
                 process_id = f"model_training_create_{job_id_preview}_{int(time.time())}"
                 logger.debug(f"模型训练任务创建业务流程ID: {process_id}")
@@ -368,10 +368,10 @@ async def create_training_job(request: Dict[str, Any]) -> Dict[str, Any]:
         while retry_count < max_retries:
             try:
                 # 使用统一调度器（符合分布式协调器架构设计）
-                from src.distributed.coordinator.unified_scheduler import (
+                from src.infrastructure.distributed.coordinator.unified_scheduler import (
                     get_unified_scheduler, TaskType, TaskPriority
                 )
-                from src.distributed.registry import get_unified_worker_registry, WorkerType
+                from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
                 
                 scheduler = get_unified_scheduler()
                 registry = get_unified_worker_registry()
@@ -624,8 +624,8 @@ async def get_scheduler_status() -> Dict[str, Any]:
     """获取模型训练调度器状态（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -670,8 +670,8 @@ async def get_scheduler_health() -> Dict[str, Any]:
     """获取模型训练调度器健康状态（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -707,8 +707,8 @@ async def start_scheduler() -> Dict[str, Any]:
     """启动模型训练调度器（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
-        from src.distributed.registry import get_unified_worker_registry, WorkerType
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.registry import get_unified_worker_registry, WorkerType
         
         scheduler = get_unified_scheduler()
         registry = get_unified_worker_registry()
@@ -739,7 +739,7 @@ async def stop_scheduler() -> Dict[str, Any]:
     """停止模型训练调度器（使用统一调度器）"""
     try:
         # 使用统一调度器（符合架构设计）
-        from src.distributed.coordinator.unified_scheduler import get_unified_scheduler
+        from src.infrastructure.distributed.coordinator.unified_scheduler import get_unified_scheduler
         
         scheduler = get_unified_scheduler()
         

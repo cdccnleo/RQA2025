@@ -124,7 +124,7 @@ def _get_orchestrator():
     
     # 降级方案：直接创建（业务流程编排器已在特征引擎中集成，这里提供全局访问点）
     try:
-        from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+        from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
         orchestrator = BusinessProcessOrchestrator()
         orchestrator.initialize()
         return orchestrator
@@ -249,7 +249,7 @@ async def create_feature_task_endpoint(request: Dict[str, Any]) -> Dict[str, Any
         process_id = None
         if orchestrator:
             try:
-                from src.core.orchestration.models.process_models import BusinessProcessState
+                from src.infrastructure.orchestration.models.process_models import BusinessProcessState
                 import time
                 task_id_preview = f"task_{int(time.time())}"
                 process_id = f"feature_task_create_{task_id_preview}_{int(time.time())}"

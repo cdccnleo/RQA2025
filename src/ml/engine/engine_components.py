@@ -13,7 +13,7 @@ def _load_feature_engineer():
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover
-    from src.core.integration import get_models_adapter as _get_models_adapter
+    from src.infrastructure.integration import get_models_adapter as _get_models_adapter
 except ImportError:  # pragma: no cover
     class _FallbackAdapter:
         def get_models_logger(self):

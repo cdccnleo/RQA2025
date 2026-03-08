@@ -32,7 +32,7 @@ from src.infrastructure.utils.exceptions import DataLoaderError
 from ..core.base_loader import BaseDataLoader, LoaderConfig
 
 # 导入标准数据采集器
-from src.core.orchestration.standard_data_collector import get_standard_data_collector
+from src.infrastructure.orchestration.standard_data_collector import get_standard_data_collector
 
 import logging
 

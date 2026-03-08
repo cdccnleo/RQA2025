@@ -86,7 +86,7 @@ def _get_container():
             
             # 注册业务流程编排器（符合架构设计：业务流程编排）
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
                 orchestrator = BusinessProcessOrchestrator()
                 orchestrator.initialize()
                 _container.register(
@@ -110,7 +110,7 @@ def _get_adapter_factory():
     global _adapter_factory
     if _adapter_factory is None:
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
             _adapter_factory = get_unified_adapter_factory()
             logger.info("统一适配器工厂已获取")
         except Exception as e:
@@ -346,7 +346,7 @@ async def get_strategy_layer_status() -> Dict[str, Any]:
         strategy_adapter = None
         if adapter_factory:
             try:
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 strategy_adapter = adapter_factory.get_adapter(BusinessLayerType.STRATEGY)
             except Exception as e:
                 logger.debug(f"获取策略层适配器失败: {e}")
@@ -396,7 +396,7 @@ async def get_trading_layer_status() -> Dict[str, Any]:
         trading_adapter = None
         if adapter_factory:
             try:
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 trading_adapter = adapter_factory.get_adapter(BusinessLayerType.TRADING)
             except Exception as e:
                 logger.debug(f"获取交易层适配器失败: {e}")
@@ -446,7 +446,7 @@ async def get_risk_layer_status() -> Dict[str, Any]:
         risk_adapter = None
         if adapter_factory:
             try:
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 risk_adapter = adapter_factory.get_adapter(BusinessLayerType.RISK)
             except Exception as e:
                 logger.debug(f"获取风险控制层适配器失败: {e}")
@@ -496,7 +496,7 @@ async def get_features_layer_status() -> Dict[str, Any]:
         features_adapter = None
         if adapter_factory:
             try:
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 features_adapter = adapter_factory.get_adapter(BusinessLayerType.FEATURES)
             except Exception as e:
                 logger.debug(f"获取特征层适配器失败: {e}")
@@ -548,7 +548,7 @@ async def get_data_layer_status() -> Dict[str, Any]:
         data_adapter = None
         if adapter_factory:
             try:
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 data_adapter = adapter_factory.get_adapter(BusinessLayerType.DATA)
             except Exception as e:
                 logger.debug(f"获取数据层适配器失败: {e}")
@@ -598,7 +598,7 @@ async def get_ml_layer_status() -> Dict[str, Any]:
         ml_adapter = None
         if adapter_factory:
             try:
-                from src.core.integration.unified_business_adapters import BusinessLayerType
+                from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
                 ml_adapter = adapter_factory.get_adapter(BusinessLayerType.ML)
             except Exception as e:
                 logger.debug(f"获取ML层适配器失败: {e}")

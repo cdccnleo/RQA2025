@@ -84,7 +84,7 @@ class BoundaryTestGenerator:
     def generate_orchestrator_boundary_tests(self) -> str:
         """生成编排器边界测试"""
         header = self.template.generate_file_header("编排器边界测试")
-        imports = "from src.core.orchestration import BusinessProcessOrchestrator\n"
+        imports = "from src.infrastructure.orchestration import BusinessProcessOrchestrator\n"
         class_start = self.template.generate_test_class_start("TestOrchestratorBoundary", "编排器边界测试")
         
         test_methods = [

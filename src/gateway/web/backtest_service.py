@@ -26,8 +26,8 @@ def _get_adapter_factory():
     global _adapter_factory
     if _adapter_factory is None:
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             _adapter_factory = get_unified_adapter_factory()
             if _adapter_factory:
                 global _ml_adapter
@@ -48,7 +48,7 @@ def _get_ml_adapter():
     adapter_factory = _get_adapter_factory()
     if adapter_factory and not _ml_adapter:
         try:
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             _ml_adapter = adapter_factory.get_adapter(BusinessLayerType.ML)
             if _ml_adapter:
                 logger.info("ML层适配器已获取（通过统一适配器工厂，用于模型预测和分析）")

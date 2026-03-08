@@ -226,8 +226,8 @@ class MLIntegrationAnalyzer:
         self.model_manager = None
         
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             adapter_factory = get_unified_adapter_factory()
             if adapter_factory:
                 # 通过统一适配器工厂获取ML层适配器（符合架构设计：统一适配器工厂访问ML层）

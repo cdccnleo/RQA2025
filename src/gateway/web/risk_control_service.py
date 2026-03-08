@@ -47,7 +47,7 @@ def _get_container():
             
             # 注册业务流程编排器（符合架构设计：业务流程编排）
             try:
-                from src.core.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
+                from src.infrastructure.orchestration.orchestrator_refactored import BusinessProcessOrchestrator
                 orchestrator = BusinessProcessOrchestrator()
                 orchestrator.initialize()
                 _container.register(
@@ -70,7 +70,7 @@ def _get_adapter_factory():
     global _adapter_factory
     if _adapter_factory is None:
         try:
-            from src.core.integration.business_adapters import get_unified_adapter_factory
+            from src.infrastructure.integration.business_adapters import get_unified_adapter_factory
             _adapter_factory = get_unified_adapter_factory()
             logger.info("统一适配器工厂已获取")
         except Exception as e:
@@ -83,7 +83,7 @@ def _get_risk_adapter():
     global _risk_adapter
     if _risk_adapter is None:
         try:
-            from src.core.integration.unified_business_adapters import BusinessLayerType
+            from src.infrastructure.integration.unified_business_adapters import BusinessLayerType
             factory = _get_adapter_factory()
             if factory:
                 _risk_adapter = factory.get_adapter(BusinessLayerType.RISK)
@@ -118,7 +118,7 @@ def _get_adapter():
     
     # 最终降级方案：直接实例化（符合架构设计：降级处理）
     try:
-        from src.core.integration.adapters.risk_adapter import RiskLayerAdapter
+        from src.infrastructure.integration.adapters.risk_adapter import RiskLayerAdapter
         adapter = RiskLayerAdapter()
         logger.info("直接实例化风险控制层适配器（最终降级方案）")
         return adapter
