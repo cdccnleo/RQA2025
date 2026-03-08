@@ -725,10 +725,10 @@ async def lifespan(app: FastAPI):
                 logger.info(f"✅ 数据采集完成: {source_id}, 记录数: {result['records_collected']}")
                 return result
             
-            # 注册处理器
-            worker_manager.register_task_handler("DATA_COLLECTION", data_collection_handler)
-            logger.info("✅ 数据采集任务处理器已注册")
-            print("✅ 数据采集任务处理器已注册")
+            # 注册处理器（使用JobType.DATA_COLLECTION的值"data_collection"）
+            worker_manager.register_task_handler("data_collection", data_collection_handler)
+            logger.info("✅ 数据采集任务处理器已注册 (data_collection)")
+            print("✅ 数据采集任务处理器已注册 (data_collection)")
             
         except Exception as handler_error:
             logger.error(f"❌ 注册任务处理器失败: {handler_error}", exc_info=True)
