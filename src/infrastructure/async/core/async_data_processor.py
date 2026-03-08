@@ -784,6 +784,7 @@ class AsyncDataProcessor:
 
 def async_adapter_wrapper(adapter: IDataAdapter) -> Callable[[DataRequest], Awaitable[DataResponse]]:
     """将同步适配器包装为异步函数"""
+from dataclasses import dataclass, field
     async def async_wrapper(request: DataRequest) -> DataResponse:
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, adapter.get_data, request)

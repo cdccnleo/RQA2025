@@ -1017,6 +1017,7 @@ def get_performance_optimizer() -> PerformanceOptimizer:
 
 def get_intelligent_performance_monitor() -> IntelligentPerformanceMonitor:
     """获取智能性能监控器实例"""
+import numpy as np
     global _intelligent_monitor_instance
     if _intelligent_monitor_instance is None:
         _intelligent_monitor_instance = IntelligentPerformanceMonitor()

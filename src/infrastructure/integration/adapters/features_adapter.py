@@ -2000,6 +2000,7 @@ class PerformanceMonitoringManager:
 
     def get_performance_stats(self) -> Dict[str, Any]:
         """获取性能统计信息"""
+from datetime import datetime
         try:
             stats = {
                 'layer_type': 'features',

@@ -1129,6 +1129,7 @@ def get_postgresql_loader(config: Optional[DataLoaderConfig] = None) -> PostgreS
 
 def close_postgresql_loader():
     """关闭全局PostgreSQL数据加载器实例"""
+from datetime import datetime
     global _postgresql_loader
     
     if _postgresql_loader:

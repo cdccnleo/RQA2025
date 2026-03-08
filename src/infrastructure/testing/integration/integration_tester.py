@@ -394,6 +394,8 @@ def create_sample_test_data() -> Dict[str, Any]:
 
 def main():
     """主函数 - 系统集成测试演示"""
+import numpy as np
+import queue
     print("🧪 RQA2025系统集成测试器")
     print("=" * 60)
 

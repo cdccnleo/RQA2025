@@ -784,6 +784,7 @@ class DistributedScheduler:
 
     async def _execute_quality_check_task(self, task: DistributedTask) -> Any:
         """执行质量检查任务"""
+import threading
         # 这里应该调用质量检查服务
         # 暂时返回模拟结果
         payload = task.payload

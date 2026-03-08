@@ -16,6 +16,9 @@ from datetime import datetime
 from dataclasses import dataclass
 from enum import Enum
 
+# 配置日志记录器
+logger = logging.getLogger(__name__)
+
 # 添加src目录到路径
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 

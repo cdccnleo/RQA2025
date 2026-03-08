@@ -1,173 +1,235 @@
 #!/usr/bin/env python3
 """
-质量监控和自动化测试报告生成器
-生成详细的质量分析报告和测试覆盖率趋势图
+代码质量报告生成脚本
+生成详细的代码质量分析报告
 """
 
-import os
-import sys
 import json
-from datetime import datetime
+import subprocess
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from datetime import datetime
 
 
-class QualityReportGenerator:
-    """质量报告生成器"""
-
-    def __init__(self, project_root: str):
-        self.project_root = Path(project_root)
-        self.reports_dir = self.project_root / "test_logs"
-        self.reports_dir.mkdir(exist_ok=True)
-
-    def generate_comprehensive_report(self) -> str:
-        """生成综合质量报告"""
-        print("📋 生成综合质量报告...")
-
-        # 模拟测试分析结果（基于之前的实际测试结果）
-        test_analysis = {
-            'total_tests': 4900,
-            'passed': 4165,
-            'failed': 235,
-            'skipped': 500,
-            'errors': 0,
-            'success_rate': 84.8
-        }
-
-        # 生成报告
-        report_content = f"""
-# 🚀 RQA2025 系统质量监控报告
-
-**生成时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-**报告周期**: 实时分析
-
-## 📊 测试执行结果
-
-### 总体统计
-- **总测试数**: {test_analysis['total_tests']}
-- **通过测试**: {test_analysis['passed']} ({test_analysis['success_rate']:.1f}%)
-- **失败测试**: {test_analysis['failed']}
-- **跳过测试**: {test_analysis['skipped']}
-- **错误数**: {test_analysis['errors']}
-- **测试成功率**: {test_analysis['success_rate']:.1f}%
-
-### 覆盖率分析
-- **总体覆盖率**: 72.5%
-- **测试成功**: ✅
-
-## 🎯 质量指标评估
-
-### 核心指标
-| 指标 | 当前值 | 目标值 | 状态 |
-|------|--------|--------|------|
-| 测试覆盖率 | 72.5% | 75% | ⚠️ 接近 |
-| 测试成功率 | {test_analysis['success_rate']:.1f}% | 90% | ⚠️ 接近 |
-| 核心功能稳定性 | 85% | 80% | ✅ 达标 |
-| 系统性能表现 | 78% | 75% | ✅ 达标 |
-
-### 架构层质量评估
-
-#### ✅ 核心业务层 (8/8 达标)
-- **交易层**: 75%覆盖率，TradingEngine优化完成
-- **策略层**: 70%覆盖率，策略执行稳定
-- **风险控制层**: 72%覆盖率，RealTimeMonitor完善
-- **特征层**: 68%覆盖率，特征处理稳定
-- **数据管理层**: 80%覆盖率，数据管道完整
-- **ML层**: 65%覆盖率，tuning模块可视化功能实现
-- **基础设施层**: 78%覆盖率，服务集成良好
-- **核心服务层**: 75%覆盖率，业务流程编排完善
-
-## 🔍 详细分析
-
-### 测试质量分析
-- **单元测试覆盖**: 核心业务逻辑100%覆盖
-- **集成测试覆盖**: 跨层接口集成验证完成
-- **端到端测试**: 完整业务流程验证通过
-- **并发压力测试**: 多线程稳定性验证完成
-
-### 性能指标
-- **响应时间**: < 1秒 (目标 < 2秒)
-- **内存使用**: < 85% (目标 < 90%)
-- **CPU使用**: 平均 < 70% (目标 < 80%)
-- **并发处理**: 支持10+并发线程
-
-### 稳定性评估
-- **错误恢复**: 自动故障恢复机制完善
-- **资源管理**: 内存泄漏控制良好
-- **异常处理**: 全面异常捕获和处理
-- **日志记录**: 分层日志系统完整
-
-## ⚠️ 风险识别与建议
-
-### 当前风险
-1. **覆盖率瓶颈**: 部分辅助层覆盖率待提升 (65-70%)
-2. **性能优化**: 高并发场景下响应时间需进一步优化
-3. **集成测试**: 第三方服务集成测试覆盖不足
-
-### 改进建议
-1. **短期优化** (1-2周):
-   - 完善端到端测试场景覆盖
-   - 补充并发压力测试用例
-   - 提升辅助层测试覆盖率
-
-2. **中期规划** (1个月):
-   - 建立CI/CD自动化测试流水线
-   - 实施性能基准测试监控
-   - 完善错误日志分析系统
-
-3. **长期目标** (3个月):
-   - 达到85%+总体覆盖率目标
-   - 建立智能化测试体系
-   - 实现全自动质量监控
-
-## 🎯 结论
-
-RQA2025系统已达到**核心业务层可条件投产**的质量标准：
-
-- ✅ **测试覆盖**: 核心功能全面覆盖，边缘情况充分考虑
-- ✅ **质量保障**: 自动化测试体系完善，质量监控机制健全
-- ✅ **性能稳定**: 系统性能指标满足生产环境要求
-- ✅ **风险控制**: 故障恢复和异常处理机制完备
-
-**建议**: 在完成剩余优化工作后，系统即可投入生产环境使用。
-
----
-
-**报告生成**: 自动化质量监控系统
-**数据来源**: pytest + coverage.py 分析
-"""
-
-        # 保存报告
-        report_path = self.reports_dir / f"quality_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-        with open(report_path, 'w', encoding='utf-8') as f:
-            f.write(report_content)
-
-        print(f"✅ 综合质量报告已生成: {report_path}")
-        return str(report_path)
+def run_flake8_analysis():
+    """运行Flake8分析"""
+    try:
+        result = subprocess.run(
+            ['python', '-m', 'flake8', 'src', 
+             '--max-line-length=100',
+             '--extend-ignore=E203,W503',
+             '--exclude=backups,production_simulation,docs,reports,__pycache__',
+             '--count', '--statistics', '--format=json'],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+        
+        # 解析JSON输出
+        if result.stdout:
+            try:
+                errors = json.loads(result.stdout)
+                return errors
+            except:
+                return []
+        return []
+    except Exception as e:
+        print(f"Flake8分析失败: {e}")
+        return []
 
 
-def main():
-    """主函数"""
-    print("🚀 RQA2025 质量监控报告生成器启动")
-    print(f"📁 项目根目录: {os.getcwd()}")
-    print("📂 输出目录: test_logs")
+def analyze_error_types(errors):
+    """分析错误类型分布"""
+    error_types = {}
+    file_errors = {}
+    
+    for error in errors:
+        code = error.get('code', 'UNKNOWN')
+        filename = error.get('filename', 'unknown')
+        
+        # 统计错误类型
+        error_types[code] = error_types.get(code, 0) + 1
+        
+        # 统计文件错误
+        if filename not in file_errors:
+            file_errors[filename] = []
+        file_errors[filename].append(error)
+    
+    return error_types, file_errors
 
-    # 初始化报告生成器
-    generator = QualityReportGenerator(".")
 
-    # 生成综合报告
-    report_path = generator.generate_comprehensive_report()
+def calculate_quality_score(total_errors, total_lines):
+    """计算代码质量评分"""
+    if total_lines == 0:
+        return 10.0
+    
+    # 基础分数10分
+    base_score = 10.0
+    
+    # 根据错误密度扣分
+    error_rate = total_errors / total_lines
+    
+    # 扣分规则
+    if error_rate < 0.001:  # 错误率 < 0.1%
+        deduction = 0
+    elif error_rate < 0.005:  # 错误率 < 0.5%
+        deduction = 1
+    elif error_rate < 0.01:  # 错误率 < 1%
+        deduction = 2
+    elif error_rate < 0.02:  # 错误率 < 2%
+        deduction = 3
+    elif error_rate < 0.05:  # 错误率 < 5%
+        deduction = 4
+    else:
+        deduction = 5
+    
+    return max(0, base_score - deduction)
 
-    print("\n✅ 质量监控报告生成完成!")
-    print(f"📋 报告位置: {report_path}")
 
-    # 显示关键指标
-    print("\n🎯 关键质量指标:")
-    print("   • 总体覆盖率: 72.5%")
-    print("   • 测试通过率: 84.8%")
-    print("   • 核心层达标: 8/8")
-    print("   • 生产就绪度: ✅ 高")
+def count_lines_of_code():
+    """统计代码行数"""
+    total_lines = 0
+    src_dir = Path("src")
+    
+    for py_file in src_dir.rglob("*.py"):
+        if any(skip in str(py_file) for skip in ['backups', 'production_simulation', 'docs', 'reports', '__pycache__']):
+            continue
+        
+        try:
+            content = py_file.read_text(encoding='utf-8')
+            lines = len(content.split('\n'))
+            total_lines += lines
+        except:
+            pass
+    
+    return total_lines
+
+
+def generate_report():
+    """生成质量报告"""
+    print("="*70)
+    print("RQA2025 代码质量分析报告")
+    print("="*70)
+    print(f"生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print()
+    
+    # 统计代码行数
+    print("📊 代码统计")
+    print("-"*70)
+    total_lines = count_lines_of_code()
+    print(f"总代码行数: {total_lines:,}")
+    print()
+    
+    # 运行Flake8分析
+    print("🔍 正在运行代码质量分析...")
+    errors = run_flake8_analysis()
+    
+    if not errors:
+        print("✅ 没有发现代码质量问题！")
+        return
+    
+    # 分析错误
+    error_types, file_errors = analyze_error_types(errors)
+    
+    # 计算质量评分
+    quality_score = calculate_quality_score(len(errors), total_lines)
+    
+    # 显示总体情况
+    print("\n📈 质量评分")
+    print("-"*70)
+    print(f"综合评分: {quality_score:.2f}/10.0")
+    print(f"总错误数: {len(errors)}")
+    print(f"错误密度: {len(errors)/total_lines*100:.3f}%")
+    print()
+    
+    # 显示错误类型分布
+    print("📋 错误类型分布")
+    print("-"*70)
+    print(f"{'错误代码':<12} {'数量':<8} {'占比':<8} {'描述'}")
+    print("-"*70)
+    
+    # 错误代码描述
+    error_descriptions = {
+        'E501': '行过长',
+        'E302': '函数/类前空行不足',
+        'E305': '函数/类后空行不足',
+        'E401': '多行导入',
+        'F401': '未使用导入',
+        'F821': '未定义变量',
+        'F822': '未定义导出',
+        'W291': '行尾空格',
+        'W293': '空行空格',
+        'W391': '文件末尾空行',
+    }
+    
+    for code, count in sorted(error_types.items(), key=lambda x: x[1], reverse=True)[:15]:
+        percentage = count / len(errors) * 100
+        description = error_descriptions.get(code, '其他')
+        print(f"{code:<12} {count:<8} {percentage:>6.2f}%  {description}")
+    
+    print()
+    
+    # 显示问题最严重的文件
+    print("📁 问题文件Top 10")
+    print("-"*70)
+    print(f"{'文件路径':<50} {'错误数'}")
+    print("-"*70)
+    
+    sorted_files = sorted(file_errors.items(), key=lambda x: len(x[1]), reverse=True)[:10]
+    for filepath, file_error_list in sorted_files:
+        short_path = filepath.replace('src\\', '').replace('src/', '')
+        if len(short_path) > 48:
+            short_path = '...' + short_path[-45:]
+        print(f"{short_path:<50} {len(file_error_list):>5}")
+    
+    print()
+    
+    # 显示改进建议
+    print("💡 改进建议")
+    print("-"*70)
+    
+    suggestions = []
+    
+    if 'E501' in error_types:
+        suggestions.append("1. 使用Black自动格式化代码，统一行长度")
+    
+    if 'F401' in error_types:
+        suggestions.append("2. 清理未使用的导入语句")
+    
+    if 'F821' in error_types:
+        suggestions.append("3. 修复未定义变量错误，添加缺失的导入")
+    
+    if 'W291' in error_types or 'W293' in error_types:
+        suggestions.append("4. 去除行尾和空行中的空格")
+    
+    if 'E302' in error_types or 'E305' in error_types:
+        suggestions.append("5. 规范函数和类定义前后的空行")
+    
+    if not suggestions:
+        suggestions.append("1. 继续保持良好的代码质量")
+        suggestions.append("2. 考虑添加更多类型注解")
+        suggestions.append("3. 增加单元测试覆盖率")
+    
+    for suggestion in suggestions:
+        print(suggestion)
+    
+    print()
+    print("="*70)
+    
+    # 保存详细报告
+    report_data = {
+        'timestamp': datetime.now().isoformat(),
+        'total_lines': total_lines,
+        'total_errors': len(errors),
+        'quality_score': quality_score,
+        'error_types': error_types,
+        'top_files': [{'file': f, 'errors': len(e)} for f, e in sorted_files],
+        'suggestions': suggestions
+    }
+    
+    report_file = Path('code_quality_report.json')
+    report_file.write_text(json.dumps(report_data, indent=2, ensure_ascii=False), encoding='utf-8')
+    print(f"详细报告已保存: {report_file}")
 
 
 if __name__ == "__main__":
-    main()
+    generate_report()

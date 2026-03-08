@@ -18,6 +18,9 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor
 
+# 配置日志记录器
+logger = logging.getLogger(__name__)
+
 from .models import (
     NodeInfo, DistributedTask, ClusterStats,
     NodeStatus, TaskStatus, TaskPriority
@@ -54,8 +57,6 @@ try:
     service_container = get_service_container()
 except ImportError:
     service_container = None
-
-logger = logging.getLogger(__name__)
 
 
 class DistributedCoordinator:

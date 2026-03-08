@@ -6,6 +6,9 @@ database_health_monitor 模块
 
 import logging
 
+# 配置日志记录器
+logger = logging.getLogger(__name__)
+
 # -*- coding: utf-8 -*-
 # 统一基础设施接口
 import asyncio
@@ -70,8 +73,6 @@ try:
     from ..components.health_status_evaluator import HealthStatusEvaluator, ThresholdConfig, MetricValue
 except ImportError:
     logger.warning("无法导入健康状态评估器")
-
-logger = logging.getLogger(__name__)
 
 # 常量定义 - 清理魔法数字
 # 检查间隔和超时配置

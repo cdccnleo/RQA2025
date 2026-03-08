@@ -1916,6 +1916,7 @@ class MemoryOptimizer(BaseComponent):
 
     def shutdown(self) -> bool:
         """关闭内存优化器"""
+from typing import Protocol
         try:
             logger.info("开始关闭内存优化器")
             # 清理内存统计信息

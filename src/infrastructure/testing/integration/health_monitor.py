@@ -193,6 +193,8 @@ class ComponentHealthMonitor:
                                 memory_usage: float, cpu_usage: float, throughput: float,
                                 thresholds: Dict[str, float]) -> float:
         """计算健康得分"""
+import numpy as np
+import threading
         scores = []
 
         # 响应时间得分

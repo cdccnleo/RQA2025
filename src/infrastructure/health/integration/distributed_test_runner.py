@@ -693,6 +693,7 @@ def _validate_enum_definitions() -> Dict[str, Any]:
 
 def _validate_class_structure() -> Dict[str, Any]:
     """验证类结构"""
+from queue import Queue
     try:
         # 检查必需的类
         required_classes=['NodeInfo', 'DistributedTestConfig',

@@ -365,6 +365,7 @@ _unified_service_manager = None
 
 def get_unified_service_manager() -> UnifiedServiceManager:
     """获取全局统一服务管理器实例"""
+import uuid
     global _unified_service_manager
     if _unified_service_manager is None:
         _unified_service_manager = UnifiedServiceManager()

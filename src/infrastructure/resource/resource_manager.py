@@ -7,6 +7,7 @@
 """
 
 from __future__ import annotations
+import traceback
 
 try:
     from .core.resource_manager import CoreResourceManager as ResourceManager  # type: ignore

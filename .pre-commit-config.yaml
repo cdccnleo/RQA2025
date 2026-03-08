@@ -1,23 +1,134 @@
+# Pre-commit hooks configuration for RQA2025
+# 代码提交前自动检查配置
+
+default_language_version:
+  python: python3.9
+
+# 默认安装钩子
+default_install_hook_types: [pre-commit, commit-msg]
+
+# 钩子配置
 repos:
-  - repo: local
+  # 基础文件检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
     hooks:
-      - id: check-mock-data
-        name: 检查模拟数据使用
-        entry: bash -c 'if grep -r "_get_mock_" src/gateway/web/*_routes.py; then echo "❌ 发现API路由中使用模拟数据函数，量化交易系统要求不使用模拟数据"; exit 1; fi'
-        language: system
-        pass_filenames: false
-        always_run: true
-      
-      - id: check-hardcoded-metrics
-        name: 检查硬编码性能指标
-        entry: bash -c 'if grep -r "base_latency\s*=\s*[0-9]" src/gateway/web/*.py; then echo "❌ 发现硬编码的性能估算值，量化交易系统要求使用真实监控数据"; exit 1; fi'
-        language: system
-        pass_filenames: false
-        always_run: true
-      
-      - id: check-mock-imports
-        name: 检查模拟数据导入
-        entry: bash -c 'if grep -r "from.*_get_mock_\|import.*_get_mock_" src/gateway/web/*_routes.py; then echo "❌ 发现导入模拟数据函数，请移除"; exit 1; fi'
-        language: system
-        pass_filenames: false
-        always_run: true
+      # 检查合并冲突标记
+      - id: check-merge-conflict
+        name: Check for merge conflict markers
+        
+      # 检查YAML语法
+      - id: check-yaml
+        name: Check YAML syntax
+        
+      # 检查JSON语法
+      - id: check-json
+        name: Check JSON syntax
+        
+      # 检查TOML语法
+      - id: check-toml
+        name: Check TOML syntax
+        
+      # 去除行尾空格
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        args: [--markdown-linebreak-ext=md]
+        
+      # 确保文件以换行符结尾
+      - id: end-of-file-fixer
+        name: Fix end of files
+        
+      # 检查大文件
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=500']
+        
+      # 检查私有密钥
+      - id: detect-private-key
+        name: Detect private keys
+        
+      # 检查可执行文件是否有shebang
+      - id: check-executables-have-shebangs
+        name: Check executables have shebangs
+        
+      # 检查shebang脚本是否可执行
+      - id: check-shebang-scripts-are-executable
+        name: Check shebang scripts are executable
+
+  # Black代码格式化
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        name: Black code formatter
+        language_version: python3.9
+        args: [--line-length=100, --target-version=py39]
+        exclude: ^(backups/|production_simulation/|docs/|reports/)
+
+  # isort导入排序
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        name: isort import sorter
+        args: [--profile=black, --line-length=100]
+        exclude: ^(backups/|production_simulation/|docs/|reports/)
+
+  # Flake8代码检查
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        name: Flake8 linter
+        additional_dependencies:
+          - flake8-docstrings>=1.7.0
+          - flake8-bugbear>=24.0.0
+          - flake8-comprehensions>=3.14.0
+          - flake8-simplify>=0.21.0
+        args: [--max-line-length=100, --extend-ignore=E203,W503]
+        exclude: ^(backups/|production_simulation/|docs/|reports/|\.git/|__pycache__/)
+
+  # 提交信息检查
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.28.0
+    hooks:
+      - id: commitizen
+        name: Check commit message format
+        stages: [commit-msg]
+
+# 本地钩子（可选）
+#  - repo: local
+#    hooks:
+#      # 自定义Python脚本检查
+#      - id: custom-check
+#        name: Custom Python check
+#        entry: python scripts/custom_check.py
+#        language: system
+#        types: [python]
+#        pass_filenames: true
+
+# 忽略的文件模式
+exclude: |
+  (?x)^(
+    \.git/|
+    \.hg/|
+    \.mypy_cache/|
+    \.tox/|
+    \.venv/|
+    venv/|
+    env/|
+    build/|
+    dist/|
+    \*\.egg-info/|
+    \.eggs/|
+    \.pytest_cache/|
+    \.coverage|
+    htmlcov/|
+    backups/|
+    production_simulation/|
+    docs/_build/|
+    reports/
+  )
+
+# 最小pre-commit版本
+minimum_pre_commit_version: '3.0.0'

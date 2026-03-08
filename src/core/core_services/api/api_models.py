@@ -57,6 +57,7 @@ class OrderResponse(BaseModel):
 
 class PositionResponse(BaseModel):
     """持仓响应"""
+import time
     symbol: str
     quantity: int
     avg_price: float

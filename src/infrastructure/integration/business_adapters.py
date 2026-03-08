@@ -151,7 +151,7 @@ def get_models_adapter(model_type: str = "default", **kwargs):
 __all__ = [
     'IBusinessAdapter',
     'BusinessLayerType',
-    'BaseBusinessAdapter',
+    'UnifiedBusinessAdapter',
     'UnifiedBusinessAdapterFactory',
     'get_business_adapter',
     'get_data_adapter',

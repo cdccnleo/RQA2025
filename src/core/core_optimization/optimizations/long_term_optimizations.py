@@ -1634,6 +1634,7 @@ class EcosystemBuilding(BaseComponent):
 
     def setup_community_platforms(self) -> Dict[str, Any]:
         """设置社区平台"""
+from typing import Protocol
         logger.info("开始设置社区平台")
 
         platforms = {

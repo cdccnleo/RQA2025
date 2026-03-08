@@ -6,6 +6,7 @@
 """
 
 from __future__ import annotations
+import traceback
 
 try:
     from .monitoring.unified_monitor_adapter import UnifiedMonitor  # type: ignore

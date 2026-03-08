@@ -745,6 +745,7 @@ class Test{module_name.title()}:
         # 这里添加错误处理测试
         assert True
 '''
+import asyncio
 
         return test_content
 

@@ -789,6 +789,7 @@ def audit_log(event_type: AuditEventType, action: str,
         resource_type: 资源类型
         get_resource_id: 获取资源ID的函数
     """
+import functools
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
