@@ -2,14 +2,14 @@
 
 ## 📋 文档信息
 
-- **文档版本**: v6.5 (业务编排器架构迁移 - 核心层职责明确化)
+- **文档版本**: v6.6 (业务编排器完整迁移 - 核心层架构完善)
 - **创建日期**: 2024年12月
 - **更新日期**: 2026年3月8日
 - **审查对象**: 核心服务层 (Core Services Layer)
-- **文件数量**: 176个Python文件 + 统一调度器模块
-- **代码规模**: 49,235行（所有层中最大）
-- **主要功能**: 业务逻辑编排 + 架构支撑 + 服务治理 + 质量优化 + 数据服务集成 + 统一任务调度
-- **实现状态**: ✅ Phase 1+2重构完成 + ✅ AKShare服务统一重构 + ✅ 统一工作节点注册表架构优化 + ✅ 统一调度器架构集成
+- **文件数量**: 233个Python文件 (176个原有 + 57个编排器模块)
+- **代码规模**: 64,235行（所有层中最大，+15,000行业务编排代码）
+- **主要功能**: 业务逻辑编排 + 架构支撑 + 服务治理 + 质量优化 + 数据服务集成 + 统一任务调度 + **完整业务流程编排**
+- **实现状态**: ✅ Phase 1+2重构完成 + ✅ AKShare服务统一重构 + ✅ 统一工作节点注册表架构优化 + ✅ 统一调度器架构集成 + ✅ **业务编排器完整迁移**
 - **代码质量**: Pylint 8.92/10 ⭐⭐⭐⭐⭐ (优秀)
 - **结构质量**: 0.100 ⭐⭐⭐⭐ (良好，第12-14名)
 
@@ -84,15 +84,27 @@ src/
 ```
 
 #### 影响范围
-- **核心服务层**: `src/core/orchestration/` - 新增业务编排器模块
-- **核心服务层**: `src/core/__init__.py` - 更新导入路径
-- **基础设施层**: `src/infrastructure/orchestration/` - 移除业务编排器代码
-- **架构文档**: 更新架构设计文档，反映新的架构分层
+- **核心服务层**: `src/core/orchestration/` - 新增完整业务编排器模块 (+57个文件)
+  - `business/` - 业务事件系统 (2个文件)
+  - `business_process/` - 业务流程编排 (15个文件)
+  - `pool/` - 进程池管理 (2个文件)
+  - 根目录调度器文件 (20个文件)
+- **核心服务层**: `src/core/__init__.py` - 更新导入路径和导出列表
+- **基础设施层**: `src/infrastructure/orchestration/` - 移除业务编排器代码 (-40个文件)
+- **网关层**: 24个文件更新导入路径
+- **架构文档**: 更新架构设计文档，反映正确的架构分层
 
 #### 向后兼容性
 - ✅ 导出接口保持不变: `from src.core import BusinessProcessOrchestrator`
 - ✅ 类接口完全兼容: 所有方法和属性保持不变
 - ✅ 配置类兼容: `OrchestratorConfig` 使用方式不变
+- ✅ 统一入口导出: `from src.core.orchestration import xxx`
+
+#### 架构验证
+- ✅ 调度器仪表盘正常: `running: true`
+- ✅ 自动采集状态正常: `success: true`
+- ✅ 统一调度器运行正常: `is_running: true`
+- ✅ 所有API功能正常
 
 ---
 
@@ -784,23 +796,84 @@ src/core/business/optimizer/
 src/core/orchestration/business_process_orchestrator.py (1,182行)
 ```
 
-**重构后**: 组件化设计
+**重构后**: 完整的业务流程编排模块 (v6.5)
 ```
 src/core/orchestration/
-├── components/                    # 编排组件
-│   ├── config_manager.py         # 配置管理器
-│   ├── event_bus.py              # 事件总线
-│   ├── instance_pool.py          # 实例池
-│   ├── process_monitor.py        # 流程监控器
-│   └── state_machine.py          # 状态机
-├── configs/                      # 编排配置
-│   └── orchestrator_configs.py   # 编排器配置
-├── models/                       # 编排模型
-│   ├── event_models.py           # 事件模型
-│   └── process_models.py         # 流程模型
+├── __init__.py                   # 模块导出，统一入口
 ├── orchestrator_refactored.py    # 重构后编排器 (180行)
-└── business_process_orchestrator.py # 原始编排器
+│   └── BusinessProcessOrchestrator  # 业务流程编排器核心类
+├── configs/                      # 编排配置
+│   ├── __init__.py
+│   └── orchestrator_configs.py   # 编排器配置类
+├── components/                   # 编排组件
+│   └── __init__.py
+├── business/                     # 业务事件系统
+│   ├── __init__.py
+│   └── event_system.py           # 业务事件定义和处理
+├── business_process/             # 业务流程编排 (18个文件)
+│   ├── __init__.py
+│   ├── app_startup_listener.py   # 应用启动监听器
+│   ├── coordinator_components.py # 协调器组件
+│   ├── data_collection_orchestrator.py  # 数据采集编排器
+│   ├── data_collection_state_machine.py # 数据采集状态机
+│   ├── manager_components.py     # 管理器组件
+│   ├── monitoring_alerts.py      # 监控告警
+│   ├── orchestrator_components.py # 编排器组件
+│   ├── process_components.py     # 流程组件
+│   ├── refactored_business_process_components.py
+│   ├── scheduler_persistence.py  # 调度器持久化
+│   ├── service_discovery.py      # 服务发现
+│   ├── service_governance.py     # 服务治理
+│   ├── service_scheduler.py      # 服务调度器
+│   └── workflow_components.py    # 工作流组件
+├── pool/                         # 进程池管理
+│   ├── __init__.py
+│   └── process_instance_pool.py  # 进程实例池
+├── scheduler/                    # 统一调度器模块
+│   ├── __init__.py               # 导出: UnifiedScheduler, TaskManager, etc.
+│   ├── base.py                   # 基础类和接口定义
+│   ├── task_manager.py           # 任务生命周期管理
+│   ├── worker_manager.py         # 工作进程池管理
+│   ├── unified_scheduler.py      # 统一调度器核心实现
+│   ├── alerting/                 # 告警模块
+│   ├── integration/              # 集成模块
+│   ├── metrics/                  # 指标监控
+│   ├── performance/              # 性能优化
+│   ├── persistence/              # 持久化模块
+│   └── security/                 # 安全模块
+├── ai_driven_optimizer.py        # AI驱动优化器
+├── ai_driven_scheduler.py        # AI驱动调度器
+├── batch_complement_processor.py # 批量补全处理器
+├── complement_priority_manager.py # 补全优先级管理
+├── complement_progress_tracker.py # 补全进度跟踪
+├── data_complement_scheduler.py  # 数据补全调度器
+├── data_priority_manager.py      # 数据优先级管理
+├── data_quality_manager.py       # 数据质量管理
+├── distributed_scheduler.py      # 分布式调度器
+├── historical_collection_config.py      # 历史采集配置
+├── historical_data_acquisition_service.py # 历史数据获取服务
+├── historical_data_scheduler.py  # 历史数据调度器
+├── historical_data_worker.py     # 历史数据工作器
+├── incremental_collection_persistence.py # 增量采集持久化
+├── incremental_collection_strategy.py    # 增量采集策略
+├── market_adaptive_monitor.py    # 市场自适应监控
+├── performance_optimizer.py      # 性能优化器
+├── realtime_data_processor.py    # 实时数据处理器
+├── standard_data_collector.py    # 标准数据采集器
+└── strategy_backtest_data_workflow.py    # 策略回测数据工作流
 ```
+
+**模块统计**:
+- **总文件数**: 57个Python文件
+- **总代码行**: ~15,000行
+- **子模块数**: 6个 (business, business_process, pool, scheduler, configs, components)
+- **调度器类型**: 10+种 (统一调度器、AI驱动、分布式、历史数据等)
+
+**架构价值**:
+- ✅ 业务逻辑正确归位核心服务层
+- ✅ 与统一调度器深度集成
+- ✅ 支持完整的业务流程生命周期管理
+- ✅ 消除与基础设施层的循环依赖
 
 **重构成果**:
 - 代码规模: 1,182行 → 180行 (-85%)
