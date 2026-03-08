@@ -78,8 +78,16 @@ except ImportError as e:
     EventHandler = None
     EventPublisher = None
 
-# 导出进程池
-from .pool import ProcessInstancePool
+# 导出进程池（可选导入）
+try:
+    from .pool import ProcessInstancePool
+    PROCESS_INSTANCE_POOL_AVAILABLE = True
+except ImportError as e:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"pool模块导入失败: {e}，跳过相关功能")
+    PROCESS_INSTANCE_POOL_AVAILABLE = False
+    ProcessInstancePool = None
 
 __all__ = [
     # 业务流程编排
