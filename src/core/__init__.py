@@ -247,6 +247,31 @@ except ImportError:
         def __init__(self):
             self.name = "DocumentationManager (fallback)"
 
+# 自动化层组件（从src/automation合并）
+try:
+    from .automation.core.automation_orchestrator import AutomationOrchestrator
+    from .automation.core.task_scheduler import TaskScheduler
+    from .automation.core.workflow_engine import WorkflowEngine
+    _automation_available = True
+except ImportError:
+    logger.warning("⚠️ Automation组件不可用，使用基础实现")
+    _automation_available = False
+
+    class AutomationOrchestrator:
+        """自动化编排器基础实现"""
+        def __init__(self):
+            self.name = "AutomationOrchestrator (fallback)"
+
+    class TaskScheduler:
+        """任务调度器基础实现"""
+        def __init__(self):
+            self.name = "TaskScheduler (fallback)"
+
+    class WorkflowEngine:
+        """工作流引擎基础实现"""
+        def __init__(self):
+            self.name = "WorkflowEngine (fallback)"
+
 # ============================================================================
 # 导出接口定义
 # ============================================================================
@@ -271,6 +296,11 @@ __all__ = [
     'BacktestUtils',
     'CICDIntegration',
     'DocumentationManager',
+
+    # 自动化层组件（合并后）
+    'AutomationOrchestrator',
+    'TaskScheduler',
+    'WorkflowEngine',
 
     # 枚举和常量
     'BusinessProcessState',
@@ -297,6 +327,7 @@ COMPONENT_AVAILABILITY = {
     'service_framework': _service_framework_available,
     'resilience': _resilience_available,  # 弹性层组件（合并后）
     'utils': _utils_available,  # 工具层组件（合并后）
+    'automation': _automation_available,  # 自动化层组件（合并后）
 }
 
 # 避免重复初始化的标志
