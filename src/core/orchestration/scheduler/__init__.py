@@ -48,11 +48,15 @@ from .task_manager import TaskManager
 from .worker_manager import WorkerManager
 from .unified_scheduler import UnifiedScheduler, get_unified_scheduler
 
+# 从performance模块导入TaskPriority
+from .performance import TaskPriority
+
 __all__ = [
     # 枚举类型
     "TaskStatus",
     "JobType",
     "TaskType",  # 别名
+    "TaskPriority",
     "TriggerType",
     
     # 数据类
