@@ -814,7 +814,36 @@ async def lifespan(app: FastAPI):
                                     logger.warning(f"⚠️ 数据源 {source_id} 未配置股票池，使用默认股票")
                                     symbols = ["sh.600000"]  # 默认采集浦发银行
                                 
-                                logger.info(f"📊 数据源 {source_id} 股票池: {symbols}")
+                                logger.info(f"📊 数据源 {source_id} 原始股票池: {symbols}")
+                                
+                                # 转换股票代码格式为 baostock 格式（9位）
+                                def convert_to_baostock_symbol(symbol: str) -> str:
+                                    """将6位股票代码转换为baostock格式（9位）"""
+                                    # 如果已经是9位格式，直接返回
+                                    if len(symbol) == 9 and symbol.startswith(('sh.', 'sz.', 'bj.')):
+                                        return symbol
+                                    
+                                    # 如果是6位数字代码，根据规则添加前缀
+                                    if len(symbol) == 6 and symbol.isdigit():
+                                        # 上海股票：60开头、68开头、69开头
+                                        if symbol.startswith(('60', '68', '69')):
+                                            return f"sh.{symbol}"
+                                        # 深圳股票：00开头、30开头
+                                        elif symbol.startswith(('00', '30')):
+                                            return f"sz.{symbol}"
+                                        # 北京股票：8开头、4开头
+                                        elif symbol.startswith(('8', '4')):
+                                            return f"bj.{symbol}"
+                                        # 默认上海
+                                        else:
+                                            return f"sh.{symbol}"
+                                    
+                                    # 其他情况，尝试添加sh.前缀
+                                    return f"sh.{symbol}" if not symbol.startswith(('sh.', 'sz.', 'bj.')) else symbol
+                                
+                                # 转换所有股票代码
+                                symbols = [convert_to_baostock_symbol(s) for s in symbols]
+                                logger.info(f"📊 数据源 {source_id} 转换后股票池: {symbols}")
                                 
                                 # 设置日期范围
                                 end_date = datetime.now()
