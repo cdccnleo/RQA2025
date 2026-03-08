@@ -234,15 +234,40 @@ class DataCollectionSchedulerManager:
                 "submitted_at": datetime.now().isoformat()
             }
             
-            # 提交任务（异步方法，使用asyncio.run）
+            # 定义任务完成回调
+            def on_task_completed(task_id: str, status: str, result: Any, error: str):
+                """任务完成回调"""
+                logger.info(f"🎯 任务完成回调: {task_id}, 状态: {status}")
+                
+                if status == "completed":
+                    logger.info(f"✅ 数据采集任务完成: {source_id}")
+                    # 更新数据源最后采集时间
+                    self._update_source_collection_time(source_id)
+                elif status == "failed":
+                    logger.error(f"❌ 数据采集任务失败: {source_id}, 错误: {error}")
+                
+                # 从已提交任务集合中移除
+                task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
+                if task_key in self._submitted_tasks:
+                    self._submitted_tasks.discard(task_key)
+            
+            # 提交任务（异步方法）
             async def submit_task_async():
-                return await scheduler.submit_task(
+                # 提交任务
+                task_id = await scheduler.submit_task(
                     task_type=TaskType.DATA_COLLECTION,
                     payload=task_data,
                     priority=TaskPriority.NORMAL
                 )
+                
+                # 注册任务完成回调
+                worker_manager = scheduler._worker_manager
+                worker_manager.register_task_callback(task_id, on_task_completed)
+                
+                return task_id
             
             # 在同步上下文中运行异步任务
+            task_id = None
             try:
                 # 尝试获取当前事件循环
                 loop = asyncio.get_running_loop()
@@ -250,26 +275,56 @@ class DataCollectionSchedulerManager:
                 future = asyncio.run_coroutine_threadsafe(submit_task_async(), loop)
                 task_id = future.result(timeout=30)
             except RuntimeError:
-                # 没有事件循环，使用asyncio.run
-                task_id = asyncio.run(submit_task_async())
+                # 没有事件循环，创建新的事件循环
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    task_id = loop.run_until_complete(submit_task_async())
+                finally:
+                    loop.close()
             
-            # 记录已提交的任务
-            task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
-            self._submitted_tasks.add(task_key)
-            
-            self._stats["tasks_submitted"] += 1
-            
-            logger.info(f"✅ 采集任务已提交: {task_id} (数据源: {source_id})")
-            
-            # 验证任务是否被记录
-            try:
-                stats = scheduler.get_statistics()
-                logger.info(f"📊 提交后调度器任务统计: 总任务={stats.get('total_tasks', 0)}, 待处理={stats.get('pending_tasks', 0)}")
-            except Exception as stats_err:
-                logger.debug(f"获取调度器统计失败: {stats_err}")
+            if task_id:
+                # 记录已提交的任务
+                task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
+                self._submitted_tasks.add(task_key)
+                
+                self._stats["tasks_submitted"] += 1
+                
+                logger.info(f"✅ 采集任务已提交: {task_id} (数据源: {source_id})")
+                
+                # 验证任务是否被记录
+                try:
+                    stats = scheduler.get_statistics()
+                    logger.info(f"📊 提交后调度器任务统计: 总任务={stats.get('total_tasks', 0)}, 待处理={stats.get('pending_tasks', 0)}")
+                except Exception as stats_err:
+                    logger.debug(f"获取调度器统计失败: {stats_err}")
+            else:
+                logger.error(f"❌ 任务提交失败，未获取到任务ID: {source_id}")
             
         except Exception as e:
             logger.error(f"❌ 提交采集任务失败 {source_id}: {e}", exc_info=True)
+    
+    def _update_source_collection_time(self, source_id: str):
+        """
+        更新数据源最后采集时间
+        
+        Args:
+            source_id: 数据源ID
+        """
+        try:
+            from src.gateway.web.data_source_config_manager import get_config_manager
+            
+            config_manager = get_config_manager()
+            
+            # 更新数据源配置
+            source_config = config_manager.get_data_source(source_id)
+            if source_config:
+                source_config["last_collection_time"] = datetime.now().isoformat()
+                config_manager.update_data_source(source_id, source_config)
+                logger.info(f"📅 更新数据源最后采集时间: {source_id}")
+            
+        except Exception as e:
+            logger.error(f"❌ 更新数据源采集时间失败 {source_id}: {e}")
     
     def _cleanup_completed_tasks(self):
         """清理已完成的任务记录"""
