@@ -937,9 +937,13 @@ class GlobalConfigUpdate(BaseModel):
     max_history_days: Optional[int] = Field(None, gt=0, description="历史最大回溯天数，如3650表示10年")
 
 
-# 导入配置管理器
-from src.infrastructure.orchestration.historical_collection_config import get_historical_collection_config_manager
-config_manager = get_historical_collection_config_manager()
+# 导入配置管理器（修复导入路径）
+try:
+    from src.core.orchestration.historical_collection_config import get_historical_collection_config_manager
+    config_manager = get_historical_collection_config_manager()
+except ImportError:
+    # 降级处理：如果导入失败，创建一个占位符
+    config_manager = None
 
 
 @router.get("/config/schedule", summary="获取采集调度配置")
@@ -991,7 +995,7 @@ async def get_collection_rules():
 async def add_collection_rule(rule: CollectionRuleConfig):
     """添加新的采集规则"""
     try:
-        from src.infrastructure.orchestration.historical_collection_config import CollectionRule
+        from src.core.orchestration.historical_collection_config import CollectionRule
 
         new_rule = CollectionRule(
             name=rule.name,

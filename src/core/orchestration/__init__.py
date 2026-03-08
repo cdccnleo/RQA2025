@@ -42,14 +42,28 @@ from .scheduler import (
     WorkerManager
 )
 
-# 导出业务流程组件
-from .business_process import (
-    AppStartupListener,
-    DataCollectionOrchestrator,
-    DataCollectionStateMachine,
-    ServiceScheduler,
-    ServiceGovernance
-)
+# 导出业务流程组件（使用try/except处理可选导入）
+try:
+    from .business_process import (
+        AppStartupListener,
+        get_app_startup_listener
+    )
+    APP_STARTUP_LISTENER_AVAILABLE = True
+except ImportError as e:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"business_process模块导入失败: {e}，跳过相关功能")
+    APP_STARTUP_LISTENER_AVAILABLE = False
+    AppStartupListener = None
+    get_app_startup_listener = None
+
+# 其他业务流程组件（可选）
+try:
+    from .business_process import DataCollectionServiceScheduler
+    SERVICE_SCHEDULER_AVAILABLE = True
+except ImportError:
+    DataCollectionServiceScheduler = None
+    SERVICE_SCHEDULER_AVAILABLE = False
 
 # 导出事件系统
 from .business import EventSystem
@@ -70,12 +84,10 @@ __all__ = [
     'get_unified_scheduler',
     'TaskManager',
     'WorkerManager',
-    # 业务流程组件
+    # 业务流程组件（可选）
     'AppStartupListener',
-    'DataCollectionOrchestrator',
-    'DataCollectionStateMachine',
-    'ServiceScheduler',
-    'ServiceGovernance',
+    'get_app_startup_listener',
+    'DataCollectionServiceScheduler',
     # 事件系统
     'EventSystem',
     # 进程池
