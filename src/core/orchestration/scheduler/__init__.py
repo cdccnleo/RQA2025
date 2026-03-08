@@ -41,6 +41,9 @@ from .base import (
     generate_worker_id
 )
 
+# TaskType 别名 (向后兼容)
+TaskType = JobType
+
 from .task_manager import TaskManager
 from .worker_manager import WorkerManager
 from .unified_scheduler import UnifiedScheduler, get_unified_scheduler
@@ -49,6 +52,7 @@ __all__ = [
     # 枚举类型
     "TaskStatus",
     "JobType",
+    "TaskType",  # 别名
     "TriggerType",
     
     # 数据类
