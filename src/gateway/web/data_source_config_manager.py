@@ -539,53 +539,58 @@ class DataSourceConfigManager:
         }
 
     def save_config(self, format_type: str = 'json') -> bool:
-        """保存配置（支持文件系统和PostgreSQL双重存储）"""
+        """保存配置（优先PostgreSQL，降级到文件系统）"""
         try:
-            config_file = self._get_config_file_path(format_type)
-
-            # 确保目录存在
-            os.makedirs(os.path.dirname(config_file), exist_ok=True)
-
             # 从配置管理器获取数据
             config_data = self._get_config_from_manager()
-
-            # 保存到文件系统
-            # 注意：根据文件格式，可能需要保存为列表格式（如果文件是列表）或字典格式
-            # 检查现有文件格式，保持一致
-            file_format_is_list = False
-            if os.path.exists(config_file):
-                try:
-                    with open(config_file, 'r', encoding='utf-8') as f:
-                        existing_data = json.load(f)
-                        file_format_is_list = isinstance(existing_data, list)
-                except:
-                    pass
-            
-            # 如果文件是列表格式，直接保存data_sources列表；否则保存完整配置
             data_sources = config_data.get('data_sources', [])
-            if file_format_is_list:
-                with open(config_file, 'w', encoding='utf-8') as f:
-                    json.dump(data_sources, f, ensure_ascii=False, indent=2)
-            else:
-                with open(config_file, 'w', encoding='utf-8') as f:
-                    json.dump(config_data, f, ensure_ascii=False, indent=2)
-
-            # 记录保存的详细信息
-            logger.info(f"配置已保存到: {config_file}, 数据源数量: {len(data_sources)}")
+            
+            # 优先尝试保存到PostgreSQL
+            pg_success = False
+            try:
+                pg_success = self._save_to_postgresql(config_data)
+                if pg_success:
+                    logger.info(f"✅ 配置已保存到PostgreSQL, 数据源数量: {len(data_sources)}")
+            except Exception as e:
+                logger.warning(f"⚠️ 保存到PostgreSQL失败: {e}")
+            
+            # 如果PostgreSQL保存失败，降级到文件系统
+            if not pg_success:
+                logger.info("📝 降级到文件系统保存配置")
+                
+                config_file = self._get_config_file_path(format_type)
+                
+                # 确保目录存在
+                os.makedirs(os.path.dirname(config_file), exist_ok=True)
+                
+                # 检查现有文件格式，保持一致
+                file_format_is_list = False
+                if os.path.exists(config_file):
+                    try:
+                        with open(config_file, 'r', encoding='utf-8') as f:
+                            existing_data = json.load(f)
+                            file_format_is_list = isinstance(existing_data, list)
+                    except:
+                        pass
+                
+                # 如果文件是列表格式，直接保存data_sources列表；否则保存完整配置
+                if file_format_is_list:
+                    with open(config_file, 'w', encoding='utf-8') as f:
+                        json.dump(data_sources, f, ensure_ascii=False, indent=2)
+                else:
+                    with open(config_file, 'w', encoding='utf-8') as f:
+                        json.dump(config_data, f, ensure_ascii=False, indent=2)
+                
+                logger.info(f"📝 配置已保存到文件系统: {config_file}, 数据源数量: {len(data_sources)}")
+            
             # 记录前3个数据源的enabled状态
             for i, source in enumerate(data_sources[:3]):
                 logger.debug(f"  保存的数据源 {i}: id={source.get('id')}, name={source.get('name')}, enabled={source.get('enabled')}")
             
-            # 同时尝试保存到PostgreSQL（如果可用）
-            try:
-                self._save_to_postgresql(config_data)
-            except Exception as e:
-                logger.debug(f"保存到PostgreSQL失败（使用文件系统）: {e}")
-            
             return True
 
         except Exception as e:
-            logger.error(f"保存配置失败: {e}")
+            logger.error(f"❌ 保存配置失败: {e}")
             return False
     
     def _save_to_postgresql(self, config_data: Dict[str, Any]) -> bool:

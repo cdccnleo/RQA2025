@@ -312,9 +312,9 @@ class DataCollectionSchedulerManager:
             source_id: 数据源ID
         """
         try:
-            from src.gateway.web.data_source_config_manager import get_config_manager
+            from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             
-            config_manager = get_config_manager()
+            config_manager = get_data_source_config_manager()
             
             # 更新数据源配置
             source_config = config_manager.get_data_source(source_id)
