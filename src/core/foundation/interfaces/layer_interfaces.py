@@ -32,7 +32,7 @@ from typing import Dict, List, Any, Optional
 import logging
 from packaging import version
 
-from ...integration.interfaces.layer_interface import LayerInterface
+from ....infrastructure.integration.interfaces.layer_interface import LayerInterface
 
 logger = logging.getLogger(__name__)
 
