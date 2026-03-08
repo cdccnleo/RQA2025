@@ -2,9 +2,9 @@
 
 ## 📋 文档信息
 
-- **文档版本**: v6.4 (统一调度器架构集成)
+- **文档版本**: v6.5 (业务编排器架构迁移 - 核心层职责明确化)
 - **创建日期**: 2024年12月
-- **更新日期**: 2026年3月6日
+- **更新日期**: 2026年3月8日
 - **审查对象**: 核心服务层 (Core Services Layer)
 - **文件数量**: 176个Python文件 + 统一调度器模块
 - **代码规模**: 49,235行（所有层中最大）
@@ -12,6 +12,87 @@
 - **实现状态**: ✅ Phase 1+2重构完成 + ✅ AKShare服务统一重构 + ✅ 统一工作节点注册表架构优化 + ✅ 统一调度器架构集成
 - **代码质量**: Pylint 8.92/10 ⭐⭐⭐⭐⭐ (优秀)
 - **结构质量**: 0.100 ⭐⭐⭐⭐ (良好，第12-14名)
+
+---
+
+## 🎉 v6.5版本重要更新说明 (业务编排器架构迁移 - 核心层职责明确化)
+
+### 业务编排器架构迁移总览 (2026年3月8日)
+
+#### 迁移背景
+业务编排器 (`BusinessProcessOrchestrator`) 原本位于基础设施层 (`src/infrastructure/orchestration/`)，但其核心职责是业务流程编排和管理，属于业务逻辑范畴。原位置导致：
+1. **循环依赖风险**: 编排器需要大量导入核心层模块 (EventBus, BusinessProcessState等)
+2. **复杂导入路径**: 需要使用 `....core.xxx` 深层相对导入
+3. **架构层级混乱**: 业务逻辑分散在基础设施层
+
+#### 迁移内容
+1. **架构位置调整**: 将 `BusinessProcessOrchestrator` 从基础设施层迁移到核心服务层 (`src/core/orchestration/`)
+2. **简化导入路径**: 
+   - `....core.event_bus.core` → `...event_bus.core`
+   - `....core.foundation.base` → `..foundation.base`
+   - `src.core.constants` → `..constants`
+3. **消除循环依赖**: 编排器与 EventBus、BusinessProcess 同层调用
+4. **更新所有引用**: 修改 `src/core/__init__.py` 和其他相关导入
+
+#### 架构改进价值
+| 维度 | 迁移前 | 迁移后 | 提升 |
+|------|--------|--------|------|
+| **架构清晰度** | 业务逻辑位于基础设施层 | 业务逻辑位于核心服务层 | ✅ 正确归位 |
+| **循环依赖** | 存在循环依赖风险 | 消除循环依赖 | ✅ 优秀 |
+| **导入路径** | 深层相对导入 (....) | 简化相对导入 (..) | ✅ 简洁 |
+| **组件可用性** | 6/10 组件可用 | 7/10 组件可用 | ✅ 提升 |
+| **可维护性** | 良好 | 优秀 | ✅ 提升 |
+
+#### 关键变更
+```python
+# 旧导入路径（已废弃）
+from src.infrastructure.orchestration.orchestrator_refactored import (
+    BusinessProcessOrchestrator
+)
+
+# 新导入路径
+from src.core.orchestration import BusinessProcessOrchestrator
+
+# 或通过核心层统一入口
+from src.core import BusinessProcessOrchestrator
+```
+
+#### 目录结构变更
+```
+# 迁移前
+src/
+├── core/
+│   └── ...
+└── infrastructure/
+    └── orchestration/          # ❌ 业务编排器位置不当
+        ├── orchestrator_refactored.py
+        ├── components/
+        └── configs/
+
+# 迁移后
+src/
+├── core/
+│   ├── orchestration/          # ✅ 业务编排器正确归位
+│   │   ├── orchestrator_refactored.py
+│   │   ├── components/
+│   │   ├── configs/
+│   │   └── scheduler/          # 统一调度器
+│   └── ...
+└── infrastructure/
+    └── orchestration/          # 保留基础设施调度功能
+        └── scheduler/          # 任务调度器
+```
+
+#### 影响范围
+- **核心服务层**: `src/core/orchestration/` - 新增业务编排器模块
+- **核心服务层**: `src/core/__init__.py` - 更新导入路径
+- **基础设施层**: `src/infrastructure/orchestration/` - 移除业务编排器代码
+- **架构文档**: 更新架构设计文档，反映新的架构分层
+
+#### 向后兼容性
+- ✅ 导出接口保持不变: `from src.core import BusinessProcessOrchestrator`
+- ✅ 类接口完全兼容: 所有方法和属性保持不变
+- ✅ 配置类兼容: `OrchestratorConfig` 使用方式不变
 
 ---
 
