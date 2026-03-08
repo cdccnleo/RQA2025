@@ -707,23 +707,112 @@ async def lifespan(app: FastAPI):
             
             # 定义数据采集处理器
             def data_collection_handler(payload: dict):
-                """数据采集任务处理器"""
+                """数据采集任务处理器 - 调用实际采集器"""
                 source_id = payload.get("source_id", "unknown")
+                source_config = payload.get("source_config", {})
+                
                 logger.info(f"🎯 执行数据采集任务: {source_id}")
                 
-                # 模拟数据采集（实际应该调用具体的数据源适配器）
-                import time
-                time.sleep(1)  # 模拟采集耗时
-                
-                result = {
-                    "source_id": source_id,
-                    "status": "success",
-                    "records_collected": 100,
-                    "timestamp": time.time()
-                }
-                
-                logger.info(f"✅ 数据采集完成: {source_id}, 记录数: {result['records_collected']}")
-                return result
+                try:
+                    # 根据数据源类型选择采集器
+                    if "akshare" in source_id.lower():
+                        # 使用 AKShare 采集器
+                        from src.data.collectors.akshare_collector import AKShareCollector
+                        
+                        collector = AKShareCollector()
+                        
+                        # 获取配置参数
+                        symbols = source_config.get("symbols", ["000001"])  # 默认采集平安银行
+                        start_date = source_config.get("start_date")
+                        end_date = source_config.get("end_date")
+                        
+                        total_records = 0
+                        for symbol in symbols:
+                            # 采集数据
+                            data = collector.collect_stock_data(
+                                symbol=symbol,
+                                start_date=start_date,
+                                end_date=end_date
+                            )
+                            
+                            if data:
+                                # 保存到数据库
+                                success = collector.save_to_database(data, symbol)
+                                if success:
+                                    total_records += len(data)
+                                    logger.info(f"✅ 股票 {symbol} 数据已保存: {len(data)} 条")
+                                else:
+                                    logger.error(f"❌ 股票 {symbol} 数据保存失败")
+                            else:
+                                logger.warning(f"⚠️ 股票 {symbol} 未获取到数据")
+                        
+                        result = {
+                            "source_id": source_id,
+                            "status": "success",
+                            "records_collected": total_records,
+                            "symbols_processed": len(symbols),
+                            "timestamp": time.time()
+                        }
+                        
+                    elif "baostock" in source_id.lower():
+                        # 使用 baostock 适配器
+                        from src.data.adapters.baostock.baostock_adapter import BaostockAdapter
+                        
+                        adapter = BaostockAdapter()
+                        
+                        # 获取配置参数
+                        symbols = source_config.get("symbols", ["sh.600000"])  # 默认采集浦发银行
+                        start_date = source_config.get("start_date")
+                        end_date = source_config.get("end_date")
+                        
+                        total_records = 0
+                        for symbol in symbols:
+                            # 采集数据
+                            data = adapter.collect_stock_data(
+                                symbol=symbol,
+                                start_date=start_date,
+                                end_date=end_date
+                            )
+                            
+                            if data:
+                                # 保存到数据库
+                                success = adapter.save_to_database(data, symbol)
+                                if success:
+                                    total_records += len(data)
+                                    logger.info(f"✅ 股票 {symbol} 数据已保存: {len(data)} 条")
+                                else:
+                                    logger.error(f"❌ 股票 {symbol} 数据保存失败")
+                            else:
+                                logger.warning(f"⚠️ 股票 {symbol} 未获取到数据")
+                        
+                        result = {
+                            "source_id": source_id,
+                            "status": "success",
+                            "records_collected": total_records,
+                            "symbols_processed": len(symbols),
+                            "timestamp": time.time()
+                        }
+                    else:
+                        # 未知数据源类型
+                        logger.warning(f"⚠️ 未知数据源类型: {source_id}")
+                        result = {
+                            "source_id": source_id,
+                            "status": "skipped",
+                            "reason": "unknown_source_type",
+                            "timestamp": time.time()
+                        }
+                    
+                    logger.info(f"✅ 数据采集完成: {source_id}, 记录数: {result.get('records_collected', 0)}")
+                    return result
+                    
+                except Exception as e:
+                    logger.error(f"❌ 数据采集失败 {source_id}: {e}", exc_info=True)
+                    return {
+                        "source_id": source_id,
+                        "status": "failed",
+                        "error": str(e),
+                        "timestamp": time.time()
+                    }
             
             # 注册处理器（使用JobType.DATA_COLLECTION的值"data_collection"）
             worker_manager.register_task_handler("data_collection", data_collection_handler)
