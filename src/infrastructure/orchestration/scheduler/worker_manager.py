@@ -8,7 +8,7 @@ import asyncio
 import threading
 import time
 from typing import Dict, List, Optional, Callable, Any
-from datetime import datetime
+from datetime import datetime, timedelta
 from queue import Queue, Empty
 
 from .base import WorkerInfo, generate_worker_id
