@@ -166,25 +166,39 @@ class DataCollectionSchedulerManager:
         """
         source_id = source.get("id")
         rate_limit = source.get("rate_limit", "")
-        last_test = source.get("last_test")
         
         if not rate_limit:
             logger.debug(f"数据源 {source_id} 没有配置采集频率，跳过")
             return
         
+        # 优先从数据库获取最新的 last_test（避免容器重启后使用过期的缓存数据）
+        try:
+            from src.gateway.web.data_source_config_manager import get_data_source_config_manager
+            config_manager = get_data_source_config_manager()
+            fresh_source = config_manager.get_data_source(source_id)
+            if fresh_source:
+                last_test = fresh_source.get("last_test")
+                logger.debug(f"数据源 {source_id} 从数据库获取最新 last_test: {last_test}")
+            else:
+                last_test = source.get("last_test")
+                logger.warning(f"数据源 {source_id} 无法从数据库获取，使用传入的 last_test: {last_test}")
+        except Exception as e:
+            last_test = source.get("last_test")
+            logger.error(f"从数据库获取 last_test 失败: {e}，使用传入的 last_test: {last_test}")
+        
         # 检查是否应该采集
         if should_collect(last_test, rate_limit):
             logger.info(f"🎯 数据源 {source_id} 到达采集时间，准备提交任务")
             
-            # 检查是否已有待处理的任务
+            # 再次检查是否已有待处理的任务（双重检查）
             if self._has_pending_task(source_id):
-                logger.debug(f"数据源 {source_id} 已有待处理任务，跳过")
+                logger.info(f"📅 数据源 {source_id} 今天已采集，跳过")
                 return
             
             # 提交采集任务
             self._submit_collection_task(source_id, source)
         else:
-            logger.debug(f"数据源 {source_id} 未到达采集时间")
+            logger.debug(f"数据源 {source_id} 未到达采集时间 (last_test: {last_test})")
     
     def _has_pending_task(self, source_id: str) -> bool:
         """
