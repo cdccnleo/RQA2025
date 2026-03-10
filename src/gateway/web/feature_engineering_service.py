@@ -699,52 +699,83 @@ def get_technical_indicators() -> List[Dict[str, Any]]:
 
 def get_scheduler_status() -> Dict[str, Any]:
     """
-    获取调度器状态 - 从持久化存储的任务数据计算
+    获取调度器状态 - 从统一调度器获取真实状态
 
     Returns:
         调度器状态信息
     """
     try:
-        # 从持久化存储加载任务统计
-        from .feature_task_persistence import list_feature_tasks
-        tasks = list_feature_tasks(limit=1000)
+        # 从统一调度器获取状态
+        from src.core.orchestration.scheduler import get_unified_scheduler
+        scheduler = get_unified_scheduler()
         
-        # 计算任务统计
-        pending_count = len([t for t in tasks if t.get('status') == 'pending'])
-        running_count = len([t for t in tasks if t.get('status') == 'running'])
-        completed_count = len([t for t in tasks if t.get('status') == 'completed'])
-        failed_count = len([t for t in tasks if t.get('status') == 'failed'])
+        # 获取调度器运行状态
+        is_running = scheduler.is_running()
         
+        # 获取任务统计（从统一调度器的任务管理器）
+        task_stats = scheduler.get_task_stats() if hasattr(scheduler, 'get_task_stats') else {}
+        
+        # 获取工作进程状态
+        worker_stats = scheduler.get_worker_stats() if hasattr(scheduler, 'get_worker_stats') else {}
+        
+        # 构建状态响应
         status = {
-            "is_running": running_count > 0,
+            "is_running": is_running,
             "stats": {
-                "pending_tasks": pending_count,
-                "running_tasks": running_count,
-                "completed_tasks": completed_count,
-                "failed_tasks": failed_count,
-                "total_tasks": len(tasks),
-                # 适配前端期望的字段格式
-                "active_workers": running_count if running_count > 0 else 0,
+                "pending_tasks": task_stats.get('pending', 0),
+                "running_tasks": task_stats.get('running', 0),
+                "completed_tasks": task_stats.get('completed', 0),
+                "failed_tasks": task_stats.get('failed', 0),
+                "total_tasks": task_stats.get('total', 0),
+                "active_workers": worker_stats.get('active_workers', 0),
                 "queue_sizes": {
-                    "pending": pending_count,
-                    "running": running_count
+                    "pending": task_stats.get('pending', 0),
+                    "running": task_stats.get('running', 0)
                 }
             },
-            "feature_workers_count": 1 if running_count > 0 else 0,
-            "scheduler_type": "simple_scheduler",
-            "note": f"调度器运行中，共 {len(tasks)} 个任务" if len(tasks) > 0 else "暂无任务"
+            "feature_workers_count": worker_stats.get('active_workers', 0),
+            "scheduler_type": "unified_scheduler",
+            "note": f"统一调度器{'运行中' if is_running else '已停止'}，共 {task_stats.get('total', 0)} 个任务"
         }
         
-        logger.debug(f"从任务数据计算调度器状态: {status['stats']}")
+        logger.debug(f"从统一调度器获取状态: {status['stats']}")
         return status
     except Exception as e:
-        logger.error(f"获取调度器状态失败: {e}")
-        return {
-            "is_running": False,
-            "stats": {},
-            "error": str(e),
-            "scheduler_type": "simple_scheduler"
-        }
+        logger.error(f"从统一调度器获取状态失败: {e}")
+        # 降级到从持久化存储计算
+        try:
+            from .feature_task_persistence import list_feature_tasks
+            tasks = list_feature_tasks(limit=1000)
+            
+            pending_count = len([t for t in tasks if t.get('status') == 'pending'])
+            running_count = len([t for t in tasks if t.get('status') == 'running'])
+            
+            return {
+                "is_running": running_count > 0,
+                "stats": {
+                    "pending_tasks": pending_count,
+                    "running_tasks": running_count,
+                    "completed_tasks": len([t for t in tasks if t.get('status') == 'completed']),
+                    "failed_tasks": len([t for t in tasks if t.get('status') == 'failed']),
+                    "total_tasks": len(tasks),
+                    "active_workers": running_count,
+                    "queue_sizes": {
+                        "pending": pending_count,
+                        "running": running_count
+                    }
+                },
+                "feature_workers_count": running_count,
+                "scheduler_type": "unified_scheduler",
+                "note": f"调度器运行中（降级模式），共 {len(tasks)} 个任务"
+            }
+        except Exception as fallback_error:
+            logger.error(f"降级获取状态也失败: {fallback_error}")
+            return {
+                "is_running": False,
+                "stats": {},
+                "error": str(e),
+                "scheduler_type": "unified_scheduler"
+            }
 
 
 def resubmit_pending_tasks() -> int:
