@@ -1054,6 +1054,22 @@ async def lifespan(app: FastAPI):
             logger.error(f"❌ 启动自动采集服务失败: {auto_collection_error}", exc_info=True)
             print(f"❌ 启动自动采集服务失败: {auto_collection_error}")
         
+        # 初始化数据采集完成事件处理器
+        try:
+            from src.data.quality.data_collection_event_handler import init_data_collection_event_handler
+            from src.ml.core.data_collection_event_handler import init_ml_data_collection_event_handler
+            
+            # 初始化数据质量监控事件处理器
+            init_data_collection_event_handler()
+            logger.info("✅ 数据质量监控事件处理器已初始化")
+            
+            # 初始化ML模块事件处理器
+            init_ml_data_collection_event_handler()
+            logger.info("✅ ML模块事件处理器已初始化")
+            
+        except Exception as handler_error:
+            logger.warning(f"⚠️ 初始化数据采集事件处理器失败（非关键）: {handler_error}")
+        
         # 发布应用启动完成事件（向后兼容）
         try:
             from src.core.event_bus import get_event_bus
