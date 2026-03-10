@@ -26,12 +26,12 @@ class DataCollectionSchedulerManager:
     定时检查已启用的数据源，根据采集频率自动生成采集任务。
     """
     
-    def __init__(self, check_interval: int = 60):
+    def __init__(self, check_interval: int = 10):
         """
         初始化调度管理器
         
         Args:
-            check_interval: 检查间隔（秒），默认60秒
+            check_interval: 检查间隔（秒），默认10秒（缩短检查间隔以提高响应性）
         """
         self._running = False
         self._check_interval = check_interval
