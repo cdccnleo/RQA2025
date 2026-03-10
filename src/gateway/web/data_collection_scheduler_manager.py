@@ -237,19 +237,24 @@ class DataCollectionSchedulerManager:
             # 定义任务完成回调
             def on_task_completed(task_id: str, status: str, result: Any, error: str):
                 """任务完成回调"""
-                logger.info(f"🎯 任务完成回调: {task_id}, 状态: {status}")
+                logger.info(f"🎯 任务完成回调被调用: task_id={task_id}, source_id={source_id}, 状态={status}")
                 
                 if status == "completed":
-                    logger.info(f"✅ 数据采集任务完成: {source_id}")
+                    logger.info(f"✅ 数据采集任务完成: {source_id}, 结果={result}")
                     # 更新数据源最后采集时间
-                    self._update_source_collection_time(source_id)
+                    try:
+                        self._update_source_collection_time(source_id)
+                        logger.info(f"✅ 已调用_update_source_collection_time: {source_id}")
+                    except Exception as update_err:
+                        logger.error(f"❌ 调用_update_source_collection_time失败: {source_id}, 错误={update_err}", exc_info=True)
                 elif status == "failed":
-                    logger.error(f"❌ 数据采集任务失败: {source_id}, 错误: {error}")
+                    logger.error(f"❌ 数据采集任务失败: {source_id}, 错误={error}")
                 
                 # 从已提交任务集合中移除
                 task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
                 if task_key in self._submitted_tasks:
                     self._submitted_tasks.discard(task_key)
+                    logger.info(f"🗑️ 已从提交任务集合移除: {task_key}")
             
             # 提交任务（异步方法）
             async def submit_task_async():
@@ -314,17 +319,29 @@ class DataCollectionSchedulerManager:
         try:
             from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             
+            logger.info(f"🔄 开始更新数据源最后采集时间: {source_id}")
+            
             config_manager = get_data_source_config_manager()
             
             # 更新数据源配置
             source_config = config_manager.get_data_source(source_id)
             if source_config:
+                old_time = source_config.get("last_collection_time")
                 source_config["last_collection_time"] = datetime.now().isoformat()
-                config_manager.update_data_source(source_id, source_config)
-                logger.info(f"📅 更新数据源最后采集时间: {source_id}")
+                
+                logger.info(f"📝 准备保存配置 - 数据源: {source_id}, 旧时间: {old_time}, 新时间: {source_config['last_collection_time']}")
+                
+                success = config_manager.update_data_source(source_id, source_config)
+                
+                if success:
+                    logger.info(f"✅ 更新数据源最后采集时间成功: {source_id}")
+                else:
+                    logger.error(f"❌ 更新数据源最后采集时间失败: {source_id} - update_data_source返回False")
+            else:
+                logger.warning(f"⚠️ 未找到数据源配置: {source_id}")
             
         except Exception as e:
-            logger.error(f"❌ 更新数据源采集时间失败 {source_id}: {e}")
+            logger.error(f"❌ 更新数据源采集时间失败 {source_id}: {e}", exc_info=True)
     
     def _cleanup_completed_tasks(self):
         """清理已完成的任务记录"""
