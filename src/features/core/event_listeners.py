@@ -158,15 +158,23 @@ class FeatureEventListeners:
 
             # 提交任务到调度器
             if self.scheduler:
-                task_id = self.scheduler.submit_task(
-                    task_type=task_type,
-                    data=task_config,
-                    metadata={
+                # 构建payload，包含task_config和metadata
+                payload = {
+                    "task_config": task_config,
+                    "metadata": {
                         "source_id": source_id,
                         "source_config": source_config,
                         "created_from_event": True
                     }
-                )
+                }
+                
+                # submit_task是异步方法，需要使用await
+                import asyncio
+                task_id = asyncio.run(self.scheduler.submit_task(
+                    task_type=task_type,
+                    payload=payload,
+                    priority=5
+                ))
                 logger.info(f"特征提取任务已创建，任务ID: {task_id}")
             else:
                 # 如果调度器未初始化，使用服务层创建任务
