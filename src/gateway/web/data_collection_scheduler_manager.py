@@ -326,17 +326,27 @@ class DataCollectionSchedulerManager:
             # 更新数据源配置
             source_config = config_manager.get_data_source(source_id)
             if source_config:
-                old_time = source_config.get("last_collection_time")
-                source_config["last_collection_time"] = datetime.now().isoformat()
+                now = datetime.now()
+                now_iso = now.isoformat()
+                now_str = now.strftime('%Y-%m-%d %H:%M:%S')
                 
-                logger.info(f"📝 准备保存配置 - 数据源: {source_id}, 旧时间: {old_time}, 新时间: {source_config['last_collection_time']}")
+                old_collection_time = source_config.get("last_collection_time")
+                old_test_time = source_config.get("last_test")
+                
+                # 同时更新 last_collection_time 和 last_test
+                source_config["last_collection_time"] = now_iso
+                source_config["last_test"] = now_str
+                
+                logger.info(f"📝 准备保存配置 - 数据源: {source_id}")
+                logger.info(f"   last_collection_time: {old_collection_time} -> {now_iso}")
+                logger.info(f"   last_test: {old_test_time} -> {now_str}")
                 
                 success = config_manager.update_data_source(source_id, source_config)
                 
                 if success:
-                    logger.info(f"✅ 更新数据源最后采集时间成功: {source_id}")
+                    logger.info(f"✅ 更新数据源时间成功: {source_id}")
                 else:
-                    logger.error(f"❌ 更新数据源最后采集时间失败: {source_id} - update_data_source返回False")
+                    logger.error(f"❌ 更新数据源时间失败: {source_id} - update_data_source返回False")
             else:
                 logger.warning(f"⚠️ 未找到数据源配置: {source_id}")
             
