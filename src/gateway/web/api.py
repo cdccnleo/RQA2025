@@ -1070,6 +1070,22 @@ async def lifespan(app: FastAPI):
         except Exception as handler_error:
             logger.warning(f"⚠️ 初始化数据采集事件处理器失败（非关键）: {handler_error}")
         
+        # 初始化特征工程事件监听器
+        try:
+            from src.features.core.event_listeners import initialize_event_listeners
+            from src.core.event_bus import get_event_bus
+            from src.core.orchestration.scheduler import get_unified_scheduler
+            
+            event_bus = get_event_bus()
+            scheduler = get_unified_scheduler()
+            
+            # 初始化特征工程事件监听器
+            initialize_event_listeners(event_bus, scheduler)
+            logger.info("✅ 特征工程事件监听器已初始化")
+            
+        except Exception as feature_error:
+            logger.warning(f"⚠️ 初始化特征工程事件监听器失败（非关键）: {feature_error}")
+        
         # 发布应用启动完成事件（向后兼容）
         try:
             from src.core.event_bus import get_event_bus
