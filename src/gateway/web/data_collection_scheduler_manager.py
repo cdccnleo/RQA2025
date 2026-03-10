@@ -247,8 +247,52 @@ class DataCollectionSchedulerManager:
                         logger.info(f"✅ 已调用_update_source_collection_time: {source_id}")
                     except Exception as update_err:
                         logger.error(f"❌ 调用_update_source_collection_time失败: {source_id}, 错误={update_err}", exc_info=True)
+                    
+                    # 发布数据采集完成事件，触发后续业务流程
+                    try:
+                        from src.core.event_bus import get_event_bus
+                        from src.core.event_bus.types import EventType
+                        
+                        event_bus = get_event_bus()
+                        event_bus.publish(
+                            EventType.DATA_COLLECTION_COMPLETED,
+                            {
+                                "source_id": source_id,
+                                "task_id": task_id,
+                                "status": status,
+                                "result": result,
+                                "timestamp": datetime.now().isoformat(),
+                                "collection_type": "scheduled"
+                            },
+                            source="data_collection_scheduler_manager"
+                        )
+                        logger.info(f"📢 数据采集完成事件已发布: {source_id}")
+                    except Exception as event_err:
+                        logger.warning(f"⚠️ 发布数据采集完成事件失败（非关键）: {source_id}, 错误={event_err}")
+                    
                 elif status == "failed":
                     logger.error(f"❌ 数据采集任务失败: {source_id}, 错误={error}")
+                    
+                    # 发布数据采集失败事件
+                    try:
+                        from src.core.event_bus import get_event_bus
+                        from src.core.event_bus.types import EventType
+                        
+                        event_bus = get_event_bus()
+                        event_bus.publish(
+                            EventType.DATA_COLLECTION_FAILED,
+                            {
+                                "source_id": source_id,
+                                "task_id": task_id,
+                                "status": status,
+                                "error": error,
+                                "timestamp": datetime.now().isoformat()
+                            },
+                            source="data_collection_scheduler_manager"
+                        )
+                        logger.info(f"📢 数据采集失败事件已发布: {source_id}")
+                    except Exception as event_err:
+                        logger.warning(f"⚠️ 发布数据采集失败事件失败（非关键）: {source_id}, 错误={event_err}")
                 
                 # 从已提交任务集合中移除
                 task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
