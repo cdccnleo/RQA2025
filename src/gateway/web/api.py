@@ -721,8 +721,43 @@ async def lifespan(app: FastAPI):
                         
                         collector = AKShareCollector()
                         
-                        # 获取配置参数
-                        symbols = source_config.get("symbols", ["000001"])  # 默认采集平安银行
+                        # 从配置中获取股票池 - 支持多种格式（与baostock保持一致）
+                        symbols = []
+                        
+                        # 1. 检查 symbols 字段（列表或逗号分隔字符串）
+                        if "symbols" in source_config and source_config["symbols"]:
+                            if isinstance(source_config["symbols"], list):
+                                symbols = source_config["symbols"]
+                            elif isinstance(source_config["symbols"], str):
+                                symbols = [s.strip() for s in source_config["symbols"].split(",") if s.strip()]
+                        
+                        # 2. 检查 custom_stocks 字段
+                        elif "custom_stocks" in source_config and source_config["custom_stocks"]:
+                            if isinstance(source_config["custom_stocks"], list):
+                                for stock in source_config["custom_stocks"]:
+                                    if isinstance(stock, dict) and "code" in stock:
+                                        symbols.append(stock["code"])
+                                    elif isinstance(stock, str):
+                                        symbols.append(stock)
+                        
+                        # 3. 检查 config.custom_stocks
+                        elif "config" in source_config and isinstance(source_config["config"], dict):
+                            config = source_config["config"]
+                            if "custom_stocks" in config and config["custom_stocks"]:
+                                if isinstance(config["custom_stocks"], list):
+                                    for stock in config["custom_stocks"]:
+                                        if isinstance(stock, dict) and "code" in stock:
+                                            symbols.append(stock["code"])
+                                        elif isinstance(stock, str):
+                                            symbols.append(stock)
+                        
+                        # 如果没有配置股票池，使用默认的
+                        if not symbols:
+                            logger.warning(f"⚠️ 数据源 {source_id} 未配置股票池，使用默认股票")
+                            symbols = ["000001"]  # 默认采集平安银行
+                        
+                        logger.info(f"📊 数据源 {source_id} 股票池: {symbols}")
+                        
                         start_date = source_config.get("start_date")
                         end_date = source_config.get("end_date")
                         
