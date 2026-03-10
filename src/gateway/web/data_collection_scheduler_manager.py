@@ -188,28 +188,47 @@ class DataCollectionSchedulerManager:
     
     def _has_pending_task(self, source_id: str) -> bool:
         """
-        检查是否已有待处理的任务
+        检查今天是否已采集过数据
+        优先查询数据库中的 last_test 字段，避免容器重启后重复采集
         
         Args:
             source_id: 数据源ID
             
         Returns:
-            bool: 是否有待处理任务
+            bool: 今天是否已采集
         """
-        # 生成任务标识
-        task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
-        
-        # 检查今天是否已提交过任务
-        if task_key in self._submitted_tasks:
-            return True
-        
-        # 检查统一调度器的任务队列
         try:
-            scheduler = get_unified_scheduler()
-            # 这里可以添加更复杂的检查逻辑
-            # 例如检查调度器中是否有相同数据源的任务
+            # 从数据库获取数据源配置（持久化检查，避免容器重启后重复采集）
+            from src.gateway.web.data_source_config_manager import get_data_source_config_manager
+            
+            config_manager = get_data_source_config_manager()
+            source_config = config_manager.get_data_source(source_id)
+            
+            if source_config:
+                last_test = source_config.get("last_test")
+                if last_test:
+                    try:
+                        # 解析最后测试时间
+                        last_test_date = datetime.strptime(last_test, "%Y-%m-%d %H:%M:%S").date()
+                        today = datetime.now().date()
+                        
+                        if last_test_date == today:
+                            logger.info(f"📅 数据源 {source_id} 今天已采集（last_test: {last_test}），跳过")
+                            return True
+                    except ValueError as e:
+                        logger.warning(f"解析 last_test 失败: {last_test}, 错误: {e}")
+            
+            # 数据库检查失败或未找到配置，降级到内存检查
+            logger.debug(f"数据库检查失败，降级到内存检查: {source_id}")
+            
         except Exception as e:
-            logger.debug(f"检查任务队列失败: {e}")
+            logger.error(f"检查数据库失败: {e}")
+        
+        # 内存检查（作为缓存和降级方案）
+        task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
+        if task_key in self._submitted_tasks:
+            logger.debug(f"内存检查：数据源 {source_id} 今天已提交过任务")
+            return True
         
         return False
     
