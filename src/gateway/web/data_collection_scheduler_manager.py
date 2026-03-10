@@ -254,6 +254,10 @@ class DataCollectionSchedulerManager:
                         from src.core.event_bus.types import EventType
                         
                         event_bus = get_event_bus()
+                        
+                        # 获取数据源配置（用于特征工程模块）
+                        source_config_for_event = source_config.copy() if source_config else {}
+                        
                         event_bus.publish(
                             EventType.DATA_COLLECTION_COMPLETED,
                             {
@@ -261,6 +265,7 @@ class DataCollectionSchedulerManager:
                                 "task_id": task_id,
                                 "status": status,
                                 "result": result,
+                                "source_config": source_config_for_event,  # 添加source_config以兼容特征工程模块
                                 "timestamp": datetime.now().isoformat(),
                                 "collection_type": "scheduled"
                             },
