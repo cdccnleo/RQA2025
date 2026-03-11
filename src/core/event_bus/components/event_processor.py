@@ -95,8 +95,14 @@ class EventProcessor:
                 sync_count, async_count
             )
 
+            # 添加成功处理日志
+            logger.info(f"✅ 事件处理完成: {event.event_id} ({event_type_str}), "
+                       f"成功: {result.success}, "
+                       f"同步处理器: {sync_count}, 异步处理器: {async_count}, "
+                       f"处理时间: {processing_time:.3f}s")
+
         except Exception as e:
-            logger.error(f"处理事件失败: {e}")
+            logger.error(f"❌ 处理事件失败: {e}", exc_info=True)
             if hasattr(result, 'errors') and result.errors is not None:
                 result.errors.append(str(e))
             else:
