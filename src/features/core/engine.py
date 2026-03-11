@@ -657,10 +657,16 @@ class FeatureEngine:
             创建的任务信息
         """
         import time
+        import uuid
         config = config or {}
         # 检查是否有自定义任务ID前缀
         task_id_prefix = config.get('task_id_prefix', 'task')
-        task_id = f"{task_id_prefix}_{int(time.time())}"
+        # 使用股票代码和时间戳生成唯一ID，确保每只股票的任务ID唯一
+        stock_code = config.get('stock_code', '')
+        if stock_code:
+            task_id = f"{task_id_prefix}_{stock_code}_{int(time.time())}_{uuid.uuid4().hex[:8]}"
+        else:
+            task_id = f"{task_id_prefix}_{int(time.time())}_{uuid.uuid4().hex[:8]}"
         task = {
             "task_id": task_id,
             "task_type": task_type,
