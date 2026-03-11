@@ -1079,12 +1079,14 @@ async def lifespan(app: FastAPI):
             event_bus = get_event_bus()
             scheduler = get_unified_scheduler()
             
+            logger.info(f"🔧 准备初始化特征工程事件监听器... EventBus: {event_bus is not None}, Scheduler: {scheduler is not None}")
+            
             # 初始化特征工程事件监听器
             initialize_event_listeners(event_bus, scheduler)
-            logger.info("✅ 特征工程事件监听器已初始化")
+            logger.info("✅ 特征工程事件监听器已初始化完成")
             
         except Exception as feature_error:
-            logger.warning(f"⚠️ 初始化特征工程事件监听器失败（非关键）: {feature_error}")
+            logger.error(f"❌ 初始化特征工程事件监听器失败: {feature_error}", exc_info=True)
         
         # 发布应用启动完成事件（向后兼容）
         try:

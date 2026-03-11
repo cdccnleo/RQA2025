@@ -45,6 +45,8 @@ class FeatureEventListeners:
         """
         注册事件监听器
         """
+        logger.info(f"🔧 开始注册特征工程事件监听器... EventBus: {self.event_bus is not None}")
+        
         if not self.event_bus:
             logger.warning("事件总线未初始化，无法注册监听器")
             return
@@ -52,13 +54,15 @@ class FeatureEventListeners:
         # 导入事件类型
         try:
             from src.core.event_bus.types import EventType
+            logger.info(f"✅ 事件类型导入成功，DATA_COLLECTION_COMPLETED: {hasattr(EventType, 'DATA_COLLECTION_COMPLETED')}")
         except Exception as e:
-            logger.error(f"导入事件类型失败: {e}")
+            logger.error(f"❌ 导入事件类型失败: {e}")
             return
 
         # 注册数据采集完成事件监听器
         try:
             def handle_data_collection_completed(event):
+                logger.info(f"📥 特征工程收到数据采集完成事件: {event}")
                 self._handle_data_collection_completed(event)
 
             # 优先使用DATA_COLLECTION_COMPLETED事件，如果不存在则使用DATA_COLLECTED
@@ -67,16 +71,16 @@ class FeatureEventListeners:
                     EventType.DATA_COLLECTION_COMPLETED,
                     handle_data_collection_completed
                 )
-                logger.info("已注册数据采集完成事件监听器")
+                logger.info("✅ 已注册 DATA_COLLECTION_COMPLETED 事件监听器")
             else:
                 # 使用现有的DATA_COLLECTED事件
                 self.event_bus.subscribe(
                     EventType.DATA_COLLECTED,
                     handle_data_collection_completed
                 )
-                logger.info("已注册数据采集完成事件监听器（使用DATA_COLLECTED事件）")
+                logger.info("✅ 已注册 DATA_COLLECTED 事件监听器")
         except Exception as e:
-            logger.error(f"注册数据采集完成事件监听器失败: {e}")
+            logger.error(f"❌ 注册数据采集完成事件监听器失败: {e}", exc_info=True)
 
         # 注册数据采集开始事件监听器
         try:
@@ -98,18 +102,25 @@ class FeatureEventListeners:
         Args:
             event: 事件对象
         """
+        logger.info(f"🎯 开始处理数据采集完成事件: {event}")
         try:
             data = event.data if hasattr(event, 'data') else event
             source_id = data.get("source_id")
             source_config = data.get("source_config")
 
-            logger.info(f"收到数据采集完成事件，数据源: {source_id}")
+            logger.info(f"📊 收到数据采集完成事件，数据源: {source_id}, 配置: {source_config is not None}")
+
+            if not source_id:
+                logger.warning("⚠️ 事件数据中缺少 source_id")
+                return
 
             # 自动创建特征提取任务
+            logger.info(f"🔧 准备为数据源 {source_id} 创建特征提取任务...")
             self._create_feature_task(source_id, source_config)
+            logger.info(f"✅ 数据源 {source_id} 的特征提取任务处理完成")
 
         except Exception as e:
-            logger.error(f"处理数据采集完成事件失败: {e}")
+            logger.error(f"❌ 处理数据采集完成事件失败: {e}", exc_info=True)
 
     def _handle_data_collection_started(self, event):
         """
