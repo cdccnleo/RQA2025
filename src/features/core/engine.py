@@ -659,8 +659,8 @@ class FeatureEngine:
         import time
         import uuid
         config = config or {}
-        # 检查是否有自定义任务ID前缀
-        task_id_prefix = config.get('task_id_prefix', 'task')
+        # 使用固定的feature_前缀，确保任务ID清晰标识为特征提取任务
+        task_id_prefix = 'feature'
         # 使用股票代码和时间戳生成唯一ID，确保每只股票的任务ID唯一
         stock_code = config.get('stock_code', '')
         if stock_code:
