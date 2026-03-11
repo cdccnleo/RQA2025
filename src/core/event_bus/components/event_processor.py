@@ -63,7 +63,8 @@ class EventProcessor:
             事件处理结果
         """
         start_time = time.time()
-        event_type_str = str(event.event_type)
+        # 正确获取事件类型字符串：如果是枚举则使用.value，否则使用str
+        event_type_str = event.event_type.value if hasattr(event.event_type, 'value') else str(event.event_type)
 
         result = EventProcessingResult(
             event_id=getattr(event, 'event_id', ''),
