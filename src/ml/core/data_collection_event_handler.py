@@ -43,17 +43,19 @@ class MLDataCollectionEventHandler:
         except Exception as e:
             logger.error(f"❌ ML模块订阅数据采集完成事件失败: {e}")
             
-    def _on_data_collection_completed(self, event: Dict[str, Any]):
+    def _on_data_collection_completed(self, event):
         """
         处理数据采集完成事件
         
         Args:
-            event: 事件数据，包含source_id, task_id, status, result等
+            event: 事件对象或事件数据字典
         """
         try:
-            source_id = event.get("source_id")
-            task_id = event.get("task_id")
-            result = event.get("result", {})
+            # 兼容Event对象和字典
+            data = event.data if hasattr(event, 'data') else event
+            source_id = data.get("source_id")
+            task_id = data.get("task_id")
+            result = data.get("result", {})
             
             logger.info(f"🎯 ML模块收到数据采集完成事件: {source_id}, task_id={task_id}")
             
