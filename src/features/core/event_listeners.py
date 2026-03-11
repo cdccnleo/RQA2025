@@ -140,20 +140,13 @@ class FeatureEventListeners:
 
     def _create_feature_task(self, source_id: str, source_config: Dict[str, Any]):
         """
-        创建特征提取任务
+        创建特征提取任务 - 为每只股票创建独立的任务
 
         Args:
             source_id: 数据源ID
             source_config: 数据源配置
         """
         try:
-            # 构建任务配置
-            task_config = {
-                "data_source": source_id,
-                "source_config": source_config,
-                "collection_time": time.time()
-            }
-
             # 确定任务类型
             task_type = "技术指标"  # 默认任务类型
 
@@ -165,41 +158,85 @@ class FeatureEventListeners:
                 elif "statistical" in data_type.lower():
                     task_type = "统计特征"
 
-            logger.info(f"为数据源 {source_id} 创建特征提取任务，类型: {task_type}")
+            # 获取股票列表
+            custom_stocks = source_config.get("custom_stocks", []) if source_config else []
+            
+            if not custom_stocks:
+                logger.warning(f"数据源 {source_id} 没有配置股票列表，无法创建特征提取任务")
+                return
 
-            # 使用服务层创建任务（持久化到数据库）
-            try:
-                from src.gateway.web.feature_engineering_service import create_feature_task
-                task = create_feature_task(task_type, task_config)
-                task_id = task.get('task_id')
-                logger.info(f"✅ 特征提取任务已创建并持久化，任务ID: {task_id}")
+            logger.info(f"为数据源 {source_id} 的 {len(custom_stocks)} 只股票创建特征提取任务，类型: {task_type}")
+
+            # 获取日期范围
+            default_days = source_config.get("default_days", 30) if source_config else 30
+            from datetime import datetime, timedelta
+            end_date = datetime.now().strftime("%Y-%m-%d")
+            start_date = (datetime.now() - timedelta(days=default_days)).strftime("%Y-%m-%d")
+
+            # 为每只股票创建独立的特征提取任务
+            created_tasks = []
+            for stock in custom_stocks:
+                stock_code = stock.get("code")
+                stock_name = stock.get("name", "")
                 
-                # 如果调度器可用，同时提交到调度器进行调度执行
-                if self.scheduler and task_id:
-                    try:
-                        import asyncio
-                        payload = {
-                            "task_config": task_config,
-                            "metadata": {
-                                "source_id": source_id,
-                                "source_config": source_config,
-                                "created_from_event": True,
-                                "feature_task_id": task_id
-                            }
-                        }
-                        scheduler_task_id = asyncio.run(self.scheduler.submit_task(
-                            task_type=task_type,
-                            payload=payload,
-                            priority=5
-                        ))
-                        logger.info(f"✅ 任务已提交到调度器，调度器任务ID: {scheduler_task_id}")
-                    except Exception as e:
-                        logger.warning(f"⚠️ 提交到调度器失败（不影响数据库持久化）: {e}")
-            except Exception as e:
-                logger.error(f"❌ 创建特征提取任务失败: {e}", exc_info=True)
+                if not stock_code:
+                    logger.warning(f"股票数据缺少代码，跳过: {stock}")
+                    continue
+
+                # 构建单个股票的任务配置
+                task_config = {
+                    "symbol": stock_code,
+                    "stock_code": stock_code,
+                    "stock_name": stock_name,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "indicators": ["SMA", "EMA", "RSI", "MACD", "KDJ", "BOLL"],
+                    "data_source": source_id,
+                    "collection_time": time.time()
+                }
+
+                try:
+                    from src.gateway.web.feature_engineering_service import create_feature_task
+                    task = create_feature_task(task_type, task_config)
+                    task_id = task.get('task_id')
+                    
+                    if task_id:
+                        created_tasks.append({
+                            'task_id': task_id,
+                            'stock_code': stock_code,
+                            'stock_name': stock_name
+                        })
+                        logger.info(f"✅ 股票 {stock_code} ({stock_name}) 的特征提取任务已创建，任务ID: {task_id}")
+                        
+                        # 如果调度器可用，同时提交到调度器进行调度执行
+                        if self.scheduler:
+                            try:
+                                import asyncio
+                                payload = {
+                                    "task_config": task_config,
+                                    "metadata": {
+                                        "source_id": source_id,
+                                        "stock_code": stock_code,
+                                        "stock_name": stock_name,
+                                        "created_from_event": True,
+                                        "feature_task_id": task_id
+                                    }
+                                }
+                                scheduler_task_id = asyncio.run(self.scheduler.submit_task(
+                                    task_type=task_type,
+                                    payload=payload,
+                                    priority=5
+                                ))
+                                logger.debug(f"股票 {stock_code} 的任务已提交到调度器，调度器任务ID: {scheduler_task_id}")
+                            except Exception as e:
+                                logger.warning(f"⚠️ 股票 {stock_code} 提交到调度器失败（不影响数据库持久化）: {e}")
+                except Exception as e:
+                    logger.error(f"❌ 为股票 {stock_code} 创建特征提取任务失败: {e}")
+
+            logger.info(f"✅ 数据源 {source_id} 的特征提取任务创建完成，共 {len(created_tasks)} 个任务")
 
         except Exception as e:
-            logger.error(f"创建特征提取任务失败: {e}")
+            logger.error(f"创建特征提取任务失败: {e}", exc_info=True)
 
 
 # 全局事件监听器实例
