@@ -605,17 +605,16 @@ def _get_container():
             
             # 注册事件总线（符合架构设计：事件驱动通信）
             try:
-                from src.core.event_bus.core import EventBus
-                event_bus = EventBus()
-                event_bus.initialize()
+                from src.core.event_bus import get_event_bus
+                event_bus = get_event_bus()
                 _container.register(
                     "event_bus",
                     service=event_bus,
                     lifecycle="singleton"
                 )
-                logger.info("事件总线已注册到服务容器")
+                logger.info("✅ 事件总线已注册到服务容器（使用单例）")
             except Exception as e:
-                logger.warning(f"注册事件总线失败: {e}")
+                logger.warning(f"⚠️ 注册事件总线失败: {e}")
             
             # 注册业务流程编排器（符合架构设计：业务流程管理）
             try:
@@ -700,13 +699,11 @@ def _get_event_bus():
     # 降级方案：直接初始化
     if _event_bus is None:
         try:
-            from src.core.event_bus.core import EventBus
-            _event_bus = EventBus()
-            if not _event_bus._initialized:
-                _event_bus.initialize()
-            logger.info("事件总线已初始化")
+            from src.core.event_bus import get_event_bus
+            _event_bus = get_event_bus()
+            logger.info("✅ 事件总线已初始化（使用单例）")
         except Exception as e:
-            logger.warning(f"事件总线初始化失败: {e}")
+            logger.warning(f"⚠️ 事件总线初始化失败: {e}")
             _event_bus = None
     return _event_bus
 
