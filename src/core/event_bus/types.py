@@ -14,6 +14,8 @@ class EventType(Enum):
     DATA_COLLECTION_STARTED = "data_collection_started"
     DATA_COLLECTION_PROGRESS = "data_collection_progress"  # 数据采集进度更新
     DATA_COLLECTED = "data_collected"
+    DATA_COLLECTION_COMPLETED = "data_collection_completed"  # 数据采集完成（用于触发后续业务流程）
+    DATA_COLLECTION_FAILED = "data_collection_failed"  # 数据采集失败
     DATA_QUALITY_CHECKED = "data_quality_checked"
     DATA_QUALITY_ALERT = "data_quality_alert"
     DATA_QUALITY_UPDATED = "data_quality_updated"
