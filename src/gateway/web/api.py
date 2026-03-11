@@ -2192,6 +2192,48 @@ async def data_status():
     }
 
 
+@app.get("/api/v1/system/event-bus/subscriptions")
+async def get_event_bus_subscriptions():
+    """获取EventBus事件订阅状态（用于诊断）"""
+    try:
+        from src.core.event_bus import get_event_bus
+        from src.core.event_bus.types import EventType
+        
+        event_bus = get_event_bus()
+        if not event_bus:
+            return {"error": "EventBus未初始化", "status": "error"}
+        
+        # 获取所有事件类型的订阅情况
+        subscriptions = {}
+        for event_type in EventType:
+            handlers = []
+            async_handlers = []
+            
+            # 使用EventBus的内部方法获取处理器
+            if hasattr(event_bus, '_handlers'):
+                handlers = [str(h.handler) for h in event_bus._handlers.get(event_type.value, [])]
+            if hasattr(event_bus, '_async_handlers'):
+                async_handlers = [str(h.handler) for h in event_bus._async_handlers.get(event_type.value, [])]
+            
+            if handlers or async_handlers:
+                subscriptions[event_type.value] = {
+                    "sync_handlers": len(handlers),
+                    "async_handlers": len(async_handlers),
+                    "handler_names": handlers[:5]  # 只显示前5个
+                }
+        
+        return {
+            "status": "success",
+            "event_bus_initialized": event_bus._initialized if hasattr(event_bus, '_initialized') else False,
+            "total_event_types": len(subscriptions),
+            "subscriptions": subscriptions,
+            "timestamp": time.time()
+        }
+    except Exception as e:
+        logger.error(f"获取EventBus订阅状态失败: {e}", exc_info=True)
+        return {"error": str(e), "status": "error"}
+
+
 @app.get("/api/v1/data/monitoring/report")
 async def get_monitoring_report():
     """获取数据采集监控报告"""
