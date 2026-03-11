@@ -62,14 +62,15 @@ class EventSubscriber:
                 if event_type_str not in self._async_handlers:
                     self._async_handlers[event_type_str] = []
                 self._async_handlers[event_type_str].append(handler_info)
+                logger.info(f"✅ [EventSubscriber] 订阅异步事件: {event_type_str}, 处理器数量: {len(self._async_handlers[event_type_str])}")
             else:
                 if event_type_str not in self._handlers:
                     self._handlers[event_type_str] = []
                 self._handlers[event_type_str].append(handler_info)
+                logger.info(f"✅ [EventSubscriber] 订阅同步事件: {event_type_str}, 处理器数量: {len(self._handlers[event_type_str])}")
         finally:
             self._lock.release()
 
-        logger.debug(f"订阅事件: {event_type_str}")
         return True
 
     def subscribe_async(self, event_type: Union[EventType, str], handler: Callable) -> bool:
@@ -133,6 +134,15 @@ class EventSubscriber:
             async_handlers = self._async_handlers.get(event_type_str, []).copy()
         finally:
             self._lock.release()
+        
+        # 添加诊断日志
+        total_sync = len(handlers)
+        total_async = len(async_handlers)
+        if total_sync > 0 or total_async > 0:
+            logger.info(f"📋 [EventSubscriber] 获取处理器: {event_type_str}, 同步: {total_sync}, 异步: {total_async}")
+        else:
+            logger.warning(f"⚠️ [EventSubscriber] 未找到处理器: {event_type_str}, 所有事件类型: {list(self._handlers.keys())}")
+        
         return handlers, async_handlers
 
     def get_subscriber_count(self, event_type: Union[EventType, str]) -> int:
