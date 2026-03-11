@@ -167,34 +167,36 @@ class FeatureEventListeners:
 
             logger.info(f"为数据源 {source_id} 创建特征提取任务，类型: {task_type}")
 
-            # 提交任务到调度器
-            if self.scheduler:
-                # 构建payload，包含task_config和metadata
-                payload = {
-                    "task_config": task_config,
-                    "metadata": {
-                        "source_id": source_id,
-                        "source_config": source_config,
-                        "created_from_event": True
-                    }
-                }
+            # 使用服务层创建任务（持久化到数据库）
+            try:
+                from src.gateway.web.feature_engineering_service import create_feature_task
+                task = create_feature_task(task_type, task_config)
+                task_id = task.get('task_id')
+                logger.info(f"✅ 特征提取任务已创建并持久化，任务ID: {task_id}")
                 
-                # submit_task是异步方法，需要使用await
-                import asyncio
-                task_id = asyncio.run(self.scheduler.submit_task(
-                    task_type=task_type,
-                    payload=payload,
-                    priority=5
-                ))
-                logger.info(f"特征提取任务已创建，任务ID: {task_id}")
-            else:
-                # 如果调度器未初始化，使用服务层创建任务
-                try:
-                    from src.gateway.web.feature_engineering_service import create_feature_task
-                    task = create_feature_task(task_type, task_config)
-                    logger.info(f"通过服务层创建特征提取任务，任务ID: {task.get('task_id')}")
-                except Exception as e:
-                    logger.error(f"通过服务层创建特征提取任务失败: {e}")
+                # 如果调度器可用，同时提交到调度器进行调度执行
+                if self.scheduler and task_id:
+                    try:
+                        import asyncio
+                        payload = {
+                            "task_config": task_config,
+                            "metadata": {
+                                "source_id": source_id,
+                                "source_config": source_config,
+                                "created_from_event": True,
+                                "feature_task_id": task_id
+                            }
+                        }
+                        scheduler_task_id = asyncio.run(self.scheduler.submit_task(
+                            task_type=task_type,
+                            payload=payload,
+                            priority=5
+                        ))
+                        logger.info(f"✅ 任务已提交到调度器，调度器任务ID: {scheduler_task_id}")
+                    except Exception as e:
+                        logger.warning(f"⚠️ 提交到调度器失败（不影响数据库持久化）: {e}")
+            except Exception as e:
+                logger.error(f"❌ 创建特征提取任务失败: {e}", exc_info=True)
 
         except Exception as e:
             logger.error(f"创建特征提取任务失败: {e}")
