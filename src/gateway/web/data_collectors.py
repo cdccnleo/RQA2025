@@ -1145,6 +1145,8 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
         if event_bus:
             try:
                 from src.core.event_bus.types import EventType
+                
+                # 发布 DATA_COLLECTED 事件（原有，用于WebSocket监控等）
                 event_bus.publish(
                     EventType.DATA_COLLECTED,
                     {
@@ -1157,9 +1159,30 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
                     },
                     source="data_collectors"
                 )
-                logger.debug(f"已发布数据采集完成事件: {source_id}")
+                logger.debug(f"已发布 DATA_COLLECTED 事件: {source_id}")
+                
+                # 新增：发布 DATA_COLLECTION_COMPLETED 事件（用于特征工程、数据质量、ML模块）
+                event_bus.publish(
+                    EventType.DATA_COLLECTION_COMPLETED,
+                    {
+                        "source_id": source_id,
+                        "task_id": f"manual_{source_id}_{int(time.time())}",
+                        "status": "completed",
+                        "result": {
+                            "data": data,
+                            "total_records": len(data) if hasattr(data, "__len__") else 1,
+                            "collection_time": collection_time,
+                            "quality_score": quality_score
+                        },
+                        "source_config": source_config,
+                        "timestamp": time.time(),
+                        "collection_type": "manual"
+                    },
+                    source="data_collectors"
+                )
+                logger.info(f"📢 已发布 DATA_COLLECTION_COMPLETED 事件: {source_id}")
             except Exception as e:
-                logger.debug(f"发布事件失败: {e}")
+                logger.error(f"发布事件失败: {e}")
 
         # 清理数据，确保JSON兼容性
         def sanitize_value(value):
