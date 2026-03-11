@@ -158,8 +158,9 @@ class FeatureEventListeners:
                 elif "statistical" in data_type.lower():
                     task_type = "统计特征"
 
-            # 获取股票列表
-            custom_stocks = source_config.get("custom_stocks", []) if source_config else []
+            # 获取股票列表 - 从嵌套的config字段中获取
+            config = source_config.get("config", {}) if source_config else {}
+            custom_stocks = config.get("custom_stocks", []) if config else []
             
             if not custom_stocks:
                 logger.warning(f"数据源 {source_id} 没有配置股票列表，无法创建特征提取任务")
@@ -168,7 +169,7 @@ class FeatureEventListeners:
             logger.info(f"为数据源 {source_id} 的 {len(custom_stocks)} 只股票创建特征提取任务，类型: {task_type}")
 
             # 获取日期范围
-            default_days = source_config.get("default_days", 30) if source_config else 30
+            default_days = config.get("default_days", 30) if config else 30
             from datetime import datetime, timedelta
             end_date = datetime.now().strftime("%Y-%m-%d")
             start_date = (datetime.now() - timedelta(days=default_days)).strftime("%Y-%m-%d")
