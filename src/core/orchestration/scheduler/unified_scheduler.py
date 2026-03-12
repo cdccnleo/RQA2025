@@ -545,9 +545,11 @@ class UnifiedScheduler(BaseScheduler):
             await self._event_bus_integration.publish_task_created(task)
 
         # 提交到工作队列
+        # 确保 task_type 是字符串（如果是枚举，获取其值）
+        task_type_str = task_type.value if hasattr(task_type, 'value') else str(task_type)
         task_data = {
             "id": task_id,
-            "type": task_type,
+            "type": task_type_str,
             "payload": payload
         }
 
