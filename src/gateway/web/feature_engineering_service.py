@@ -257,9 +257,8 @@ def create_feature_task(
                     # 提交任务到统一调度器
                     scheduler_task_id = scheduler.submit_task(
                         task_type=submit_task_type,
-                        data=config or {},
-                        priority=TaskPriority.NORMAL,
-                        metadata={"task_id": task_id, "original_task": task, "task_type": task_type}
+                        payload=config or {},
+                        priority=TaskPriority.NORMAL
                     )
                     logger.info(f"✅ 特征引擎任务已提交到统一调度器: {task_id} (调度器ID: {scheduler_task_id})")
                     
