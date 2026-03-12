@@ -1024,6 +1024,75 @@ async def lifespan(app: FastAPI):
             logger.info("✅ 数据采集任务处理器已注册 (data_collection)")
             print("✅ 数据采集任务处理器已注册 (data_collection)")
             
+            # 注册特征提取任务处理器
+            try:
+                def feature_extraction_handler(payload: Dict[str, Any]) -> Dict[str, Any]:
+                    """
+                    特征提取任务处理器
+                    
+                    Args:
+                        payload: 任务数据，包含symbol, start_date, end_date, indicators等
+                    
+                    Returns:
+                        Dict: 处理结果
+                    """
+                    try:
+                        symbol = payload.get("symbol")
+                        stock_code = payload.get("stock_code")
+                        stock_name = payload.get("stock_name", "")
+                        start_date = payload.get("start_date")
+                        end_date = payload.get("end_date")
+                        indicators = payload.get("indicators", ["SMA", "EMA", "RSI", "MACD"])
+                        
+                        logger.info(f"🚀 开始执行特征提取任务: {stock_code} ({stock_name})")
+                        
+                        # 调用特征提取引擎
+                        from src.features.core.engine import FeatureEngine
+                        engine = FeatureEngine()
+                        
+                        # 构建特征提取配置
+                        feature_config = {
+                            "symbol": symbol or stock_code,
+                            "stock_code": stock_code,
+                            "stock_name": stock_name,
+                            "start_date": start_date,
+                            "end_date": end_date,
+                            "indicators": indicators,
+                            "task_type": "技术指标"
+                        }
+                        
+                        # 执行特征提取
+                        result = engine.extract_features(feature_config)
+                        
+                        logger.info(f"✅ 特征提取任务完成: {stock_code}, 提取了 {result.get('feature_count', 0)} 个特征")
+                        
+                        return {
+                            "status": "success",
+                            "stock_code": stock_code,
+                            "stock_name": stock_name,
+                            "feature_count": result.get("feature_count", 0),
+                            "features": result.get("features", []),
+                            "timestamp": time.time()
+                        }
+                        
+                    except Exception as e:
+                        logger.error(f"❌ 特征提取任务失败: {payload.get('stock_code')}: {e}", exc_info=True)
+                        return {
+                            "status": "failed",
+                            "stock_code": payload.get("stock_code"),
+                            "error": str(e),
+                            "timestamp": time.time()
+                        }
+                
+                # 注册特征提取处理器
+                worker_manager.register_task_handler("feature_extraction", feature_extraction_handler)
+                logger.info("✅ 特征提取任务处理器已注册 (feature_extraction)")
+                print("✅ 特征提取任务处理器已注册 (feature_extraction)")
+                
+            except Exception as feature_handler_error:
+                logger.error(f"❌ 注册特征提取处理器失败: {feature_handler_error}", exc_info=True)
+                print(f"❌ 注册特征提取处理器失败: {feature_handler_error}")
+            
         except Exception as handler_error:
             logger.error(f"❌ 注册任务处理器失败: {handler_error}", exc_info=True)
             print(f"❌ 注册任务处理器失败: {handler_error}")
