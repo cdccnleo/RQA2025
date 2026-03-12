@@ -106,11 +106,23 @@ try:
                 print(f"❌ 启动数据采集工作器失败: {e}")  # 使用print确保日志输出
                 logger.error(f"❌ 启动数据采集工作器失败: {e}")
 
-            # 🎯 注册特征提取任务处理器到统一调度器
+            # 🎯 启动统一调度器并注册特征提取任务处理器
             try:
                 from src.core.orchestration.scheduler import get_unified_scheduler
                 
                 scheduler = get_unified_scheduler()
+                
+                # 启动调度器（这会启动工作节点）
+                print("🔧 启动统一调度器...")
+                logger.info("🔧 启动统一调度器...")
+                success = await scheduler.start()
+                if success:
+                    print("✅ 统一调度器已启动")
+                    logger.info("✅ 统一调度器已启动")
+                else:
+                    print("⚠️ 统一调度器启动失败")
+                    logger.warning("⚠️ 统一调度器启动失败")
+                
                 worker_manager = scheduler._worker_manager
                 
                 def feature_extraction_handler(payload: dict):
