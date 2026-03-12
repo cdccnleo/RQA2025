@@ -168,7 +168,29 @@ try:
                 print(f"❌ 注册特征提取处理器失败: {e}")
                 logger.error(f"❌ 注册特征提取处理器失败: {e}")
 
+            # 🎯 初始化特征工程事件监听器（用于监听数据采集完成事件并自动创建特征提取任务）
+            try:
+                from src.features.core.event_listeners import initialize_event_listeners
+                from src.core.event_bus import get_event_bus
+                from src.core.orchestration.scheduler import get_unified_scheduler
+                
+                event_bus = get_event_bus()
+                scheduler = get_unified_scheduler()
+                
+                print("🔧 初始化特征工程事件监听器...")
+                logger.info("🔧 初始化特征工程事件监听器...")
+                
+                initialize_event_listeners(event_bus, scheduler)
+                
+                print("✅ 特征工程事件监听器已初始化")
+                logger.info("✅ 特征工程事件监听器已初始化")
+                
+            except Exception as e:
+                print(f"⚠️ 初始化特征工程事件监听器失败: {e}")
+                logger.warning(f"⚠️ 初始化特征工程事件监听器失败: {e}")
+
             logger.info("RQA2025量化交易系统启动完成")
+            print("✅ RQA2025量化交易系统启动完成")
 
             yield
 
