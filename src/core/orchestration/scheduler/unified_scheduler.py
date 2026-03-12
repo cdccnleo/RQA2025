@@ -302,11 +302,37 @@ class UnifiedScheduler(BaseScheduler):
             Dict: 工作节点统计信息
         """
         try:
-            return self._worker_manager.get_stats()
+            # WorkerManager使用的是get_statistics()方法
+            if hasattr(self._worker_manager, 'get_statistics'):
+                stats = self._worker_manager.get_statistics()
+                # 转换为统一的字段名
+                return {
+                    "total": stats.get('total', 0),
+                    "active": stats.get('active', 0),
+                    "active_workers": stats.get('active', 0),  # 兼容字段
+                    "idle": stats.get('idle', 0),
+                    "stopped": stats.get('stopped', 0),
+                    "total_tasks_executed": stats.get('total_tasks_executed', 0),
+                    "queue_size": stats.get('queue_size', 0)
+                }
+            else:
+                # 降级：直接计算
+                total = len(self._worker_manager._workers)
+                active = len([w for w in self._worker_manager._workers.values() if w.status == "busy"])
+                idle = len([w for w in self._worker_manager._workers.values() if w.status == "idle"])
+                return {
+                    "total": total,
+                    "active": active,
+                    "active_workers": active,
+                    "idle": idle,
+                    "stopped": 0,
+                    "total_tasks_executed": 0,
+                    "queue_size": self._worker_manager._task_queue.qsize() if hasattr(self._worker_manager, '_task_queue') else 0
+                }
         except Exception as e:
             logger.error(f"获取工作节点统计失败: {e}")
             return {
-                "total": 0, "active": 0, "idle": 0, "stopped": 0,
+                "total": 0, "active": 0, "active_workers": 0, "idle": 0, "stopped": 0,
                 "total_tasks_executed": 0, "queue_size": 0
             }
     
