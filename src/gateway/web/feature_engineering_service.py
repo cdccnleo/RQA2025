@@ -254,12 +254,13 @@ def create_feature_task(
                     workers = registry.get_workers_by_type(worker_type)
                     logger.info(f"👷 当前{worker_type.value}工作节点数量: {len(workers)}")
                     
-                    # 提交任务到统一调度器
-                    scheduler_task_id = scheduler.submit_task(
+                    # 提交任务到统一调度器（submit_task是异步方法，需要使用asyncio.run）
+                    import asyncio
+                    scheduler_task_id = asyncio.run(scheduler.submit_task(
                         task_type=submit_task_type,
                         payload=config or {},
                         priority=TaskPriority.NORMAL
-                    )
+                    ))
                     logger.info(f"✅ 特征引擎任务已提交到统一调度器: {task_id} (调度器ID: {scheduler_task_id})")
                     
                     # 更新任务状态
