@@ -105,6 +105,56 @@ try:
                 print(f"❌ 启动数据采集工作器失败: {e}")  # 使用print确保日志输出
                 logger.error(f"❌ 启动数据采集工作器失败: {e}")
 
+            # 🎯 注册特征提取任务处理器到统一调度器
+            try:
+                from src.core.orchestration.scheduler import get_unified_scheduler
+                
+                scheduler = get_unified_scheduler()
+                worker_manager = scheduler._worker_manager
+                
+                def feature_extraction_handler(payload: dict):
+                    """特征提取任务处理器"""
+                    try:
+                        stock_code = payload.get("stock_code")
+                        stock_name = payload.get("stock_name", "")
+                        
+                        print(f"🚀 开始执行特征提取任务: {stock_code} ({stock_name})")
+                        logger.info(f"🚀 开始执行特征提取任务: {stock_code} ({stock_name})")
+                        
+                        # 调用特征提取引擎
+                        from src.features.core.engine import FeatureEngine
+                        engine = FeatureEngine()
+                        
+                        result = engine.extract_features(payload)
+                        
+                        print(f"✅ 特征提取任务完成: {stock_code}, 提取了 {result.get('feature_count', 0)} 个特征")
+                        logger.info(f"✅ 特征提取任务完成: {stock_code}, 提取了 {result.get('feature_count', 0)} 个特征")
+                        
+                        return {
+                            "status": "success",
+                            "stock_code": stock_code,
+                            "feature_count": result.get("feature_count", 0),
+                            "timestamp": time.time()
+                        }
+                    except Exception as e:
+                        print(f"❌ 特征提取任务失败: {payload.get('stock_code')}: {e}")
+                        logger.error(f"❌ 特征提取任务失败: {payload.get('stock_code')}: {e}")
+                        return {
+                            "status": "failed",
+                            "stock_code": payload.get("stock_code"),
+                            "error": str(e),
+                            "timestamp": time.time()
+                        }
+                
+                # 注册处理器
+                worker_manager.register_task_handler("feature_extraction", feature_extraction_handler)
+                print("✅ 特征提取任务处理器已注册 (feature_extraction)")
+                logger.info("✅ 特征提取任务处理器已注册 (feature_extraction)")
+                
+            except Exception as e:
+                print(f"❌ 注册特征提取处理器失败: {e}")
+                logger.error(f"❌ 注册特征提取处理器失败: {e}")
+
             logger.info("RQA2025量化交易系统启动完成")
 
             yield
