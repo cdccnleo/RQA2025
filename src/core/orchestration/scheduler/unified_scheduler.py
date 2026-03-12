@@ -236,21 +236,55 @@ class UnifiedScheduler(BaseScheduler):
             Dict: 任务统计信息
         """
         try:
-            # 使用asyncio.run同步获取统计信息
-            import asyncio
-            try:
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    # 如果事件循环正在运行，使用run_coroutine_threadsafe
-                    future = asyncio.run_coroutine_threadsafe(
-                        self._task_manager.get_stats(), loop
-                    )
-                    return future.result(timeout=5)
-                else:
-                    return loop.run_until_complete(self._task_manager.get_stats())
-            except RuntimeError:
-                # 没有事件循环，创建新的
-                return asyncio.run(self._task_manager.get_stats())
+            # 直接从TaskManager获取统计信息（同步方式）
+            # 获取活跃任务
+            total_active = len(self._task_manager._tasks)
+            total_history = len(self._task_manager._task_history)
+            total = total_active + total_history
+            
+            # 统计各状态任务数
+            running = 0
+            pending = 0
+            paused = 0
+            
+            for task in self._task_manager._tasks.values():
+                if task.status.name == "RUNNING":
+                    running += 1
+                elif task.status.name == "PENDING":
+                    pending += 1
+                elif task.status.name == "PAUSED":
+                    paused += 1
+            
+            # 统计历史任务
+            completed = 0
+            failed = 0
+            cancelled = 0
+            
+            for task in self._task_manager._task_history:
+                if task.status.name == "COMPLETED":
+                    completed += 1
+                elif task.status.name == "FAILED":
+                    failed += 1
+                elif task.status.name == "CANCELLED":
+                    cancelled += 1
+            
+            # 计算成功率
+            finished = completed + failed
+            success_rate = completed / finished if finished > 0 else 0
+            
+            return {
+                "total": total,
+                "active": total_active,
+                "history": total_history,
+                "running": running,
+                "pending": pending,
+                "paused": paused,
+                "completed": completed,
+                "failed": failed,
+                "cancelled": cancelled,
+                "success_rate": success_rate,
+                "avg_execution_time": 0  # 简化处理
+            }
         except Exception as e:
             logger.error(f"获取任务统计失败: {e}")
             return {
