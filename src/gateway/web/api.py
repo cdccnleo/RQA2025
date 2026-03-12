@@ -1053,7 +1053,7 @@ async def lifespan(app: FastAPI):
                         conn = get_db_connection()
                         query = """
                             SELECT date, open, high, low, close, volume 
-                            FROM stock_data 
+                            FROM akshare_stock_data 
                             WHERE symbol = %s 
                             AND date BETWEEN %s AND %s
                             ORDER BY date ASC
