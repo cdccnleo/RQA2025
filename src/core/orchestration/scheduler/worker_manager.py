@@ -150,9 +150,12 @@ class WorkerManager:
                     # 获取任务处理器
                     task_type = task.get("type")
                     handler = self._task_handlers.get(task_type)
+                    
+                    print(f"[Worker {worker_id}] 获取任务: {task_id}, 类型: {task_type}, handler: {handler is not None}")
 
                     if handler:
                         # 执行处理函数
+                        print(f"[Worker {worker_id}] 开始执行任务: {task_id}")
                         if asyncio.iscoroutinefunction(handler):
                             # 异步函数
                             loop = asyncio.new_event_loop()
@@ -162,6 +165,7 @@ class WorkerManager:
                         else:
                             # 同步函数
                             result = handler(task.get("payload"))
+                        print(f"[Worker {worker_id}] 任务完成: {task_id}, 结果: {result}")
 
                         task["result"] = result
                         task["status"] = "completed"
@@ -177,6 +181,7 @@ class WorkerManager:
                                 del self._task_callbacks[task_id]
                     else:
                         error_msg = f"No handler for task type: {task_type}"
+                        print(f"[Worker {worker_id}] 错误: {error_msg}, 可用handlers: {list(self._task_handlers.keys())}")
                         task["error"] = error_msg
                         task["status"] = "failed"
 

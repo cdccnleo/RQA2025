@@ -15,7 +15,7 @@ import asyncio
 import aiohttp
 import socket
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 
@@ -1046,16 +1046,70 @@ async def lifespan(app: FastAPI):
                         
                         logger.info(f"🚀 开始执行特征提取任务: {stock_code} ({stock_name})")
                         
-                        # 简化实现：直接返回成功状态
-                        # 实际项目中应该调用特征提取引擎处理数据
-                        logger.info(f"✅ 特征提取任务完成: {stock_code} (模拟执行)")
+                        # 1. 从数据库获取股票数据
+                        import pandas as pd
+                        from src.gateway.web.postgresql_persistence import get_db_connection
+                        
+                        conn = get_db_connection()
+                        query = """
+                            SELECT date, open, high, low, close, volume 
+                            FROM stock_data 
+                            WHERE symbol = %s 
+                            AND date BETWEEN %s AND %s
+                            ORDER BY date ASC
+                        """
+                        
+                        # 设置默认日期范围
+                        if not start_date:
+                            start_date = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
+                        if not end_date:
+                            end_date = datetime.now().strftime('%Y-%m-%d')
+                        
+                        df = pd.read_sql(query, conn, params=(stock_code or symbol, start_date, end_date))
+                        conn.close()
+                        
+                        if df.empty:
+                            logger.warning(f"⚠️ 未找到股票 {stock_code} 的数据")
+                            return {
+                                "status": "success",
+                                "stock_code": stock_code,
+                                "stock_name": stock_name,
+                                "feature_count": 0,
+                                "features": [],
+                                "message": "未找到数据",
+                                "timestamp": time.time()
+                            }
+                        
+                        logger.info(f"📊 获取到 {len(df)} 条股票数据")
+                        
+                        # 2. 使用TechnicalProcessor计算技术指标
+                        from src.features.processors.technical.technical_processor import TechnicalProcessor
+                        
+                        processor = TechnicalProcessor()
+                        
+                        # 构建请求对象
+                        class FeatureRequest:
+                            def __init__(self, data, config):
+                                self.data = data
+                                self.config = config
+                        
+                        request = FeatureRequest(df, {'technical_indicators': [i.lower() for i in indicators]})
+                        
+                        # 计算特征
+                        result_df = processor.process(request)
+                        
+                        # 3. 提取计算的特征列
+                        feature_columns = [col for col in result_df.columns if col not in ['date', 'open', 'high', 'low', 'close', 'volume']]
+                        
+                        logger.info(f"✅ 特征提取任务完成: {stock_code}, 提取了 {len(feature_columns)} 个特征: {feature_columns}")
                         
                         return {
                             "status": "success",
                             "stock_code": stock_code,
                             "stock_name": stock_name,
-                            "feature_count": len(indicators),
-                            "features": indicators,
+                            "feature_count": len(feature_columns),
+                            "features": feature_columns,
+                            "data_points": len(df),
                             "timestamp": time.time()
                         }
                         
