@@ -228,6 +228,54 @@ class UnifiedScheduler(BaseScheduler):
         """
         return self._running
     
+    def get_task_stats(self) -> Dict[str, Any]:
+        """
+        获取任务统计信息
+        
+        Returns:
+            Dict: 任务统计信息
+        """
+        try:
+            # 使用asyncio.run同步获取统计信息
+            import asyncio
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # 如果事件循环正在运行，使用run_coroutine_threadsafe
+                    future = asyncio.run_coroutine_threadsafe(
+                        self._task_manager.get_stats(), loop
+                    )
+                    return future.result(timeout=5)
+                else:
+                    return loop.run_until_complete(self._task_manager.get_stats())
+            except RuntimeError:
+                # 没有事件循环，创建新的
+                return asyncio.run(self._task_manager.get_stats())
+        except Exception as e:
+            logger.error(f"获取任务统计失败: {e}")
+            return {
+                "total": 0, "active": 0, "history": 0,
+                "running": 0, "pending": 0, "paused": 0,
+                "completed": 0, "failed": 0, "cancelled": 0,
+                "success_rate": 0, "avg_execution_time": 0
+            }
+    
+    def get_worker_stats(self) -> Dict[str, Any]:
+        """
+        获取工作节点统计信息
+        
+        Returns:
+            Dict: 工作节点统计信息
+        """
+        try:
+            return self._worker_manager.get_stats()
+        except Exception as e:
+            logger.error(f"获取工作节点统计失败: {e}")
+            return {
+                "total": 0, "active": 0, "idle": 0, "stopped": 0,
+                "total_tasks_executed": 0, "queue_size": 0
+            }
+    
     async def _scheduler_loop(self):
         """调度器主循环"""
         # 启动超时监控任务
