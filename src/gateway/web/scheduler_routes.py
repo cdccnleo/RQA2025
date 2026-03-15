@@ -221,6 +221,58 @@ async def stop_auto_collection():
 
 # ========== Tasks ==========
 
+@router.get("/tasks/types")
+async def get_task_types():
+    """
+    获取支持的任务类型列表
+
+    返回所有可用的任务类型及其描述
+    """
+    return {
+        "task_types": [
+            # 数据层任务
+            {"value": "data_collection", "label": "数据采集", "category": "数据层"},
+            {"value": "data_cleaning", "label": "数据清洗", "category": "数据层"},
+            {"value": "data_validation", "label": "数据验证", "category": "数据层"},
+
+            # 特征层任务
+            {"value": "feature_extraction", "label": "特征提取", "category": "特征层"},
+            {"value": "feature_engineering", "label": "特征工程", "category": "特征层"},
+            {"value": "feature_selection", "label": "特征选择", "category": "特征层"},
+            {"value": "feature_validation", "label": "特征验证", "category": "特征层"},
+
+            # 模型层任务
+            {"value": "model_training", "label": "模型训练", "category": "模型层"},
+            {"value": "model_evaluation", "label": "模型评估", "category": "模型层"},
+            {"value": "model_optimization", "label": "模型优化", "category": "模型层"},
+            {"value": "model_deployment", "label": "模型部署", "category": "模型层"},
+
+            # 策略层任务
+            {"value": "strategy_backtest", "label": "策略回测", "category": "策略层"},
+            {"value": "strategy_optimization", "label": "策略优化", "category": "策略层"},
+            {"value": "strategy_deployment", "label": "策略部署", "category": "策略层"},
+
+            # 交易层任务
+            {"value": "trade_execution", "label": "交易执行", "category": "交易层"},
+            {"value": "order_management", "label": "订单管理", "category": "交易层"},
+            {"value": "position_management", "label": "仓位管理", "category": "交易层"},
+
+            # 风控层任务
+            {"value": "risk_assessment", "label": "风险评估", "category": "风控层"},
+            {"value": "risk_monitoring", "label": "风险监控", "category": "风控层"},
+            {"value": "risk_alert", "label": "风险告警", "category": "风控层"},
+
+            # 监控层任务
+            {"value": "system_monitoring", "label": "系统监控", "category": "监控层"},
+            {"value": "performance_monitoring", "label": "性能监控", "category": "监控层"},
+            {"value": "log_analysis", "label": "日志分析", "category": "监控层"},
+
+            # 其他任务
+            {"value": "custom", "label": "自定义任务", "category": "其他"}
+        ]
+    }
+
+
 @router.get("/tasks/completed")
 async def get_completed_tasks(
     limit: int = Query(20, ge=1, le=100, description="返回数量限制"),
@@ -417,64 +469,7 @@ async def submit_task(request: SubmitTaskRequest):
         raise HTTPException(status_code=500, detail=f"提交任务失败: {str(e)}")
 
 
-@router.get("/tasks/types")
-async def get_task_types():
-    """
-    获取支持的任务类型列表
 
-    返回所有可用的任务类型及其描述
-    """
-    return {
-        "task_types": [
-            # 数据层任务
-            {"value": "data_collection", "label": "数据采集", "category": "数据层"},
-            {"value": "data_cleaning", "label": "数据清洗", "category": "数据层"},
-            {"value": "data_validation", "label": "数据验证", "category": "数据层"},
-
-            # 特征层任务
-            {"value": "feature_extraction", "label": "特征提取", "category": "特征层"},
-            {"value": "feature_engineering", "label": "特征工程", "category": "特征层"},
-            {"value": "feature_selection", "label": "特征选择", "category": "特征层"},
-            {"value": "feature_validation", "label": "特征验证", "category": "特征层"},
-
-            # 模型层任务
-            {"value": "model_training", "label": "模型训练", "category": "模型层"},
-            {"value": "model_validation", "label": "模型验证", "category": "模型层"},
-            {"value": "model_inference", "label": "模型推理", "category": "模型层"},
-            {"value": "model_deployment", "label": "模型部署", "category": "模型层"},
-
-            # 策略层任务
-            {"value": "strategy_backtest", "label": "策略回测", "category": "策略层"},
-            {"value": "strategy_optimization", "label": "策略优化", "category": "策略层"},
-            {"value": "strategy_validation", "label": "策略验证", "category": "策略层"},
-
-            # 信号层任务
-            {"value": "signal_generation", "label": "信号生成", "category": "信号层"},
-            {"value": "signal_filtering", "label": "信号过滤", "category": "信号层"},
-            {"value": "signal_aggregation", "label": "信号聚合", "category": "信号层"},
-
-            # 交易执行层任务
-            {"value": "order_preparation", "label": "订单准备", "category": "交易执行层"},
-            {"value": "order_validation", "label": "订单验证", "category": "交易执行层"},
-            {"value": "order_execution", "label": "订单执行", "category": "交易执行层"},
-            {"value": "order_confirmation", "label": "订单确认", "category": "交易执行层"},
-
-            # 风险控制层任务
-            {"value": "risk_calculation", "label": "风险计算", "category": "风险控制层"},
-            {"value": "risk_monitoring", "label": "风险监控", "category": "风险控制层"},
-            {"value": "risk_alerting", "label": "风险告警", "category": "风险控制层"},
-            {"value": "position_limit_check", "label": "仓位限制检查", "category": "风险控制层"},
-
-            # 组合管理层任务
-            {"value": "portfolio_construction", "label": "组合构建", "category": "组合管理层"},
-            {"value": "portfolio_rebalancing", "label": "组合再平衡", "category": "组合管理层"},
-            {"value": "portfolio_analysis", "label": "组合分析", "category": "组合管理层"},
-
-            # 兼容旧版
-            {"value": "backtest", "label": "回测（兼容）", "category": "兼容"},
-            {"value": "optimization", "label": "优化（兼容）", "category": "兼容"}
-        ]
-    }
 
 
 # ========== Config ==========
