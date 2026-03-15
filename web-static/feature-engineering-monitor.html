@@ -524,7 +524,10 @@
                 <!-- 图表区域 -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white p-4 rounded-lg border" style="min-height: 250px;">
-                        <h4 class="text-sm font-semibold text-gray-700 mb-3">选择历史趋势</h4>
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-sm font-semibold text-gray-700">选择历史趋势</h4>
+                            <button onclick="testChartUpdate()" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">测试</button>
+                        </div>
                         <div style="position: relative; height: 200px; width: 100%;">
                             <canvas id="featureSelectionChart"></canvas>
                         </div>
@@ -2024,6 +2027,19 @@
             }
             
             console.log('✅ 特征选择仪表盘更新完成');
+        }
+
+        // 测试图表更新
+        function testChartUpdate() {
+            console.log('🧪 测试图表更新...');
+            const testData = [
+                { timestamp: Date.now() / 1000 - 3600, selected_count: 5, method: 'importance', task_id: 'test-1' },
+                { timestamp: Date.now() / 1000 - 1800, selected_count: 8, method: 'importance', task_id: 'test-2' },
+                { timestamp: Date.now() / 1000, selected_count: 3, method: 'correlation', task_id: 'test-3' }
+            ];
+            console.log('🧪 测试数据:', testData);
+            updateFeatureSelectionDashboard(testData);
+            console.log('🧪 测试完成');
         }
 
         // 刷新选择历史
