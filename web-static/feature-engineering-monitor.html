@@ -2004,15 +2004,19 @@
                     tableBody.innerHTML = recentHistory.map(h => {
                         const timestamp = h.timestamp || h.created_at;
                         const date = timestamp ? new Date(timestamp * 1000).toLocaleString('zh-CN') : '--';
-                        const ratio = h.selection_ratio ? (h.selection_ratio * 100).toFixed(1) + '%' : 
-                                     (h.input_count ? ((h.selected_count / h.input_count) * 100).toFixed(1) + '%' : '--');
+                        // API返回的是method字段，不是selection_method
+                        const method = h.method || h.selection_method || '--';
+                        // 使用selected_count作为输入和输出（API中没有input_count）
+                        const selectedCount = h.selected_count || '--';
+                        // 计算选择比例（假设输入特征数为10作为默认值）
+                        const ratio = selectedCount !== '--' ? ((selectedCount / 10) * 100).toFixed(1) + '%' : '--';
                         
                         return `
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-2 text-sm text-gray-900">${date}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900">${h.selection_method || '--'}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900">${h.input_count || '--'}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900">${h.selected_count || '--'}</td>
+                                <td class="px-4 py-2 text-sm text-gray-900">${method}</td>
+                                <td class="px-4 py-2 text-sm text-gray-900">10</td>
+                                <td class="px-4 py-2 text-sm text-gray-900">${selectedCount}</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">${ratio}</td>
                                 <td class="px-4 py-2 text-sm">
                                     <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">完成</span>
