@@ -1149,6 +1149,12 @@ async def lifespan(app: FastAPI):
                                             0.2 * range_score
                                         )
                                         
+                                        # 调试日志：记录BOLL和SMA特征的详细计算过程
+                                        if feature in ['sma', 'boll_upper', 'boll_middle', 'boll_lower']:
+                                            logger.info(f"📊 质量分数计算 [{feature}]: missing_rate={missing_rate:.4f}, "
+                                                      f"cv={cv:.4f}, log_cv={log_cv:.4f}, stability={stability_score:.4f}, "
+                                                      f"range={range_score:.4f}, final_score={quality_score:.4f}")
+                                        
                                         quality_scores[feature] = round(max(0.0, min(1.0, quality_score)), 4)
                                     else:
                                         quality_scores[feature] = 0.0
