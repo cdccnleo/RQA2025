@@ -1175,7 +1175,7 @@ async def get_selection_analytics() -> Dict[str, Any]:
         # 获取特征选择历史
         from src.features.selection.feature_selector_history import get_feature_selector_history_manager
         history_manager = get_feature_selector_history_manager()
-        history = history_manager.get_history(limit=100)
+        history = history_manager.get_selection_history(limit=100)
         
         if not history:
             return {
