@@ -313,7 +313,95 @@
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- 特征质量监控仪表盘 -->
+            <div class="bg-white rounded-lg shadow mb-6">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">特征质量监控</h3>
+                </div>
+                <div class="p-6">
+                    <!-- 关键指标卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">平均质量</div>
+                            <div class="text-2xl font-bold" id="qualityMonitorAvg">--</div>
+                            <div class="text-xs mt-1" id="qualityMonitorAvgTrend">--</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">总特征数</div>
+                            <div class="text-2xl font-bold" id="qualityMonitorTotal">--</div>
+                            <div class="text-xs mt-1">存储中</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">低质量特征</div>
+                            <div class="text-2xl font-bold" id="qualityMonitorLow">--</div>
+                            <div class="text-xs mt-1">需要关注</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">优秀特征</div>
+                            <div class="text-2xl font-bold" id="qualityMonitorExcellent">--</div>
+                            <div class="text-xs mt-1">质量>=90%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 质量趋势图 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3">质量趋势（最近7天）</h4>
+                            <canvas id="qualityTrendChart" height="200"></canvas>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3">质量分布</h4>
+                            <canvas id="qualityDistributionChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Store -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">特征存储</h3>
+                        <div class="flex gap-2">
+                            <button onclick="refreshFeatures()" 
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>刷新特征</span>
+                            </button>
+                            <input type="text" id="featureSearch" placeholder="搜索特征..." 
+                                   onkeyup="searchFeatures()" 
+                                   class="border border-gray-300 rounded-lg px-4 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">特征名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">类型</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">质量评分</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">重要性</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">版本</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">更新时间</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="featureStoreBody" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <div>加载中...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 特征列表分页控件 -->
+                <div id="featurePagination"></div>
+            </div>
+        </div> <!-- 特征提取Tab结束 -->
 
         <!-- 特征选择 Tab -->
         <div id="content-selection" class="tab-content hidden">
@@ -424,94 +512,6 @@
             </div>
         </div>
         </div> <!-- 特征选择Tab结束 -->
-
-        <!-- 特征质量监控仪表盘 -->
-        <div class="bg-white rounded-lg shadow mb-6">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">特征质量监控</h3>
-            </div>
-            <div class="p-6">
-                <!-- 关键指标卡片 -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
-                        <div class="text-sm opacity-80">平均质量</div>
-                        <div class="text-2xl font-bold" id="qualityMonitorAvg">--</div>
-                        <div class="text-xs mt-1" id="qualityMonitorAvgTrend">--</div>
-                    </div>
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
-                        <div class="text-sm opacity-80">总特征数</div>
-                        <div class="text-2xl font-bold" id="qualityMonitorTotal">--</div>
-                        <div class="text-xs mt-1">存储中</div>
-                    </div>
-                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg p-4 text-white">
-                        <div class="text-sm opacity-80">低质量特征</div>
-                        <div class="text-2xl font-bold" id="qualityMonitorLow">--</div>
-                        <div class="text-xs mt-1">需要关注</div>
-                    </div>
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
-                        <div class="text-sm opacity-80">优秀特征</div>
-                        <div class="text-2xl font-bold" id="qualityMonitorExcellent">--</div>
-                        <div class="text-xs mt-1">质量>=90%</div>
-                    </div>
-                </div>
-                
-                <!-- 质量趋势图 -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-sm font-semibold text-gray-700 mb-3">质量趋势（最近7天）</h4>
-                        <canvas id="qualityTrendChart" height="200"></canvas>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-semibold text-gray-700 mb-3">质量分布</h4>
-                        <canvas id="qualityDistributionChart" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Feature Store -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-gray-800">特征存储</h3>
-                    <div class="flex gap-2">
-                        <button onclick="refreshFeatures()" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            <i class="fas fa-sync-alt"></i>
-                            <span>刷新特征</span>
-                        </button>
-                        <input type="text" id="featureSearch" placeholder="搜索特征..." 
-                               onkeyup="searchFeatures()" 
-                               class="border border-gray-300 rounded-lg px-4 py-2 text-sm">
-                    </div>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">特征名称</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">类型</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">质量评分</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">重要性</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">版本</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">更新时间</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="featureStoreBody" class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                                <div>加载中...</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- 特征列表分页控件 -->
-            <div id="featurePagination"></div>
-        </div>
     </div>
 
     <!-- 任务详情模态框 -->
