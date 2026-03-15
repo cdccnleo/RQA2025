@@ -168,8 +168,9 @@ class FeatureEventListeners:
 
             logger.info(f"为数据源 {source_id} 的 {len(custom_stocks)} 只股票创建特征提取任务，类型: {task_type}")
 
-            # 获取日期范围
-            default_days = config.get("default_days", 30) if config else 30
+            # 获取日期范围 - 增加数据量以确保技术指标计算有足够的数据点
+            # SMA/BOLL等指标需要20个数据点作为窗口期，考虑到周末和节假日，至少需要60天的数据
+            default_days = config.get("default_days", 90) if config else 90  # 从30天增加到90天
             from datetime import datetime, timedelta
             end_date = datetime.now().strftime("%Y-%m-%d")
             start_date = (datetime.now() - timedelta(days=default_days)).strftime("%Y-%m-%d")
