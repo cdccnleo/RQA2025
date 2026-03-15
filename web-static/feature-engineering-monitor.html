@@ -306,6 +306,50 @@
             </div>
         </div>
 
+        <!-- 特征质量监控仪表盘 -->
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">特征质量监控</h3>
+            </div>
+            <div class="p-6">
+                <!-- 关键指标卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                        <div class="text-sm opacity-80">平均质量</div>
+                        <div class="text-2xl font-bold" id="qualityMonitorAvg">--</div>
+                        <div class="text-xs mt-1" id="qualityMonitorAvgTrend">--</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                        <div class="text-sm opacity-80">总特征数</div>
+                        <div class="text-2xl font-bold" id="qualityMonitorTotal">--</div>
+                        <div class="text-xs mt-1">存储中</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg p-4 text-white">
+                        <div class="text-sm opacity-80">低质量特征</div>
+                        <div class="text-2xl font-bold" id="qualityMonitorLow">--</div>
+                        <div class="text-xs mt-1">需要关注</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                        <div class="text-sm opacity-80">优秀特征</div>
+                        <div class="text-2xl font-bold" id="qualityMonitorExcellent">--</div>
+                        <div class="text-xs mt-1">质量>=90%</div>
+                    </div>
+                </div>
+                
+                <!-- 质量趋势图 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">质量趋势（最近7天）</h4>
+                        <canvas id="qualityTrendChart" height="200"></canvas>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">质量分布</h4>
+                        <canvas id="qualityDistributionChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Feature Store -->
         <div class="bg-white rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -497,6 +541,94 @@
 
         const API_TIMEOUT_MS = 8000;
 
+        // ==================== 虚拟滚动类 ====================
+        class VirtualScroller {
+            constructor(container, itemHeight, renderFn, options = {}) {
+                this.container = container;
+                this.itemHeight = itemHeight;
+                this.renderFn = renderFn;
+                this.data = [];
+                this.visibleCount = 0;
+                this.scrollTop = 0;
+                this.bufferSize = options.bufferSize || 5; // 上下缓冲行数
+                this.onScrollEnd = options.onScrollEnd || null;
+                
+                // 创建内容容器
+                this.contentContainer = document.createElement('div');
+                this.contentContainer.style.position = 'relative';
+                this.container.appendChild(this.contentContainer);
+                
+                // 绑定滚动事件
+                this.container.addEventListener('scroll', () => this.onScroll());
+                window.addEventListener('resize', () => this.onResize());
+                
+                // 初始化
+                this.onResize();
+            }
+            
+            setData(data) {
+                this.data = data;
+                // 设置总高度
+                this.contentContainer.style.height = `${data.length * this.itemHeight}px`;
+                this.onScroll();
+            }
+            
+            onResize() {
+                // 计算可视区域能显示多少行
+                const containerHeight = this.container.clientHeight;
+                this.visibleCount = Math.ceil(containerHeight / this.itemHeight) + (this.bufferSize * 2);
+                this.onScroll();
+            }
+            
+            onScroll() {
+                this.scrollTop = this.container.scrollTop;
+                const startIndex = Math.max(0, Math.floor(this.scrollTop / this.itemHeight) - this.bufferSize);
+                const endIndex = Math.min(this.data.length, startIndex + this.visibleCount);
+                
+                // 获取可视数据
+                const visibleData = this.data.slice(startIndex, endIndex);
+                
+                // 渲染可视区域
+                const html = visibleData.map((item, index) => {
+                    const actualIndex = startIndex + index;
+                    return this.renderFn(item, actualIndex);
+                }).join('');
+                
+                this.contentContainer.innerHTML = html;
+                
+                // 设置偏移量
+                if (this.contentContainer.firstElementChild) {
+                    this.contentContainer.firstElementChild.style.marginTop = `${startIndex * this.itemHeight}px`;
+                }
+                
+                // 触发滚动结束回调
+                if (this.onScrollEnd && endIndex >= this.data.length - this.bufferSize) {
+                    this.onScrollEnd();
+                }
+            }
+            
+            destroy() {
+                this.container.removeEventListener('scroll', () => this.onScroll());
+                window.removeEventListener('resize', () => this.onResize());
+                if (this.contentContainer && this.contentContainer.parentNode) {
+                    this.contentContainer.parentNode.removeChild(this.contentContainer);
+                }
+            }
+            
+            scrollToIndex(index) {
+                this.container.scrollTop = index * this.itemHeight;
+            }
+            
+            getVisibleRange() {
+                const startIndex = Math.max(0, Math.floor(this.scrollTop / this.itemHeight) - this.bufferSize);
+                const endIndex = Math.min(this.data.length, startIndex + this.visibleCount);
+                return { startIndex, endIndex };
+            }
+        }
+
+        // ==================== 全局虚拟滚动实例 ====================
+        let featureStoreScroller = null;
+
         function getApiBaseUrl(endpoint = '') {
             const baseUrl = '/api/v1';
             return baseUrl + endpoint;
@@ -626,6 +758,9 @@
                 // 隐藏全局加载状态
                 setTimeout(() => showGlobalLoading(false), 500);
             });
+            
+            // 加载质量监控数据
+            loadQualityMonitor();
         }
 
         function showGlobalLoading(show) {
@@ -862,6 +997,148 @@
             });
         }
 
+        // 渲染质量监控仪表盘
+        function renderQualityMonitor(data) {
+            // 更新关键指标
+            document.getElementById('qualityMonitorAvg').textContent = 
+                (data.avg_quality * 100).toFixed(1) + '%';
+            document.getElementById('qualityMonitorTotal').textContent = data.total_features;
+            document.getElementById('qualityMonitorLow').textContent = data.low_quality_count;
+            document.getElementById('qualityMonitorExcellent').textContent = 
+                data.quality_distribution?.['优秀(>=0.9)'] || 0;
+            
+            // 计算趋势
+            const trend = data.quality_trend || [];
+            if (trend.length >= 2) {
+                const first = trend[0].avg_quality;
+                const last = trend[trend.length - 1].avg_quality;
+                const change = ((last - first) / first * 100).toFixed(1);
+                const trendEl = document.getElementById('qualityMonitorAvgTrend');
+                if (change >= 0) {
+                    trendEl.textContent = `↑ ${change}%`;
+                    trendEl.className = 'text-xs mt-1 text-green-200';
+                } else {
+                    trendEl.textContent = `↓ ${Math.abs(change)}%`;
+                    trendEl.className = 'text-xs mt-1 text-red-200';
+                }
+            }
+            
+            // 渲染质量趋势图
+            renderQualityTrendChart(data.quality_trend || []);
+            
+            // 渲染质量分布图
+            renderQualityDistributionChart(data.quality_distribution || {});
+        }
+
+        // 渲染质量趋势图
+        function renderQualityTrendChart(trendData) {
+            const ctx = document.getElementById('qualityTrendChart');
+            if (!ctx) return;
+            
+            const dates = trendData.map(d => d.date);
+            const values = trendData.map(d => (d.avg_quality * 100).toFixed(1));
+            
+            if (window.qualityTrendChartInstance) {
+                window.qualityTrendChartInstance.destroy();
+            }
+            
+            window.qualityTrendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: '平均质量(%)',
+                        data: values,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 渲染质量分布图
+        function renderQualityDistributionChart(distribution) {
+            const ctx = document.getElementById('qualityDistributionChart');
+            if (!ctx) return;
+            
+            const labels = Object.keys(distribution);
+            const data = Object.values(distribution);
+            const colors = [
+                'rgb(34, 197, 94)',   // 优秀 - 绿色
+                'rgb(59, 130, 246)',  // 良好 - 蓝色
+                'rgb(245, 158, 11)',  // 一般 - 黄色
+                'rgb(239, 68, 68)'    // 较差 - 红色
+            ];
+            
+            if (window.qualityDistributionChartInstance) {
+                window.qualityDistributionChartInstance.destroy();
+            }
+            
+            window.qualityDistributionChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '特征数量',
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 加载质量监控数据
+        async function loadQualityMonitor() {
+            try {
+                const response = await fetchWithTimeout(
+                    getApiBaseUrl('/features/engineering/quality/monitor'),
+                    API_TIMEOUT_MS
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    renderQualityMonitor(data);
+                }
+            } catch (error) {
+                console.error('加载质量监控数据失败:', error);
+            }
+        }
+
         // 渲染异常告警
         function renderAlerts(tasks, features) {
             const alertsSection = document.getElementById('alertsSection');
@@ -1077,6 +1354,51 @@
             }).join('');
         }
 
+        // 特征列表渲染函数（用于虚拟滚动）
+        function renderFeatureRow(feature, index) {
+            const qualityScore = feature.quality_score || 0;
+            const qualityColor = qualityScore >= 0.9 ? 'text-green-600' : 
+                                qualityScore >= 0.7 ? 'text-blue-600' : 
+                                qualityScore >= 0.5 ? 'text-yellow-600' : 'text-red-600';
+            const qualityBg = qualityScore >= 0.9 ? 'bg-green-600' : 
+                             qualityScore >= 0.7 ? 'bg-blue-600' : 
+                             qualityScore >= 0.5 ? 'bg-yellow-600' : 'bg-red-600';
+
+            return `
+                <tr class="hover:bg-gray-50" style="height: 73px;">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-gray-900">${feature.display_name || feature.name}</div>
+                        <div class="text-sm text-gray-500">${feature.name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${feature.type || feature.feature_type || '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                <div class="${qualityBg} h-2 rounded-full" style="width: ${qualityScore * 100}%"></div>
+                            </div>
+                            <span class="text-sm font-medium ${qualityColor}">${(qualityScore * 100).toFixed(1)}%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${feature.importance ? feature.importance.toFixed(3) : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${feature.correlation ? feature.correlation.toFixed(2) : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${feature.updated_at ? new Date(feature.updated_at * 1000).toLocaleDateString('zh-CN') : '--'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewFeatureDetails('${feature.name}')" class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+
         function renderFeatureStore(features, loadFailed) {
             const tbody = document.getElementById('featureStoreBody');
             if (loadFailed) {
@@ -1090,12 +1412,15 @@
                 `;
                 return;
             }
+            
+            // 应用搜索筛选
             const searchTerm = document.getElementById('featureSearch').value.toLowerCase();
             let filtered = features || [];
             if (searchTerm) {
                 filtered = (features || []).filter(f => 
                     (f.name && f.name.toLowerCase().includes(searchTerm)) ||
-                    (f.description && f.description.toLowerCase().includes(searchTerm))
+                    (f.description && f.description.toLowerCase().includes(searchTerm)) ||
+                    (f.display_name && f.display_name.toLowerCase().includes(searchTerm))
                 );
             }
 
@@ -1111,46 +1436,48 @@
                 return;
             }
 
-            tbody.innerHTML = filtered.map(feature => {
-                const qualityScore = feature.quality_score || 0;
-                const qualityColor = qualityScore >= 0.9 ? 'text-green-600' : 
-                                    qualityScore >= 0.7 ? 'text-blue-600' : 
-                                    qualityScore >= 0.5 ? 'text-yellow-600' : 'text-red-600';
+            // 销毁旧的虚拟滚动实例
+            if (featureStoreScroller) {
+                featureStoreScroller.destroy();
+                featureStoreScroller = null;
+            }
 
-                return `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="font-medium text-gray-900">${feature.display_name || feature.name}</div>
-                            <div class="text-sm text-gray-500">${feature.name}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${feature.type || feature.feature_type || '--'}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${qualityScore * 100}%"></div>
-                                </div>
-                                <span class="text-sm font-medium ${qualityColor}">${(qualityScore * 100).toFixed(1)}%</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${feature.importance ? feature.importance.toFixed(3) : '--'}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${feature.correlation ? feature.correlation.toFixed(2) : '--'}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${feature.updated_at ? new Date(feature.updated_at * 1000).toLocaleDateString('zh-CN') : '--'}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button onclick="viewFeatureDetails('${feature.name}')" class="text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            // 清空tbody
+            tbody.innerHTML = '';
+
+            // 如果数据量较小（<100），使用普通渲染
+            if (filtered.length < 100) {
+                tbody.innerHTML = filtered.map((feature, index) => renderFeatureRow(feature, index)).join('');
+                return;
+            }
+
+            // 数据量较大，使用虚拟滚动
+            // 创建滚动容器
+            const scrollContainer = document.createElement('div');
+            scrollContainer.style.cssText = `
+                max-height: 600px;
+                overflow-y: auto;
+                overflow-x: hidden;
+            `;
+            
+            // 将tbody包装在滚动容器中
+            const wrapper = document.createElement('div');
+            wrapper.appendChild(scrollContainer);
+            tbody.appendChild(wrapper);
+
+            // 初始化虚拟滚动
+            featureStoreScroller = new VirtualScroller(
+                scrollContainer,
+                73, // 每行高度（与renderFeatureRow中的style一致）
+                renderFeatureRow,
+                { bufferSize: 3 }
+            );
+
+            // 设置数据
+            featureStoreScroller.setData(filtered);
+            
+            // 显示数据量提示
+            console.log(`特征列表: 共 ${filtered.length} 条数据，使用虚拟滚动优化`);
         }
 
         // 数字动画函数

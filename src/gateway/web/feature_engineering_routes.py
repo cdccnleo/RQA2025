@@ -846,6 +846,96 @@ async def get_feature_task_details(task_id: str) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=f"获取特征任务详情失败: {str(e)}")
 
 
+@router.get("/features/engineering/quality/monitor")
+async def get_quality_monitor_data() -> Dict[str, Any]:
+    """获取特征质量实时监控数据"""
+    try:
+        features = get_features()
+        
+        if not features:
+            return {
+                "avg_quality": 0,
+                "low_quality_count": 0,
+                "quality_trend": [],
+                "heatmap_data": [],
+                "total_features": 0,
+                "quality_distribution": {
+                    "优秀(>=0.9)": 0,
+                    "良好(0.7-0.9)": 0,
+                    "一般(0.5-0.7)": 0,
+                    "较差(<0.5)": 0
+                }
+            }
+        
+        # 计算平均质量
+        avg_quality = sum(f.get('quality_score', 0) for f in features) / len(features)
+        
+        # 统计低质量特征
+        low_quality_count = sum(1 for f in features if (f.get('quality_score') or 0) < 0.5)
+        
+        # 质量分布
+        quality_distribution = {
+            "优秀(>=0.9)": sum(1 for f in features if (f.get('quality_score') or 0) >= 0.9),
+            "良好(0.7-0.9)": sum(1 for f in features if 0.7 <= (f.get('quality_score') or 0) < 0.9),
+            "一般(0.5-0.7)": sum(1 for f in features if 0.5 <= (f.get('quality_score') or 0) < 0.7),
+            "较差(<0.5)": sum(1 for f in features if (f.get('quality_score') or 0) < 0.5)
+        }
+        
+        # 按日期统计质量趋势（最近7天）
+        from datetime import datetime, timedelta
+        today = datetime.now()
+        quality_trend = []
+        
+        for i in range(6, -1, -1):
+            date = today - timedelta(days=i)
+            date_str = date.strftime("%m-%d")
+            
+            # 找到该日期的特征（根据updated_at）
+            day_features = [
+                f for f in features 
+                if f.get('updated_at') and 
+                datetime.fromtimestamp(f['updated_at']).strftime("%Y-%m-%d") == date.strftime("%Y-%m-%d")
+            ]
+            
+            if day_features:
+                day_avg = sum(f.get('quality_score', 0) for f in day_features) / len(day_features)
+                quality_trend.append({"date": date_str, "avg_quality": round(day_avg, 3)})
+            else:
+                quality_trend.append({"date": date_str, "avg_quality": 0})
+        
+        # 生成热力图数据（股票代码 × 特征类型）
+        heatmap_data = []
+        symbols = list(set(f.get('symbol', 'unknown') for f in features))[:20]  # 最多20个股票
+        feature_types = list(set(f.get('feature_type') or f.get('type', 'unknown') for f in features))
+        
+        for symbol in symbols:
+            for feature_type in feature_types:
+                type_features = [
+                    f for f in features 
+                    if f.get('symbol') == symbol and 
+                    (f.get('feature_type') or f.get('type')) == feature_type
+                ]
+                if type_features:
+                    avg_q = sum(f.get('quality_score', 0) for f in type_features) / len(type_features)
+                    heatmap_data.append({
+                        "symbol": symbol,
+                        "feature_type": feature_type,
+                        "avg_quality": round(avg_q, 3),
+                        "count": len(type_features)
+                    })
+        
+        return {
+            "avg_quality": round(avg_quality, 4),
+            "low_quality_count": low_quality_count,
+            "quality_trend": quality_trend,
+            "heatmap_data": heatmap_data,
+            "total_features": len(features),
+            "quality_distribution": quality_distribution
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取质量监控数据失败: {str(e)}")
+
+
 @router.delete("/features/engineering/tasks/{task_id}")
 async def delete_feature_task_endpoint(task_id: str) -> Dict[str, Any]:
     """删除特征提取任务 - 使用真实数据"""
