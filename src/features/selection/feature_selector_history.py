@@ -30,6 +30,7 @@ class FeatureSelectionRecord:
     """特征选择记录"""
     selection_id: str
     task_id: str
+    symbol: str  # 股票代码
     timestamp: float
     datetime: str
     
@@ -123,13 +124,14 @@ class FeatureSelectorHistoryManager:
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO feature_selection_history (
-                        selection_id, task_id, timestamp, input_features,
+                        selection_id, task_id, symbol, timestamp, input_features,
                         input_feature_count, selection_method, selection_params,
                         selected_features, selected_feature_count, selection_ratio,
                         evaluation_metrics, processing_time, notes
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (selection_id) DO UPDATE SET
                         task_id = EXCLUDED.task_id,
+                        symbol = EXCLUDED.symbol,
                         timestamp = EXCLUDED.timestamp,
                         input_features = EXCLUDED.input_features,
                         input_feature_count = EXCLUDED.input_feature_count,
@@ -144,6 +146,7 @@ class FeatureSelectorHistoryManager:
                 """, (
                     record.selection_id,
                     record.task_id,
+                    record.symbol,
                     datetime.fromtimestamp(record.timestamp),
                     json.dumps(record.input_features),
                     record.input_feature_count,
@@ -286,6 +289,7 @@ class FeatureSelectorHistoryManager:
     def record_selection(
         self,
         task_id: str,
+        symbol: str,
         input_features: List[str],
         selected_features: List[str],
         selection_method: str = "",
@@ -299,6 +303,7 @@ class FeatureSelectorHistoryManager:
         
         Args:
             task_id: 任务ID
+            symbol: 股票代码
             input_features: 输入特征列表
             selected_features: 选择的特征列表
             selection_method: 选择方法
@@ -312,13 +317,14 @@ class FeatureSelectorHistoryManager:
         """
         try:
             with self._lock:
-                # 生成选择ID
-                selection_id = f"sel_{int(datetime.now().timestamp() * 1000)}"
+                # 生成选择ID（包含股票代码）
+                selection_id = f"sel_{symbol}_{int(datetime.now().timestamp() * 1000)}"
                 
                 # 创建记录
                 record = FeatureSelectionRecord(
                     selection_id=selection_id,
                     task_id=task_id,
+                    symbol=symbol,
                     timestamp=datetime.now().timestamp(),
                     datetime=datetime.now().isoformat(),
                     input_features=input_features,

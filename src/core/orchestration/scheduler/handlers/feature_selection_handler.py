@@ -119,18 +119,20 @@ async def feature_selection_handler(task: 'Task') -> Dict[str, Any]:
             
             logger.info(f"✅ 股票 {symbol} 选择完成: {len(selected)} 个特征")
         
-        # 4. 记录选择历史
+        # 4. 记录选择历史（按股票分别保存）
         logger.info("💾 记录特征选择历史...")
-        await _save_selection_history(
-            task_id=task_id,
-            input_features=[f.get('name') for f in all_features],
-            input_count=total_input,
-            selected_features=all_selected_features,
-            selected_count=len(all_selected_features),
-            method=method,
-            params=params,
-            results=selection_results
-        )
+        for result in selection_results:
+            symbol = result['symbol']
+            await _save_selection_history(
+                task_id=task_id,
+                symbol=symbol,
+                input_features=[f.get('name') for f in all_features if f.get('symbol') == symbol],
+                input_count=result['input_count'],
+                selected_features=result['selected_features'],
+                selected_count=result['selected_count'],
+                method=method,
+                params=params
+            )
         
         processing_time = time.time() - start_time
         
@@ -215,69 +217,46 @@ async def _select_features(
 
 async def _save_selection_history(
     task_id: str,
+    symbol: str,
     input_features: List[str],
     input_count: int,
     selected_features: List[str],
     selected_count: int,
     method: str,
-    params: Dict[str, Any],
-    results: List[Dict[str, Any]]
+    params: Dict[str, Any]
 ) -> None:
     """
     保存特征选择历史记录
     
     Args:
         task_id: 任务ID
+        symbol: 股票代码
         input_features: 输入特征列表
         input_count: 输入特征数量
         selected_features: 选择的特征列表
         selected_count: 选择的特征数量
         method: 选择方法
         params: 任务参数
-        results: 详细结果
     """
     try:
         from src.features.selection.feature_selector_history import (
-            FeatureSelectorHistoryManager,
-            FeatureSelectionRecord
+            FeatureSelectorHistoryManager
         )
         
         history_manager = FeatureSelectorHistoryManager()
         
-        # 计算选择比例
-        selection_ratio = selected_count / input_count if input_count > 0 else 0
-        
-        # 计算平均质量
-        avg_quality = 0.0
-        if results:
-            qualities = []
-            for r in results:
-                # 这里简化处理，实际应该从特征数据中获取质量分数
-                qualities.append(0.8)  # 默认值
-            avg_quality = sum(qualities) / len(qualities)
-        
-        record = FeatureSelectionRecord(
-            selection_id=f"selection_{int(time.time())}_{task_id}",
+        # 使用管理器的record_selection方法保存记录
+        history_manager.record_selection(
             task_id=task_id,
-            timestamp=time.time(),
-            datetime=datetime.now().isoformat(),
+            symbol=symbol,
             input_features=input_features,
-            input_feature_count=input_count,
+            selected_features=selected_features,
             selection_method=method,
             selection_params=params,
-            selected_features=selected_features,
-            selected_feature_count=selected_count,
-            selection_ratio=selection_ratio,
-            evaluation_metrics={'avg_quality': avg_quality},
-            processing_time=0.0,  # 由调用者计算
-            notes=f"统一调度器执行: 处理{len(results)}个股票"
+            notes=f"统一调度器执行: 股票 {symbol}"
         )
         
-        # 保存到历史
-        history_manager._history.append(record)
-        history_manager._save_history()
-        
-        logger.info(f"✅ 特征选择历史已保存: {record.selection_id}")
+        logger.info(f"✅ 特征选择历史已保存: 股票 {symbol}")
         
     except Exception as e:
         logger.error(f"❌ 保存特征选择历史失败: {e}")
