@@ -733,6 +733,95 @@ async def get_available_feature_tasks_endpoint() -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=f"获取可用特征任务失败: {str(e)}")
 
 
+# ==================== 统计聚合API ====================
+
+@router.get("/features/engineering/tasks/stats")
+async def get_feature_tasks_stats_endpoint() -> Dict[str, Any]:
+    """获取特征提取任务统计聚合"""
+    try:
+        from .feature_task_persistence import list_feature_tasks
+        
+        tasks = list_feature_tasks(limit=10000)  # 获取所有任务
+        
+        # 按状态统计
+        status_counts = {}
+        type_counts = {}
+        daily_counts = {}
+        
+        for task in tasks:
+            # 状态统计
+            status = task.get('status', 'unknown')
+            status_counts[status] = status_counts.get(status, 0) + 1
+            
+            # 类型统计
+            task_type = task.get('task_type', 'unknown')
+            type_counts[task_type] = type_counts.get(task_type, 0) + 1
+            
+            # 日期统计
+            created_at = task.get('created_at')
+            if created_at:
+                if isinstance(created_at, str):
+                    date_key = created_at[:10]  # YYYY-MM-DD
+                else:
+                    date_key = str(created_at)[:10]
+                daily_counts[date_key] = daily_counts.get(date_key, 0) + 1
+        
+        return {
+            "total": len(tasks),
+            "by_status": status_counts,
+            "by_type": type_counts,
+            "by_date": daily_counts,
+            "recent_tasks": tasks[:10]  # 最近10个任务
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取任务统计失败: {str(e)}")
+
+
+@router.get("/features/engineering/features/stats")
+async def get_features_stats_endpoint() -> Dict[str, Any]:
+    """获取特征统计聚合"""
+    try:
+        features = get_features()
+        
+        # 按类型统计
+        type_counts = {}
+        quality_ranges = {
+            "优秀(>=0.9)": 0,
+            "良好(0.7-0.9)": 0,
+            "一般(0.5-0.7)": 0,
+            "较差(<0.5)": 0
+        }
+        
+        for feature in features:
+            # 类型统计
+            feature_type = feature.get('feature_type') or feature.get('type', 'unknown')
+            type_counts[feature_type] = type_counts.get(feature_type, 0) + 1
+            
+            # 质量分布
+            quality = feature.get('quality_score', 0)
+            if quality >= 0.9:
+                quality_ranges["优秀(>=0.9)"] += 1
+            elif quality >= 0.7:
+                quality_ranges["良好(0.7-0.9)"] += 1
+            elif quality >= 0.5:
+                quality_ranges["一般(0.5-0.7)"] += 1
+            else:
+                quality_ranges["较差(<0.5)"] += 1
+        
+        # 计算平均质量
+        avg_quality = sum(f.get('quality_score', 0) for f in features) / len(features) if features else 0
+        
+        return {
+            "total": len(features),
+            "by_type": type_counts,
+            "quality_distribution": quality_ranges,
+            "avg_quality": round(avg_quality, 4),
+            "recent_features": features[:10]  # 最近10个特征
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取特征统计失败: {str(e)}")
+
+
 @router.get("/features/engineering/tasks/{task_id}")
 async def get_feature_task_details(task_id: str) -> Dict[str, Any]:
     """获取特征提取任务详情 - 使用真实数据"""
@@ -1035,95 +1124,6 @@ async def get_feature_details(feature_name: str) -> Dict[str, Any]:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取特征详情失败: {str(e)}")
-
-
-# ==================== 统计聚合API ====================
-
-@router.get("/features/engineering/tasks/stats")
-async def get_feature_tasks_stats_endpoint() -> Dict[str, Any]:
-    """获取特征提取任务统计聚合"""
-    try:
-        from .feature_task_persistence import list_feature_tasks
-        
-        tasks = list_feature_tasks(limit=10000)  # 获取所有任务
-        
-        # 按状态统计
-        status_counts = {}
-        type_counts = {}
-        daily_counts = {}
-        
-        for task in tasks:
-            # 状态统计
-            status = task.get('status', 'unknown')
-            status_counts[status] = status_counts.get(status, 0) + 1
-            
-            # 类型统计
-            task_type = task.get('task_type', 'unknown')
-            type_counts[task_type] = type_counts.get(task_type, 0) + 1
-            
-            # 日期统计
-            created_at = task.get('created_at')
-            if created_at:
-                if isinstance(created_at, str):
-                    date_key = created_at[:10]  # YYYY-MM-DD
-                else:
-                    date_key = str(created_at)[:10]
-                daily_counts[date_key] = daily_counts.get(date_key, 0) + 1
-        
-        return {
-            "total": len(tasks),
-            "by_status": status_counts,
-            "by_type": type_counts,
-            "by_date": daily_counts,
-            "recent_tasks": tasks[:10]  # 最近10个任务
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取任务统计失败: {str(e)}")
-
-
-@router.get("/features/engineering/features/stats")
-async def get_features_stats_endpoint() -> Dict[str, Any]:
-    """获取特征统计聚合"""
-    try:
-        features = get_features()
-        
-        # 按类型统计
-        type_counts = {}
-        quality_ranges = {
-            "优秀(>=0.9)": 0,
-            "良好(0.7-0.9)": 0,
-            "一般(0.5-0.7)": 0,
-            "较差(<0.5)": 0
-        }
-        
-        for feature in features:
-            # 类型统计
-            feature_type = feature.get('feature_type') or feature.get('type', 'unknown')
-            type_counts[feature_type] = type_counts.get(feature_type, 0) + 1
-            
-            # 质量分布
-            quality = feature.get('quality_score', 0)
-            if quality >= 0.9:
-                quality_ranges["优秀(>=0.9)"] += 1
-            elif quality >= 0.7:
-                quality_ranges["良好(0.7-0.9)"] += 1
-            elif quality >= 0.5:
-                quality_ranges["一般(0.5-0.7)"] += 1
-            else:
-                quality_ranges["较差(<0.5)"] += 1
-        
-        # 计算平均质量
-        avg_quality = sum(f.get('quality_score', 0) for f in features) / len(features) if features else 0
-        
-        return {
-            "total": len(features),
-            "by_type": type_counts,
-            "quality_distribution": quality_ranges,
-            "avg_quality": round(avg_quality, 4),
-            "recent_features": features[:10]  # 最近10个特征
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取特征统计失败: {str(e)}")
 
 
 # ==================== 技术指标API ====================
