@@ -291,6 +291,24 @@ class FeatureSelectorHistoryManager:
             # PostgreSQL 不可用，从文件系统加载
             logger.warning("PostgreSQL 不可用，从文件系统加载历史记录")
             self._history = self._load_from_filesystem()
+            
+            # 尝试将文件系统的数据同步到 PostgreSQL（如果 PostgreSQL 现在可用）
+            if self._history:
+                try:
+                    # 检查 PostgreSQL 是否现在可用
+                    conn = self._get_db_connection()
+                    if conn:
+                        conn.close()
+                        # PostgreSQL 现在可用，同步数据
+                        logger.info(f"PostgreSQL 现在可用，将 {len(self._history)} 条记录从文件系统同步到 PostgreSQL")
+                        self._sync_to_postgresql()
+                        # 重新从 PostgreSQL 加载以确保数据一致性
+                        records = self._load_from_postgresql()
+                        if records:
+                            self._history = records
+                            logger.info("已从 PostgreSQL 重新加载历史记录")
+                except Exception as e:
+                    logger.debug(f"尝试同步到 PostgreSQL 失败: {e}")
     
     def record_selection(
         self,
