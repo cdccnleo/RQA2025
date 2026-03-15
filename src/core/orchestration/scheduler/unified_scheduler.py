@@ -1309,5 +1309,13 @@ def get_unified_scheduler(
             enable_event_bus=enable_event_bus,
             event_bus_config=event_bus_config
         )
+        
+        # 注册特征选择任务处理器
+        try:
+            from .handlers.feature_selection_handler import feature_selection_handler
+            _scheduler_instance.register_task_handler("feature_selection", feature_selection_handler)
+            logger.info("✅ 特征选择任务处理器已注册")
+        except Exception as e:
+            logger.warning(f"⚠️ 特征选择处理器注册失败: {e}")
 
     return _scheduler_instance

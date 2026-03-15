@@ -434,6 +434,7 @@ async def get_task_types():
             # 特征层任务
             {"value": "feature_extraction", "label": "特征提取", "category": "特征层"},
             {"value": "feature_engineering", "label": "特征工程", "category": "特征层"},
+            {"value": "feature_selection", "label": "特征选择", "category": "特征层"},
             {"value": "feature_validation", "label": "特征验证", "category": "特征层"},
 
             # 模型层任务
