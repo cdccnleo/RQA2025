@@ -1952,3 +1952,91 @@ async def batch_create_quality_configs_endpoint(request: Dict[str, Any]) -> Dict
         logger.error(f"批量创建自定义评分配置失败: {e}")
         raise HTTPException(status_code=500, detail=f"批量创建自定义评分配置失败: {str(e)}")
 
+
+# ==================== 特征选择任务API ====================
+
+@router.get("/features/engineering/selection/tasks")
+async def get_selection_tasks_endpoint(
+    status: Optional[str] = Query(None, description="按状态过滤"),
+    limit: int = Query(100, ge=1, le=1000, description="返回数量限制"),
+    offset: int = Query(0, ge=0, description="偏移量")
+) -> Dict[str, Any]:
+    """
+    获取特征选择任务列表
+    
+    Args:
+        status: 按状态过滤（pending/running/completed/failed）
+        limit: 返回数量限制
+        offset: 偏移量
+    
+    Returns:
+        特征选择任务列表
+    """
+    try:
+        from .feature_selection_task_persistence import list_selection_tasks
+        
+        tasks = list_selection_tasks(status=status, limit=limit, offset=offset)
+        
+        return {
+            "success": True,
+            "tasks": tasks,
+            "total": len(tasks),
+            "limit": limit,
+            "offset": offset
+        }
+    except Exception as e:
+        logger.error(f"获取特征选择任务列表失败: {e}")
+        raise HTTPException(status_code=500, detail=f"获取特征选择任务列表失败: {str(e)}")
+
+
+@router.get("/features/engineering/selection/tasks/stats")
+async def get_selection_tasks_stats_endpoint() -> Dict[str, Any]:
+    """
+    获取特征选择任务统计
+    
+    Returns:
+        任务统计信息
+    """
+    try:
+        from .feature_selection_task_persistence import get_selection_tasks_stats
+        
+        stats = get_selection_tasks_stats()
+        
+        return {
+            "success": True,
+            "stats": stats
+        }
+    except Exception as e:
+        logger.error(f"获取特征选择任务统计失败: {e}")
+        raise HTTPException(status_code=500, detail=f"获取特征选择任务统计失败: {str(e)}")
+
+
+@router.get("/features/engineering/selection/tasks/{task_id}")
+async def get_selection_task_details_endpoint(task_id: str) -> Dict[str, Any]:
+    """
+    获取特征选择任务详情
+    
+    Args:
+        task_id: 任务ID
+    
+    Returns:
+        任务详情
+    """
+    try:
+        from .feature_selection_task_persistence import get_selection_task
+        
+        task = get_selection_task(task_id)
+        
+        if not task:
+            raise HTTPException(status_code=404, detail=f"任务 {task_id} 不存在")
+        
+        return {
+            "success": True,
+            "task": task
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"获取特征选择任务详情失败: {e}")
+        raise HTTPException(status_code=500, detail=f"获取特征选择任务详情失败: {str(e)}")
+

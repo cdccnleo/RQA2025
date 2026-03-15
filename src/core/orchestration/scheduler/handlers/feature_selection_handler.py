@@ -4,6 +4,7 @@
 
 统一调度器使用的特征选择任务处理器，支持：
 - 多种特征选择方法（importance/correlation/mutual_info/kbest）
+- 任务状态跟踪和持久化
 - 自动记录选择历史
 - 完整的错误处理和日志记录
 """
@@ -21,11 +22,13 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
     特征选择任务处理器
     
     执行流程：
-    1. 解析任务参数（symbols, method, top_k等）
-    2. 获取特征数据
-    3. 调用FeatureSelector执行选择
-    4. 记录选择历史到feature_selection_history表
-    5. 返回选择结果
+    1. 创建任务记录并保存到feature_selection_tasks表
+    2. 解析任务参数（symbols, method, top_k等）
+    3. 获取特征数据
+    4. 调用FeatureSelector执行选择
+    5. 更新任务状态和进度
+    6. 记录选择历史到feature_selection_history表
+    7. 完成任务并保存结果
     
     Args:
         task: 调度器任务payload字典（包含symbols, method, top_k等参数）
@@ -34,15 +37,24 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
         包含选择结果的字典
     """
     start_time = time.time()
+    start_timestamp = int(start_time)
     
     # 从payload中获取任务ID（如果存在）
-    task_id = task.get('task_id', 'unknown')
+    parent_task_id = task.get('task_id', 'unknown')
     
-    logger.info(f"🚀 开始执行特征选择任务: {task_id}")
+    # 生成特征选择任务ID
+    selection_task_id = f"selection_task_{parent_task_id}_{start_timestamp}"
+    
+    logger.info(f"🚀 开始执行特征选择任务: {selection_task_id} (父任务: {parent_task_id})")
+    
+    # 导入持久化模块
+    from src.gateway.web.feature_selection_task_persistence import (
+        save_selection_task,
+        update_selection_task_status
+    )
     
     try:
         # 1. 解析任务参数
-        # 调度器传递的是payload字典，直接从中获取参数
         logger.info(f"🔍 任务参数: {task}")
         
         params = task
@@ -61,7 +73,27 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
         if method not in ['importance', 'correlation', 'mutual_info', 'kbest']:
             raise ValueError(f"不支持的选择方法: {method}")
         
-        # 2. 获取特征数据
+        # 2. 创建任务记录（pending状态）
+        logger.info("💾 创建任务记录...")
+        task_record = {
+            'task_id': selection_task_id,
+            'task_type': 'feature_selection',
+            'status': 'pending',
+            'progress': 0,
+            'symbols': symbols,
+            'selection_method': method,
+            'top_k': top_k,
+            'min_quality': min_quality,
+            'parent_task_id': parent_task_id,
+            'start_time': start_timestamp
+        }
+        save_selection_task(task_record)
+        
+        # 3. 更新状态为running
+        update_selection_task_status(selection_task_id, 'running', progress=10)
+        logger.info(f"▶️ 任务状态更新为 running: {selection_task_id}")
+        
+        # 4. 获取特征数据
         logger.info("🔍 获取特征数据...")
         from src.gateway.web.feature_task_persistence import get_features
         
@@ -70,13 +102,17 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
             raise ValueError("没有可用的特征数据")
         
         logger.info(f"✅ 获取到 {len(all_features)} 个特征")
+        update_selection_task_status(selection_task_id, 'running', progress=30)
         
-        # 3. 按股票代码过滤并执行选择
+        # 5. 按股票代码过滤并执行选择
         selection_results = []
         all_selected_features = []
         total_input = 0
+        processed_count = 0
         
-        for symbol in symbols:
+        total_symbols = len(symbols)
+        
+        for idx, symbol in enumerate(symbols):
             symbol_features = [
                 f for f in all_features 
                 if f.get('symbol') == symbol
@@ -114,14 +150,27 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
             }
             selection_results.append(result)
             
+            processed_count += 1
+            
+            # 更新进度
+            progress = 30 + int((idx + 1) / total_symbols * 50)
+            update_selection_task_status(
+                selection_task_id, 
+                'running', 
+                progress=progress,
+                symbols_processed=processed_count
+            )
+            
             logger.info(f"✅ 股票 {symbol} 选择完成: {len(selected)} 个特征")
         
-        # 4. 记录选择历史（按股票分别保存）
+        # 6. 记录选择历史（按股票分别保存）
         logger.info("💾 记录特征选择历史...")
+        update_selection_task_status(selection_task_id, 'running', progress=85)
+        
         for result in selection_results:
             symbol = result['symbol']
             await _save_selection_history(
-                task_id=task_id,
+                task_id=parent_task_id,
                 symbol=symbol,
                 input_features=[f.get('name') for f in all_features if f.get('symbol') == symbol],
                 input_count=result['input_count'],
@@ -131,12 +180,15 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
                 params=params
             )
         
+        # 7. 计算处理时间
         processing_time = time.time() - start_time
+        end_timestamp = int(time.time())
         
-        # 5. 返回结果
+        # 8. 完成任务
         result = {
             'status': 'completed',
-            'task_id': task_id,
+            'task_id': selection_task_id,
+            'parent_task_id': parent_task_id,
             'processing_time': processing_time,
             'summary': {
                 'total_input_features': total_input,
@@ -148,19 +200,49 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
             'details': selection_results
         }
         
-        logger.info(f"✅ 特征选择任务完成: {task_id}, 耗时: {processing_time:.2f}s")
+        # 更新任务状态为completed
+        update_selection_task_status(
+            selection_task_id,
+            'completed',
+            progress=100,
+            end_time=end_timestamp,
+            processing_time=processing_time,
+            total_input_features=total_input,
+            total_selected_features=len(all_selected_features),
+            symbols_processed=len(selection_results),
+            results=result
+        )
+        
+        logger.info(f"✅ 特征选择任务完成: {selection_task_id}, 耗时: {processing_time:.2f}s")
         
         return result
         
     except Exception as e:
         processing_time = time.time() - start_time
-        logger.error(f"❌ 特征选择任务失败: {task_id}, 错误: {e}")
+        end_timestamp = int(time.time())
+        error_msg = str(e)
+        
+        logger.error(f"❌ 特征选择任务失败: {selection_task_id}, 错误: {error_msg}")
+        
+        # 更新任务状态为failed
+        try:
+            update_selection_task_status(
+                selection_task_id,
+                'failed',
+                progress=0,
+                end_time=end_timestamp,
+                processing_time=processing_time,
+                error_message=error_msg
+            )
+        except Exception as update_error:
+            logger.error(f"更新任务失败状态失败: {update_error}")
         
         return {
             'status': 'failed',
-            'task_id': task_id,
+            'task_id': selection_task_id,
+            'parent_task_id': parent_task_id,
             'processing_time': processing_time,
-            'error': str(e)
+            'error': error_msg
         }
 
 
