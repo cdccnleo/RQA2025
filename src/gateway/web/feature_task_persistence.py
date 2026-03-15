@@ -772,3 +772,74 @@ def delete_features_from_store_by_task(task_id: str) -> int:
         logger.error(f"从feature_store删除特征数据失败: {e}")
         return 0
 
+
+def update_feature_task_status(task_id: str, status: str, feature_count: int = None, error_message: str = None) -> bool:
+    """
+    更新特征提取任务状态
+    
+    用于调度器在任务完成或失败时同步更新数据库状态
+    
+    Args:
+        task_id: 任务ID
+        status: 新状态 (completed/failed/running等)
+        feature_count: 特征数量（可选）
+        error_message: 错误信息（可选）
+    
+    Returns:
+        是否成功更新
+    """
+    try:
+        from .postgresql_persistence import get_db_connection, return_db_connection
+        
+        conn = get_db_connection()
+        if not conn:
+            logger.warning("PostgreSQL连接不可用，无法更新任务状态")
+            return False
+        
+        cursor = conn.cursor()
+        
+        # 构建更新SQL
+        update_fields = ["status = %s", "updated_at = CURRENT_TIMESTAMP"]
+        params = [status]
+        
+        if feature_count is not None:
+            update_fields.append("feature_count = %s")
+            params.append(feature_count)
+        
+        if error_message is not None:
+            update_fields.append("error_message = %s")
+            params.append(error_message)
+        
+        # 如果状态是completed或failed，设置end_time
+        if status in ["completed", "failed"]:
+            update_fields.append("end_time = %s")
+            params.append(int(time.time()))
+        
+        # 添加task_id到参数列表
+        params.append(task_id)
+        
+        # 执行更新
+        sql = f"""
+            UPDATE feature_engineering_tasks 
+            SET {', '.join(update_fields)}
+            WHERE task_id = %s
+        """
+        
+        cursor.execute(sql, tuple(params))
+        conn.commit()
+        
+        updated_rows = cursor.rowcount
+        cursor.close()
+        return_db_connection(conn)
+        
+        if updated_rows > 0:
+            logger.debug(f"任务状态已更新到数据库: {task_id} -> {status}")
+            return True
+        else:
+            logger.warning(f"数据库中没有找到任务: {task_id}")
+            return False
+            
+    except Exception as e:
+        logger.error(f"更新任务状态到数据库失败: {e}")
+        return False
+

@@ -1057,6 +1057,18 @@ class UnifiedScheduler(BaseScheduler):
             )
             # 发布任务完成事件
             await self._publish_task_completed(task, result)
+            
+            # 同步更新数据库中的任务状态
+            try:
+                from src.gateway.web.feature_task_persistence import update_feature_task_status
+                update_feature_task_status(
+                    task_id=task_id,
+                    status="completed",
+                    feature_count=result.get("feature_count", 0) if isinstance(result, dict) else 0
+                )
+                logger.debug(f"✅ 任务完成状态已同步到数据库: {task_id}")
+            except Exception as db_error:
+                logger.warning(f"⚠️ 同步任务完成状态到数据库失败: {db_error}")
 
         elif status == "failed":
             # 更新任务状态为失败
@@ -1067,6 +1079,18 @@ class UnifiedScheduler(BaseScheduler):
             )
             # 发布任务失败事件
             await self._publish_task_failed(task, error or "Unknown error")
+            
+            # 同步更新数据库中的任务状态
+            try:
+                from src.gateway.web.feature_task_persistence import update_feature_task_status
+                update_feature_task_status(
+                    task_id=task_id,
+                    status="failed",
+                    error_message=error
+                )
+                logger.debug(f"❌ 任务失败状态已同步到数据库: {task_id}")
+            except Exception as db_error:
+                logger.warning(f"⚠️ 同步任务失败状态到数据库失败: {db_error}")
 
             # 检查是否需要自动重试
             if task.should_retry():
