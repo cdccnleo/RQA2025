@@ -801,9 +801,9 @@
                 // 渲染分页控件
                 renderTasksPagination();
 
-                // 更新统计
+                // 更新任务相关统计（不更新特征总数，避免覆盖）
                 if (data.stats) {
-                    updateStatistics({ stats: data.stats });
+                    document.getElementById('active-tasks').textContent = data.stats.active_tasks || 0;
                 }
 
                 return data;
