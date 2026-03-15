@@ -221,7 +221,7 @@ async def stop_auto_collection():
 
 # ========== Tasks ==========
 
-@router.get("/tasks/types")
+@router.get("/task-types")
 async def get_task_types():
     """
     获取支持的任务类型列表
