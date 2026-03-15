@@ -1107,12 +1107,20 @@ async def lifespan(app: FastAPI):
                         try:
                             from src.gateway.web.feature_task_persistence import save_features_to_store
                             
+                            # 调试日志：记录所有特征列
+                            logger.info(f"🔍 开始计算质量分数，特征列: {feature_columns}")
+                            logger.info(f"🔍 result_df列: {list(result_df.columns)}")
+                            
                             # 计算特征质量分数（基于特征值的统计特性）
                             quality_scores = {}
                             for feature in feature_columns:
+                                logger.info(f"🔍 处理特征: {feature}")
+                                
                                 if feature in result_df.columns:
                                     feature_series = result_df[feature]
                                     feature_data = feature_series.dropna()
+                                    
+                                    logger.info(f"🔍 特征 {feature}: 原始长度={len(feature_series)}, 去空后长度={len(feature_data)}")
                                     
                                     if len(feature_data) > 0:
                                         # 计算缺失率（在原始数据上计算）
@@ -1121,6 +1129,8 @@ async def lifespan(app: FastAPI):
                                         # 计算变异系数（标准差/均值），用于衡量数据稳定性
                                         mean_val = feature_data.mean()
                                         std_val = feature_data.std()
+                                        
+                                        logger.info(f"🔍 特征 {feature}: mean={mean_val}, std={std_val}, missing_rate={missing_rate}")
                                         
                                         if mean_val != 0 and not pd.isna(mean_val):
                                             cv = std_val / abs(mean_val)  # 变异系数
@@ -1131,8 +1141,11 @@ async def lifespan(app: FastAPI):
                                             # 然后使用sigmoid映射到0-1
                                             log_cv = math.log1p(cv)  # log(1 + cv)
                                             stability_score = 1.0 / (1.0 + math.exp(log_cv - 1.0))
+                                            
+                                            logger.info(f"📊 特征 {feature}: cv={cv:.4f}, log_cv={log_cv:.4f}, stability={stability_score:.4f}")
                                         else:
                                             stability_score = 0.5  # 均值为0时，给中等分数
+                                            logger.info(f"📊 特征 {feature}: mean为0或NaN, stability=0.5")
                                         
                                         # 计算值范围分数（有变化的特征更好）
                                         min_val = feature_data.min()
@@ -1149,17 +1162,15 @@ async def lifespan(app: FastAPI):
                                             0.2 * range_score
                                         )
                                         
-                                        # 调试日志：记录BOLL和SMA特征的详细计算过程
-                                        if feature in ['sma', 'boll_upper', 'boll_middle', 'boll_lower']:
-                                            logger.info(f"📊 质量分数计算 [{feature}]: missing_rate={missing_rate:.4f}, "
-                                                      f"cv={cv:.4f}, log_cv={log_cv:.4f}, stability={stability_score:.4f}, "
-                                                      f"range={range_score:.4f}, final_score={quality_score:.4f}")
+                                        logger.info(f"📊 特征 {feature}: missing={missing_rate:.4f}, stability={stability_score:.4f}, range={range_score:.4f}, final={quality_score:.4f}")
                                         
                                         quality_scores[feature] = round(max(0.0, min(1.0, quality_score)), 4)
                                     else:
                                         quality_scores[feature] = 0.0
+                                        logger.info(f"❌ 特征 {feature}: feature_data为空, quality_score=0")
                                 else:
                                     quality_scores[feature] = 0.0
+                                    logger.info(f"❌ 特征 {feature}: 不在result_df中, quality_score=0")
                             
                             save_features_to_store(
                                 task_id=payload.get('task_id', 'unknown'),
