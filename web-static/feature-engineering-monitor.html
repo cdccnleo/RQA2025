@@ -1895,6 +1895,9 @@
         // 更新特征选择仪表盘
         function updateFeatureSelectionDashboard(selectionHistory) {
             console.log('🔄 更新特征选择仪表盘...');
+            console.log('📊 选择历史数据条数:', selectionHistory.length);
+            console.log('📊 featureSelectionChart 实例:', featureSelectionChart ? '存在' : '不存在');
+            console.log('📊 selectionMethodChart 实例:', selectionMethodChart ? '存在' : '不存在');
             
             // 1. 更新关键指标卡片
             const totalCount = selectionHistory.length;
@@ -1952,10 +1955,13 @@
                     ? selectionHistory.map(h => h.selected_count || 0) 
                     : [];
                 
+                console.log('📈 选择历史趋势图数据:', { labels: selLabels.length, data: selData.length });
                 featureSelectionChart.data.labels = selLabels;
                 featureSelectionChart.data.datasets[0].data = selData;
                 featureSelectionChart.update('active');
                 console.log('✅ 选择历史趋势图已更新');
+            } else {
+                console.warn('⚠️ featureSelectionChart 不存在，无法更新');
             }
             
             // 3. 更新选择方法分布图
@@ -1969,6 +1975,7 @@
                     }
                 });
                 
+                console.log('🥧 选择方法分布数据:', methodCounts);
                 selectionMethodChart.data.datasets[0].data = [
                     methodCounts.importance,
                     methodCounts.correlation,
@@ -1977,6 +1984,8 @@
                 ];
                 selectionMethodChart.update('active');
                 console.log('✅ 选择方法分布图已更新');
+            } else {
+                console.warn('⚠️ selectionMethodChart 不存在，无法更新');
             }
             
             // 4. 更新最近选择记录表格
