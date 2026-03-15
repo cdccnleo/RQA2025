@@ -129,15 +129,17 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
             cur.execute("""
                 INSERT INTO feature_selection_tasks (
                     task_id, task_type, status, progress,
-                    symbols, selection_method, top_k, min_quality,
+                    symbols, symbol, batch_id, selection_method, top_k, min_quality,
                     start_time, end_time, processing_time,
                     total_input_features, total_selected_features, symbols_processed,
                     error_message, parent_task_id, results,
                     created_at, updated_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 ON CONFLICT (task_id) DO UPDATE SET
                     status = EXCLUDED.status,
                     progress = EXCLUDED.progress,
+                    symbol = EXCLUDED.symbol,
+                    batch_id = EXCLUDED.batch_id,
                     start_time = EXCLUDED.start_time,
                     end_time = EXCLUDED.end_time,
                     processing_time = EXCLUDED.processing_time,
@@ -153,6 +155,8 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
                 task.get("status", "pending"),
                 task.get("progress", 0),
                 json.dumps(task.get("symbols", [])),
+                task.get("symbol"),  # 新增：单股票代码
+                task.get("batch_id"),  # 新增：批次ID
                 task.get("selection_method", ""),
                 task.get("top_k"),
                 task.get("min_quality"),
