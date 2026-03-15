@@ -1111,16 +1111,40 @@ async def lifespan(app: FastAPI):
                             quality_scores = {}
                             for feature in feature_columns:
                                 if feature in result_df.columns:
-                                    feature_data = result_df[feature].dropna()
+                                    feature_series = result_df[feature]
+                                    feature_data = feature_series.dropna()
+                                    
                                     if len(feature_data) > 0:
-                                        # 计算质量分数（0-1之间）
-                                        # 基于：缺失率、标准差、值范围
-                                        missing_rate = feature_data.isna().sum() / len(result_df)
-                                        std_normalized = min(feature_data.std() / (feature_data.mean() + 1e-10), 1.0)
+                                        # 计算缺失率（在原始数据上计算）
+                                        missing_rate = feature_series.isna().sum() / len(result_df)
                                         
-                                        # 质量分数 = 1 - 缺失率 - 0.1 * 标准化标准差
-                                        quality_score = max(0.0, min(1.0, 1.0 - missing_rate - 0.1 * std_normalized))
-                                        quality_scores[feature] = round(quality_score, 4)
+                                        # 计算变异系数（标准差/均值），用于衡量数据稳定性
+                                        mean_val = feature_data.mean()
+                                        std_val = feature_data.std()
+                                        
+                                        if mean_val != 0 and not pd.isna(mean_val):
+                                            cv = std_val / abs(mean_val)  # 变异系数
+                                            # 将变异系数映射到0-1范围（cv越小越好）
+                                            stability_score = max(0.0, min(1.0, 1.0 - cv))
+                                        else:
+                                            stability_score = 0.5  # 均值为0时，给中等分数
+                                        
+                                        # 计算值范围分数（有变化的特征更好）
+                                        min_val = feature_data.min()
+                                        max_val = feature_data.max()
+                                        if max_val != min_val:
+                                            range_score = 1.0  # 有变化的特征给满分
+                                        else:
+                                            range_score = 0.0  # 无变化的特征给0分
+                                        
+                                        # 综合质量分数 = 0.5 * (1 - 缺失率) + 0.3 * 稳定性 + 0.2 * 范围
+                                        quality_score = (
+                                            0.5 * (1.0 - missing_rate) +
+                                            0.3 * stability_score +
+                                            0.2 * range_score
+                                        )
+                                        
+                                        quality_scores[feature] = round(max(0.0, min(1.0, quality_score)), 4)
                                     else:
                                         quality_scores[feature] = 0.0
                                 else:
