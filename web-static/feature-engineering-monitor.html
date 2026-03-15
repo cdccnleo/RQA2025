@@ -2149,10 +2149,26 @@
                 const progress = task.progress || 0;
                 const progressColor = progress === 100 ? 'bg-green-500' : 'bg-blue-500';
                 
-                // 格式化时间
+                // 格式化时间（支持秒级时间戳和ISO 8601字符串）
                 const formatTime = (timestamp) => {
                     if (!timestamp) return '--';
-                    const date = new Date(timestamp * 1000);
+                    
+                    let date;
+                    if (typeof timestamp === 'number') {
+                        // 秒级时间戳
+                        date = new Date(timestamp * 1000);
+                    } else if (typeof timestamp === 'string') {
+                        // ISO 8601 字符串或其他日期字符串
+                        date = new Date(timestamp);
+                    } else {
+                        return '--';
+                    }
+                    
+                    // 检查日期是否有效
+                    if (isNaN(date.getTime())) {
+                        return '--';
+                    }
+                    
                     return date.toLocaleString('zh-CN', { 
                         month: 'short', 
                         day: 'numeric', 
