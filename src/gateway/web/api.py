@@ -1103,15 +1103,36 @@ async def lifespan(app: FastAPI):
                         
                         logger.info(f"✅ 特征提取任务完成: {stock_code}, 提取了 {len(feature_columns)} 个特征: {feature_columns}")
                         
-                        # 4. 保存特征到feature_store
+                        # 4. 计算特征质量分数并保存到feature_store
                         try:
                             from src.gateway.web.feature_task_persistence import save_features_to_store
+                            
+                            # 计算特征质量分数（基于特征值的统计特性）
+                            quality_scores = {}
+                            for feature in feature_columns:
+                                if feature in result_df.columns:
+                                    feature_data = result_df[feature].dropna()
+                                    if len(feature_data) > 0:
+                                        # 计算质量分数（0-1之间）
+                                        # 基于：缺失率、标准差、值范围
+                                        missing_rate = feature_data.isna().sum() / len(result_df)
+                                        std_normalized = min(feature_data.std() / (feature_data.mean() + 1e-10), 1.0)
+                                        
+                                        # 质量分数 = 1 - 缺失率 - 0.1 * 标准化标准差
+                                        quality_score = max(0.0, min(1.0, 1.0 - missing_rate - 0.1 * std_normalized))
+                                        quality_scores[feature] = round(quality_score, 4)
+                                    else:
+                                        quality_scores[feature] = 0.0
+                                else:
+                                    quality_scores[feature] = 0.0
+                            
                             save_features_to_store(
                                 task_id=payload.get('task_id', 'unknown'),
                                 features=feature_columns,
-                                symbol=stock_code
+                                symbol=stock_code,
+                                quality_scores=quality_scores
                             )
-                            logger.info(f"💾 特征已保存到feature_store: {stock_code}, {len(feature_columns)} 个特征")
+                            logger.info(f"💾 特征已保存到feature_store: {stock_code}, {len(feature_columns)} 个特征, 质量分数已计算")
                         except Exception as save_error:
                             logger.warning(f"⚠️ 保存特征到feature_store失败: {save_error}")
                         
