@@ -254,6 +254,12 @@ def create_feature_task(
                     workers = registry.get_workers_by_type(worker_type)
                     logger.info(f"👷 当前{worker_type.value}工作节点数量: {len(workers)}")
                     
+                    # 构建payload，包含task_id以便后续状态更新
+                    payload = config or {}
+                    payload['task_id'] = task_id
+                    payload['stock_code'] = config.get('stock_code') if config else None
+                    payload['stock_name'] = config.get('stock_name') if config else None
+                    
                     # 提交任务到统一调度器（submit_task是异步方法，需要获取当前事件循环）
                     import asyncio
                     try:
@@ -263,7 +269,7 @@ def create_feature_task(
                             future = asyncio.run_coroutine_threadsafe(
                                 scheduler.submit_task(
                                     task_type=submit_task_type,
-                                    payload=config or {},
+                                    payload=payload,
                                     priority=TaskPriority.NORMAL
                                 ),
                                 loop
@@ -273,14 +279,14 @@ def create_feature_task(
                             # 如果事件循环没有运行，使用run_until_complete
                             scheduler_task_id = loop.run_until_complete(scheduler.submit_task(
                                 task_type=submit_task_type,
-                                payload=config or {},
+                                payload=payload,
                                 priority=TaskPriority.NORMAL
                             ))
                     except RuntimeError:
                         # 没有事件循环，创建新的
                         scheduler_task_id = asyncio.run(scheduler.submit_task(
                             task_type=submit_task_type,
-                            payload=config or {},
+                            payload=payload,
                             priority=TaskPriority.NORMAL
                         ))
                     logger.info(f"✅ 特征引擎任务已提交到统一调度器: {task_id} (调度器ID: {scheduler_task_id})")

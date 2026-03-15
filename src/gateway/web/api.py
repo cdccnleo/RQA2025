@@ -1103,6 +1103,18 @@ async def lifespan(app: FastAPI):
                         
                         logger.info(f"✅ 特征提取任务完成: {stock_code}, 提取了 {len(feature_columns)} 个特征: {feature_columns}")
                         
+                        # 4. 保存特征到feature_store
+                        try:
+                            from src.gateway.web.feature_task_persistence import save_features_to_store
+                            save_features_to_store(
+                                task_id=payload.get('task_id', 'unknown'),
+                                features=feature_columns,
+                                symbol=stock_code
+                            )
+                            logger.info(f"💾 特征已保存到feature_store: {stock_code}, {len(feature_columns)} 个特征")
+                        except Exception as save_error:
+                            logger.warning(f"⚠️ 保存特征到feature_store失败: {save_error}")
+                        
                         return {
                             "status": "success",
                             "stock_code": stock_code,
