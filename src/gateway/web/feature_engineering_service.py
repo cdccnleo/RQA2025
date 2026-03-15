@@ -261,6 +261,7 @@ def create_feature_task(
                     payload['stock_name'] = config.get('stock_name') if config else None
                     
                     # 提交任务到统一调度器（submit_task是异步方法，需要获取当前事件循环）
+                    # 使用数据库的task_id作为调度器任务的ID，确保状态同步
                     import asyncio
                     try:
                         loop = asyncio.get_event_loop()
@@ -270,7 +271,8 @@ def create_feature_task(
                                 scheduler.submit_task(
                                     task_type=submit_task_type,
                                     payload=payload,
-                                    priority=TaskPriority.NORMAL
+                                    priority=TaskPriority.NORMAL,
+                                    task_id=task_id  # 使用数据库的task_id
                                 ),
                                 loop
                             )
@@ -280,14 +282,16 @@ def create_feature_task(
                             scheduler_task_id = loop.run_until_complete(scheduler.submit_task(
                                 task_type=submit_task_type,
                                 payload=payload,
-                                priority=TaskPriority.NORMAL
+                                priority=TaskPriority.NORMAL,
+                                task_id=task_id  # 使用数据库的task_id
                             ))
                     except RuntimeError:
                         # 没有事件循环，创建新的
                         scheduler_task_id = asyncio.run(scheduler.submit_task(
                             task_type=submit_task_type,
                             payload=payload,
-                            priority=TaskPriority.NORMAL
+                            priority=TaskPriority.NORMAL,
+                            task_id=task_id  # 使用数据库的task_id
                         ))
                     logger.info(f"✅ 特征引擎任务已提交到统一调度器: {task_id} (调度器ID: {scheduler_task_id})")
                     

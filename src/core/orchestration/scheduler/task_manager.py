@@ -38,7 +38,8 @@ class TaskManager:
         priority: int = 5,
         timeout_seconds: Optional[int] = None,
         max_retries: int = 0,
-        retry_delay_seconds: int = 0
+        retry_delay_seconds: int = 0,
+        task_id: Optional[str] = None
     ) -> str:
         """
         创建新任务
@@ -50,12 +51,14 @@ class TaskManager:
             timeout_seconds: 任务超时时间（秒）
             max_retries: 最大重试次数
             retry_delay_seconds: 重试延迟（秒）
+            task_id: 自定义任务ID（可选，如果不提供则自动生成）
 
         Returns:
             str: 任务ID
         """
         async with self._lock:
-            task_id = generate_task_id()
+            # 如果提供了自定义task_id，使用它；否则自动生成
+            task_id = task_id or generate_task_id()
             created_at = datetime.now()
 
             # 计算截止时间

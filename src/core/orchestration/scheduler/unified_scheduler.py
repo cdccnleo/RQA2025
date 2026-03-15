@@ -511,7 +511,8 @@ class UnifiedScheduler(BaseScheduler):
         priority: int = 5,
         timeout_seconds: Optional[int] = None,
         max_retries: int = 0,
-        retry_delay_seconds: int = 0
+        retry_delay_seconds: int = 0,
+        task_id: Optional[str] = None
     ) -> str:
         """
         提交一次性任务
@@ -523,19 +524,24 @@ class UnifiedScheduler(BaseScheduler):
             timeout_seconds: 任务超时时间（秒）
             max_retries: 最大重试次数
             retry_delay_seconds: 重试延迟（秒）
+            task_id: 自定义任务ID（可选，如果不提供则自动生成）
 
         Returns:
             str: 任务ID
         """
-        # 创建任务
-        task_id = await self._task_manager.create_task(
+        # 创建任务，支持传入自定义task_id
+        scheduler_task_id = await self._task_manager.create_task(
             task_type=task_type,
             payload=payload,
             priority=priority,
             timeout_seconds=timeout_seconds,
             max_retries=max_retries,
-            retry_delay_seconds=retry_delay_seconds
+            retry_delay_seconds=retry_delay_seconds,
+            task_id=task_id
         )
+        
+        # 使用传入的task_id或调度器生成的task_id
+        task_id = task_id or scheduler_task_id
 
         # 获取创建的任务对象
         task = self._task_manager.get_task(task_id)
