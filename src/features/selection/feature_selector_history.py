@@ -93,8 +93,8 @@ class FeatureSelectorHistoryManager:
             "host": os.getenv("POSTGRES_HOST", "postgres"),
             "port": os.getenv("POSTGRES_PORT", "5432"),
             "database": os.getenv("POSTGRES_DB", "rqa2025_prod"),
-            "user": os.getenv("POSTGRES_USER", "rqa2025_admin"),
-            "password": os.getenv("POSTGRES_PASSWORD", "SecurePass123!")
+            "user": os.getenv("POSTGRES_USER", "rqa_admin"),
+            "password": os.getenv("POSTGRES_PASSWORD", "RQA2025_Secure_Pass_Prod_2026")
         }
     
     def _get_db_connection(self):

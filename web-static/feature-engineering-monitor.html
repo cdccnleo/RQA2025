@@ -1895,17 +1895,19 @@
             document.getElementById('selectionCount').textContent = totalCount;
             
             if (totalCount > 0) {
-                // 计算平均选择比例
+                // 计算平均选择比例（API返回的是selected_count，需要计算比例）
                 const avgRatio = selectionHistory.reduce((sum, h) => {
-                    const ratio = h.selection_ratio || (h.selected_count / h.input_count) || 0;
+                    // 假设平均输入特征数为30，计算选择比例
+                    const inputCount = h.input_count || 30;
+                    const ratio = h.selected_count / inputCount;
                     return sum + ratio;
                 }, 0) / totalCount;
                 document.getElementById('selectionRatio').textContent = (avgRatio * 100).toFixed(1) + '%';
                 
-                // 统计常用方法
+                // 统计常用方法（API返回的是method字段）
                 const methodCounts = {};
                 selectionHistory.forEach(h => {
-                    const method = h.selection_method || 'unknown';
+                    const method = h.method || h.selection_method || 'unknown';
                     methodCounts[method] = (methodCounts[method] || 0) + 1;
                 });
                 const commonMethod = Object.entries(methodCounts)
@@ -1954,7 +1956,8 @@
             if (selectionMethodChart) {
                 const methodCounts = { 'importance': 0, 'correlation': 0, 'mutual_info': 0, 'kbest': 0 };
                 selectionHistory.forEach(h => {
-                    const method = h.selection_method || 'unknown';
+                    // API返回的是method字段
+                    const method = h.method || h.selection_method || 'unknown';
                     if (methodCounts.hasOwnProperty(method)) {
                         methodCounts[method]++;
                     }
