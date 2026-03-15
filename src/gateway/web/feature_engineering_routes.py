@@ -4,7 +4,7 @@
 符合架构设计：使用EventBus进行事件通信，使用ServiceContainer进行依赖管理，使用BusinessProcessOrchestrator进行业务流程编排
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from typing import Dict, Any, List, Optional, Set
 from datetime import datetime, timedelta
 import random
@@ -203,16 +203,49 @@ def _enforce_quality_checks(config: Dict[str, Any]) -> List[str]:
 # ==================== 特征提取任务API ====================
 
 @router.get("/features/engineering/tasks")
-async def get_feature_tasks_endpoint() -> Dict[str, Any]:
-    """获取特征提取任务列表 - 不使用模拟数据"""
+async def get_feature_tasks_endpoint(
+    page: int = Query(1, ge=1, description="页码"),
+    page_size: int = Query(20, ge=1, le=100, description="每页数量"),
+    status: Optional[str] = Query(None, description="任务状态筛选"),
+    task_type: Optional[str] = Query(None, description="任务类型筛选"),
+    start_date: Optional[str] = Query(None, description="开始日期"),
+    end_date: Optional[str] = Query(None, description="结束日期")
+) -> Dict[str, Any]:
+    """获取特征提取任务列表 - 支持分页和筛选"""
     try:
-        tasks = get_feature_tasks()
-        # 不使用模拟数据，即使为空也返回真实结果
+        # 获取所有任务
+        all_tasks = get_feature_tasks()
+        
+        # 应用筛选条件
+        filtered_tasks = all_tasks
+        if status:
+            filtered_tasks = [t for t in filtered_tasks if t.get('status') == status]
+        if task_type:
+            filtered_tasks = [t for t in filtered_tasks if t.get('task_type') == task_type]
+        if start_date:
+            filtered_tasks = [t for t in filtered_tasks if t.get('created_at', '') >= start_date]
+        if end_date:
+            filtered_tasks = [t for t in filtered_tasks if t.get('created_at', '') <= end_date]
+        
+        # 计算分页
+        total = len(filtered_tasks)
+        total_pages = (total + page_size - 1) // page_size
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+        paginated_tasks = filtered_tasks[start_idx:end_idx]
+        
+        # 获取统计信息
         stats = get_feature_tasks_stats()
         
         return {
-            "tasks": tasks,
-            "stats": stats
+            "tasks": paginated_tasks,
+            "stats": stats,
+            "pagination": {
+                "page": page,
+                "page_size": page_size,
+                "total": total,
+                "total_pages": total_pages
+            }
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取特征任务失败: {str(e)}")
@@ -867,36 +900,63 @@ async def resubmit_feature_task_endpoint(task_id: str) -> Dict[str, Any]:
 # ==================== 特征存储API ====================
 
 @router.get("/features/engineering/features")
-async def get_features_endpoint() -> Dict[str, Any]:
-    """获取特征列表 - 不使用模拟数据"""
+async def get_features_endpoint(
+    page: int = Query(1, ge=1, description="页码"),
+    page_size: int = Query(50, ge=1, le=200, description="每页数量"),
+    feature_type: Optional[str] = Query(None, description="特征类型筛选"),
+    min_quality: Optional[float] = Query(None, ge=0, le=1, description="最小质量分数"),
+    search: Optional[str] = Query(None, description="搜索关键词")
+) -> Dict[str, Any]:
+    """获取特征列表 - 支持分页和筛选"""
     try:
-        features = get_features()
-        # 不使用模拟数据，即使为空也返回真实结果
+        # 获取所有特征
+        all_features = get_features()
         
+        # 应用筛选条件
+        filtered_features = all_features
+        if feature_type:
+            filtered_features = [f for f in filtered_features if f.get('feature_type') == feature_type or f.get('type') == feature_type]
+        if min_quality is not None:
+            filtered_features = [f for f in filtered_features if (f.get('quality_score') or 0) >= min_quality]
+        if search:
+            search_lower = search.lower()
+            filtered_features = [
+                f for f in filtered_features 
+                if search_lower in (f.get('name') or '').lower() 
+                or search_lower in (f.get('display_name') or '').lower()
+                or search_lower in (f.get('description') or '').lower()
+            ]
+        
+        # 计算分页
+        total = len(filtered_features)
+        total_pages = (total + page_size - 1) // page_size
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+        paginated_features = filtered_features[start_idx:end_idx]
+        
+        # 获取统计信息
         stats = get_features_stats()
-        quality_distribution = get_quality_distribution(features) if features else {
+        quality_distribution = get_quality_distribution(all_features) if all_features else {
             "优秀": 0,
             "良好": 0,
             "一般": 0,
             "较差": 0
         }
         
-        # 从实际数据获取选择历史，不使用随机数据
+        # 从实际数据获取选择历史
         selection_history = []
         try:
             from src.features.selection.feature_selector_history import get_feature_selector_history_manager
             import time
             history_manager = get_feature_selector_history_manager()
             if history_manager and hasattr(history_manager, 'get_selection_history'):
-                # 获取最近7天的选择历史
                 end_time = time.time()
-                start_time = end_time - (7 * 24 * 60 * 60)  # 7天前
+                start_time = end_time - (7 * 24 * 60 * 60)
                 raw_history = history_manager.get_selection_history(
                     limit=50,
                     start_time=start_time,
                     end_time=end_time
                 )
-                # 转换为前端需要的格式
                 selection_history = [
                     {
                         "timestamp": record.get("timestamp", 0),
@@ -906,17 +966,20 @@ async def get_features_endpoint() -> Dict[str, Any]:
                     }
                     for record in raw_history
                 ]
-                logger.info(f"获取到 {len(selection_history)} 条特征选择历史记录")
         except Exception as e:
             logger.warning(f"获取特征选择历史失败: {e}")
-            # 如果无法获取，返回空列表（不使用模拟数据）
-            pass
         
         return {
-            "features": features,
+            "features": paginated_features,
             "stats": stats,
             "quality_distribution": quality_distribution,
-            "selection_history": selection_history
+            "selection_history": selection_history,
+            "pagination": {
+                "page": page,
+                "page_size": page_size,
+                "total": total,
+                "total_pages": total_pages
+            }
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取特征列表失败: {str(e)}")
@@ -972,6 +1035,95 @@ async def get_feature_details(feature_name: str) -> Dict[str, Any]:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取特征详情失败: {str(e)}")
+
+
+# ==================== 统计聚合API ====================
+
+@router.get("/features/engineering/tasks/stats")
+async def get_feature_tasks_stats_endpoint() -> Dict[str, Any]:
+    """获取特征提取任务统计聚合"""
+    try:
+        from .feature_task_persistence import list_feature_tasks
+        
+        tasks = list_feature_tasks(limit=10000)  # 获取所有任务
+        
+        # 按状态统计
+        status_counts = {}
+        type_counts = {}
+        daily_counts = {}
+        
+        for task in tasks:
+            # 状态统计
+            status = task.get('status', 'unknown')
+            status_counts[status] = status_counts.get(status, 0) + 1
+            
+            # 类型统计
+            task_type = task.get('task_type', 'unknown')
+            type_counts[task_type] = type_counts.get(task_type, 0) + 1
+            
+            # 日期统计
+            created_at = task.get('created_at')
+            if created_at:
+                if isinstance(created_at, str):
+                    date_key = created_at[:10]  # YYYY-MM-DD
+                else:
+                    date_key = str(created_at)[:10]
+                daily_counts[date_key] = daily_counts.get(date_key, 0) + 1
+        
+        return {
+            "total": len(tasks),
+            "by_status": status_counts,
+            "by_type": type_counts,
+            "by_date": daily_counts,
+            "recent_tasks": tasks[:10]  # 最近10个任务
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取任务统计失败: {str(e)}")
+
+
+@router.get("/features/engineering/features/stats")
+async def get_features_stats_endpoint() -> Dict[str, Any]:
+    """获取特征统计聚合"""
+    try:
+        features = get_features()
+        
+        # 按类型统计
+        type_counts = {}
+        quality_ranges = {
+            "优秀(>=0.9)": 0,
+            "良好(0.7-0.9)": 0,
+            "一般(0.5-0.7)": 0,
+            "较差(<0.5)": 0
+        }
+        
+        for feature in features:
+            # 类型统计
+            feature_type = feature.get('feature_type') or feature.get('type', 'unknown')
+            type_counts[feature_type] = type_counts.get(feature_type, 0) + 1
+            
+            # 质量分布
+            quality = feature.get('quality_score', 0)
+            if quality >= 0.9:
+                quality_ranges["优秀(>=0.9)"] += 1
+            elif quality >= 0.7:
+                quality_ranges["良好(0.7-0.9)"] += 1
+            elif quality >= 0.5:
+                quality_ranges["一般(0.5-0.7)"] += 1
+            else:
+                quality_ranges["较差(<0.5)"] += 1
+        
+        # 计算平均质量
+        avg_quality = sum(f.get('quality_score', 0) for f in features) / len(features) if features else 0
+        
+        return {
+            "total": len(features),
+            "by_type": type_counts,
+            "quality_distribution": quality_ranges,
+            "avg_quality": round(avg_quality, 4),
+            "recent_features": features[:10]  # 最近10个特征
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取特征统计失败: {str(e)}")
 
 
 # ==================== 技术指标API ====================

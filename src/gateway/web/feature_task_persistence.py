@@ -125,7 +125,7 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
             );
         """)
         
-        # 创建索引
+        # 创建索引 - 支持分页和筛选
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_feature_tasks_status 
             ON feature_engineering_tasks(status);
@@ -133,6 +133,14 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_feature_tasks_created 
             ON feature_engineering_tasks(created_at DESC);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_feature_tasks_type 
+            ON feature_engineering_tasks(task_type);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_feature_tasks_status_created 
+            ON feature_engineering_tasks(status, created_at DESC);
         """)
         
         # 插入或更新任务

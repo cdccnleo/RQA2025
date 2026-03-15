@@ -200,6 +200,43 @@
                     </tbody>
                 </table>
             </div>
+            <!-- 任务列表分页控件 -->
+            <div id="tasksPagination"></div>
+        </div>
+
+        <!-- 趋势图表区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">任务趋势</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="tasksTrendChart" height="200"></canvas>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800">特征类型分布</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="featureTypeChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 异常告警区 -->
+        <div id="alertsSection" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-8" style="display: none;">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-semibold text-red-700 flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>异常告警
+                </h3>
+                <button onclick="dismissAllAlerts()" class="text-sm text-red-600 hover:text-red-800">
+                    <i class="fas fa-times"></i> 全部忽略
+                </button>
+            </div>
+            <div id="alertsList" class="space-y-2">
+                <!-- 告警内容将在这里动态生成 -->
+            </div>
         </div>
 
         <!-- Technical Indicators Status -->
@@ -500,28 +537,30 @@
             }
 
             // 任务列表：独立请求，先返回先渲染，不阻塞其他区块
-            fetchWithTimeout(getApiBaseUrl('/features/engineering/tasks'), API_TIMEOUT_MS)
+            loadTasksWithPagination(1, 20);
+
+            // 任务统计API - 用于趋势图表
+            fetchWithTimeout(getApiBaseUrl('/features/engineering/tasks/stats'), API_TIMEOUT_MS)
                 .then(async (res) => {
-                    if (!res.ok) { 
-                        handleFetchError('tasks', new Error(`HTTP ${res.status}`));
-                        renderFeatureTasks([], true); 
-                        applyMergedStats(); 
-                        return; 
+                    if (res.ok) {
+                        const stats = await res.json();
+                        renderTasksTrendChart(stats.by_date || {});
                     }
-                    try { 
-                        tasksData = await (res.json && res.json()); 
-                    } catch (e) {
-                        handleFetchError('tasks', e);
-                        tasksData = { tasks: [], stats: {} };
-                    }
-                    if (!tasksData.tasks) tasksData = { tasks: [], stats: tasksData.stats || {} };
-                    renderFeatureTasks(tasksData.tasks || []);
-                    applyMergedStats();
                 })
-                .catch((error) => { 
-                    handleFetchError('tasks', error);
-                    renderFeatureTasks([], true); 
-                    applyMergedStats(); 
+                .catch((error) => {
+                    console.error('加载任务统计失败:', error);
+                });
+
+            // 特征统计API - 用于类型分布图表
+            fetchWithTimeout(getApiBaseUrl('/features/engineering/features/stats'), API_TIMEOUT_MS)
+                .then(async (res) => {
+                    if (res.ok) {
+                        const stats = await res.json();
+                        renderFeatureTypeChart(stats.by_type || {});
+                    }
+                })
+                .catch((error) => {
+                    console.error('加载特征统计失败:', error);
                 });
 
             // 特征列表 + 质量分布 + 特征选择图：独立请求
@@ -549,6 +588,9 @@
                     renderFeatureStore(featuresData.features);
                     updateFeatureCharts(featuresData);
                     applyMergedStats();
+                    
+                    // 渲染异常告警
+                    renderAlerts(tasksData.tasks || [], featuresData.features || []);
                 })
                 .catch((error) => { 
                     handleFetchError('features', error);
@@ -613,6 +655,299 @@
                 stats.processing_speed ? stats.processing_speed + ' 特征/秒' : '--';
             document.getElementById('feature-quality').textContent = 
                 stats.avg_quality ? (stats.avg_quality * 100).toFixed(1) + '%' : '--';
+        }
+
+        // 任务分页相关变量
+        let tasksPagination = {
+            page: 1,
+            page_size: 20,
+            total: 0,
+            total_pages: 1
+        };
+
+        // 加载任务列表（带分页）
+        async function loadTasksWithPagination(page = 1, pageSize = 20, status = null, taskType = null) {
+            try {
+                const params = new URLSearchParams({
+                    page: page.toString(),
+                    page_size: pageSize.toString()
+                });
+                if (status) params.append('status', status);
+                if (taskType) params.append('task_type', taskType);
+
+                const response = await fetchWithTimeout(
+                    `${getApiBaseUrl('/features/engineering/tasks')}?${params}`,
+                    API_TIMEOUT_MS
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // 更新分页信息
+                if (data.pagination) {
+                    tasksPagination = data.pagination;
+                }
+
+                // 渲染任务列表
+                renderFeatureTasks(data.tasks || []);
+                
+                // 渲染分页控件
+                renderTasksPagination();
+
+                // 更新统计
+                if (data.stats) {
+                    updateStatistics({ stats: data.stats });
+                }
+
+                return data;
+            } catch (error) {
+                console.error('加载任务列表失败:', error);
+                renderFeatureTasks([], true);
+                return { tasks: [], pagination: { page: 1, total: 0, total_pages: 1 } };
+            }
+        }
+
+        // 渲染任务分页控件
+        function renderTasksPagination() {
+            const container = document.getElementById('tasksPagination');
+            if (!container) return;
+
+            const { page, page_size, total, total_pages } = tasksPagination;
+
+            if (total_pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<div class="flex items-center justify-between px-4 py-3 bg-white border-t">';
+            
+            // 左侧：统计信息
+            html += `<div class="text-sm text-gray-700">共 ${total} 条记录，第 ${page}/${total_pages} 页</div>`;
+            
+            // 右侧：分页按钮
+            html += '<div class="flex space-x-1">';
+            
+            // 上一页
+            html += `<button onclick="loadTasksWithPagination(${page - 1}, ${page_size})" ${page <= 1 ? 'disabled' : ''} class="px-3 py-1 border rounded text-sm ${page <= 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">上一页</button>`;
+            
+            // 页码按钮
+            const maxButtons = 5;
+            let startPage = Math.max(1, page - Math.floor(maxButtons / 2));
+            let endPage = Math.min(total_pages, startPage + maxButtons - 1);
+            
+            if (endPage - startPage < maxButtons - 1) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            if (startPage > 1) {
+                html += `<button onclick="loadTasksWithPagination(1, ${page_size})" class="px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-gray-50">1</button>`;
+                if (startPage > 2) html += '<span class="px-2 py-1 text-gray-500">...</span>';
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === page) {
+                    html += `<button class="px-3 py-1 border rounded text-sm bg-indigo-600 text-white">${i}</button>`;
+                } else {
+                    html += `<button onclick="loadTasksWithPagination(${i}, ${page_size})" class="px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-gray-50">${i}</button>`;
+                }
+            }
+
+            if (endPage < total_pages) {
+                if (endPage < total_pages - 1) html += '<span class="px-2 py-1 text-gray-500">...</span>';
+                html += `<button onclick="loadTasksWithPagination(${total_pages}, ${page_size})" class="px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-gray-50">${total_pages}</button>`;
+            }
+
+            // 下一页
+            html += `<button onclick="loadTasksWithPagination(${page + 1}, ${page_size})" ${page >= total_pages ? 'disabled' : ''} class="px-3 py-1 border rounded text-sm ${page >= total_pages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">下一页</button>`;
+            
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        // 渲染任务趋势图表
+        function renderTasksTrendChart(dailyData) {
+            const ctx = document.getElementById('tasksTrendChart');
+            if (!ctx) return;
+
+            // 准备数据 - 取最近14天的数据
+            const dates = Object.keys(dailyData).sort().slice(-14);
+            const counts = dates.map(date => dailyData[date] || 0);
+
+            // 销毁旧图表
+            if (window.tasksTrendChartInstance) {
+                window.tasksTrendChartInstance.destroy();
+            }
+
+            window.tasksTrendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates.map(d => d.slice(5)), // MM-DD格式
+                    datasets: [{
+                        label: '任务数量',
+                        data: counts,
+                        borderColor: 'rgb(99, 102, 241)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 渲染特征类型分布图表
+        function renderFeatureTypeChart(typeData) {
+            const ctx = document.getElementById('featureTypeChart');
+            if (!ctx) return;
+
+            const labels = Object.keys(typeData);
+            const data = Object.values(typeData);
+            const colors = [
+                'rgb(99, 102, 241)',
+                'rgb(16, 185, 129)',
+                'rgb(245, 158, 11)',
+                'rgb(239, 68, 68)',
+                'rgb(139, 92, 246)',
+                'rgb(14, 165, 233)'
+            ];
+
+            // 销毁旧图表
+            if (window.featureTypeChartInstance) {
+                window.featureTypeChartInstance.destroy();
+            }
+
+            window.featureTypeChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 渲染异常告警
+        function renderAlerts(tasks, features) {
+            const alertsSection = document.getElementById('alertsSection');
+            const alertsList = document.getElementById('alertsList');
+            
+            if (!alertsSection || !alertsList) return;
+
+            const alerts = [];
+
+            // 检查失败任务
+            const failedTasks = tasks.filter(t => t.status === 'failed');
+            if (failedTasks.length > 0) {
+                alerts.push({
+                    type: 'error',
+                    icon: 'fa-times-circle',
+                    title: `失败任务 (${failedTasks.length})`,
+                    message: failedTasks.slice(0, 3).map(t => t.task_id || t.id).join(', ') + (failedTasks.length > 3 ? '...' : ''),
+                    action: () => loadTasksWithPagination(1, 20, 'failed')
+                });
+            }
+
+            // 检查低质量特征
+            const lowQualityFeatures = features.filter(f => (f.quality_score || 0) < 0.3);
+            if (lowQualityFeatures.length > 0) {
+                alerts.push({
+                    type: 'warning',
+                    icon: 'fa-exclamation-circle',
+                    title: `低质量特征 (${lowQualityFeatures.length})`,
+                    message: '质量分数低于30%的特征需要关注',
+                    action: null
+                });
+            }
+
+            // 检查长时间运行的任务
+            const longRunningTasks = tasks.filter(t => {
+                if (t.status !== 'running') return false;
+                const startTime = new Date(t.started_at || t.created_at);
+                const now = new Date();
+                const hours = (now - startTime) / (1000 * 60 * 60);
+                return hours > 2; // 运行超过2小时
+            });
+            if (longRunningTasks.length > 0) {
+                alerts.push({
+                    type: 'info',
+                    icon: 'fa-clock',
+                    title: `长时间运行任务 (${longRunningTasks.length})`,
+                    message: '运行超过2小时的任务需要检查',
+                    action: () => loadTasksWithPagination(1, 20, 'running')
+                });
+            }
+
+            // 渲染告警
+            if (alerts.length === 0) {
+                alertsSection.style.display = 'none';
+                return;
+            }
+
+            alertsSection.style.display = 'block';
+            alertsList.innerHTML = alerts.map(alert => `
+                <div class="flex items-start p-3 bg-white rounded-lg border-l-4 ${
+                    alert.type === 'error' ? 'border-red-500' : 
+                    alert.type === 'warning' ? 'border-yellow-500' : 'border-blue-500'
+                }">
+                    <i class="fas ${alert.icon} mt-1 mr-3 ${
+                        alert.type === 'error' ? 'text-red-500' : 
+                        alert.type === 'warning' ? 'text-yellow-500' : 'text-blue-500'
+                    }"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">${alert.title}</div>
+                        <div class="text-sm text-gray-600">${alert.message}</div>
+                    </div>
+                    ${alert.action ? `
+                        <button onclick="(${alert.action.toString()})()" class="ml-3 text-sm text-indigo-600 hover:text-indigo-800">
+                            查看
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // 忽略所有告警
+        function dismissAllAlerts() {
+            const alertsSection = document.getElementById('alertsSection');
+            if (alertsSection) {
+                alertsSection.style.display = 'none';
+            }
         }
 
         function renderFeatureTasks(tasks, loadFailed) {
