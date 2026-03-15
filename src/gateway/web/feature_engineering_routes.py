@@ -1164,6 +1164,95 @@ async def get_features_endpoint(
         raise HTTPException(status_code=500, detail=f"获取特征列表失败: {str(e)}")
 
 
+@router.get("/features/engineering/selection/analytics")
+async def get_selection_analytics() -> Dict[str, Any]:
+    """
+    获取特征选择分析数据
+    
+    返回特征选择的质量评估、趋势分析和建议
+    """
+    try:
+        # 获取特征选择历史
+        from src.features.selection.feature_selector_history import get_feature_selector_history_manager
+        history_manager = get_feature_selector_history_manager()
+        history = history_manager.get_history(limit=100)
+        
+        if not history:
+            return {
+                "success": True,
+                "analytics": {
+                    "total_selections": 0,
+                    "avg_selection_ratio": 0,
+                    "avg_quality": 0,
+                    "method_distribution": {},
+                    "trend": "stable",
+                    "recommendations": ["暂无特征选择历史数据，建议执行特征选择任务"]
+                }
+            }
+        
+        # 计算关键指标
+        total_selections = len(history)
+        avg_selection_ratio = sum(h.selection_ratio for h in history) / total_selections
+        avg_quality = sum(
+            h.evaluation_metrics.get('avg_quality', 0.8) 
+            for h in history
+        ) / total_selections
+        
+        # 方法分布
+        method_distribution = {}
+        for h in history:
+            method = h.selection_method or 'unknown'
+            method_distribution[method] = method_distribution.get(method, 0) + 1
+        
+        # 趋势分析（比较最近10次和之前的平均值）
+        trend = "stable"
+        if len(history) >= 20:
+            recent = history[-10:]
+            older = history[-20:-10]
+            recent_ratio = sum(h.selection_ratio for h in recent) / 10
+            older_ratio = sum(h.selection_ratio for h in older) / 10
+            
+            if recent_ratio > older_ratio * 1.1:
+                trend = "increasing"
+            elif recent_ratio < older_ratio * 0.9:
+                trend = "decreasing"
+        
+        # 生成建议
+        recommendations = []
+        
+        if avg_selection_ratio < 0.1:
+            recommendations.append("选择比例较低，建议调整选择参数或检查特征质量")
+        elif avg_selection_ratio > 0.5:
+            recommendations.append("选择比例较高，可能存在过度选择，建议增加筛选条件")
+        
+        if avg_quality < 0.7:
+            recommendations.append("平均特征质量较低，建议优化特征工程流程")
+        
+        # 方法建议
+        if len(method_distribution) == 1:
+            recommendations.append("建议尝试其他特征选择方法以获得更好的效果")
+        
+        # 添加正面反馈
+        if avg_quality > 0.85 and 0.2 <= avg_selection_ratio <= 0.4:
+            recommendations.append("✅ 特征选择效果良好，请继续保持")
+        
+        return {
+            "success": True,
+            "analytics": {
+                "total_selections": total_selections,
+                "avg_selection_ratio": round(avg_selection_ratio, 3),
+                "avg_quality": round(avg_quality, 3),
+                "method_distribution": method_distribution,
+                "trend": trend,
+                "recommendations": recommendations
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"获取特征选择分析失败: {e}")
+        raise HTTPException(status_code=500, detail=f"获取特征选择分析失败: {str(e)}")
+
+
 @router.post("/features/engineering/refresh")
 async def refresh_features_endpoint() -> Dict[str, Any]:
     """手动刷新特征计算 - 从持久化存储重新加载特征数据"""
