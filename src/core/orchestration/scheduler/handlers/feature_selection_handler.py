@@ -40,11 +40,14 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
     start_time = time.time()
     start_timestamp = int(start_time)
     
-    # 从payload中获取任务ID（如果存在）
-    parent_task_id = task.get('task_id', 'unknown')
+    # 从payload中获取任务ID（调度器传递的_task_id）
+    parent_task_id = task.get('_task_id', 'unknown')
     
-    # 生成批次ID
-    batch_id = f"batch_{parent_task_id}_{start_timestamp}"
+    # 生成批次ID（使用更简洁的格式）
+    if parent_task_id != 'unknown':
+        batch_id = f"batch_{parent_task_id}"
+    else:
+        batch_id = f"batch_{start_timestamp}"
     
     logger.info(f"🚀 开始执行特征选择批次: {batch_id} (父任务: {parent_task_id})")
     

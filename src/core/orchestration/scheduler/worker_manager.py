@@ -156,15 +156,22 @@ class WorkerManager:
                     if handler:
                         # 执行处理函数
                         print(f"[Worker {worker_id}] 开始执行任务: {task_id}")
+                        
+                        # 将task_id添加到payload中，以便处理器获取
+                        payload = task.get("payload", {})
+                        if isinstance(payload, dict):
+                            payload = payload.copy()
+                            payload["_task_id"] = task_id
+                        
                         if asyncio.iscoroutinefunction(handler):
                             # 异步函数
                             loop = asyncio.new_event_loop()
                             asyncio.set_event_loop(loop)
-                            result = loop.run_until_complete(handler(task.get("payload")))
+                            result = loop.run_until_complete(handler(payload))
                             loop.close()
                         else:
                             # 同步函数
-                            result = handler(task.get("payload"))
+                            result = handler(payload)
                         print(f"[Worker {worker_id}] 任务完成: {task_id}, 结果: {result}")
 
                         task["result"] = result
