@@ -405,6 +405,79 @@
 
         <!-- 特征选择 Tab -->
         <div id="content-selection" class="tab-content hidden">
+            
+            <!-- 特征选择任务仪表盘 -->
+            <div class="bg-white rounded-lg shadow mb-8">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800">特征选择任务</h3>
+                        <p class="text-sm text-gray-500 mt-1">实时监控特征选择任务的执行状态和进度</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="refreshSelectionTasks()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                            🔄 刷新
+                        </button>
+                        <button onclick="triggerFeatureSelection()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm">
+                            ▶️ 新建任务
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <!-- 统计卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">总任务数</div>
+                            <div class="text-2xl font-bold" id="selectionTotalTasks">--</div>
+                            <div class="text-xs mt-1">累计执行</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">运行中</div>
+                            <div class="text-2xl font-bold" id="selectionActiveTasks">--</div>
+                            <div class="text-xs mt-1">正在处理</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">已完成</div>
+                            <div class="text-2xl font-bold" id="selectionCompletedTasks">--</div>
+                            <div class="text-xs mt-1">成功执行</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-lg p-4 text-white">
+                            <div class="text-sm opacity-80">失败</div>
+                            <div class="text-2xl font-bold" id="selectionFailedTasks">--</div>
+                            <div class="text-xs mt-1">需要关注</div>
+                        </div>
+                    </div>
+
+                    <!-- 任务列表 -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">任务ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">进度</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">方法</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">股票数</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">输入/选中</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">耗时</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="selectionTasksBody" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                        <div>加载中...</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 分页控件 -->
+                    <div id="selectionTasksPagination" class="mt-4"></div>
+                </div>
+            </div>
+            
             <!-- Feature Selection Process -->
         <!-- 特征选择过程仪表盘 -->
         <div class="bg-white rounded-lg shadow mb-8">
@@ -1950,6 +2023,261 @@
             }
         }
 
+        // ==================== 特征选择任务仪表盘 ====================
+        
+        let selectionTasksPage = 1;
+        const selectionTasksPageSize = 10;
+        
+        // 加载特征选择任务统计
+        async function loadSelectionTasksStats() {
+            try {
+                console.log('📊 加载特征选择任务统计...');
+                const response = await fetch(getApiBaseUrl('/features/engineering/selection/tasks/stats'));
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.stats) {
+                        const stats = data.stats;
+                        
+                        // 更新统计卡片
+                        document.getElementById('selectionTotalTasks').textContent = stats.total_tasks || 0;
+                        document.getElementById('selectionActiveTasks').textContent = stats.active_tasks || 0;
+                        document.getElementById('selectionCompletedTasks').textContent = stats.completed_tasks || 0;
+                        document.getElementById('selectionFailedTasks').textContent = stats.failed_tasks || 0;
+                        
+                        console.log('✅ 特征选择任务统计已更新:', stats);
+                    }
+                }
+            } catch (error) {
+                console.error('❌ 加载特征选择任务统计失败:', error);
+            }
+        }
+        
+        // 加载特征选择任务列表
+        async function loadSelectionTasks(page = 1) {
+            try {
+                console.log(`📋 加载特征选择任务列表，页码: ${page}`);
+                selectionTasksPage = page;
+                
+                const response = await fetch(
+                    getApiBaseUrl(`/features/engineering/selection/tasks?limit=${selectionTasksPageSize}&offset=${(page-1)*selectionTasksPageSize}`)
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.tasks) {
+                        renderSelectionTasksTable(data.tasks);
+                        renderSelectionTasksPagination(data.total || data.tasks.length, page);
+                        console.log('✅ 特征选择任务列表已更新');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ 加载特征选择任务列表失败:', error);
+                document.getElementById('selectionTasksBody').innerHTML = `
+                    <tr>
+                        <td colspan="8" class="px-4 py-8 text-center text-red-500">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                            <div>加载失败: ${error.message}</div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // 渲染特征选择任务表格
+        function renderSelectionTasksTable(tasks) {
+            const tbody = document.getElementById('selectionTasksBody');
+            
+            if (!tasks || tasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-2xl mb-2"></i>
+                            <div>暂无任务数据</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = tasks.map(task => {
+                // 状态样式
+                const statusStyles = {
+                    'pending': { class: 'bg-yellow-100 text-yellow-800', text: '等待中' },
+                    'running': { class: 'bg-blue-100 text-blue-800', text: '运行中' },
+                    'completed': { class: 'bg-green-100 text-green-800', text: '已完成' },
+                    'failed': { class: 'bg-red-100 text-red-800', text: '失败' }
+                };
+                const statusStyle = statusStyles[task.status] || { class: 'bg-gray-100 text-gray-800', text: task.status };
+                
+                // 进度条
+                const progress = task.progress || 0;
+                const progressColor = progress === 100 ? 'bg-green-500' : 'bg-blue-500';
+                
+                // 格式化时间
+                const formatTime = (timestamp) => {
+                    if (!timestamp) return '--';
+                    const date = new Date(timestamp * 1000);
+                    return date.toLocaleString('zh-CN', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                };
+                
+                // 格式化耗时
+                const formatDuration = (seconds) => {
+                    if (!seconds) return '--';
+                    if (seconds < 60) return `${seconds.toFixed(1)}s`;
+                    if (seconds < 3600) return `${(seconds/60).toFixed(1)}m`;
+                    return `${(seconds/3600).toFixed(1)}h`;
+                };
+                
+                // 股票数量
+                const symbolCount = task.symbols ? (Array.isArray(task.symbols) ? task.symbols.length : JSON.parse(task.symbols).length) : 0;
+                
+                return `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${task.task_id}</div>
+                            <div class="text-xs text-gray-500">${formatTime(task.created_at)}</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusStyle.class}">
+                                ${statusStyle.text}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="${progressColor} h-2.5 rounded-full" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">${progress}%</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                            ${task.selection_method || '--'}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                            ${symbolCount}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                            ${task.total_input_features || 0} / ${task.total_selected_features || 0}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                            ${formatDuration(task.processing_time)}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm">
+                            <button onclick="viewSelectionTaskDetails('${task.task_id}')" 
+                                    class="text-blue-600 hover:text-blue-800 mr-2" title="查看详情">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${task.status === 'failed' ? `
+                                <button onclick="retrySelectionTask('${task.task_id}')" 
+                                        class="text-green-600 hover:text-green-800" title="重试">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // 渲染分页控件
+        function renderSelectionTasksPagination(total, currentPage) {
+            const totalPages = Math.ceil(total / selectionTasksPageSize);
+            const pagination = document.getElementById('selectionTasksPagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = '<div class="flex justify-center items-center gap-2">';
+            
+            // 上一页
+            html += `
+                <button onclick="loadSelectionTasks(${currentPage - 1})" 
+                        class="px-3 py-1 rounded border ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}"
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    上一页
+                </button>
+            `;
+            
+            // 页码
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `
+                        <button onclick="loadSelectionTasks(${i})" 
+                                class="px-3 py-1 rounded border ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += '<span class="px-2">...</span>';
+                }
+            }
+            
+            // 下一页
+            html += `
+                <button onclick="loadSelectionTasks(${currentPage + 1})" 
+                        class="px-3 py-1 rounded border ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}"
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    下一页
+                </button>
+            `;
+            
+            html += `<span class="ml-4 text-sm text-gray-500">共 ${total} 条</span>`;
+            html += '</div>';
+            
+            pagination.innerHTML = html;
+        }
+        
+        // 刷新特征选择任务
+        async function refreshSelectionTasks() {
+            console.log('🔄 刷新特征选择任务...');
+            await Promise.all([
+                loadSelectionTasksStats(),
+                loadSelectionTasks(selectionTasksPage)
+            ]);
+            console.log('✅ 特征选择任务已刷新');
+        }
+        
+        // 查看任务详情
+        async function viewSelectionTaskDetails(taskId) {
+            try {
+                const response = await fetch(getApiBaseUrl(`/features/engineering/selection/tasks/${taskId}`));
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.task) {
+                        // 显示任务详情（可以使用alert或模态框）
+                        const task = data.task;
+                        const details = `
+任务ID: ${task.task_id}
+状态: ${task.status}
+方法: ${task.selection_method || '--'}
+股票: ${JSON.stringify(task.symbols)}
+进度: ${task.progress}%
+输入特征: ${task.total_input_features || 0}
+选中特征: ${task.total_selected_features || 0}
+处理时间: ${task.processing_time ? task.processing_time.toFixed(2) + 's' : '--'}
+${task.error_message ? '错误: ' + task.error_message : ''}
+                        `.trim();
+                        alert(details);
+                    }
+                }
+            } catch (error) {
+                console.error('查看任务详情失败:', error);
+                alert('查看任务详情失败: ' + error.message);
+            }
+        }
+        
+        // 重试任务
+        async function retrySelectionTask(taskId) {
+            // 这里可以实现重试逻辑
+            alert('重试功能待实现，任务ID: ' + taskId);
+        }
+
         // 加载选择质量评估
         async function loadSelectionAnalytics() {
             try {
@@ -3182,12 +3510,15 @@
                     loadFeatureEngineeringData();
                     loadSchedulerStatus();
                     loadSelectionAnalytics(); // 加载选择质量评估
+                    loadSelectionTasksStats(); // 加载特征选择任务统计
+                    loadSelectionTasks(1); // 加载特征选择任务列表
                     connectWebSocket();
                     
                     // 设置定时刷新
                     setInterval(loadFeatureEngineeringData, 30000); // 每30秒刷新（WebSocket负责实时更新）
                     setInterval(loadSchedulerStatus, 15000); // 每15秒刷新调度器状态
                     setInterval(loadSelectionAnalytics, 60000); // 每60秒刷新质量评估
+                    setInterval(refreshSelectionTasks, 30000); // 每30秒刷新特征选择任务
                     
                     console.log('✅ 特征工程监控页面初始化完成');
                 }, 100); // 延迟100ms确保DOM完全渲染
