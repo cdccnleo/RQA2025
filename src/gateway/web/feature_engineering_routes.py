@@ -1190,18 +1190,18 @@ async def get_selection_analytics() -> Dict[str, Any]:
                 }
             }
         
-        # 计算关键指标
+        # 计算关键指标（history是字典列表）
         total_selections = len(history)
-        avg_selection_ratio = sum(h.selection_ratio for h in history) / total_selections
+        avg_selection_ratio = sum(h.get('selection_ratio', 0) for h in history) / total_selections
         avg_quality = sum(
-            h.evaluation_metrics.get('avg_quality', 0.8) 
+            h.get('evaluation_metrics', {}).get('avg_quality', 0.8) 
             for h in history
         ) / total_selections
         
         # 方法分布
         method_distribution = {}
         for h in history:
-            method = h.selection_method or 'unknown'
+            method = h.get('selection_method') or 'unknown'
             method_distribution[method] = method_distribution.get(method, 0) + 1
         
         # 趋势分析（比较最近10次和之前的平均值）
@@ -1209,8 +1209,8 @@ async def get_selection_analytics() -> Dict[str, Any]:
         if len(history) >= 20:
             recent = history[-10:]
             older = history[-20:-10]
-            recent_ratio = sum(h.selection_ratio for h in recent) / 10
-            older_ratio = sum(h.selection_ratio for h in older) / 10
+            recent_ratio = sum(h.get('selection_ratio', 0) for h in recent) / 10
+            older_ratio = sum(h.get('selection_ratio', 0) for h in older) / 10
             
             if recent_ratio > older_ratio * 1.1:
                 trend = "increasing"
