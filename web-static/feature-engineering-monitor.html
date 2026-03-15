@@ -1632,11 +1632,33 @@
         }
 
         function updateFeatureCharts(data) {
-            const qualityDistribution = data.quality_distribution || { "优秀": 0, "良好": 0, "一般": 0, "较差": 0 };
-            const labels = Object.keys(qualityDistribution);
-            const values = Object.values(qualityDistribution);
+            // 处理不同格式的quality_distribution
+            let qualityDistribution = data.quality_distribution || { "优秀": 0, "良好": 0, "一般": 0, "较差": 0 };
+            
+            // 如果键名包含括号（如"优秀(>=0.9)"），转换为简化格式
+            const normalizedDistribution = {};
+            Object.keys(qualityDistribution).forEach(key => {
+                if (key.includes('优秀')) {
+                    normalizedDistribution['优秀'] = qualityDistribution[key];
+                } else if (key.includes('良好')) {
+                    normalizedDistribution['良好'] = qualityDistribution[key];
+                } else if (key.includes('一般')) {
+                    normalizedDistribution['一般'] = qualityDistribution[key];
+                } else if (key.includes('较差')) {
+                    normalizedDistribution['较差'] = qualityDistribution[key];
+                }
+            });
+            
+            // 如果没有匹配到任何键，使用原始数据
+            if (Object.keys(normalizedDistribution).length === 0) {
+                Object.assign(normalizedDistribution, qualityDistribution);
+            }
+            
+            const labels = Object.keys(normalizedDistribution);
+            const values = Object.values(normalizedDistribution);
             
             console.log('📊 updateFeatureCharts - quality_distribution:', qualityDistribution);
+            console.log('📊 updateFeatureCharts - normalized:', normalizedDistribution);
             console.log('📊 updateFeatureCharts - labels:', labels);
             console.log('📊 updateFeatureCharts - values:', values);
             
