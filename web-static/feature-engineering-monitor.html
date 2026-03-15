@@ -2621,7 +2621,11 @@
 
         function updateSchedulerStatus(status) {
             const isRunning = status.is_running;
-            const stats = status.stats || {};
+            
+            // 统一调度器数据结构在 scheduler_status 中
+            const schedulerStatus = status.scheduler_status || {};
+            const workers = schedulerStatus.workers || {};
+            const tasks = schedulerStatus.tasks || {};
             
             // 更新状态显示
             document.getElementById('scheduler-status').textContent = isRunning ? '运行中' : '已停止';
@@ -2629,23 +2633,17 @@
                 ? 'ml-2 w-3 h-3 rounded-full bg-green-500' 
                 : 'ml-2 w-3 h-3 rounded-full bg-red-500';
             
-            // 更新统计数据（适配统一调度器格式）
-            document.getElementById('active-workers').textContent = stats.active_workers || 0;
+            // 更新工作节点数据
+            document.getElementById('active-workers').textContent = workers.active || 0;
             
-            // 统一调度器使用 queue_sizes 字典，需要计算总数
-            const queueSizes = stats.queue_sizes || {};
-            const totalQueueSize = Object.values(queueSizes).reduce((sum, size) => sum + size, 0);
-            document.getElementById('queue-size').textContent = totalQueueSize;
+            // 队列大小
+            document.getElementById('queue-size').textContent = workers.queue_size || 0;
             
-            document.getElementById('total-tasks').textContent = stats.total_tasks || 0;
-            document.getElementById('completed-tasks').textContent = stats.completed_tasks || 0;
-            document.getElementById('failed-tasks').textContent = stats.failed_tasks || 0;
-            document.getElementById('pending-tasks').textContent = stats.pending_tasks || 0;
-            
-            // 显示特征工作节点数量（从统一注册表）
-            if (status.feature_workers_count !== undefined) {
-                document.getElementById('active-workers').textContent = status.feature_workers_count;
-            }
+            // 更新任务统计数据
+            document.getElementById('total-tasks').textContent = tasks.total || 0;
+            document.getElementById('completed-tasks').textContent = tasks.completed || 0;
+            document.getElementById('failed-tasks').textContent = tasks.failed || 0;
+            document.getElementById('pending-tasks').textContent = tasks.pending || 0;
         }
 
         async function startScheduler() {
