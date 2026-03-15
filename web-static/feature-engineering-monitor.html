@@ -1970,6 +1970,33 @@
 
         // 更新选择质量评估显示
         function updateSelectionAnalytics(analytics) {
+            console.log('🔄 更新选择质量评估:', analytics);
+            
+            // 更新特征选择过程仪表盘的关键指标
+            const selectionCountEl = document.getElementById('selectionCount');
+            if (selectionCountEl) {
+                selectionCountEl.textContent = analytics.total_selections || 0;
+            }
+            
+            const selectionRatioEl = document.getElementById('selectionRatio');
+            if (selectionRatioEl) {
+                const ratio = analytics.avg_selection_ratio || 0;
+                selectionRatioEl.textContent = (ratio * 100).toFixed(1) + '%';
+            }
+            
+            const commonMethodEl = document.getElementById('commonMethod');
+            if (commonMethodEl) {
+                const methodDist = analytics.method_distribution || {};
+                const methods = Object.entries(methodDist);
+                if (methods.length > 0) {
+                    // 找出使用最多的方法
+                    const commonMethod = methods.sort((a, b) => b[1] - a[1])[0];
+                    commonMethodEl.textContent = commonMethod[0];
+                } else {
+                    commonMethodEl.textContent = '--';
+                }
+            }
+            
             // 更新质量指标
             const avgQuality = analytics.avg_quality || 0;
             const qualityEl = document.getElementById('avgSelectionQuality');
@@ -2015,6 +2042,8 @@
                     recEl.innerHTML = '<li>暂无建议</li>';
                 }
             }
+            
+            console.log('✅ 选择质量评估更新完成');
         }
 
         // 触发特征选择任务
