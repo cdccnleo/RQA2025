@@ -526,7 +526,10 @@
                     <div class="bg-white p-4 rounded-lg border" style="min-height: 250px;">
                         <div class="flex justify-between items-center mb-3">
                             <h4 class="text-sm font-semibold text-gray-700">选择历史趋势</h4>
-                            <button onclick="testChartUpdate()" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">测试</button>
+                            <div class="space-x-2">
+                                <button onclick="forceLoadSelectionHistory()" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">加载数据</button>
+                                <button onclick="testChartUpdate()" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">测试</button>
+                            </div>
                         </div>
                         <div style="position: relative; height: 200px; width: 100%;">
                             <canvas id="featureSelectionChart"></canvas>
@@ -2040,6 +2043,33 @@
             console.log('🧪 测试数据:', testData);
             updateFeatureSelectionDashboard(testData);
             console.log('🧪 测试完成');
+        }
+
+        // 强制加载选择历史数据
+        async function forceLoadSelectionHistory() {
+            console.log('🔄 强制加载选择历史数据...');
+            try {
+                const response = await fetch(getApiBaseUrl('/features/engineering/features?page=1&page_size=50'));
+                console.log('📡 API响应状态:', response.status);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('📊 API返回数据:', {
+                        features_count: data.features ? data.features.length : 0,
+                        selection_history_count: data.selection_history ? data.selection_history.length : 0
+                    });
+                    if (data.selection_history && data.selection_history.length > 0) {
+                        console.log('✅ 获取到选择历史数据:', data.selection_history.length, '条');
+                        updateFeatureSelectionDashboard(data.selection_history);
+                        console.log('✅ 选择历史仪表盘已更新');
+                    } else {
+                        console.warn('⚠️ API返回的选择历史数据为空');
+                    }
+                } else {
+                    console.error('❌ API请求失败:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('❌ 强制加载选择历史数据失败:', error);
+            }
         }
 
         // 刷新选择历史
