@@ -239,64 +239,85 @@
             </div>
         </div>
 
-        <!-- Technical Indicators Status -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-800">技术指标计算状态</h3>
-                </div>
-                <div class="p-6">
-                    <div id="indicatorsStatus" class="space-y-3">
-                        <div class="text-center text-gray-500 py-8">
-                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                            <div>加载中...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-gray-800">特征质量分布</h3>
-                    <button onclick="openQualityConfigModal()" 
-                            class="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg hover:bg-indigo-200 transition flex items-center">
-                        <i class="fas fa-cog mr-1"></i>自定义评分
+        <!-- Tab导航 -->
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px" aria-label="Tabs">
+                    <button onclick="switchTab('extraction')" id="tab-extraction" 
+                            class="w-1/2 py-4 px-1 text-center border-b-2 border-indigo-500 text-indigo-600 font-medium text-sm hover:text-indigo-800 hover:border-indigo-300 transition">
+                        <i class="fas fa-cogs mr-2"></i>特征提取
                     </button>
-                </div>
-                <div class="p-6">
-                    <!-- 整体质量评分 -->
-                    <div class="text-center mb-6">
-                        <div class="text-sm text-gray-500 mb-1">整体质量评分</div>
-                        <div id="overall-quality-score" class="text-3xl font-bold text-gray-600">0.0</div>
+                    <button onclick="switchTab('selection')" id="tab-selection"
+                            class="w-1/2 py-4 px-1 text-center border-b-2 border-transparent text-gray-500 font-medium text-sm hover:text-gray-700 hover:border-gray-300 transition">
+                        <i class="fas fa-filter mr-2"></i>特征选择
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 特征提取 Tab -->
+        <div id="content-extraction" class="tab-content">
+            <!-- Technical Indicators Status -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">技术指标计算状态</h3>
                     </div>
-                    
-                    <!-- 质量分布图表 -->
-                    <canvas id="featureQualityChart"></canvas>
-                    
-                    <!-- 质量统计详情 -->
-                    <div class="grid grid-cols-2 gap-4 mt-6">
-                        <div class="bg-green-50 rounded-lg p-3 text-center">
-                            <div class="text-xs text-green-600 mb-1">优秀</div>
-                            <div id="quality-count-优秀" class="text-lg font-semibold text-green-700">0 (0.0%)</div>
+                    <div class="p-6">
+                        <div id="indicatorsStatus" class="space-y-3">
+                            <div class="text-center text-gray-500 py-8">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>加载中...</div>
+                            </div>
                         </div>
-                        <div class="bg-blue-50 rounded-lg p-3 text-center">
-                            <div class="text-xs text-blue-600 mb-1">良好</div>
-                            <div id="quality-count-良好" class="text-lg font-semibold text-blue-700">0 (0.0%)</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">特征质量分布</h3>
+                        <button onclick="openQualityConfigModal()" 
+                                class="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg hover:bg-indigo-200 transition flex items-center">
+                            <i class="fas fa-cog mr-1"></i>自定义评分
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <!-- 整体质量评分 -->
+                        <div class="text-center mb-6">
+                            <div class="text-sm text-gray-500 mb-1">整体质量评分</div>
+                            <div id="overall-quality-score" class="text-3xl font-bold text-gray-600">0.0</div>
                         </div>
-                        <div class="bg-yellow-50 rounded-lg p-3 text-center">
-                            <div class="text-xs text-yellow-600 mb-1">一般</div>
-                            <div id="quality-count-一般" class="text-lg font-semibold text-yellow-700">0 (0.0%)</div>
-                        </div>
-                        <div class="bg-red-50 rounded-lg p-3 text-center">
-                            <div class="text-xs text-red-600 mb-1">较差</div>
-                            <div id="quality-count-较差" class="text-lg font-semibold text-red-700">0 (0.0%)</div>
+                        
+                        <!-- 质量分布图表 -->
+                        <canvas id="featureQualityChart"></canvas>
+                        
+                        <!-- 质量统计详情 -->
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="bg-green-50 rounded-lg p-3 text-center">
+                                <div class="text-xs text-green-600 mb-1">优秀</div>
+                                <div id="quality-count-优秀" class="text-lg font-semibold text-green-700">0 (0.0%)</div>
+                            </div>
+                            <div class="bg-blue-50 rounded-lg p-3 text-center">
+                                <div class="text-xs text-blue-600 mb-1">良好</div>
+                                <div id="quality-count-良好" class="text-lg font-semibold text-blue-700">0 (0.0%)</div>
+                            </div>
+                            <div class="bg-yellow-50 rounded-lg p-3 text-center">
+                                <div class="text-xs text-yellow-600 mb-1">一般</div>
+                                <div id="quality-count-一般" class="text-lg font-semibold text-yellow-700">0 (0.0%)</div>
+                            </div>
+                            <div class="bg-red-50 rounded-lg p-3 text-center">
+                                <div class="text-xs text-red-600 mb-1">较差</div>
+                                <div id="quality-count-较差" class="text-lg font-semibold text-red-700">0 (0.0%)</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Feature Selection Process -->
+        <!-- 特征选择 Tab -->
+        <div id="content-selection" class="tab-content hidden">
+            <!-- Feature Selection Process -->
         <!-- 特征选择过程仪表盘 -->
         <div class="bg-white rounded-lg shadow mb-8">
             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
@@ -402,6 +423,7 @@
                 </div>
             </div>
         </div>
+        </div> <!-- 特征选择Tab结束 -->
 
         <!-- 特征质量监控仪表盘 -->
         <div class="bg-white rounded-lg shadow mb-6">
@@ -3850,6 +3872,46 @@
                 loadCustomQualityConfigs();
             }, 1000);
         });
+
+        // Tab切换功能
+        function switchTab(tabName) {
+            console.log(`🔄 切换到Tab: ${tabName}`);
+            
+            // 隐藏所有Tab内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // 显示选中的Tab内容
+            const selectedContent = document.getElementById(`content-${tabName}`);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+            
+            // 更新Tab按钮样式
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.classList.remove('border-indigo-500', 'text-indigo-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            const selectedTab = document.getElementById(`tab-${tabName}`);
+            if (selectedTab) {
+                selectedTab.classList.remove('border-transparent', 'text-gray-500');
+                selectedTab.classList.add('border-indigo-500', 'text-indigo-600');
+            }
+            
+            // 根据Tab加载相应数据
+            if (tabName === 'extraction') {
+                console.log('📊 加载特征提取数据...');
+                loadFeatureEngineeringData();
+            } else if (tabName === 'selection') {
+                console.log('🎯 加载特征选择数据...');
+                loadSelectionAnalytics();
+                refreshSelectionHistory();
+            }
+            
+            console.log(`✅ Tab切换完成: ${tabName}`);
+        }
     </script>
 
     <!-- 自定义评分配置管理弹窗 -->
