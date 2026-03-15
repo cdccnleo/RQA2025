@@ -390,6 +390,8 @@
                     </tbody>
                 </table>
             </div>
+            <!-- 特征列表分页控件 -->
+            <div id="featurePagination"></div>
         </div>
     </div>
 
@@ -695,41 +697,8 @@
                     console.error('加载特征统计失败:', error);
                 });
 
-            // 特征列表 + 质量分布 + 特征选择图：独立请求
-            fetchWithTimeout(getApiBaseUrl('/features/engineering/features'), API_TIMEOUT_MS)
-                .then(async (res) => {
-                    if (!res.ok) { 
-                        handleFetchError('features', new Error(`HTTP ${res.status}`));
-                        renderFeatureStore([], true); 
-                        updateFeatureCharts({ quality_distribution: emptyQuality, selection_history: [] }); 
-                        applyMergedStats(); 
-                        return; 
-                    }
-                    try {
-                        const raw = await (res.json && typeof res.json === 'function' ? res.json() : Promise.resolve({}));
-                        featuresData = { 
-                            features: raw.features || [], 
-                            stats: raw.stats || {}, 
-                            quality_distribution: raw.quality_distribution || emptyQuality, 
-                            selection_history: raw.selection_history || [] 
-                        };
-                    } catch (e) {
-                        handleFetchError('features', e);
-                        featuresData = { features: [], stats: {}, quality_distribution: emptyQuality, selection_history: [] };
-                    }
-                    renderFeatureStore(featuresData.features);
-                    updateFeatureCharts(featuresData);
-                    applyMergedStats();
-                    
-                    // 渲染异常告警
-                    renderAlerts(tasksData.tasks || [], featuresData.features || []);
-                })
-                .catch((error) => { 
-                    handleFetchError('features', error);
-                    renderFeatureStore([], true); 
-                    updateFeatureCharts({ quality_distribution: emptyQuality, selection_history: [] }); 
-                    applyMergedStats(); 
-                });
+            // 特征列表：使用分页加载
+            loadFeaturesWithPagination(1, 50);
 
             // 技术指标：独立请求
             fetchWithTimeout(getApiBaseUrl('/features/engineering/indicators'), API_TIMEOUT_MS)
@@ -897,6 +866,118 @@
 
             // 下一页
             html += `<button onclick="loadTasksWithPagination(${page + 1}, ${page_size})" ${page >= total_pages ? 'disabled' : ''} class="px-3 py-1 border rounded text-sm ${page >= total_pages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">下一页</button>`;
+            
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        // ==================== 特征列表分页功能 ====================
+        
+        // 特征分页相关变量
+        let featuresPagination = {
+            page: 1,
+            page_size: 50,
+            total: 0,
+            total_pages: 1
+        };
+        let allFeatures = []; // 存储所有特征数据
+
+        // 加载特征列表（带分页）
+        async function loadFeaturesWithPagination(page = 1, pageSize = 50, search = null, featureType = null, minQuality = null) {
+            try {
+                const params = new URLSearchParams({
+                    page: page.toString(),
+                    page_size: pageSize.toString()
+                });
+                if (search) params.append('search', search);
+                if (featureType) params.append('feature_type', featureType);
+                if (minQuality !== null) params.append('min_quality', minQuality.toString());
+
+                const response = await fetchWithTimeout(
+                    `${getApiBaseUrl('/features/engineering/features')}?${params}`,
+                    API_TIMEOUT_MS
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // 更新分页信息
+                if (data.pagination) {
+                    featuresPagination = data.pagination;
+                }
+
+                // 存储所有特征数据
+                allFeatures = data.features || [];
+
+                // 渲染特征列表
+                renderFeatureStore(allFeatures);
+                
+                // 渲染分页控件
+                renderFeaturesPagination();
+
+                return data;
+            } catch (error) {
+                console.error('加载特征列表失败:', error);
+                renderFeatureStore([], true);
+                return { features: [], pagination: { page: 1, total: 0, total_pages: 1 } };
+            }
+        }
+
+        // 渲染特征分页控件
+        function renderFeaturesPagination() {
+            const container = document.getElementById('featurePagination');
+            if (!container) return;
+
+            const { page, page_size, total, total_pages } = featuresPagination;
+
+            if (total_pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<div class="flex items-center justify-between px-4 py-3 bg-white border-t">';
+            
+            // 左侧：统计信息
+            html += `<div class="text-sm text-gray-700">共 ${total} 条记录，第 ${page}/${total_pages} 页</div>`;
+            
+            // 右侧：分页按钮
+            html += '<div class="flex space-x-1">';
+            
+            // 上一页
+            html += `<button onclick="loadFeaturesWithPagination(${page - 1}, ${page_size})" ${page <= 1 ? 'disabled' : ''} class="px-3 py-1 border rounded text-sm ${page <= 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">上一页</button>`;
+            
+            // 页码按钮
+            const maxButtons = 5;
+            let startPage = Math.max(1, page - Math.floor(maxButtons / 2));
+            let endPage = Math.min(total_pages, startPage + maxButtons - 1);
+            
+            if (endPage - startPage < maxButtons - 1) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            if (startPage > 1) {
+                html += `<button onclick="loadFeaturesWithPagination(1, ${page_size})" class="px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-gray-50">1</button>`;
+                if (startPage > 2) html += '<span class="px-2 py-1 text-gray-500">...</span>';
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === page) {
+                    html += `<button class="px-3 py-1 border rounded text-sm bg-indigo-600 text-white">${i}</button>`;
+                } else {
+                    html += `<button onclick="loadFeaturesWithPagination(${i}, ${page_size})" class="px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-gray-50">${i}</button>`;
+                }
+            }
+
+            if (endPage < total_pages) {
+                if (endPage < total_pages - 1) html += '<span class="px-2 py-1 text-gray-500">...</span>';
+                html += `<button onclick="loadFeaturesWithPagination(${total_pages}, ${page_size})" class="px-3 py-1 border rounded text-sm bg-white text-gray-700 hover:bg-gray-50">${total_pages}</button>`;
+            }
+
+            // 下一页
+            html += `<button onclick="loadFeaturesWithPagination(${page + 1}, ${page_size})" ${page >= total_pages ? 'disabled' : ''} class="px-3 py-1 border rounded text-sm ${page >= total_pages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">下一页</button>`;
             
             html += '</div></div>';
             container.innerHTML = html;
@@ -1611,7 +1692,8 @@
         }
 
         function searchFeatures() {
-            loadFeatureEngineeringData();
+            const searchTerm = document.getElementById('featureSearch').value;
+            loadFeaturesWithPagination(1, 50, searchTerm || null);
         }
 
         async function refreshFeatures() {
@@ -1642,8 +1724,8 @@
                 if (result.success) {
                     console.log('✅ 刷新特征成功:', result.message);
                     alert(result.message);
-                    // 重新加载特征列表
-                    await loadFeatureEngineeringData();
+                    // 重新加载特征列表（使用分页）
+                    await loadFeaturesWithPagination(1, 50);
                 } else {
                     console.warn('⚠️ 刷新特征失败:', result.message);
                     alert('刷新失败: ' + result.message);
