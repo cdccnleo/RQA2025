@@ -39,8 +39,13 @@ async def feature_selection_handler(task: 'Task') -> Dict[str, Any]:
     logger.info(f"🚀 开始执行特征选择任务: {task_id}")
     
     try:
-        # 1. 解析任务参数
-        params = task.params if hasattr(task, 'params') else {}
+        # 1. 解析任务参数（支持params和payload两种格式）
+        if hasattr(task, 'params') and task.params:
+            params = task.params
+        elif hasattr(task, 'payload') and task.payload:
+            params = task.payload
+        else:
+            params = {}
         
         symbols = params.get('symbols', [])
         method = params.get('method', 'importance')
