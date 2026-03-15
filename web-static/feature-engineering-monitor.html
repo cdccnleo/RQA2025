@@ -917,6 +917,10 @@
                 
                 // 渲染分页控件
                 renderFeaturesPagination();
+                
+                // 更新顶部统计信息 - 使用分页总数
+                const totalFeatures = data.pagination ? data.pagination.total : (allFeatures.length || 0);
+                document.getElementById('total-features').textContent = totalFeatures;
 
                 return data;
             } catch (error) {
