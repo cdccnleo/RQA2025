@@ -2000,8 +2000,8 @@
                 if (selectionHistory.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="7" class="px-4 py-4 text-center text-gray-500">暂无数据</td></tr>';
                 } else {
-                    // 显示最近5条记录，倒序排列（最新的在前面）
-                    const recentHistory = [...selectionHistory].reverse().slice(0, 5);
+                    // 显示最近5条记录（API已按时间降序返回，最新的在前面）
+                    const recentHistory = selectionHistory.slice(0, 5);
                     tableBody.innerHTML = recentHistory.map(h => {
                         const timestamp = h.timestamp || h.created_at;
                         const date = timestamp ? new Date(timestamp * 1000).toLocaleString('zh-CN') : '--';
