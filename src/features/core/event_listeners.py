@@ -147,16 +147,16 @@ class FeatureEventListeners:
             source_config: 数据源配置
         """
         try:
-            # 确定任务类型
-            task_type = "技术指标"  # 默认任务类型
+            # 确定任务类型 - 使用统一的task_type名称
+            task_type = "feature_extraction"  # 默认任务类型
 
             # 根据数据源类型确定任务类型
             if source_config:
                 data_type = source_config.get("data_type", "")
                 if "sentiment" in data_type.lower():
-                    task_type = "情感特征"
+                    task_type = "feature_extraction"  # 情感特征也使用feature_extraction
                 elif "statistical" in data_type.lower():
-                    task_type = "统计特征"
+                    task_type = "feature_extraction"  # 统计特征也使用feature_extraction
 
             # 获取股票列表 - 从嵌套的config字段中获取
             config = source_config.get("config", {}) if source_config else {}
