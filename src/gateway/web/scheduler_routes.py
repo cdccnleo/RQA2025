@@ -23,6 +23,7 @@ class JobType(str, Enum):
     # 特征层任务
     FEATURE_EXTRACTION = "feature_extraction"
     FEATURE_ENGINEERING = "feature_engineering"
+    FEATURE_SELECTION = "feature_selection"
     FEATURE_VALIDATION = "feature_validation"
 
     # 模型层任务
