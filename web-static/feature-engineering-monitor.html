@@ -573,6 +573,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">时间</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">股票代码</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">方法</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">输入特征</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">选择特征</th>
@@ -582,7 +583,7 @@
                             </thead>
                             <tbody id="selectionHistoryTable" class="bg-white divide-y divide-gray-200">
                                 <tr>
-                                    <td colspan="6" class="px-4 py-4 text-center text-gray-500">暂无数据</td>
+                                    <td colspan="7" class="px-4 py-4 text-center text-gray-500">暂无数据</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1997,15 +1998,17 @@
             const tableBody = document.getElementById('selectionHistoryTable');
             if (tableBody) {
                 if (selectionHistory.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="6" class="px-4 py-4 text-center text-gray-500">暂无数据</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="7" class="px-4 py-4 text-center text-gray-500">暂无数据</td></tr>';
                 } else {
-                    // 显示最近5条记录，倒序排列
+                    // 显示最近5条记录，倒序排列（最新的在前面）
                     const recentHistory = [...selectionHistory].reverse().slice(0, 5);
                     tableBody.innerHTML = recentHistory.map(h => {
                         const timestamp = h.timestamp || h.created_at;
                         const date = timestamp ? new Date(timestamp * 1000).toLocaleString('zh-CN') : '--';
                         // API返回的是method字段，不是selection_method
                         const method = h.method || h.selection_method || '--';
+                        // 获取股票代码
+                        const symbol = h.symbol || '--';
                         // 使用selected_count作为输入和输出（API中没有input_count）
                         const selectedCount = h.selected_count || '--';
                         // 计算选择比例（假设输入特征数为10作为默认值）
@@ -2014,6 +2017,7 @@
                         return `
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-2 text-sm text-gray-900">${date}</td>
+                                <td class="px-4 py-2 text-sm text-gray-900">${symbol}</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">${method}</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">10</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">${selectedCount}</td>
