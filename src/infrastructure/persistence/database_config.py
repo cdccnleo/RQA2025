@@ -54,7 +54,7 @@ class DatabaseConfigManager:
     DEFAULT_PORT = "5432"
     DEFAULT_DATABASE = "rqa2025_prod"
     DEFAULT_USER = "rqa2025_admin"
-    DEFAULT_PASSWORD = "rqa2025_secure_password"
+    DEFAULT_PASSWORD = "SecurePass123!"
     
     _instance: Optional['DatabaseConfigManager'] = None
     _config: Optional[DatabaseConfig] = None
