@@ -16,7 +16,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 
-async def feature_selection_handler(task: 'Task') -> Dict[str, Any]:
+async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
     """
     特征选择任务处理器
     
@@ -28,27 +28,24 @@ async def feature_selection_handler(task: 'Task') -> Dict[str, Any]:
     5. 返回选择结果
     
     Args:
-        task: 调度器任务对象
+        task: 调度器任务payload字典（包含symbols, method, top_k等参数）
         
     Returns:
         包含选择结果的字典
     """
     start_time = time.time()
-    task_id = task.id if hasattr(task, 'id') else 'unknown'
+    
+    # 从payload中获取任务ID（如果存在）
+    task_id = task.get('task_id', 'unknown')
     
     logger.info(f"🚀 开始执行特征选择任务: {task_id}")
     
     try:
-        # 1. 解析任务参数（支持params和payload两种格式）
-        logger.info(f"🔍 任务对象属性: {dir(task)}")
-        logger.info(f"🔍 task.payload: {getattr(task, 'payload', 'NOT_FOUND')}")
+        # 1. 解析任务参数
+        # 调度器传递的是payload字典，直接从中获取参数
+        logger.info(f"🔍 任务参数: {task}")
         
-        if hasattr(task, 'payload') and task.payload:
-            params = task.payload
-            logger.info(f"✅ 使用task.payload: {params}")
-        else:
-            params = {}
-            logger.warning("⚠️ task.payload为空或不存在")
+        params = task
         
         symbols = params.get('symbols', [])
         method = params.get('method', 'importance')
