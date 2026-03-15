@@ -455,10 +455,11 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">任务ID</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">进度</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">股票</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">方法</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">股票数</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">输入/选中</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">耗时</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">批次ID</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
                                 </tr>
                             </thead>
@@ -2053,15 +2054,26 @@
             }
         }
         
+        // 当前筛选条件
+        let selectionTasksFilter = {
+            symbol: '',
+            status: '',
+            batch_id: ''
+        };
+        
         // 加载特征选择任务列表
-        async function loadSelectionTasks(page = 1) {
+        async function loadSelectionTasks(page = 1, filter = selectionTasksFilter) {
             try {
-                console.log(`📋 加载特征选择任务列表，页码: ${page}`);
+                console.log(`📋 加载特征选择任务列表，页码: ${page}`, filter);
                 selectionTasksPage = page;
                 
-                const response = await fetch(
-                    getApiBaseUrl(`/features/engineering/selection/tasks?limit=${selectionTasksPageSize}&offset=${(page-1)*selectionTasksPageSize}`)
-                );
+                // 构建查询参数
+                let url = `/features/engineering/selection/tasks?limit=${selectionTasksPageSize}&offset=${(page-1)*selectionTasksPageSize}`;
+                if (filter.symbol) url += `&symbol=${encodeURIComponent(filter.symbol)}`;
+                if (filter.status) url += `&status=${encodeURIComponent(filter.status)}`;
+                if (filter.batch_id) url += `&batch_id=${encodeURIComponent(filter.batch_id)}`;
+                
+                const response = await fetch(getApiBaseUrl(url));
                 
                 if (response.ok) {
                     const data = await response.json();
@@ -2082,6 +2094,30 @@
                     </tr>
                 `;
             }
+        }
+        
+        // 按股票筛选
+        function filterSelectionTasksBySymbol(symbol) {
+            selectionTasksFilter.symbol = symbol;
+            loadSelectionTasks(1, selectionTasksFilter);
+        }
+        
+        // 按状态筛选
+        function filterSelectionTasksByStatus(status) {
+            selectionTasksFilter.status = status;
+            loadSelectionTasks(1, selectionTasksFilter);
+        }
+        
+        // 按批次筛选
+        function filterSelectionTasksByBatch(batchId) {
+            selectionTasksFilter.batch_id = batchId;
+            loadSelectionTasks(1, selectionTasksFilter);
+        }
+        
+        // 清除筛选
+        function clearSelectionTasksFilter() {
+            selectionTasksFilter = { symbol: '', status: '', batch_id: '' };
+            loadSelectionTasks(1, selectionTasksFilter);
         }
         
         // 渲染特征选择任务表格
@@ -2134,8 +2170,11 @@
                     return `${(seconds/3600).toFixed(1)}h`;
                 };
                 
-                // 股票数量
-                const symbolCount = task.symbols ? (Array.isArray(task.symbols) ? task.symbols.length : JSON.parse(task.symbols).length) : 0;
+                // 股票代码（优先使用symbol字段，兼容旧格式）
+                const symbol = task.symbol || (task.symbols ? (Array.isArray(task.symbols) ? task.symbols[0] : JSON.parse(task.symbols)[0]) : '--');
+                
+                // 批次ID（简化显示）
+                const batchId = task.batch_id ? task.batch_id.substring(0, 20) + '...' : '--';
                 
                 return `
                     <tr class="hover:bg-gray-50 transition">
@@ -2155,16 +2194,22 @@
                             <div class="text-xs text-gray-500 mt-1">${progress}%</div>
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
-                            ${task.selection_method || '--'}
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium cursor-pointer hover:bg-blue-200" 
+                                  onclick="filterSelectionTasksBySymbol('${symbol}')" title="点击筛选">
+                                ${symbol}
+                            </span>
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
-                            ${symbolCount}
+                            ${task.selection_method || '--'}
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                             ${task.total_input_features || 0} / ${task.total_selected_features || 0}
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                             ${formatDuration(task.processing_time)}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500" title="${task.batch_id || ''}">
+                            ${batchId}
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm">
                             <button onclick="viewSelectionTaskDetails('${task.task_id}')" 
