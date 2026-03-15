@@ -523,13 +523,17 @@
 
                 <!-- 图表区域 -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
+                    <div class="bg-white p-4 rounded-lg border" style="min-height: 250px;">
                         <h4 class="text-sm font-semibold text-gray-700 mb-3">选择历史趋势</h4>
-                        <canvas id="featureSelectionChart" height="200"></canvas>
+                        <div style="position: relative; height: 200px; width: 100%;">
+                            <canvas id="featureSelectionChart"></canvas>
+                        </div>
                     </div>
-                    <div>
+                    <div class="bg-white p-4 rounded-lg border" style="min-height: 250px;">
                         <h4 class="text-sm font-semibold text-gray-700 mb-3">选择方法分布</h4>
-                        <canvas id="selectionMethodChart" height="200"></canvas>
+                        <div style="position: relative; height: 200px; width: 100%;">
+                            <canvas id="selectionMethodChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -3223,7 +3227,7 @@ ${task.error_message ? '错误: ' + task.error_message : ''}
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: true,
+                            maintainAspectRatio: false,
                             scales: {
                                 y: { beginAtZero: true }
                             }
@@ -3259,7 +3263,7 @@ ${task.error_message ? '错误: ' + task.error_message : ''}
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: true,
+                            maintainAspectRatio: false,
                             plugins: {
                                 legend: {
                                     position: 'bottom'
