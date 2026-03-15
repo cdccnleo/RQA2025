@@ -1124,8 +1124,10 @@ async def lifespan(app: FastAPI):
                                         
                                         if mean_val != 0 and not pd.isna(mean_val):
                                             cv = std_val / abs(mean_val)  # 变异系数
-                                            # 将变异系数映射到0-1范围（cv越小越好）
-                                            stability_score = max(0.0, min(1.0, 1.0 - cv))
+                                            # 使用sigmoid函数将变异系数映射到0-1范围
+                                            # cv越小越好，当cv=0时score=1，cv很大时score接近0
+                                            import math
+                                            stability_score = 1.0 / (1.0 + math.exp(cv - 1.0))
                                         else:
                                             stability_score = 0.5  # 均值为0时，给中等分数
                                         
