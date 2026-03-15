@@ -184,12 +184,16 @@ async def feature_selection_handler(task: Dict[str, Any]) -> Dict[str, Any]:
                 
                 processed_count += 1
                 
+                # 计算单个股票的处理时间
+                symbol_processing_time = time.time() - start_time
+                
                 # 更新任务状态为completed
                 update_selection_task_status(
                     task_id,
                     'completed',
                     progress=100,
                     end_time=int(time.time()),
+                    processing_time=symbol_processing_time,
                     total_input_features=input_count,
                     total_selected_features=len(selected_names),
                     symbols_processed=1,
