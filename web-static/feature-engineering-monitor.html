@@ -1097,14 +1097,24 @@
             if (trend.length >= 2) {
                 const first = trend[0].avg_quality;
                 const last = trend[trend.length - 1].avg_quality;
-                const change = ((last - first) / first * 100).toFixed(1);
                 const trendEl = document.getElementById('qualityMonitorAvgTrend');
-                if (change >= 0) {
-                    trendEl.textContent = `↑ ${change}%`;
+                
+                // 避免除以0的情况
+                if (first > 0 && last > 0) {
+                    const change = ((last - first) / first * 100).toFixed(1);
+                    if (change >= 0) {
+                        trendEl.textContent = `↑ ${change}%`;
+                        trendEl.className = 'text-xs mt-1 text-green-200';
+                    } else {
+                        trendEl.textContent = `↓ ${Math.abs(change)}%`;
+                        trendEl.className = 'text-xs mt-1 text-red-200';
+                    }
+                } else if (first === 0 && last > 0) {
+                    trendEl.textContent = '↑ 新增';
                     trendEl.className = 'text-xs mt-1 text-green-200';
                 } else {
-                    trendEl.textContent = `↓ ${Math.abs(change)}%`;
-                    trendEl.className = 'text-xs mt-1 text-red-200';
+                    trendEl.textContent = '--';
+                    trendEl.className = 'text-xs mt-1 text-gray-200';
                 }
             }
             
@@ -1369,9 +1379,9 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${(task.status === 'completed' && (!task.progress || task.progress === 0)) ? 100 : (task.progress || 0)}%"></div>
                                 </div>
-                                <span class="text-sm font-medium">${task.progress || 0}%</span>
+                                <span class="text-sm font-medium">${(task.status === 'completed' && (!task.progress || task.progress === 0)) ? 100 : (task.progress || 0)}%</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
