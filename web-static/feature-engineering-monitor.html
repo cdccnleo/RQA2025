@@ -2030,6 +2030,20 @@
             }
             
             console.log('✅ 特征选择仪表盘更新完成');
+            
+            // 强制重绘图表
+            setTimeout(() => {
+                if (featureSelectionChart) {
+                    featureSelectionChart.resize();
+                    featureSelectionChart.update('active');
+                    console.log('🔄 选择历史趋势图已强制重绘');
+                }
+                if (selectionMethodChart) {
+                    selectionMethodChart.resize();
+                    selectionMethodChart.update('active');
+                    console.log('🔄 选择方法分布图已强制重绘');
+                }
+            }, 100);
         }
 
         // 测试图表更新
