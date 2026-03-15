@@ -1236,6 +1236,19 @@ async def get_selection_analytics() -> Dict[str, Any]:
         if avg_quality > 0.85 and 0.2 <= avg_selection_ratio <= 0.4:
             recommendations.append("✅ 特征选择效果良好，请继续保持")
         
+        # 获取最后执行时间（最新的记录）
+        last_execution_time = None
+        if history:
+            # 历史记录按时间倒序排列，第一条是最新的
+            last_record = history[0]
+            timestamp = last_record.get('timestamp')
+            if timestamp:
+                # 如果是datetime对象，转换为timestamp
+                if hasattr(timestamp, 'timestamp'):
+                    last_execution_time = timestamp.timestamp()
+                else:
+                    last_execution_time = timestamp
+        
         return {
             "success": True,
             "analytics": {
@@ -1244,6 +1257,7 @@ async def get_selection_analytics() -> Dict[str, Any]:
                 "avg_quality": round(avg_quality, 3),
                 "method_distribution": method_distribution,
                 "trend": trend,
+                "last_execution_time": last_execution_time,
                 "recommendations": recommendations
             }
         }

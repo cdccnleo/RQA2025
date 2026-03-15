@@ -1997,6 +1997,17 @@
                 }
             }
             
+            // 更新最后执行时间（如果有）
+            const lastExecutionEl = document.getElementById('lastExecution');
+            if (lastExecutionEl && analytics.last_execution_time) {
+                const lastDate = new Date(analytics.last_execution_time * 1000);
+                lastExecutionEl.textContent = lastDate.toLocaleDateString('zh-CN');
+            } else if (lastExecutionEl && analytics.total_selections > 0) {
+                lastExecutionEl.textContent = '最近';
+            } else if (lastExecutionEl) {
+                lastExecutionEl.textContent = '--';
+            }
+            
             // 更新质量指标
             const avgQuality = analytics.avg_quality || 0;
             const qualityEl = document.getElementById('avgSelectionQuality');
@@ -2041,6 +2052,26 @@
                 } else {
                     recEl.innerHTML = '<li>暂无建议</li>';
                 }
+            }
+            
+            // 更新选择方法分布图（使用analytics数据）
+            if (selectionMethodChart && analytics.method_distribution) {
+                const methodDist = analytics.method_distribution;
+                const methodCounts = { 
+                    'importance': methodDist.importance || 0, 
+                    'correlation': methodDist.correlation || 0, 
+                    'mutual_info': methodDist.mutual_info || 0, 
+                    'kbest': methodDist.kbest || 0 
+                };
+                
+                selectionMethodChart.data.datasets[0].data = [
+                    methodCounts.importance,
+                    methodCounts.correlation,
+                    methodCounts.mutual_info,
+                    methodCounts.kbest
+                ];
+                selectionMethodChart.update('active');
+                console.log('✅ 选择方法分布图已更新');
             }
             
             console.log('✅ 选择质量评估更新完成');
