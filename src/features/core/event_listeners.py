@@ -170,7 +170,8 @@ class FeatureEventListeners:
 
             # 获取日期范围 - 增加数据量以确保技术指标计算有足够的数据点
             # SMA/BOLL等指标需要20个数据点作为窗口期，考虑到周末和节假日，至少需要60天的数据
-            default_days = config.get("default_days", 90) if config else 90  # 从30天增加到90天
+            # 强制使用90天，不使用config中的default_days（避免配置中的30天限制）
+            default_days = 90  # 强制使用90天
             from datetime import datetime, timedelta
             end_date = datetime.now().strftime("%Y-%m-%d")
             start_date = (datetime.now() - timedelta(days=default_days)).strftime("%Y-%m-%d")
