@@ -1114,6 +1114,12 @@
                 // 更新顶部统计信息 - 使用分页总数
                 const totalFeatures = data.pagination ? data.pagination.total : (allFeatures.length || 0);
                 document.getElementById('total-features').textContent = totalFeatures;
+                
+                // 更新选择历史仪表盘
+                if (data.selection_history) {
+                    console.log('📊 从特征列表加载选择历史:', data.selection_history.length, '条记录');
+                    updateFeatureSelectionDashboard(data.selection_history);
+                }
 
                 return data;
             } catch (error) {
