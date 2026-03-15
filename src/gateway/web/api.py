@@ -1115,6 +1115,42 @@ async def lifespan(app: FastAPI):
                         except Exception as save_error:
                             logger.warning(f"⚠️ 保存特征到feature_store失败: {save_error}")
                         
+                        # 5. 记录指标计算到tracker（用于仪表盘显示）
+                        try:
+                            from src.features.monitoring.indicator_calculation_tracker import get_indicator_calculation_tracker
+                            tracker = get_indicator_calculation_tracker()
+                            
+                            # 将特征列名映射到指标名称并记录计算
+                            indicator_mapping = {
+                                'sma': 'SMA',
+                                'ema': 'EMA',
+                                'rsi': 'RSI',
+                                'macd_macd': 'MACD',
+                                'macd_signal': 'MACD',
+                                'macd_histogram': 'MACD',
+                                'kdj_k': 'KDJ',
+                                'kdj_d': 'KDJ',
+                                'kdj_j': 'KDJ',
+                                'boll_upper': 'BOLL',
+                                'boll_middle': 'BOLL',
+                                'boll_lower': 'BOLL'
+                            }
+                            
+                            for feature in feature_columns:
+                                indicator_name = indicator_mapping.get(feature)
+                                if indicator_name:
+                                    tracker.record_calculation(
+                                        indicator_name=indicator_name,
+                                        task_id=payload.get('task_id', 'unknown'),
+                                        task_type="technical",
+                                        symbol=stock_code,
+                                        computation_time=0.0
+                                    )
+                            
+                            logger.info(f"📈 指标计算已记录到tracker: {stock_code}, {len(feature_columns)} 个特征")
+                        except Exception as tracker_error:
+                            logger.warning(f"⚠️ 记录指标计算到tracker失败: {tracker_error}")
+                        
                         return {
                             "status": "success",
                             "stock_code": stock_code,
