@@ -851,3 +851,76 @@ def update_feature_task_status(task_id: str, status: str, feature_count: int = N
         logger.error(f"更新任务状态到数据库失败: {e}")
         return False
 
+
+def get_features(symbol: str = None, limit: int = 1000) -> List[Dict[str, Any]]:
+    """
+    获取特征列表
+    
+    用于特征选择处理器获取可用特征数据
+    
+    Args:
+        symbol: 股票代码（可选，如果指定则只返回该股票的特征）
+        limit: 返回数量限制
+    
+    Returns:
+        特征列表，每个特征包含name, symbol, quality_score等字段
+    """
+    try:
+        logger.info(f"🔍 获取特征列表: symbol={symbol}, limit={limit}")
+        
+        # 优先从PostgreSQL的feature_store表获取
+        features = get_features_from_store(symbol=symbol, limit=limit)
+        
+        if features:
+            logger.info(f"✅ 从feature_store获取到 {len(features)} 个特征")
+            return features
+        
+        # 如果PostgreSQL没有数据，从文件系统获取
+        logger.debug("PostgreSQL中没有特征数据，尝试从文件系统获取")
+        
+        # 从feature_tasks目录加载所有任务，提取特征信息
+        all_features = []
+        
+        if os.path.exists(FEATURE_TASKS_DIR):
+            for filename in os.listdir(FEATURE_TASKS_DIR):
+                if filename.endswith('.json'):
+                    filepath = os.path.join(FEATURE_TASKS_DIR, filename)
+                    try:
+                        with open(filepath, 'r', encoding='utf-8') as f:
+                            task = json.load(f)
+                        
+                        # 从任务配置中提取特征信息
+                        config = task.get('config', {})
+                        task_symbol = config.get('symbol', config.get('stock_code', ''))
+                        
+                        # 如果指定了symbol，过滤匹配的任务
+                        if symbol and task_symbol != symbol:
+                            continue
+                        
+                        # 从config中提取特征列表
+                        indicators = config.get('indicators', [])
+                        for indicator in indicators:
+                            feature = {
+                                'name': indicator,
+                                'symbol': task_symbol,
+                                'feature_type': 'technical',
+                                'quality_score': 0.8,  # 默认质量分数
+                                'task_id': task.get('task_id', ''),
+                                'created_at': task.get('created_at', 0)
+                            }
+                            all_features.append(feature)
+                            
+                    except Exception as e:
+                        logger.warning(f"读取任务文件失败 {filename}: {e}")
+        
+        if all_features:
+            logger.info(f"✅ 从文件系统获取到 {len(all_features)} 个特征")
+            return all_features[:limit]
+        
+        logger.warning("没有找到任何特征数据")
+        return []
+        
+    except Exception as e:
+        logger.error(f"获取特征列表失败: {e}")
+        return []
+

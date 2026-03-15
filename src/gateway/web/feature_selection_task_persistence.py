@@ -118,9 +118,9 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
         是否成功保存
     """
     try:
-        from src.infrastructure.persistence.postgresql import get_postgresql_connection
+        from .postgresql_persistence import get_db_connection, return_db_connection
         
-        conn = get_postgresql_connection()
+        conn = get_db_connection()
         if not conn:
             logger.debug("PostgreSQL连接不可用，跳过数据库保存")
             return False
@@ -215,9 +215,9 @@ def update_selection_task_status(
         
         # 更新PostgreSQL
         try:
-            from src.infrastructure.persistence.postgresql import get_postgresql_connection
+            from .postgresql_persistence import get_db_connection, return_db_connection
             
-            conn = get_postgresql_connection()
+            conn = get_db_connection()
             if conn:
                 with conn.cursor() as cur:
                     # 构建动态更新SQL
@@ -270,9 +270,9 @@ def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
     try:
         # 优先从PostgreSQL查询
         try:
-            from src.infrastructure.persistence.postgresql import get_postgresql_connection
+            from .postgresql_persistence import get_db_connection, return_db_connection
             
-            conn = get_postgresql_connection()
+            conn = get_db_connection()
             if conn:
                 with conn.cursor() as cur:
                     cur.execute("""
@@ -328,9 +328,9 @@ def list_selection_tasks(
     try:
         # 优先从PostgreSQL查询
         try:
-            from src.infrastructure.persistence.postgresql import get_postgresql_connection
+            from .postgresql_persistence import get_db_connection, return_db_connection
             
-            conn = get_postgresql_connection()
+            conn = get_db_connection()
             if conn:
                 with conn.cursor() as cur:
                     if status:
@@ -398,9 +398,9 @@ def get_selection_tasks_stats() -> Dict[str, Any]:
     try:
         # 优先从PostgreSQL查询
         try:
-            from src.infrastructure.persistence.postgresql import get_postgresql_connection
+            from .postgresql_persistence import get_db_connection, return_db_connection
             
-            conn = get_postgresql_connection()
+            conn = get_db_connection()
             if conn:
                 with conn.cursor() as cur:
                     cur.execute("""
