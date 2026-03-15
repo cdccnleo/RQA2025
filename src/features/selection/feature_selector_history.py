@@ -88,14 +88,20 @@ class FeatureSelectorHistoryManager:
         logger.info(f"特征选择历史管理器已初始化，当前历史记录: {len(self._history)} 条")
     
     def _get_postgresql_config(self) -> Dict[str, str]:
-        """获取 PostgreSQL 配置"""
-        return {
-            "host": os.getenv("POSTGRES_HOST", "postgres"),
-            "port": os.getenv("POSTGRES_PORT", "5432"),
-            "database": os.getenv("POSTGRES_DB", "rqa2025_prod"),
-            "user": os.getenv("POSTGRES_USER", "rqa2025_admin"),
-            "password": os.getenv("POSTGRES_PASSWORD", "rqa2025_secure_password")
-        }
+        """获取 PostgreSQL 配置（使用统一配置模块）"""
+        try:
+            from src.infrastructure.persistence.database_config import get_db_config
+            config = get_db_config()
+            return config.to_dict()
+        except ImportError:
+            # 降级到环境变量（向后兼容）
+            return {
+                "host": os.getenv("POSTGRES_HOST", "postgres"),
+                "port": os.getenv("POSTGRES_PORT", "5432"),
+                "database": os.getenv("POSTGRES_DB", "rqa2025_prod"),
+                "user": os.getenv("POSTGRES_USER", "rqa2025_admin"),
+                "password": os.getenv("POSTGRES_PASSWORD", "rqa2025_secure_password")
+            }
     
     def _get_db_connection(self):
         """获取数据库连接"""
