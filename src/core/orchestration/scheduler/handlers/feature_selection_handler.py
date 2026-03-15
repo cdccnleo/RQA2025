@@ -40,19 +40,22 @@ async def feature_selection_handler(task: 'Task') -> Dict[str, Any]:
     
     try:
         # 1. 解析任务参数（支持params和payload两种格式）
-        if hasattr(task, 'params') and task.params:
-            params = task.params
-        elif hasattr(task, 'payload') and task.payload:
+        logger.info(f"🔍 任务对象属性: {dir(task)}")
+        logger.info(f"🔍 task.payload: {getattr(task, 'payload', 'NOT_FOUND')}")
+        
+        if hasattr(task, 'payload') and task.payload:
             params = task.payload
+            logger.info(f"✅ 使用task.payload: {params}")
         else:
             params = {}
+            logger.warning("⚠️ task.payload为空或不存在")
         
         symbols = params.get('symbols', [])
         method = params.get('method', 'importance')
         top_k = params.get('top_k', 10)
         min_quality = params.get('min_quality')
         
-        logger.info(f"📋 任务参数: symbols={symbols}, method={method}, top_k={top_k}")
+        logger.info(f"📋 解析后的任务参数: symbols={symbols}, method={method}, top_k={top_k}")
         
         # 参数验证
         if not symbols:
