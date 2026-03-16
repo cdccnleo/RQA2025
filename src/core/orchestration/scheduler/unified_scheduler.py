@@ -342,6 +342,8 @@ class UnifiedScheduler(BaseScheduler):
         timeout_monitor_task = asyncio.create_task(self._timeout_monitor_loop())
         # 启动自动重试任务
         retry_monitor_task = asyncio.create_task(self._retry_monitor_loop())
+        # 启动数据库任务拉取任务
+        db_task_pull_task = asyncio.create_task(self._db_task_pull_loop())
 
         try:
             while self._running:
@@ -361,11 +363,85 @@ class UnifiedScheduler(BaseScheduler):
             # 取消监控任务
             timeout_monitor_task.cancel()
             retry_monitor_task.cancel()
+            db_task_pull_task.cancel()
             try:
                 await timeout_monitor_task
                 await retry_monitor_task
+                await db_task_pull_task
             except asyncio.CancelledError:
                 pass
+
+    async def _db_task_pull_loop(self):
+        """
+        数据库任务拉取循环
+        
+        定期从PostgreSQL拉取submitted状态的特征提取任务并提交到调度器执行
+        """
+        logger.info("🔄 数据库任务拉取循环已启动")
+        
+        while self._running:
+            try:
+                await self._load_pending_tasks_from_db()
+                
+                # 每30秒检查一次数据库中的新任务
+                await asyncio.sleep(30)
+                
+            except asyncio.CancelledError:
+                logger.info("🛑 数据库任务拉取循环已停止")
+                break
+            except Exception as e:
+                logger.error(f"❌ 数据库任务拉取错误: {e}")
+                await asyncio.sleep(30)
+    
+    async def _load_pending_tasks_from_db(self):
+        """
+        从PostgreSQL加载submitted状态的特征提取任务
+        
+        将数据库中待执行的任务提交到调度器
+        """
+        try:
+            from src.gateway.web.feature_task_persistence import list_feature_tasks
+            
+            # 查询submitted状态的任务
+            tasks = list_feature_tasks(status='submitted', limit=100)
+            
+            if not tasks:
+                return
+            
+            logger.info(f"📊 从数据库发现 {len(tasks)} 个submitted状态的任务")
+            
+            triggered_count = 0
+            for task in tasks:
+                task_id = task.get('task_id')
+                symbol = task.get('symbol') or task.get('config', {}).get('symbol', '')
+                
+                try:
+                    # 构建任务payload
+                    payload = {
+                        'task_id': task_id,
+                        'symbol': symbol,
+                        'config': task.get('config', {}),
+                        'indicators': task.get('config', {}).get('indicators', [])
+                    }
+                    
+                    # 提交到调度器
+                    new_task_id = await self.submit_task(
+                        task_type='feature_extraction',
+                        payload=payload,
+                        priority=5
+                    )
+                    
+                    logger.info(f"✅ 已从数据库加载并提交任务: {task_id} -> {new_task_id}")
+                    triggered_count += 1
+                    
+                except Exception as e:
+                    logger.error(f"❌ 提交数据库任务失败 {task_id}: {e}")
+            
+            if triggered_count > 0:
+                logger.info(f"📊 成功从数据库加载 {triggered_count}/{len(tasks)} 个任务到调度器")
+                
+        except Exception as e:
+            logger.warning(f"⚠️ 从数据库加载任务失败: {e}")
 
     async def _timeout_monitor_loop(self):
         """
