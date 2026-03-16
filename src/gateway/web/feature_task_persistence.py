@@ -1,5 +1,8 @@
 
 
+# 导入类型提示（避免循环导入问题）
+from typing import Dict, Any, Optional
+
 # 别名函数，用于兼容其他模块的调用
 def get_task(task_id: str) -> Optional[Dict[str, Any]]:
     """
