@@ -424,11 +424,12 @@ class UnifiedScheduler(BaseScheduler):
                         'indicators': task.get('config', {}).get('indicators', [])
                     }
                     
-                    # 提交到调度器
+                    # 提交到调度器，使用原始任务ID
                     new_task_id = await self.submit_task(
                         task_type='feature_extraction',
                         payload=payload,
-                        priority=5
+                        priority=5,
+                        task_id=task_id  # 使用原始数据库任务ID
                     )
                     
                     logger.info(f"✅ 已从数据库加载并提交任务: {task_id} -> {new_task_id}")
