@@ -142,7 +142,9 @@ class FeatureEventListeners:
         """
         创建特征提取任务 - 为每只股票创建独立的任务
         
-        包含去重逻辑：如果相同股票已有未完成的任务，则跳过创建
+        包含去重逻辑和时间间隔检查：
+        1. 如果相同股票已有未完成的任务，则跳过创建
+        2. 如果距离上次特征提取时间不足12小时，则跳过创建（适用于日线特征）
 
         Args:
             source_id: 数据源ID
@@ -167,6 +169,46 @@ class FeatureEventListeners:
             if not custom_stocks:
                 logger.warning(f"数据源 {source_id} 没有配置股票列表，无法创建特征提取任务")
                 return
+
+            # 时间间隔检查：查询该数据源最近一次完成的特征提取任务
+            # 适用于日线特征，避免过于频繁的特征提取
+            MIN_FEATURE_EXTRACTION_INTERVAL = 12 * 3600  # 12小时（秒）
+            try:
+                from src.gateway.web.feature_task_persistence import list_feature_tasks
+                completed_tasks = list_feature_tasks(status='completed', limit=100)
+                
+                # 查找该数据源的最近一次完成任务
+                last_completed_time = None
+                for task in completed_tasks:
+                    task_config = task.get('config', {})
+                    task_source = task_config.get('data_source', '')
+                    if task_source == source_id:
+                        completed_at = task.get('completed_at') or task.get('updated_at')
+                        if completed_at:
+                            if isinstance(completed_at, str):
+                                from datetime import datetime
+                                try:
+                                    completed_at = datetime.fromisoformat(completed_at.replace('Z', '+00:00')).timestamp()
+                                except:
+                                    continue
+                            if last_completed_time is None or completed_at > last_completed_time:
+                                last_completed_time = completed_at
+                
+                # 检查是否满足最小时间间隔
+                if last_completed_time:
+                    current_time = time.time()
+                    time_since_last = current_time - last_completed_time
+                    if time_since_last < MIN_FEATURE_EXTRACTION_INTERVAL:
+                        hours_since_last = time_since_last / 3600
+                        logger.info(f"数据源 {source_id}: 距离上次特征提取仅 {hours_since_last:.1f} 小时，"
+                                   f"不足 {MIN_FEATURE_EXTRACTION_INTERVAL/3600:.0f} 小时，跳过创建")
+                        return
+                    else:
+                        hours_since_last = time_since_last / 3600
+                        logger.info(f"数据源 {source_id}: 距离上次特征提取 {hours_since_last:.1f} 小时，"
+                                   f"满足最小间隔要求，继续创建任务")
+            except Exception as e:
+                logger.warning(f"查询上次特征提取时间失败，继续创建新任务: {e}")
 
             # 去重检查：查询数据库中是否已有相同股票的未完成任务
             try:
