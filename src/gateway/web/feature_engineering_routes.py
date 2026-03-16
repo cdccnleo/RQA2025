@@ -747,6 +747,7 @@ async def get_feature_tasks_stats_endpoint() -> Dict[str, Any]:
         status_counts = {}
         type_counts = {}
         daily_counts = {}
+        symbol_counts = {}  # 按股票代码统计
         
         for task in tasks:
             # 状态统计
@@ -765,12 +766,18 @@ async def get_feature_tasks_stats_endpoint() -> Dict[str, Any]:
                 else:
                     date_key = str(created_at)[:10]
                 daily_counts[date_key] = daily_counts.get(date_key, 0) + 1
+            
+            # 股票代码统计
+            symbol = task.get('symbol')
+            if symbol:
+                symbol_counts[symbol] = symbol_counts.get(symbol, 0) + 1
         
         return {
             "total": len(tasks),
             "by_status": status_counts,
             "by_type": type_counts,
             "by_date": daily_counts,
+            "by_symbol": symbol_counts,  # 新增：按股票代码统计
             "recent_tasks": tasks[:10]  # 最近10个任务
         }
     except Exception as e:

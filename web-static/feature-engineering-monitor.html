@@ -223,22 +223,89 @@
                 <div id="tasksPagination"></div>
             </div>
 
-            <!-- 趋势图表区域 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white rounded-lg shadow">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">任务趋势</h3>
+            <!-- 综合任务仪表盘区域 -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">📊 任务综合仪表盘</h3>
+                
+                <!-- 关键指标卡片 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="text-sm text-gray-500 mb-1">已完成股票</div>
+                        <div class="text-2xl font-bold text-indigo-600" id="completedStocks">--</div>
+                        <div class="text-xs text-gray-400">/ 37 只</div>
                     </div>
-                    <div class="p-6">
-                        <canvas id="tasksTrendChart" height="200"></canvas>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="text-sm text-gray-500 mb-1">平均特征质量</div>
+                        <div class="text-2xl font-bold text-green-600" id="avgFeatureQuality">--</div>
+                        <div class="text-xs text-gray-400">分</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="text-sm text-gray-500 mb-1">今日完成任务</div>
+                        <div class="text-2xl font-bold text-blue-600" id="todayCompletedTasks">--</div>
+                        <div class="text-xs text-gray-400">个</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="text-sm text-gray-500 mb-1">活跃Worker</div>
+                        <div class="text-2xl font-bold text-orange-600" id="activeWorkers">--</div>
+                        <div class="text-xs text-gray-400">个</div>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg shadow">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">特征类型分布</h3>
+
+                <!-- 图表区域 - 第一行 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- 股票任务分布 -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h4 class="text-md font-semibold text-gray-800">股票任务完成进度</h4>
+                            <p class="text-xs text-gray-500 mt-1">展示37只股票的任务完成情况</p>
+                        </div>
+                        <div class="p-6">
+                            <div style="position: relative; height: 300px;">
+                                <canvas id="stockTaskChart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-6">
-                        <canvas id="featureTypeChart" height="200"></canvas>
+                    
+                    <!-- 每日任务趋势 -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h4 class="text-md font-semibold text-gray-800">每日任务完成趋势</h4>
+                            <p class="text-xs text-gray-500 mt-1">最近7天任务完成情况</p>
+                        </div>
+                        <div class="p-6">
+                            <div style="position: relative; height: 300px;">
+                                <canvas id="tasksTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图表区域 - 第二行 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- 特征类型分布 -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h4 class="text-md font-semibold text-gray-800">特征类型分布</h4>
+                            <p class="text-xs text-gray-500 mt-1">各类特征占比情况</p>
+                        </div>
+                        <div class="p-6">
+                            <div style="position: relative; height: 250px;">
+                                <canvas id="featureTypeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 任务状态分布 -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h4 class="text-md font-semibold text-gray-800">任务状态分布</h4>
+                            <p class="text-xs text-gray-500 mt-1">按状态统计任务数量</p>
+                        </div>
+                        <div class="p-6">
+                            <div style="position: relative; height: 250px;">
+                                <canvas id="taskStatusChart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -872,12 +939,17 @@
             // 任务列表：独立请求，先返回先渲染，不阻塞其他区块
             loadTasksWithPagination(1, 20);
 
-            // 任务统计API - 用于趋势图表
+            // 任务统计API - 用于综合仪表盘
             fetchWithTimeout(getApiBaseUrl('/features/engineering/tasks/stats'), API_TIMEOUT_MS)
                 .then(async (res) => {
                     if (res.ok) {
                         const stats = await res.json();
+                        // 更新关键指标
+                        updateDashboardMetrics(stats);
+                        // 渲染各图表
                         renderTasksTrendChart(stats.by_date || {});
+                        renderStockTaskChart(stats.by_symbol || {});
+                        renderTaskStatusChart(stats.by_status || {});
                     }
                 })
                 .catch((error) => {
@@ -1285,6 +1357,130 @@
                     }
                 }
             });
+        }
+
+        // 渲染股票任务分布图表（水平条形图）
+        function renderStockTaskChart(stockData) {
+            const ctx = document.getElementById('stockTaskChart');
+            if (!ctx) return;
+
+            // 准备数据 - 按任务数量排序，取前20只股票
+            const sortedData = Object.entries(stockData)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 20);
+            
+            const labels = sortedData.map(([symbol]) => symbol);
+            const data = sortedData.map(([, count]) => count);
+
+            // 销毁旧图表
+            if (window.stockTaskChartInstance) {
+                window.stockTaskChartInstance.destroy();
+            }
+
+            window.stockTaskChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '任务数量',
+                        data: data,
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderColor: 'rgb(99, 102, 241)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // 水平条形图
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 渲染任务状态分布图表
+        function renderTaskStatusChart(statusData) {
+            const ctx = document.getElementById('taskStatusChart');
+            if (!ctx) return;
+
+            const labels = Object.keys(statusData);
+            const data = Object.values(statusData);
+            const colors = {
+                'completed': 'rgb(16, 185, 129)',
+                'running': 'rgb(59, 130, 246)',
+                'pending': 'rgb(245, 158, 11)',
+                'failed': 'rgb(239, 68, 68)',
+                'cancelled': 'rgb(107, 114, 128)'
+            };
+            const backgroundColors = labels.map(label => colors[label] || 'rgb(156, 163, 175)');
+
+            // 销毁旧图表
+            if (window.taskStatusChartInstance) {
+                window.taskStatusChartInstance.destroy();
+            }
+
+            window.taskStatusChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.map(l => ({
+                        'completed': '已完成',
+                        'running': '运行中',
+                        'pending': '待执行',
+                        'failed': '失败',
+                        'cancelled': '已取消'
+                    })[l] || l),
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 更新综合仪表盘关键指标
+        function updateDashboardMetrics(stats) {
+            // 已完成股票数（假设每个symbol代表一只股票）
+            const completedStocks = Object.keys(stats.by_symbol || {}).length;
+            document.getElementById('completedStocks').textContent = completedStocks;
+
+            // 今日完成任务数
+            const today = new Date().toISOString().split('T')[0];
+            const todayTasks = stats.by_date?.[today] || 0;
+            document.getElementById('todayCompletedTasks').textContent = todayTasks;
+
+            // 平均特征质量（从质量监控数据获取）
+            const avgQuality = stats.avg_quality || 0;
+            document.getElementById('avgFeatureQuality').textContent = (avgQuality * 100).toFixed(1);
+
+            // 活跃Worker数（模拟数据，实际应从Worker监控获取）
+            document.getElementById('activeWorkers').textContent = '2';
         }
 
         // 渲染质量监控仪表盘
