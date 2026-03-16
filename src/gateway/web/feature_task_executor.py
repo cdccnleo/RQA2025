@@ -41,6 +41,23 @@ except ImportError as e:
     logger.warning(f"无法导入数据加载器: {e}")
     DATA_LOADER_AVAILABLE = False
 
+# 导入EventBus用于发布事件
+try:
+    from src.core.event_bus import get_event_bus
+    from src.core.event_bus.types import EventType
+    EVENT_BUS_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"无法导入EventBus: {e}")
+    EVENT_BUS_AVAILABLE = False
+
+# 导入特征选择任务创建函数
+try:
+    from .feature_selection_task_persistence import create_selection_task
+    FEATURE_SELECTION_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"无法导入特征选择任务创建函数: {e}")
+    FEATURE_SELECTION_AVAILABLE = False
+
 
 class FeatureTaskExecutor:
     """
@@ -239,6 +256,48 @@ class FeatureTaskExecutor:
                     logger.error(f"❌ 保存特征到存储表失败: {e}", exc_info=True)
             else:
                 logger.warning(f"⚠️ 特征列表为空，跳过保存到存储表")
+            
+            # 发布特征提取完成事件
+            if EVENT_BUS_AVAILABLE:
+                try:
+                    event_bus = get_event_bus()
+                    symbol = result.get("symbols", [None])[0] if result.get("symbols") else None
+                    event_data = {
+                        "task_id": task_id,
+                        "symbol": symbol,
+                        "features": technical_features if 'technical_features' in locals() else features_list,
+                        "feature_count": len(features_list),
+                        "timestamp": time.time(),
+                        "source": "feature_task_executor"
+                    }
+                    event_bus.publish(EventType.FEATURES_EXTRACTED, event_data)
+                    logger.info(f"📢 已发布 FEATURES_EXTRACTED 事件，任务ID: {task_id}, 股票: {symbol}")
+                except Exception as e:
+                    logger.error(f"❌ 发布 FEATURES_EXTRACTED 事件失败: {e}")
+            
+            # 自动创建特征选择任务
+            if FEATURE_SELECTION_AVAILABLE and 'technical_features' in locals() and technical_features:
+                try:
+                    symbol = result.get("symbols", [None])[0] if result.get("symbols") else None
+                    if symbol:
+                        selection_task = create_selection_task(
+                            symbol=symbol,
+                            features=technical_features,
+                            source_task_id=task_id,
+                            selection_method="importance",  # 默认使用重要性选择
+                            config={
+                                "n_features": min(10, len(technical_features)),  # 默认选择前10个特征
+                                "auto_execute": True  # 自动执行
+                            }
+                        )
+                        if selection_task:
+                            logger.info(f"✅ 已自动创建特征选择任务，任务ID: {selection_task.get('task_id')}, 股票: {symbol}")
+                        else:
+                            logger.warning(f"⚠️ 创建特征选择任务返回空结果，股票: {symbol}")
+                    else:
+                        logger.warning(f"⚠️ 无法创建特征选择任务：缺少股票代码")
+                except Exception as e:
+                    logger.error(f"❌ 自动创建特征选择任务失败: {e}", exc_info=True)
             
             # 通知调度器任务完成（使用调度器的task_id）
             if self.scheduler:
