@@ -1310,6 +1310,14 @@ def get_unified_scheduler(
             event_bus_config=event_bus_config
         )
         
+        # 注册特征提取任务处理器
+        try:
+            from .handlers.feature_extraction_handler import feature_extraction_handler
+            _scheduler_instance.register_task_handler("feature_extraction", feature_extraction_handler)
+            logger.info("✅ 特征提取任务处理器已注册")
+        except Exception as e:
+            logger.warning(f"⚠️ 特征提取处理器注册失败: {e}")
+        
         # 注册特征选择任务处理器
         try:
             from .handlers.feature_selection_handler import feature_selection_handler
