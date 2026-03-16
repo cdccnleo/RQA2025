@@ -373,31 +373,87 @@ class UnifiedScheduler(BaseScheduler):
 
     async def _db_task_pull_loop(self):
         """
-        数据库任务拉取循环
+        数据库任务拉取循环 - 自适应频率优化版本
         
-        定期从PostgreSQL拉取submitted状态的特征提取任务并提交到调度器执行
+        定期从PostgreSQL拉取submitted状态的特征提取任务并提交到调度器执行。
+        采用自适应检查频率以减少资源消耗：
+        - 首次启动时立即检查（恢复可能存在的任务）
+        - 正常情况：每60秒检查一次
+        - 连续3次无任务：延长到5分钟检查一次
+        - 连续10次无任务：延长到10分钟检查一次
+        - 发现新任务：恢复到60秒检查一次
         """
-        logger.info("🔄 数据库任务拉取循环已启动")
+        logger.info("🔄 数据库任务拉取循环已启动（自适应频率优化）")
+        
+        # 配置参数
+        INITIAL_CHECK_INTERVAL = 60  # 初始检查间隔：60秒
+        EXTENDED_CHECK_INTERVAL_1 = 300  # 第一次延长：5分钟
+        EXTENDED_CHECK_INTERVAL_2 = 600  # 第二次延长：10分钟
+        EMPTY_THRESHOLD_1 = 3  # 连续3次无任务触发第一次延长
+        EMPTY_THRESHOLD_2 = 10  # 连续10次无任务触发第二次延长
+        
+        consecutive_empty_checks = 0  # 连续空检查计数
+        current_interval = INITIAL_CHECK_INTERVAL
+        
+        # 首次启动时立即检查一次（恢复可能存在的任务）
+        logger.info("📋 首次启动，立即检查数据库中的任务...")
+        try:
+            tasks_found = await self._load_pending_tasks_from_db()
+            if tasks_found > 0:
+                logger.info(f"✅ 首次检查找到 {tasks_found} 个任务，已提交执行")
+            else:
+                logger.info("📭 首次检查未找到任务，进入正常检查循环")
+        except Exception as e:
+            logger.error(f"❌ 首次检查失败: {e}")
         
         while self._running:
             try:
-                await self._load_pending_tasks_from_db()
+                # 等待当前间隔时间
+                await asyncio.sleep(current_interval)
                 
-                # 每30秒检查一次数据库中的新任务
-                await asyncio.sleep(30)
+                # 检查数据库中的任务
+                tasks_found = await self._load_pending_tasks_from_db()
+                
+                if tasks_found == 0:
+                    # 无任务，增加连续空检查计数
+                    consecutive_empty_checks += 1
+                    
+                    # 根据连续空检查次数调整检查间隔
+                    if consecutive_empty_checks >= EMPTY_THRESHOLD_2:
+                        # 连续10次无任务，延长到10分钟
+                        if current_interval != EXTENDED_CHECK_INTERVAL_2:
+                            current_interval = EXTENDED_CHECK_INTERVAL_2
+                            logger.info(f"📉 连续{consecutive_empty_checks}次未找到任务，"
+                                       f"延长检查间隔到 {current_interval//60} 分钟（减少资源消耗）")
+                    elif consecutive_empty_checks >= EMPTY_THRESHOLD_1:
+                        # 连续3次无任务，延长到5分钟
+                        if current_interval != EXTENDED_CHECK_INTERVAL_1:
+                            current_interval = EXTENDED_CHECK_INTERVAL_1
+                            logger.info(f"📉 连续{consecutive_empty_checks}次未找到任务，"
+                                       f"延长检查间隔到 {current_interval//60} 分钟（减少资源消耗）")
+                else:
+                    # 发现任务，重置计数并恢复检查间隔
+                    if consecutive_empty_checks >= EMPTY_THRESHOLD_1:
+                        logger.info(f"📈 发现 {tasks_found} 个新任务，"
+                                   f"恢复检查间隔到 {INITIAL_CHECK_INTERVAL} 秒")
+                    consecutive_empty_checks = 0
+                    current_interval = INITIAL_CHECK_INTERVAL
                 
             except asyncio.CancelledError:
                 logger.info("🛑 数据库任务拉取循环已停止")
                 break
             except Exception as e:
                 logger.error(f"❌ 数据库任务拉取错误: {e}")
-                await asyncio.sleep(30)
+                await asyncio.sleep(INITIAL_CHECK_INTERVAL)
     
-    async def _load_pending_tasks_from_db(self):
+    async def _load_pending_tasks_from_db(self) -> int:
         """
         从PostgreSQL加载submitted状态的特征提取任务
         
         将数据库中待执行的任务提交到调度器
+        
+        Returns:
+            int: 找到并提交的任务数量
         """
         try:
             from src.gateway.web.feature_task_persistence import list_feature_tasks
@@ -406,7 +462,7 @@ class UnifiedScheduler(BaseScheduler):
             tasks = list_feature_tasks(status='submitted', limit=100)
             
             if not tasks:
-                return
+                return 0
             
             logger.info(f"📊 从数据库发现 {len(tasks)} 个submitted状态的任务")
             
@@ -440,9 +496,12 @@ class UnifiedScheduler(BaseScheduler):
             
             if triggered_count > 0:
                 logger.info(f"📊 成功从数据库加载 {triggered_count}/{len(tasks)} 个任务到调度器")
+            
+            return triggered_count
                 
         except Exception as e:
             logger.warning(f"⚠️ 从数据库加载任务失败: {e}")
+            return 0
 
     async def _timeout_monitor_loop(self):
         """
