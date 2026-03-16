@@ -47,6 +47,7 @@ def ensure_directories():
 def save_feature_task(task: Dict[str, Any]) -> bool:
     """
     保存特征提取任务到持久化存储
+    优先保存到PostgreSQL，降级到文件系统
     
     Args:
         task: 任务信息字典，必须包含task_id字段
@@ -55,14 +56,10 @@ def save_feature_task(task: Dict[str, Any]) -> bool:
         是否成功保存
     """
     try:
-        ensure_directories()
-        
         task_id = task.get("task_id")
         if not task_id:
             logger.error("任务缺少task_id字段，无法保存")
             return False
-        
-        filepath = os.path.join(FEATURE_TASKS_DIR, f"{task_id}.json")
         
         # 添加保存时间戳
         task_data = task.copy()
@@ -80,20 +77,28 @@ def save_feature_task(task: Dict[str, Any]) -> bool:
                 except:
                     pass
         
-        with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(task_data, f, ensure_ascii=False, indent=2, cls=NumpyJSONEncoder)
-        
-        logger.info(f"特征提取任务已保存: {task_id}")
-        
-        # 同时尝试保存到PostgreSQL（如果可用）
+        # 优先保存到PostgreSQL
+        pg_success = False
         try:
-            _save_to_postgresql(task_data)
+            pg_success = _save_to_postgresql(task_data)
+            if pg_success:
+                logger.info(f"✅ 特征提取任务已保存到PostgreSQL: {task_id}")
         except Exception as e:
-            logger.debug(f"保存到PostgreSQL失败（使用文件系统）: {e}")
+            logger.warning(f"⚠️ 保存到PostgreSQL失败，将降级到文件系统: {e}")
+        
+        # 如果PostgreSQL保存失败，降级到文件系统
+        if not pg_success:
+            ensure_directories()
+            filepath = os.path.join(FEATURE_TASKS_DIR, f"{task_id}.json")
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(task_data, f, ensure_ascii=False, indent=2, cls=NumpyJSONEncoder)
+            
+            logger.info(f"✅ 特征提取任务已保存到文件系统: {task_id}")
         
         return True
     except Exception as e:
-        logger.error(f"保存特征任务失败: {e}")
+        logger.error(f"❌ 保存特征任务失败: {e}")
         return False
 
 
