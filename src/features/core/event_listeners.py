@@ -141,6 +141,8 @@ class FeatureEventListeners:
     def _create_feature_task(self, source_id: str, source_config: Dict[str, Any]):
         """
         创建特征提取任务 - 为每只股票创建独立的任务
+        
+        包含去重逻辑：如果相同股票已有未完成的任务，则跳过创建
 
         Args:
             source_id: 数据源ID
@@ -166,6 +168,25 @@ class FeatureEventListeners:
                 logger.warning(f"数据源 {source_id} 没有配置股票列表，无法创建特征提取任务")
                 return
 
+            # 去重检查：查询数据库中是否已有相同股票的未完成任务
+            try:
+                from src.gateway.web.feature_task_persistence import list_feature_tasks
+                existing_tasks = list_feature_tasks(status='submitted', limit=1000) + \
+                                list_feature_tasks(status='running', limit=1000)
+                
+                # 构建已存在任务的股票代码集合
+                existing_stocks = set()
+                for task in existing_tasks:
+                    task_config = task.get('config', {})
+                    stock_code = task_config.get('stock_code') or task_config.get('symbol')
+                    if stock_code:
+                        existing_stocks.add(stock_code)
+                
+                logger.info(f"数据源 {source_id}: 发现 {len(existing_stocks)} 只股票已有未完成的特征提取任务")
+            except Exception as e:
+                logger.warning(f"查询现有任务失败，继续创建新任务: {e}")
+                existing_stocks = set()
+
             logger.info(f"为数据源 {source_id} 的 {len(custom_stocks)} 只股票创建特征提取任务，类型: {task_type}")
 
             # 获取日期范围 - 增加数据量以确保技术指标计算有足够的数据点
@@ -178,12 +199,19 @@ class FeatureEventListeners:
 
             # 为每只股票创建独立的特征提取任务
             created_tasks = []
+            skipped_tasks = []
             for stock in custom_stocks:
                 stock_code = stock.get("code")
                 stock_name = stock.get("name", "")
                 
                 if not stock_code:
                     logger.warning(f"股票数据缺少代码，跳过: {stock}")
+                    continue
+                
+                # 去重检查：如果该股票已有未完成的任务，则跳过
+                if stock_code in existing_stocks:
+                    logger.info(f"股票 {stock_code} ({stock_name}) 已有未完成的特征提取任务，跳过创建")
+                    skipped_tasks.append(stock_code)
                     continue
 
                 # 构建单个股票的任务配置
@@ -236,7 +264,9 @@ class FeatureEventListeners:
                 except Exception as e:
                     logger.error(f"❌ 为股票 {stock_code} 创建特征提取任务失败: {e}")
 
-            logger.info(f"✅ 数据源 {source_id} 的特征提取任务创建完成，共 {len(created_tasks)} 个任务")
+            logger.info(f"✅ 数据源 {source_id} 的特征提取任务处理完成: "
+                       f"创建 {len(created_tasks)} 个新任务, "
+                       f"跳过 {len(skipped_tasks)} 个已有未完成任务")
 
         except Exception as e:
             logger.error(f"创建特征提取任务失败: {e}", exc_info=True)
