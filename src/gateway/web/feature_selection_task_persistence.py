@@ -222,6 +222,254 @@ def update_selection_task_status(
         return False
 
 
+def list_selection_tasks(
+    status: Optional[str] = None,
+    limit: int = 100,
+    offset: int = 0
+) -> List[Dict[str, Any]]:
+    """
+    列出特征选择任务
+    优先从PostgreSQL查询，降级到文件系统
+    
+    Args:
+        status: 按状态过滤
+        limit: 返回数量限制
+        offset: 偏移量
+    
+    Returns:
+        任务列表
+    """
+    try:
+        # 优先从PostgreSQL查询
+        tasks = []
+        try:
+            from .postgresql_persistence import get_db_connection, return_db_connection
+            
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                
+                if status:
+                    cursor.execute("""
+                        SELECT task_id, task_type, status, progress, symbol,
+                               source_task_id, selection_method, n_features,
+                               created_at, updated_at
+                        FROM feature_selection_tasks
+                        WHERE status = %s
+                        ORDER BY created_at DESC
+                        LIMIT %s OFFSET %s
+                    """, (status, limit, offset))
+                else:
+                    cursor.execute("""
+                        SELECT task_id, task_type, status, progress, symbol,
+                               source_task_id, selection_method, n_features,
+                               created_at, updated_at
+                        FROM feature_selection_tasks
+                        ORDER BY created_at DESC
+                        LIMIT %s OFFSET %s
+                    """, (limit, offset))
+                
+                rows = cursor.fetchall()
+                for row in rows:
+                    tasks.append({
+                        "task_id": row[0],
+                        "task_type": row[1],
+                        "status": row[2],
+                        "progress": row[3],
+                        "symbol": row[4],
+                        "source_task_id": row[5],
+                        "selection_method": row[6],
+                        "n_features": row[7],
+                        "created_at": row[8].isoformat() if row[8] else None,
+                        "updated_at": row[9].isoformat() if row[9] else None
+                    })
+                
+                cursor.close()
+                return_db_connection(conn)
+                
+                if tasks:
+                    logger.info(f"从PostgreSQL查询到 {len(tasks)} 个特征选择任务")
+                    return tasks
+        except Exception as e:
+            logger.debug(f"从PostgreSQL查询失败: {e}")
+        
+        # 如果PostgreSQL查询失败或无数据，从文件系统查询
+        if os.path.exists(FEATURE_SELECTION_TASKS_DIR):
+            task_files = sorted(
+                [f for f in os.listdir(FEATURE_SELECTION_TASKS_DIR) if f.endswith('.json')],
+                reverse=True
+            )
+            
+            for filename in task_files[offset:offset+limit]:
+                filepath = os.path.join(FEATURE_SELECTION_TASKS_DIR, filename)
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        task = json.load(f)
+                    
+                    if status and task.get('status') != status:
+                        continue
+                    
+                    tasks.append(task)
+                except Exception as e:
+                    logger.warning(f"读取任务文件失败 {filename}: {e}")
+        
+        return tasks
+        
+    except Exception as e:
+        logger.error(f"列出任务失败: {e}")
+        return []
+
+
+def get_selection_tasks_stats() -> Dict[str, Any]:
+    """
+    获取特征选择任务统计
+    优先从PostgreSQL查询，降级到文件系统
+    
+    Returns:
+        统计信息
+    """
+    try:
+        stats = {
+            "total": 0,
+            "by_status": {},
+            "by_method": {}
+        }
+        
+        # 优先从PostgreSQL查询
+        try:
+            from .postgresql_persistence import get_db_connection, return_db_connection
+            
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                
+                # 总数
+                cursor.execute("SELECT COUNT(*) FROM feature_selection_tasks")
+                stats["total"] = cursor.fetchone()[0]
+                
+                # 按状态统计
+                cursor.execute("""
+                    SELECT status, COUNT(*) 
+                    FROM feature_selection_tasks 
+                    GROUP BY status
+                """)
+                for row in cursor.fetchall():
+                    stats["by_status"][row[0]] = row[1]
+                
+                # 按方法统计
+                cursor.execute("""
+                    SELECT selection_method, COUNT(*) 
+                    FROM feature_selection_tasks 
+                    GROUP BY selection_method
+                """)
+                for row in cursor.fetchall():
+                    stats["by_method"][row[0]] = row[1]
+                
+                cursor.close()
+                return_db_connection(conn)
+                
+                return stats
+        except Exception as e:
+            logger.debug(f"从PostgreSQL查询统计失败: {e}")
+        
+        # 如果PostgreSQL查询失败，从文件系统统计
+        if os.path.exists(FEATURE_SELECTION_TASKS_DIR):
+            for filename in os.listdir(FEATURE_SELECTION_TASKS_DIR):
+                if not filename.endswith('.json'):
+                    continue
+                
+                filepath = os.path.join(FEATURE_SELECTION_TASKS_DIR, filename)
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        task = json.load(f)
+                    
+                    stats["total"] += 1
+                    
+                    status = task.get('status', 'unknown')
+                    stats["by_status"][status] = stats["by_status"].get(status, 0) + 1
+                    
+                    method = task.get('selection_method', 'unknown')
+                    stats["by_method"][method] = stats["by_method"].get(method, 0) + 1
+                    
+                except Exception as e:
+                    logger.warning(f"读取任务文件失败 {filename}: {e}")
+        
+        return stats
+        
+    except Exception as e:
+        logger.error(f"获取统计失败: {e}")
+        return {"total": 0, "by_status": {}, "by_method": {}}
+
+
+def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
+    """
+    获取特征选择任务详情
+    优先从PostgreSQL查询，降级到文件系统
+    
+    Args:
+        task_id: 任务ID
+    
+    Returns:
+        任务详情，不存在返回None
+    """
+    try:
+        # 优先从PostgreSQL查询
+        try:
+            from .postgresql_persistence import get_db_connection, return_db_connection
+            
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                
+                cursor.execute("""
+                    SELECT task_id, task_type, status, progress, symbol,
+                           source_task_id, selection_method, n_features,
+                           auto_execute, input_features, total_input_features,
+                           created_at, updated_at
+                    FROM feature_selection_tasks
+                    WHERE task_id = %s
+                """, (task_id,))
+                
+                row = cursor.fetchone()
+                if row:
+                    task = {
+                        "task_id": row[0],
+                        "task_type": row[1],
+                        "status": row[2],
+                        "progress": row[3],
+                        "symbol": row[4],
+                        "source_task_id": row[5],
+                        "selection_method": row[6],
+                        "n_features": row[7],
+                        "auto_execute": row[8],
+                        "input_features": row[9],
+                        "total_input_features": row[10],
+                        "created_at": row[11].isoformat() if row[11] else None,
+                        "updated_at": row[12].isoformat() if row[12] else None
+                    }
+                    
+                    cursor.close()
+                    return_db_connection(conn)
+                    return task
+                
+                cursor.close()
+                return_db_connection(conn)
+        except Exception as e:
+            logger.debug(f"从PostgreSQL查询失败: {e}")
+        
+        # 如果PostgreSQL查询失败，从文件系统查询
+        filepath = os.path.join(FEATURE_SELECTION_TASKS_DIR, f"{task_id}.json")
+        if os.path.exists(filepath):
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        
+        return None
+        
+    except Exception as e:
+        logger.error(f"获取任务详情失败: {e}")
+        return None
+
+
 def create_selection_task(
     symbol: str,
     features: List[str],
@@ -237,7 +485,7 @@ def create_selection_task(
         features: 特征列表
         source_task_id: 源任务ID（特征提取任务ID）
         selection_method: 选择方法，默认"importance"
-        config: 配置参数，包括n_features（选择特征数）、auto_execute（是否自动执行）等
+        config: 配置参数，包择n_features（选择特征数）、auto_execute（是否自动执行）等
     
     Returns:
         创建的任务信息字典，失败返回None
