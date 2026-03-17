@@ -342,8 +342,7 @@ class UnifiedScheduler(BaseScheduler):
         timeout_monitor_task = asyncio.create_task(self._timeout_monitor_loop())
         # 启动自动重试任务
         retry_monitor_task = asyncio.create_task(self._retry_monitor_loop())
-        # 启动数据库任务拉取任务
-        db_task_pull_task = asyncio.create_task(self._db_task_pull_loop())
+        # 注意：数据库任务拉取循环已移除，改为由外部显式触发
 
         try:
             while self._running:
@@ -363,11 +362,9 @@ class UnifiedScheduler(BaseScheduler):
             # 取消监控任务
             timeout_monitor_task.cancel()
             retry_monitor_task.cancel()
-            db_task_pull_task.cancel()
             try:
                 await timeout_monitor_task
                 await retry_monitor_task
-                await db_task_pull_task
             except asyncio.CancelledError:
                 pass
 
@@ -450,13 +447,15 @@ class UnifiedScheduler(BaseScheduler):
         """
         从PostgreSQL加载submitted状态的特征提取任务
         
-        将数据库中待执行的任务提交到调度器
+        将数据库中待执行的任务提交到调度器。
+        添加了重复检查机制，避免同一任务被多次提交。
         
         Returns:
             int: 找到并提交的任务数量
         """
         try:
             from src.gateway.web.feature_task_persistence import list_feature_tasks
+            from .base import TaskStatus
             
             # 查询submitted状态的任务
             tasks = list_feature_tasks(status='submitted', limit=100)
@@ -467,11 +466,26 @@ class UnifiedScheduler(BaseScheduler):
             logger.info(f"📊 从数据库发现 {len(tasks)} 个submitted状态的任务")
             
             triggered_count = 0
+            skipped_count = 0
             for task in tasks:
                 task_id = task.get('task_id')
                 symbol = task.get('symbol') or task.get('config', {}).get('symbol', '')
                 
                 try:
+                    # 检查任务是否已经在活跃任务中（避免重复提交）
+                    # 注意：只检查活跃任务，不检查历史记录（因为历史记录中的任务可能是之前运行过的）
+                    if task_id in self._task_manager._tasks:
+                        existing_task = self._task_manager._tasks[task_id]
+                        # 任务已存在于活跃任务中，检查状态
+                        if existing_task.status in [TaskStatus.RUNNING, TaskStatus.COMPLETED]:
+                            logger.debug(f"⏭️ 任务 {task_id} 已在调度器中且状态为 {existing_task.status.name}，跳过")
+                            skipped_count += 1
+                            continue
+                        elif existing_task.status == TaskStatus.PENDING:
+                            logger.debug(f"⏭️ 任务 {task_id} 已在调度器队列中等待执行，跳过")
+                            skipped_count += 1
+                            continue
+                    
                     # 构建任务payload
                     payload = {
                         'task_id': task_id,
@@ -494,8 +508,8 @@ class UnifiedScheduler(BaseScheduler):
                 except Exception as e:
                     logger.error(f"❌ 提交数据库任务失败 {task_id}: {e}")
             
-            if triggered_count > 0:
-                logger.info(f"📊 成功从数据库加载 {triggered_count}/{len(tasks)} 个任务到调度器")
+            if triggered_count > 0 or skipped_count > 0:
+                logger.info(f"📊 数据库任务处理: {triggered_count} 个已提交, {skipped_count} 个已跳过（已在调度器中）")
             
             return triggered_count
                 

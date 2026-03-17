@@ -2100,11 +2100,19 @@
             console.log('📊 选择历史数据条数:', selectionHistory.length);
             console.log('📊 featureSelectionChart 实例:', featureSelectionChart ? '存在' : '不存在');
             console.log('📊 selectionMethodChart 实例:', selectionMethodChart ? '存在' : '不存在');
-            
+
+            // 将数据按时间升序排序（图表横坐标从左到右为时间先后顺序）
+            const sortedHistory = [...selectionHistory].sort((a, b) => {
+                const timeA = a.timestamp || a.created_at || 0;
+                const timeB = b.timestamp || b.created_at || 0;
+                return timeA - timeB;
+            });
+            console.log('📊 数据已按时间升序排序');
+
             // 1. 更新关键指标卡片
             const totalCount = selectionHistory.length;
             document.getElementById('selectionCount').textContent = totalCount;
-            
+
             if (totalCount > 0) {
                 // 计算平均选择比例（API返回的是selected_count，需要计算比例）
                 const avgRatio = selectionHistory.reduce((sum, h) => {
@@ -2114,7 +2122,7 @@
                     return sum + ratio;
                 }, 0) / totalCount;
                 document.getElementById('selectionRatio').textContent = (avgRatio * 100).toFixed(1) + '%';
-                
+
                 // 统计常用方法（API返回的是method字段）
                 const methodCounts = {};
                 selectionHistory.forEach(h => {
@@ -2124,9 +2132,9 @@
                 const commonMethod = Object.entries(methodCounts)
                     .sort((a, b) => b[1] - a[1])[0];
                 document.getElementById('commonMethod').textContent = commonMethod ? commonMethod[0] : '--';
-                
-                // 最后执行时间
-                const lastExec = selectionHistory[selectionHistory.length - 1];
+
+                // 最后执行时间（取最后一条记录，即最新的）
+                const lastExec = sortedHistory[sortedHistory.length - 1];
                 const lastTimestamp = lastExec.timestamp || lastExec.created_at;
                 if (lastTimestamp) {
                     const lastDate = new Date(lastTimestamp * 1000);
@@ -2137,26 +2145,26 @@
                 document.getElementById('commonMethod').textContent = '--';
                 document.getElementById('lastExecution').textContent = '--';
             }
-            
-            // 2. 更新选择历史趋势图
+
+            // 2. 更新选择历史趋势图（使用升序数据，时间从左到右）
             if (featureSelectionChart) {
-                const selLabels = selectionHistory.length > 0
-                    ? selectionHistory.map(h => {
+                const selLabels = sortedHistory.length > 0
+                    ? sortedHistory.map(h => {
                         const timestamp = h.timestamp || h.created_at || Date.now() / 1000;
                         const date = new Date(timestamp * 1000);
-                        return date.toLocaleTimeString('zh-CN', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
+                        return date.toLocaleTimeString('zh-CN', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
                         });
                     })
                     : [];
-                
-                const selData = selectionHistory.length > 0 
-                    ? selectionHistory.map(h => h.selected_count || 0) 
+
+                const selData = sortedHistory.length > 0
+                    ? sortedHistory.map(h => h.selected_count || 0)
                     : [];
-                
+
                 console.log('📈 选择历史趋势图数据:', { labels: selLabels.length, data: selData.length });
                 featureSelectionChart.data.labels = selLabels;
                 featureSelectionChart.data.datasets[0].data = selData;

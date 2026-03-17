@@ -59,6 +59,17 @@ class TaskManager:
         async with self._lock:
             # 如果提供了自定义task_id，使用它；否则自动生成
             task_id = task_id or generate_task_id()
+
+            # 检查任务是否已存在（防止重复创建）
+            if task_id in self._tasks:
+                existing_task = self._tasks[task_id]
+                # 如果任务已经在运行或已完成，返回现有任务ID
+                if existing_task.status in [TaskStatus.RUNNING, TaskStatus.COMPLETED]:
+                    return task_id
+                # 如果任务是pending状态，也返回现有任务ID（避免重复提交）
+                if existing_task.status == TaskStatus.PENDING:
+                    return task_id
+
             created_at = datetime.now()
 
             # 计算截止时间

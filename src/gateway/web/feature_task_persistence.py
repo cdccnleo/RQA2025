@@ -113,18 +113,38 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
         
         cursor = conn.cursor()
         
-        # 确保表存在
+        # 确保表存在（包含新字段）
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS feature_engineering_tasks (
                 task_id VARCHAR(100) PRIMARY KEY,
                 task_type VARCHAR(50) NOT NULL,
                 status VARCHAR(20) NOT NULL,
+                priority INTEGER DEFAULT 5,
                 progress INTEGER DEFAULT 0,
                 feature_count INTEGER DEFAULT 0,
+                -- 溯源字段
+                source_task_id VARCHAR(100),
+                parent_task_id VARCHAR(100),
+                data_source VARCHAR(50),
+                -- 业务标识字段
+                symbol VARCHAR(20),
+                stock_name VARCHAR(100),
+                stock_code VARCHAR(20),
+                -- 任务参数字段
+                indicators JSONB,
+                start_date DATE,
+                end_date DATE,
+                config JSONB,
+                -- 执行信息字段
                 start_time BIGINT,
                 end_time BIGINT,
-                config JSONB,
+                worker_id VARCHAR(50),
+                retry_count INTEGER DEFAULT 0,
+                execution_time_ms INTEGER,
+                memory_usage_mb INTEGER,
+                -- 错误信息
                 error_message TEXT,
+                -- 元数据
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
@@ -148,33 +168,88 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
             ON feature_engineering_tasks(status, created_at DESC);
         """)
         
-        # 插入或更新任务
+        # 创建溯源查询索引
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_feature_tasks_source 
+            ON feature_engineering_tasks(source_task_id);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_feature_tasks_data_source 
+            ON feature_engineering_tasks(data_source);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_feature_tasks_symbol 
+            ON feature_engineering_tasks(symbol);
+        """)
+        
+        # 从config中提取字段（如果提供了config）
+        config = task.get("config", {})
+        
+        # 插入或更新任务（包含新字段）
         cursor.execute("""
             INSERT INTO feature_engineering_tasks (
-                task_id, task_type, status, progress, feature_count,
-                start_time, end_time, config, error_message, updated_at
+                task_id, task_type, status, priority, progress, feature_count,
+                source_task_id, parent_task_id, data_source,
+                symbol, stock_name, stock_code,
+                indicators, start_date, end_date, config,
+                start_time, end_time, worker_id, retry_count,
+                execution_time_ms, memory_usage_mb,
+                error_message, updated_at
             ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP
             )
             ON CONFLICT (task_id) 
             DO UPDATE SET
                 status = EXCLUDED.status,
+                priority = EXCLUDED.priority,
                 progress = EXCLUDED.progress,
                 feature_count = EXCLUDED.feature_count,
+                source_task_id = EXCLUDED.source_task_id,
+                parent_task_id = EXCLUDED.parent_task_id,
+                data_source = EXCLUDED.data_source,
+                symbol = EXCLUDED.symbol,
+                stock_name = EXCLUDED.stock_name,
+                stock_code = EXCLUDED.stock_code,
+                indicators = EXCLUDED.indicators,
+                start_date = EXCLUDED.start_date,
+                end_date = EXCLUDED.end_date,
+                config = EXCLUDED.config,
                 start_time = EXCLUDED.start_time,
                 end_time = EXCLUDED.end_time,
-                config = EXCLUDED.config,
+                worker_id = EXCLUDED.worker_id,
+                retry_count = EXCLUDED.retry_count,
+                execution_time_ms = EXCLUDED.execution_time_ms,
+                memory_usage_mb = EXCLUDED.memory_usage_mb,
                 error_message = EXCLUDED.error_message,
                 updated_at = CURRENT_TIMESTAMP
         """, (
             task.get("task_id"),
             task.get("task_type", ""),
             task.get("status", "pending"),
+            task.get("priority", 5),
             task.get("progress", 0),
             task.get("feature_count", 0),
+            # 溯源字段
+            task.get("source_task_id") or config.get("source_task_id"),
+            task.get("parent_task_id"),
+            task.get("data_source") or config.get("data_source"),
+            # 业务标识字段
+            task.get("symbol") or config.get("symbol"),
+            task.get("stock_name") or config.get("stock_name"),
+            task.get("stock_code") or config.get("stock_code"),
+            # 任务参数字段
+            json.dumps(task.get("indicators") or config.get("indicators", [])),
+            task.get("start_date") or config.get("start_date"),
+            task.get("end_date") or config.get("end_date"),
+            json.dumps(config),
+            # 执行信息字段
             task.get("start_time"),
             task.get("end_time"),
-            json.dumps(task.get("config", {})),
+            task.get("worker_id"),
+            task.get("retry_count", 0),
+            task.get("execution_time_ms"),
+            task.get("memory_usage_mb"),
+            # 错误信息
             task.get("error_message")
         ))
         
