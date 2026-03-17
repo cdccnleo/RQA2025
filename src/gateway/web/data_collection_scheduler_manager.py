@@ -257,6 +257,12 @@ class DataCollectionSchedulerManager:
         import asyncio
         
         try:
+            # 再次检查是否已提交（防止竞态条件）
+            task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
+            if task_key in self._submitted_tasks:
+                logger.info(f"📅 数据源 {source_id} 今天已提交过任务（竞态条件检查），跳过")
+                return
+            
             scheduler = get_unified_scheduler()
             
             # 准备任务数据

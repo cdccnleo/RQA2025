@@ -1,4 +1,3 @@
-import logging
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -7,11 +6,15 @@ import logging
 提供事件监听功能，用于监听数据采集完成事件并自动触发特征提取任务。
 """
 
+import logging
 import time
-from typing import Dict, Any
+from typing import Dict, Any, Set
 
 
 logger = logging.getLogger(__name__)
+
+# 已处理的事件ID集合（用于去重）
+_processed_event_ids: Set[str] = set()
 
 
 class FeatureEventListeners:
@@ -102,17 +105,33 @@ class FeatureEventListeners:
         Args:
             event: 事件对象
         """
+        global _processed_event_ids
+
         logger.info(f"🎯 开始处理数据采集完成事件: {event}")
         try:
             data = event.data if hasattr(event, 'data') else event
             source_id = data.get("source_id")
+            task_id = data.get("task_id")
             source_config = data.get("source_config")
 
-            logger.info(f"📊 收到数据采集完成事件，数据源: {source_id}, 配置: {source_config is not None}")
+            logger.info(f"📊 收到数据采集完成事件，数据源: {source_id}, 任务ID: {task_id}, 配置: {source_config is not None}")
 
             if not source_id:
                 logger.warning("⚠️ 事件数据中缺少 source_id")
                 return
+
+            # 事件去重检查
+            event_id = f"{source_id}:{task_id}"
+            if event_id in _processed_event_ids:
+                logger.info(f"⏭️ 事件 {event_id} 已处理过，跳过")
+                return
+
+            # 记录已处理的事件ID
+            _processed_event_ids.add(event_id)
+
+            # 清理旧的事件ID（保留最近1000个）
+            if len(_processed_event_ids) > 1000:
+                _processed_event_ids = set(list(_processed_event_ids)[-500:])
 
             # 自动创建特征提取任务
             logger.info(f"🔧 准备为数据源 {source_id} 创建特征提取任务...")
