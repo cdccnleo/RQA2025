@@ -350,6 +350,7 @@ class EventBus(BaseComponent):
         self._worker_threads = []
         self._running = False
         self._lock = threading.RLock()
+        self._init_lock = threading.Lock()  # 初始化锁（保护初始化过程）
         self._event_counter = 0
 
     def _initialize_batch_processing(self, batch_size: int) -> None:
@@ -495,63 +496,109 @@ class EventBus(BaseComponent):
         return self.routing_manager.route_event(event)
 
     def _initialize_impl(self) -> bool:
-        """实现BaseComponent的初始化（带重复初始化检查）"""
-        # 检查是否已经在运行（防止重复初始化导致线程泄漏）
-        if self._running and self._worker_threads:
-            logger.warning("EventBus 已经在运行中，跳过重复初始化")
-            return True
+        """
+        实现BaseComponent的初始化（线程安全，带重复初始化检查）
 
-        try:
-            logger.info("开始初始化EventBus...")
-            print("DEBUG: About to check enable_persistence")
-            # 初始化持久化
-            logger.info(f"初始化持久化: {self._config.enable_persistence}")
-            print(f"DEBUG: enable_persistence = {self._config.enable_persistence}")
-            if self._config.enable_persistence:
-                print("DEBUG: Initializing persistence")
-                self._persistence = EventPersistence()
+        Returns:
+            bool: 初始化是否成功
 
-            # 初始化重试管理器
-            if self._config.enable_retry:
-                self._retry_manager = EventRetryManager(
-                    max_retries=3,
-                    retry_delay=1.0,
-                    dead_letter_callback=self._add_to_dead_letter_queue
+        Thread Safety:
+            此方法是线程安全的，使用锁保护初始化过程。
+        """
+        with self._init_lock:
+            # 检查是否已经在运行（防止重复初始化导致线程泄漏）
+            if self._running:
+                logger.debug("EventBus 已经在运行中，跳过重复初始化")
+                return True
+
+            try:
+                logger.info("开始初始化EventBus...")
+                print("DEBUG: About to check enable_persistence")
+                # 初始化持久化
+                logger.info(f"初始化持久化: {self._config.enable_persistence}")
+                print(f"DEBUG: enable_persistence = {self._config.enable_persistence}")
+                if self._config.enable_persistence:
+                    print("DEBUG: Initializing persistence")
+                    self._persistence = EventPersistence()
+
+                # 初始化重试管理器
+                if self._config.enable_retry:
+                    self._retry_manager = EventRetryManager(
+                        max_retries=3,
+                        retry_delay=1.0,
+                        dead_letter_callback=self._add_to_dead_letter_queue
+                    )
+                    self._retry_manager.start()
+
+                # 初始化性能监控
+                if self._config.enable_monitoring:
+                    self._performance_monitor = EventPerformanceMonitor()
+
+                # 初始化事件处理组件（现在retry_manager和performance_monitor已初始化）
+                self._processor = EventProcessor(
+                    subscriber=self._subscriber,
+                    statistics_manager=self.statistics_manager,
+                    lock=self._lock,
+                    retry_manager=self._retry_manager,
+                    performance_monitor=self._performance_monitor
                 )
-                self._retry_manager.start()
 
-            # 初始化性能监控
-            if self._config.enable_monitoring:
-                self._performance_monitor = EventPerformanceMonitor()
+                # 启动工作线程
+                self._running = True
+                for i in range(self._config.max_workers):
+                    thread = threading.Thread(
+                        target=self._process_events,
+                        name=f"EventBus-Worker-{i}",
+                        daemon=True
+                    )
+                    thread.start()
+                    self._worker_threads.append(thread)
 
-            # 初始化事件处理组件（现在retry_manager和performance_monitor已初始化）
-            self._processor = EventProcessor(
-                subscriber=self._subscriber,
-                statistics_manager=self.statistics_manager,
-                lock=self._lock,
-                retry_manager=self._retry_manager,
-                performance_monitor=self._performance_monitor
-            )
+                # 启动批处理线程
+                if self._config.batch_size > 1:
+                    batch_thread = threading.Thread(
+                        target=self._batch_processor,
+                        name="EventBus-BatchProcessor",
+                        daemon=True
+                    )
+                    batch_thread.start()
+                    self._worker_threads.append(batch_thread)
 
-            # 启动工作线程
-            self._running = True
-            for i in range(self._config.max_workers):
-                thread = threading.Thread(target=self._process_events, daemon=True)
-                thread.start()
-                self._worker_threads.append(thread)
+                logger.info(f"EventBus 初始化完成，工作线程数: {self._config.max_workers}")
+                return True
 
-            # 启动批处理线程
-            if self._config.batch_size > 1:
-                batch_thread = threading.Thread(target=self._batch_processor, daemon=True)
-                batch_thread.start()
-                self._worker_threads.append(batch_thread)
+            except Exception as e:
+                logger.error(f"EventBus 初始化失败: {e}")
+                self._cleanup_on_init_failure()
+                raise EventBusException(f"EventBus 初始化失败: {e}") from e
 
-            logger.info(f"事件总线初始化完成，工作线程数: {self._config.max_workers}")
-            return True
+    def _cleanup_on_init_failure(self):
+        """
+        初始化失败时的清理
 
-        except Exception as e:
-            logger.error(f"事件总线初始化失败: {e}")
-            raise EventBusException(f"事件总线初始化失败: {e}")
+        确保在初始化失败时清理已创建的资源，防止资源泄漏。
+        """
+        logger.warning("执行初始化失败清理...")
+        self._running = False
+
+        # 停止重试管理器
+        if self._retry_manager is not None:
+            try:
+                self._retry_manager.stop()
+                logger.debug("重试管理器已停止")
+            except Exception as e:
+                logger.warning(f"停止重试管理器时出错: {e}")
+
+        # 等待工作线程结束
+        for i, thread in enumerate(self._worker_threads):
+            try:
+                thread.join(timeout=1.0)
+                logger.debug(f"工作线程 {i} 已停止")
+            except Exception:
+                pass
+        self._worker_threads.clear()
+
+        logger.warning("初始化失败清理完成")
 
     def shutdown(self) -> bool:
         """关闭事件总线"""

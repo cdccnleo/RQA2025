@@ -15,12 +15,14 @@ RQA2025 核心层基础组件 - 增强版
 - 健康检查和监控
 - 配置管理
 - 事件驱动架构支持
+- 线程安全的组件操作
 """
 
 import time
 import uuid
 import logging
 import sys
+import threading
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional, Callable, Protocol
 from dataclasses import dataclass, field
@@ -81,7 +83,7 @@ class ComponentInfo:
 
 class BaseComponent(ABC):
 
-    """组件基类"""
+    """组件基类 - 线程安全版本"""
 
     def __init__(self, name: str, version: str = "1.0.0", description: str = ""):
 
@@ -97,34 +99,47 @@ class BaseComponent(ABC):
         self._initialized = False
         self._started = False
 
+        # 线程安全锁
+        self._lock = threading.RLock()
+        self._init_lock = threading.Lock()
+
     def initialize(self) -> bool:
-        """初始化组件（防止重复初始化）"""
-        # 检查是否已经初始化
-        if self._initialized:
-            self.logger.debug(f"组件 {self.name} 已经初始化，跳过重复初始化")
-            return True
+        """
+        初始化组件（线程安全，防止重复初始化）
 
-        try:
-            self.set_status(ComponentStatus.INITIALIZING)
-            result = self._initialize_impl()
+        Returns:
+            bool: 初始化是否成功
 
-            if result:
-                self._initialized = True
-                self.set_status(ComponentStatus.INITIALIZED)
-                self.set_health(ComponentHealth.HEALTHY)
-                self.logger.info(f"组件 {self.name} 初始化成功")
-            else:
+        Thread Safety:
+            此方法是线程安全的，使用锁保护初始化过程。
+        """
+        with self._init_lock:
+            # 检查是否已经初始化
+            if self._initialized:
+                self.logger.debug(f"组件 {self.name} 已经初始化，跳过重复初始化")
+                return True
+
+            try:
+                self.set_status(ComponentStatus.INITIALIZING)
+                result = self._initialize_impl()
+
+                if result:
+                    self._initialized = True
+                    self.set_status(ComponentStatus.INITIALIZED)
+                    self.set_health(ComponentHealth.HEALTHY)
+                    self.logger.info(f"组件 {self.name} 初始化成功")
+                else:
+                    self.set_status(ComponentStatus.ERROR)
+                    self.set_health(ComponentHealth.UNHEALTHY)
+                    self.logger.error(f"组件 {self.name} 初始化失败")
+
+                return result
+
+            except Exception as e:
                 self.set_status(ComponentStatus.ERROR)
                 self.set_health(ComponentHealth.UNHEALTHY)
-                self.logger.error(f"组件 {self.name} 初始化失败")
-
-            return result
-
-        except Exception as e:
-            self.set_status(ComponentStatus.ERROR)
-            self.set_health(ComponentHealth.UNHEALTHY)
-            self.logger.error(f"组件初始化失败: {e}")
-            return False
+                self.logger.error(f"组件初始化失败: {e}")
+                return False
 
     def shutdown(self) -> bool:
         """关闭组件"""
