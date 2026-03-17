@@ -317,6 +317,9 @@ class FeatureEventListeners:
 # 全局事件监听器实例
 _feature_event_listeners = None
 
+# 初始化状态标志
+_event_listeners_initialized = False
+
 
 def get_feature_event_listeners() -> FeatureEventListeners:
     """
@@ -333,12 +336,31 @@ def get_feature_event_listeners() -> FeatureEventListeners:
 
 def initialize_event_listeners(event_bus, scheduler):
     """
-    初始化事件监听器
+    初始化事件监听器（防止重复初始化）
 
     Args:
         event_bus: 事件总线实例
         scheduler: 任务调度器实例
+
+    Returns:
+        FeatureEventListeners实例
     """
+    global _event_listeners_initialized
+
+    # 检查是否已经初始化
+    if _event_listeners_initialized:
+        logger.info("事件监听器已经初始化，跳过重复初始化")
+        return get_feature_event_listeners()
+
     listeners = get_feature_event_listeners()
+
+    # 检查实例级别是否已初始化
+    if listeners.event_bus is not None:
+        logger.info("事件监听器实例已经初始化，跳过重复初始化")
+        _event_listeners_initialized = True
+        return listeners
+
     listeners.initialize(event_bus, scheduler)
+    _event_listeners_initialized = True
+    logger.info("✅ 事件监听器初始化完成")
     return listeners

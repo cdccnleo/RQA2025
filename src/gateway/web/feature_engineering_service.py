@@ -958,21 +958,17 @@ def initialize_feature_engineering_system() -> bool:
         start_scheduler()
 
         # 2. 初始化事件监听器（使用统一调度器）
+        # 注意：事件监听器已在 api.py 的 lifespan 中初始化，这里不再重复初始化
+        # 如果需要在其他场景下初始化，可以调用 initialize_event_listeners
         try:
-            from src.features.core.event_listeners import initialize_event_listeners
-            from src.core.orchestration.scheduler import get_unified_scheduler
-            
-            # 获取事件总线
-            event_bus = _get_event_bus()
-            scheduler = get_unified_scheduler()
-
-            if event_bus:
-                initialize_event_listeners(event_bus, scheduler)
-                logger.info("事件监听器已初始化（使用统一调度器）")
+            from src.features.core.event_listeners import get_feature_event_listeners
+            listeners = get_feature_event_listeners()
+            if listeners.event_bus is None:
+                logger.warning("事件监听器尚未初始化，将在 api.py 的 lifespan 中初始化")
             else:
-                logger.warning("事件总线未初始化，无法初始化事件监听器")
+                logger.info("事件监听器已在 api.py 中初始化，跳过重复初始化")
         except Exception as e:
-            logger.error(f"初始化事件监听器失败: {e}")
+            logger.warning(f"检查事件监听器状态失败: {e}")
 
         # 3. 初始化事件处理器
         try:
