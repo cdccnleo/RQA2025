@@ -98,7 +98,12 @@ class BaseComponent(ABC):
         self._started = False
 
     def initialize(self) -> bool:
-        """初始化组件"""
+        """初始化组件（防止重复初始化）"""
+        # 检查是否已经初始化
+        if self._initialized:
+            self.logger.debug(f"组件 {self.name} 已经初始化，跳过重复初始化")
+            return True
+
         try:
             self.set_status(ComponentStatus.INITIALIZING)
             result = self._initialize_impl()

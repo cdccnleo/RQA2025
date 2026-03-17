@@ -495,7 +495,12 @@ class EventBus(BaseComponent):
         return self.routing_manager.route_event(event)
 
     def _initialize_impl(self) -> bool:
-        """实现BaseComponent的初始化"""
+        """实现BaseComponent的初始化（带重复初始化检查）"""
+        # 检查是否已经在运行（防止重复初始化导致线程泄漏）
+        if self._running and self._worker_threads:
+            logger.warning("EventBus 已经在运行中，跳过重复初始化")
+            return True
+
         try:
             logger.info("开始初始化EventBus...")
             print("DEBUG: About to check enable_persistence")

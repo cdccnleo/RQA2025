@@ -16,19 +16,29 @@ from .context import HandlerExecutionContext
 
 # 全局事件总线实例管理
 _global_event_bus: EventBus = None
+_global_event_bus_lock = False
 
 def get_event_bus() -> EventBus:
     """
-    获取全局事件总线实例（单例模式）
+    获取全局事件总线实例（单例模式，线程安全）
 
     Returns:
         EventBus: 全局事件总线实例
     """
-    global _global_event_bus
+    global _global_event_bus, _global_event_bus_lock
+
+    # 双重检查锁定模式
     if _global_event_bus is None:
-        _global_event_bus = EventBus()
-        if not hasattr(_global_event_bus, '_initialized') or not _global_event_bus._initialized:
-            _global_event_bus.initialize()
+        if not _global_event_bus_lock:
+            _global_event_bus_lock = True
+            try:
+                if _global_event_bus is None:
+                    _global_event_bus = EventBus()
+                    # 初始化（BaseComponent.initialize 会检查 _initialized 标志）
+                    _global_event_bus.initialize()
+            finally:
+                _global_event_bus_lock = False
+
     return _global_event_bus
 
 # 工具类
