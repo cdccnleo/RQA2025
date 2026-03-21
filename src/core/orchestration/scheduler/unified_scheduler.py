@@ -1228,6 +1228,58 @@ class UnifiedScheduler(BaseScheduler):
                 logger.debug(f"✅ 任务完成状态已同步到数据库: {task_id}")
             except Exception as db_error:
                 logger.warning(f"⚠️ 同步任务完成状态到数据库失败: {db_error}")
+            
+            # 自动创建特征选择任务（当特征提取任务完成时）
+            try:
+                if task.type == "feature_extraction" or str(task.type).endswith("feature_extraction"):
+                    logger.info(f"🔄 特征提取任务完成，准备自动创建特征选择任务: {task_id}")
+                    
+                    from src.gateway.web.feature_selection_task_persistence import create_selection_task
+                    
+                    # 从结果中获取股票代码和特征列表
+                    symbol = None
+                    features = []
+                    
+                    if isinstance(result, dict):
+                        # 尝试从result中获取symbol
+                        symbols = result.get("symbols", [])
+                        if symbols and len(symbols) > 0:
+                            symbol = symbols[0]
+                        
+                        # 尝试从result中获取特征列表
+                        features = result.get("features", [])
+                        
+                        # 如果没有特征列表，尝试从feature_count推断
+                        if not features and result.get("feature_count", 0) > 0:
+                            # 创建默认特征列表（基于特征数量）
+                            feature_count = result.get("feature_count", 0)
+                            features = [f"feature_{i}" for i in range(feature_count)]
+                            logger.debug(f"从feature_count({feature_count})生成默认特征列表")
+                    
+                    # 如果无法从result获取symbol，尝试从payload获取
+                    if not symbol and task.payload:
+                        symbol = task.payload.get("symbol") or task.payload.get("stock_code")
+                    
+                    if symbol and features:
+                        selection_task = create_selection_task(
+                            symbol=symbol,
+                            features=features,
+                            source_task_id=task_id,
+                            selection_method="importance",
+                            config={
+                                "n_features": min(10, len(features)),
+                                "auto_execute": True
+                            }
+                        )
+                        if selection_task:
+                            logger.info(f"✅ 已自动创建特征选择任务: {selection_task.get('task_id')}, 股票: {symbol}, 特征数: {len(features)}")
+                        else:
+                            logger.warning(f"⚠️ 创建特征选择任务返回空结果，股票: {symbol}")
+                    else:
+                        logger.warning(f"⚠️ 无法创建特征选择任务: symbol={symbol}, features_count={len(features)}")
+                        
+            except Exception as e:
+                logger.error(f"❌ 自动创建特征选择任务失败: {e}", exc_info=True)
 
         elif status == "failed":
             # 更新任务状态为失败
