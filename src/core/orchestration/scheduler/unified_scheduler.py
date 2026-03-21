@@ -155,8 +155,11 @@ class UnifiedScheduler(BaseScheduler):
         self._event_driven_trigger = None
         if enable_event_bus and EVENT_BUS_AVAILABLE:
             try:
-                self._event_bus_integration = EventBusIntegration(self)
-                self._event_driven_trigger = EventDrivenTaskTrigger(self)
+                # 获取事件总线实例
+                from src.core.event_bus import get_event_bus
+                event_bus = get_event_bus()
+                self._event_bus_integration = EventBusIntegration(event_bus)
+                self._event_driven_trigger = EventDrivenTaskTrigger(self, self._event_bus_integration)
                 print("✅ 事件总线集成已启用")
             except Exception as e:
                 print(f"⚠️ 事件总线集成初始化失败: {e}")

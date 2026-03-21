@@ -16,13 +16,13 @@ from dataclasses import dataclass
 from ..base import Task, TaskStatus, JobType
 
 try:
-    from src.core.event_bus.core import EventBus
+    from src.core.event_bus import get_event_bus
     from src.core.event_bus.models import Event, EventPriority
     from src.core.event_bus.types import EventType
     EVENT_BUS_AVAILABLE = True
 except ImportError:
     EVENT_BUS_AVAILABLE = False
-    EventBus = None
+    get_event_bus = None
     Event = None
     EventPriority = None
     EventType = None
@@ -99,7 +99,11 @@ class EventBusIntegration:
         # 如果没有提供事件总线，尝试获取全局实例
         if self._event_bus is None:
             try:
-                self._event_bus = EventBus.get_instance()
+                if get_event_bus is not None:
+                    self._event_bus = get_event_bus()
+                else:
+                    logger.warning("get_event_bus函数不可用")
+                    return
             except Exception as e:
                 logger.warning(f"无法获取事件总线实例: {e}")
                 return

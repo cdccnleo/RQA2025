@@ -1566,8 +1566,9 @@ if datasource_router:
 else:
     print("❌ 数据源路由器为None，跳过注册")
 
-# 注册统一调度器路由（新架构）
+# 注册统一调度器路由（新架构）- 延迟导入避免启动时卡住
 try:
+    # 使用延迟导入，避免在模块加载时初始化调度器
     from .scheduler_routes import router as scheduler_router
     app.include_router(scheduler_router)
     print(f"✅ 统一调度器路由注册成功（{len(scheduler_router.routes)} 个端点）")
