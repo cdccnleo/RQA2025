@@ -163,6 +163,194 @@ class UnifiedScheduler(BaseScheduler):
                 print("✅ 事件总线集成已启用")
             except Exception as e:
                 print(f"⚠️ 事件总线集成初始化失败: {e}")
+        
+        # symbol缓存，避免重复查询
+        self._symbol_cache: Dict[str, List[str]] = {}
+        self._symbol_cache_lock = Lock()
+    
+    def _extract_symbol_from_task(self, task, result: Any) -> Optional[str]:
+        """
+        从任务结果中提取股票代码
+        
+        优化策略：
+        1. 优先从result.symbols获取
+        2. 其次从result.symbol获取
+        3. 然后从task.payload获取
+        4. 最后从task.task_id解析
+        
+        Args:
+            task: 任务对象
+            result: 任务执行结果
+            
+        Returns:
+            股票代码，未找到返回None
+        """
+        symbol = None
+        
+        # 策略1: 从result.symbols列表获取（优先级最高）
+        if isinstance(result, dict):
+            symbols = result.get("symbols", [])
+            if symbols and len(symbols) > 0:
+                symbol = symbols[0]
+                logger.debug(f"✅ 从result.symbols获取symbol: {symbol}")
+                return symbol
+            
+            # 策略2: 从result.symbol获取
+            symbol = result.get("symbol")
+            if symbol:
+                logger.debug(f"✅ 从result.symbol获取symbol: {symbol}")
+                return symbol
+        
+        # 策略3: 从task.payload获取
+        if hasattr(task, 'payload') and task.payload:
+            symbol = task.payload.get("symbol") or task.payload.get("stock_code")
+            if symbol:
+                logger.debug(f"✅ 从task.payload获取symbol: {symbol}")
+                return symbol
+        
+        # 策略4: 从task.name获取
+        if hasattr(task, 'name') and task.name:
+            name = task.name
+            # 尝试从任务名称中提取股票代码（如 feature_task_002384_xxx）
+            if 'task_' in name:
+                parts = name.split('_')
+                for part in parts:
+                    if part.isdigit() and len(part) == 6:
+                        symbol = part
+                        logger.debug(f"✅ 从task.name解析symbol: {symbol}")
+                        return symbol
+        
+        # 策略5: 从task.task_id获取
+        if hasattr(task, 'task_id') and task.task_id:
+            task_id = task.task_id
+            # 尝试从任务ID中提取股票代码
+            if 'task_' in task_id:
+                parts = task_id.split('_')
+                for part in parts:
+                    if part.isdigit() and len(part) == 6:
+                        symbol = part
+                        logger.debug(f"✅ 从task.task_id解析symbol: {symbol}")
+                        return symbol
+        
+        if not symbol:
+            logger.warning(f"⚠️ 无法从任务中提取symbol，task_id: {getattr(task, 'task_id', 'unknown')}")
+        
+        return symbol
+    
+    def _extract_features_from_task(self, task, result: Any) -> List[str]:
+        """
+        从任务结果中提取特征列表
+        
+        优化策略：
+        1. 优先从result.features获取
+        2. 然后从result.feature_names获取
+        3. 最后从feature_count生成默认特征列表
+        
+        Args:
+            task: 任务对象
+            result: 任务执行结果
+            
+        Returns:
+            特征列表
+        """
+        features = []
+        
+        # 策略1: 从result.features获取
+        if isinstance(result, dict):
+            features = result.get("features", [])
+            if features:
+                logger.debug(f"✅ 从result.features获取{len(features)}个特征")
+                return features
+            
+            # 策略2: 从result.feature_names获取
+            features = result.get("feature_names", [])
+            if features:
+                logger.debug(f"✅ 从result.feature_names获取{len(features)}个特征")
+                return features
+            
+            # 策略3: 从result.feature_list获取
+            features = result.get("feature_list", [])
+            if features:
+                logger.debug(f"✅ 从result.feature_list获取{len(features)}个特征")
+                return features
+            
+            # 策略4: 从feature_count生成默认特征列表
+            feature_count = result.get("feature_count", 0)
+            if feature_count > 0:
+                # 从数据库或特征存储获取实际特征名
+                symbol = self._extract_symbol_from_task(task, result)
+                if symbol:
+                    actual_features = self._get_features_from_database(symbol)
+                    if actual_features:
+                        logger.debug(f"✅ 从数据库获取{len(actual_features)}个特征")
+                        return actual_features
+                
+                # 如果无法获取，使用默认命名
+                features = [f"feature_{i}" for i in range(feature_count)]
+                logger.debug(f"⚠️ 无法获取实际特征名，从feature_count({feature_count})生成默认特征列表")
+                return features
+        
+        # 策略5: 从result.extracted_features获取
+        if isinstance(result, dict):
+            features = result.get("extracted_features", [])
+            if features:
+                logger.debug(f"✅ 从result.extracted_features获取{len(features)}个特征")
+                return features
+        
+        if not features:
+            logger.warning(f"⚠️ 无法从任务结果中提取特征列表")
+        
+        return features
+    
+    def _get_features_from_database(self, symbol: str) -> List[str]:
+        """
+        从数据库获取股票的特征列表（带缓存）
+        
+        Args:
+            symbol: 股票代码
+            
+        Returns:
+            特征名称列表
+        """
+        # 检查缓存
+        with self._symbol_cache_lock:
+            if symbol in self._symbol_cache:
+                logger.debug(f"✅ 从缓存获取{symbol}的特征列表")
+                return self._symbol_cache[symbol]
+        
+        # 从数据库查询
+        try:
+            from src.gateway.web.postgresql_persistence import get_db_connection, return_db_connection
+            
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT feature_name 
+                    FROM feature_store 
+                    WHERE symbol = %s 
+                    ORDER BY quality_score DESC
+                    LIMIT 20
+                """, (symbol,))
+                
+                rows = cursor.fetchall()
+                if rows:
+                    features = [row[0] for row in rows]
+                    # 存入缓存
+                    with self._symbol_cache_lock:
+                        self._symbol_cache[symbol] = features
+                    logger.debug(f"✅ 从数据库获取{len(features)}个特征: {features[:5]}...")
+                    cursor.close()
+                    return_db_connection(conn)
+                    return features
+                
+                cursor.close()
+                return_db_connection(conn)
+                
+        except Exception as e:
+            logger.warning(f"⚠️ 从数据库查询特征列表失败: {e}")
+        
+        return []
     
     async def start(self) -> bool:
         """
@@ -1236,29 +1424,9 @@ class UnifiedScheduler(BaseScheduler):
                     
                     from src.gateway.web.feature_selection_task_persistence import create_selection_task
                     
-                    # 从结果中获取股票代码和特征列表
-                    symbol = None
-                    features = []
-                    
-                    if isinstance(result, dict):
-                        # 尝试从result中获取symbol
-                        symbols = result.get("symbols", [])
-                        if symbols and len(symbols) > 0:
-                            symbol = symbols[0]
-                        
-                        # 尝试从result中获取特征列表
-                        features = result.get("features", [])
-                        
-                        # 如果没有特征列表，尝试从feature_count推断
-                        if not features and result.get("feature_count", 0) > 0:
-                            # 创建默认特征列表（基于特征数量）
-                            feature_count = result.get("feature_count", 0)
-                            features = [f"feature_{i}" for i in range(feature_count)]
-                            logger.debug(f"从feature_count({feature_count})生成默认特征列表")
-                    
-                    # 如果无法从result获取symbol，尝试从payload获取
-                    if not symbol and task.payload:
-                        symbol = task.payload.get("symbol") or task.payload.get("stock_code")
+                    # 使用优化的symbol获取逻辑
+                    symbol = self._extract_symbol_from_task(task, result)
+                    features = self._extract_features_from_task(task, result)
                     
                     if symbol and features:
                         selection_task = create_selection_task(
@@ -1276,7 +1444,7 @@ class UnifiedScheduler(BaseScheduler):
                         else:
                             logger.warning(f"⚠️ 创建特征选择任务返回空结果，股票: {symbol}")
                     else:
-                        logger.warning(f"⚠️ 无法创建特征选择任务: symbol={symbol}, features_count={len(features)}")
+                        logger.warning(f"⚠️ 无法创建特征选择任务: symbol={symbol}, features_count={len(features) if features else 0}")
                         
             except Exception as e:
                 logger.error(f"❌ 自动创建特征选择任务失败: {e}", exc_info=True)
