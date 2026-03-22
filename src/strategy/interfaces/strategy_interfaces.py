@@ -23,13 +23,8 @@ from enum import Enum
 # 策略相关枚举
 # =============================================================================
 
-class StrategyType(Enum):
-    """策略类型"""
-    TREND_FOLLOWING = "trend_following"      # 趋势跟踪
-    MEAN_REVERSION = "mean_reversion"        # 均值回归
-    ARBITRAGE = "arbitrage"                  # 套利
-    MOMENTUM = "momentum"                    # 动量
-    VALUE = "value"                          # 价值投资
+# 注意：StrategyType 枚举定义在文件末尾（第151行）
+# 此处保留注释以避免导入错误
 
 
 class StrategyStatus(Enum):
@@ -331,17 +326,20 @@ class IStrategy(ABC):
 class IStrategyFactory(Protocol):
     """策略工厂接口 - 策略的统一创建和管理"""
 
-    def register_strategy(self, strategy_type: StrategyType, strategy_class: Type[IStrategy]):
-        """注册策略类"""
+    def register_strategy(self, strategy_type: StrategyType, strategy_class: Type[IStrategy]) -> bool:
+        """注册策略类，返回是否成功"""
 
-    def create_strategy(self, config: StrategyConfig) -> IStrategy:
-        """创建策略实例"""
+    def create_strategy(self, config: StrategyConfig) -> Optional[IStrategy]:
+        """创建策略实例，失败返回None"""
 
     def get_supported_types(self) -> List[StrategyType]:
-        """获取支持的策略类型"""
+        """获取支持的策略类型列表"""
 
     def get_strategy_info(self, strategy_type: StrategyType) -> Optional[Dict[str, Any]]:
-        """获取策略信息"""
+        """获取策略信息，不存在返回None"""
+
+    def unregister_strategy(self, strategy_type: StrategyType) -> bool:
+        """注销策略类，返回是否成功"""
 
 
 # =============================================================================

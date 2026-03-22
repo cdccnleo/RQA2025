@@ -4,12 +4,42 @@ from typing import List, Dict, Optional, Any
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import json
+from dataclasses import dataclass
 
 from ..processors.feature_metadata import FeatureMetadata
 from .config_integration import get_config_integration_manager, ConfigScope
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ValidationConfig:
+    """数据验证配置封装类
+    
+    统一封装数据验证相关的配置项，避免分散的 hasattr 检查。
+    """
+    allow_negative_prices: bool = False
+    allow_negative_volume: bool = False
+    strict_price_logic: bool = True
+    allow_nan_values: bool = False
+    allow_future_dates: bool = False
+    strict_validation: bool = False
+    
+    @classmethod
+    def from_config_manager(cls, config_manager) -> 'ValidationConfig':
+        """从配置管理器创建验证配置"""
+        validation_config = config_manager.get_config(ConfigScope.PROCESSING, "validation")
+        if validation_config:
+            return cls(
+                allow_negative_prices=validation_config.get('allow_negative_prices', False),
+                allow_negative_volume=validation_config.get('allow_negative_volume', False),
+                strict_price_logic=validation_config.get('strict_price_logic', True),
+                allow_nan_values=validation_config.get('allow_nan_values', False),
+                allow_future_dates=validation_config.get('allow_future_dates', False),
+                strict_validation=validation_config.get('strict_validation', False)
+            )
+        return cls()
 
 
 class FeatureEngineer:
@@ -54,6 +84,9 @@ class FeatureEngineer:
         # 初始化特征元数据
         self.feature_metadata = FeatureMetadata()
 
+        # 初始化验证配置（统一封装）
+        self.validation_config = ValidationConfig.from_config_manager(self.config_manager)
+
         # 注册配置变更监听器
         self.config_manager.register_config_watcher(ConfigScope.PROCESSING, self._on_config_change)
         self.config_manager.register_config_watcher(ConfigScope.MONITORING, self._on_config_change)
@@ -84,7 +117,7 @@ class FeatureEngineer:
         metadata_file = self.cache_dir / "metadata.json"
         if metadata_file.exists():
             try:
-                with open(metadata_file, 'r', encoding='utf - 8') as f:
+                with open(metadata_file, 'r', encoding='utf-8') as f:
                     self.cache_metadata = json.load(f)
             except (json.JSONDecodeError, IOError):
                 self.cache_metadata = {}
@@ -105,7 +138,7 @@ class FeatureEngineer:
             # 保存到文件
             metadata_file = self.cache_dir / "metadata.json"
             try:
-                with open(metadata_file, 'w', encoding='utf - 8') as f:
+                with open(metadata_file, 'w', encoding='utf-8') as f:
                     json.dump(self.cache_metadata, f, indent=2, ensure_ascii=False)
             except IOError:
                 pass  # 忽略文件写入错误
@@ -134,8 +167,11 @@ class FeatureEngineer:
 
         # 检查数据有效性 - 增加容错机制
         try:
+            # 使用统一的验证配置访问方式
+            validation_config = getattr(self, 'validation_config', ValidationConfig())
+            
             # 检查负值价格 - 允许配置容错
-            if hasattr(self, 'config') and getattr(self.config, 'allow_negative_prices', False):
+            if validation_config.allow_negative_prices:
                 pass  # 跳过负值检查
             else:
                 if (data[['close', 'high', 'low']] < 0).any().any():
@@ -147,7 +183,7 @@ class FeatureEngineer:
                     self.logger.warning("检测到负值价格，已自动修复为绝对值")
 
             # 检查负值交易量 - 允许配置容错
-            if hasattr(self, 'config') and getattr(self.config, 'allow_negative_volume', False):
+            if validation_config.allow_negative_volume:
                 pass  # 跳过负值检查
             else:
                 if (data['volume'] < 0).any():
@@ -157,7 +193,7 @@ class FeatureEngineer:
                     self.logger.warning("检测到负值交易量，已自动修复为绝对值")
 
             # 检查价格逻辑 - 增加容错机制
-            if hasattr(self, 'config') and getattr(self.config, 'strict_price_logic', True):
+            if validation_config.strict_price_logic:
                 # 严格模式：检查价格逻辑
                 if (data['high'] < data['low']).any():
                     if not fallback_enabled:
@@ -179,7 +215,7 @@ class FeatureEngineer:
                     self.logger.warning("检测到收盘价超出高低价范围，已自动修复")
 
             # 检查NaN值 - 增加容错机制
-            if hasattr(self, 'config') and getattr(self.config, 'allow_nan_values', False):
+            if validation_config.allow_nan_values:
                 pass  # 跳过NaN检查
             else:
                 nan_columns = data[required_columns].columns[data[required_columns].isna().any()
@@ -210,7 +246,7 @@ class FeatureEngineer:
                 self.logger.warning("检测到重复日期，已保留最后一个值")
 
             # 检查未来日期 - 增加容错机制
-            if hasattr(self, 'config') and getattr(self.config, 'allow_future_dates', False):
+            if validation_config.allow_future_dates:
                 pass  # 跳过未来日期检查
             else:
                 current_time = pd.Timestamp.now()
@@ -232,7 +268,7 @@ class FeatureEngineer:
             # 如果修复失败，记录错误但不抛出异常
             self.logger.error(f"数据验证和修复过程中出现错误: {str(e)}")
             fallback_enabled = getattr(self, "fallback_enabled", True)
-            strict_mode = hasattr(self, 'config') and getattr(self.config, 'strict_validation', False)
+            strict_mode = validation_config.strict_validation
             if strict_mode and not fallback_enabled:
                 raise ValueError(f"数据验证失败: {str(e)}")
             if fallback_enabled:

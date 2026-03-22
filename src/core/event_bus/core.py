@@ -44,6 +44,7 @@ class EventBusConfig:
     max_workers: int = 4  # 默认4个工作线程，避免创建过多线程
     enable_async: bool = True
     enable_persistence: bool = True
+    persistence_mode: str = "auto"  # 持久化模式: "auto", "memory", "database"
     enable_retry: bool = True
     enable_monitoring: bool = True
     batch_size: int = 100  # 默认批处理大小100
@@ -150,36 +151,186 @@ class EventRoutingManager:
 
 
 class EventPersistenceManager:
-    """事件持久化管理器"""
+    """事件持久化管理器 - 支持多种持久化模式"""
 
-    def __init__(self, enable_persistence: bool = True):
+    def __init__(self, enable_persistence: bool = True, persistence_mode: str = "auto"):
+        """
+        初始化事件持久化管理器
+        
+        Args:
+            enable_persistence: 是否启用持久化
+            persistence_mode: 持久化模式 ("auto", "memory", "database")
+        """
         self.enable_persistence = enable_persistence
-        self.persistence: Optional[EventPersistence] = None
+        self.persistence_mode = persistence_mode
+        self.persistence: Optional[Any] = None
         self._event_history: Dict[str, List[Event]] = defaultdict(list)
+        self._db_persistence_available = False
+        
+        # 检查数据库持久化是否可用
+        try:
+            from .persistence import DATABASE_PERSISTENCE_AVAILABLE
+            self._db_persistence_available = DATABASE_PERSISTENCE_AVAILABLE
+        except ImportError:
+            self._db_persistence_available = False
 
-    def initialize_persistence(self, enable_persistence: bool) -> None:
-        """初始化持久化"""
-        if enable_persistence:
-            self.persistence = EventPersistence()
-        else:
+    def initialize_persistence(self, enable_persistence: bool, persistence_mode: str = "auto") -> bool:
+        """
+        初始化持久化
+        
+        Args:
+            enable_persistence: 是否启用持久化
+            persistence_mode: 持久化模式
+            
+        Returns:
+            是否初始化成功
+        """
+        if not enable_persistence:
             self.persistence = None
+            return True
+        
+        # 自动选择持久化模式
+        if persistence_mode == "auto":
+            if self._db_persistence_available:
+                persistence_mode = "database"
+            else:
+                persistence_mode = "memory"
+        
+        # 初始化数据库持久化
+        if persistence_mode == "database" and self._db_persistence_available:
+            try:
+                from .persistence import DatabaseEventPersistence, DatabaseEventPersistenceConfig
+                from src.infrastructure.persistence.database_config import DatabaseConfigManager
+                
+                # 使用统一数据库配置
+                db_config = DatabaseConfigManager.get_config()
+                config = DatabaseEventPersistenceConfig(
+                    host=db_config.host,
+                    port=int(db_config.port),
+                    database=db_config.database,
+                    user=db_config.user,
+                    password=db_config.password
+                )
+                
+                self.persistence = DatabaseEventPersistence(config)
+                success = self.persistence.initialize()
+                
+                if success:
+                    self.persistence_mode = "database"
+                    logger.info("✅ 事件持久化已切换到数据库模式")
+                    return True
+                else:
+                    logger.warning("⚠️ 数据库持久化初始化失败，降级到内存模式")
+                    
+            except Exception as e:
+                logger.warning(f"⚠️ 数据库持久化初始化失败: {e}，降级到内存模式")
+        
+        # 降级到内存持久化
+        self.persistence = EventPersistence()
+        self.persistence_mode = "memory"
+        logger.info("✅ 事件持久化使用内存模式")
+        return True
 
-    def persist_event(self, event: Event) -> None:
-        """持久化事件"""
-        if self.persistence:
-            self.persistence.save_event(event)
+    def persist_event(self, event: Event) -> bool:
+        """
+        持久化事件
+        
+        Args:
+            event: 事件对象
+            
+        Returns:
+            是否持久化成功
+        """
+        if not self.persistence:
+            return False
+        
+        try:
+            success = self.persistence.save_event(event)
+            if success:
+                # 同时添加到历史记录
+                self.add_to_history(event)
+            return success
+        except Exception as e:
+            logger.error(f"持久化事件失败: {e}")
+            return False
+
+    def update_event_status(self, event_id: str, status: Any, error_message: str = None) -> bool:
+        """
+        更新事件状态
+        
+        Args:
+            event_id: 事件ID
+            status: 新状态
+            error_message: 错误信息（可选）
+            
+        Returns:
+            是否更新成功
+        """
+        if not self.persistence:
+            return False
+        
+        try:
+            # 检查是否支持update_event_status方法
+            if hasattr(self.persistence, 'update_event_status'):
+                return self.persistence.update_event_status(event_id, status, error_message)
+            return True
+        except Exception as e:
+            logger.error(f"更新事件状态失败: {e}")
+            return False
 
     def add_to_history(self, event: Event) -> None:
         """添加到历史记录"""
         event_type = event.event_type if hasattr(event, 'event_type') else str(event.event_type)
         self._event_history[event_type].append(event)
+        
+        # 限制历史记录大小
+        if len(self._event_history[event_type]) > MAX_RECORDS:
+            self._event_history[event_type] = self._event_history[event_type][-MAX_RECORDS:]
 
     def get_history(self, event_type: Optional[Union[EventType, str]] = None) -> Dict[str, List[Event]]:
         """获取历史记录"""
         if event_type:
-            event_type_str = event_type if isinstance(event_type, str) else str(event_type)
+            event_type_str = event_type if isinstance(event_type, str) else str(event.event_type)
             return {event_type_str: self._event_history.get(event_type_str, [])}
         return dict(self._event_history)
+    
+    def get_persistence_stats(self) -> Dict[str, Any]:
+        """获取持久化统计信息"""
+        stats = {
+            "mode": self.persistence_mode,
+            "enabled": self.enable_persistence,
+            "db_available": self._db_persistence_available
+        }
+        
+        if self.persistence and hasattr(self.persistence, 'get_stats'):
+            try:
+                db_stats = self.persistence.get_stats()
+                stats.update(db_stats)
+            except Exception as e:
+                stats["error"] = str(e)
+        
+        return stats
+    
+    def replay_events(self, event_type: str = None, handler: callable = None) -> int:
+        """
+        重放事件
+        
+        Args:
+            event_type: 事件类型过滤
+            handler: 事件处理函数
+            
+        Returns:
+            重放的事件数量
+        """
+        if not self.persistence or not hasattr(self.persistence, 'replay_events'):
+            logger.warning("当前持久化模式不支持事件重放")
+            return 0
+        
+        try:
+            return self.persistence.replay_events(event_type=event_type, handler=handler)
+        except Exception as e:
+            logger.error(f"重放事件失败: {e}")
+            return 0
 
 
 class EventStatisticsManager:
@@ -280,6 +431,7 @@ class EventBus(BaseComponent):
             max_workers=config.max_workers,
             enable_async=config.enable_async,
             enable_persistence=config.enable_persistence,
+            persistence_mode=config.persistence_mode,
             enable_retry=config.enable_retry,
             enable_monitoring=config.enable_monitoring,
             batch_size=config.batch_size,
@@ -287,7 +439,7 @@ class EventBus(BaseComponent):
         )
 
         # 初始化所有管理器
-        self._initialize_managers(config.enable_persistence)
+        self._initialize_managers(config.enable_persistence, config.persistence_mode)
 
         # 初始化所有组件
         self._initialize_components(config.max_queue_size, config.batch_size)
@@ -299,25 +451,27 @@ class EventBus(BaseComponent):
         self._initialize_componentized_components()
 
     def _save_config(self, max_workers: int, enable_async: bool, enable_persistence: bool,
-                     enable_retry: bool, enable_monitoring: bool, batch_size: int, max_queue_size: int):
+                     persistence_mode: str, enable_retry: bool, enable_monitoring: bool, 
+                     batch_size: int, max_queue_size: int):
         """保存配置参数（向后兼容）"""
         self.max_workers = max_workers
         self.enable_async = enable_async
         self.enable_persistence = enable_persistence
+        self.persistence_mode = persistence_mode
         self.enable_retry = enable_retry
         self.enable_monitoring = enable_monitoring
         self.batch_size = batch_size
         self.max_queue_size = max_queue_size
 
-    def _initialize_managers(self, enable_persistence: bool):
+    def _initialize_managers(self, enable_persistence: bool, persistence_mode: str = "auto"):
         """初始化所有管理器"""
         self.filter_manager = EventFilterManager()
         self.routing_manager = EventRoutingManager()
-        self.persistence_manager = EventPersistenceManager(enable_persistence)
+        self.persistence_manager = EventPersistenceManager(enable_persistence, persistence_mode)
         self.statistics_manager = EventStatisticsManager()
 
         # 初始化持久化管理器
-        self.persistence_manager.initialize_persistence(enable_persistence)
+        self.persistence_manager.initialize_persistence(enable_persistence, persistence_mode)
 
     def _initialize_components(self, max_queue_size: int, batch_size: int):
         """初始化所有组件"""
@@ -753,7 +907,7 @@ class EventBus(BaseComponent):
     def get_statistics(self) -> Dict[str, Any]:
         """获取EventBus统计信息（委托给EventMonitor组件）"""
         if hasattr(self, '_monitor'):
-            return self._monitor.get_statistics(
+            stats = self._monitor.get_statistics(
                 event_counter=getattr(self, '_event_counter', 0),
                 processed_counter=getattr(self, '_processed_counter', 0),
                 handlers=self._handlers,
@@ -791,10 +945,18 @@ class EventBus(BaseComponent):
                     except Exception:
                         pass
 
-                return stats
-
             except Exception as e:
                 return {"error": f"获取统计信息失败: {str(e)}"}
+        
+        # 添加持久化统计信息
+        if hasattr(self, 'persistence_manager'):
+            try:
+                persistence_stats = self.persistence_manager.get_persistence_stats()
+                stats["persistence"] = persistence_stats
+            except Exception as e:
+                stats["persistence"] = {"error": str(e)}
+        
+        return stats
 
     def publish(self, event_type: Union[EventType, str], data: Optional[Dict[str, Any]] = None,
                 source: str = "system", priority: EventPriority = EventPriority.NORMAL,

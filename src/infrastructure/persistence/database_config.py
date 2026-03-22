@@ -49,12 +49,12 @@ class DatabaseConfigManager:
         conn = psycopg2.connect(**config.to_dict())
     """
     
-    # 默认配置值（从环境变量读取，如果不存在则使用默认值）
+    # 默认配置值（仅主机信息，敏感信息必须从环境变量读取）
     DEFAULT_HOST = "postgres"
     DEFAULT_PORT = "5432"
     DEFAULT_DATABASE = "rqa2025_prod"
     DEFAULT_USER = "rqa2025_admin"
-    DEFAULT_PASSWORD = "SecurePass123!"
+    # 注意：密码不再提供默认值，必须从环境变量 POSTGRES_PASSWORD 读取
     
     _instance: Optional['DatabaseConfigManager'] = None
     _config: Optional[DatabaseConfig] = None
@@ -67,13 +67,28 @@ class DatabaseConfigManager:
         return cls._instance
     
     def _load_config(self):
-        """从环境变量加载配置"""
+        """从环境变量加载配置
+        
+        安全说明：
+        - 密码必须从环境变量 POSTGRES_PASSWORD 读取，不再提供默认值
+        - 如果密码未设置，将抛出 ValueError 异常
+        - 其他配置项可以使用默认值，但建议都通过环境变量配置
+        """
+        # 读取密码（必须）
+        password = os.getenv("POSTGRES_PASSWORD")
+        if not password:
+            raise ValueError(
+                "数据库密码未设置！请设置环境变量 POSTGRES_PASSWORD。\n"
+                "示例：set POSTGRES_PASSWORD=YourSecurePassword\n"
+                "或：export POSTGRES_PASSWORD=YourSecurePassword"
+            )
+        
         self._config = DatabaseConfig(
             host=os.getenv("POSTGRES_HOST", self.DEFAULT_HOST),
             port=os.getenv("POSTGRES_PORT", self.DEFAULT_PORT),
             database=os.getenv("POSTGRES_DB", self.DEFAULT_DATABASE),
             user=os.getenv("POSTGRES_USER", self.DEFAULT_USER),
-            password=os.getenv("POSTGRES_PASSWORD", self.DEFAULT_PASSWORD)
+            password=password
         )
     
     @classmethod

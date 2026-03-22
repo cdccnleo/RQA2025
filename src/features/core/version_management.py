@@ -95,7 +95,7 @@ class FeatureVersionManager:
         index_file = self.storage_dir / "version_index.json"
         if index_file.exists():
             try:
-                with open(index_file, 'r', encoding='utf - 8') as f:
+                with open(index_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
 
                     # 加载版本信息
@@ -168,7 +168,7 @@ class FeatureVersionManager:
                         for change in changes
                     ]
                 }
-                with open(index_file, 'w', encoding='utf - 8') as f:
+                with open(index_file, 'w', encoding='utf-8') as f:
                     json.dump(data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.error(f"保存版本索引失败: {e}")
@@ -472,7 +472,7 @@ class FeatureVersionManager:
         version_path = self.storage_dir / version.version_id
         info_file = version_path / "version_info.json"
 
-        with open(info_file, 'w', encoding='utf - 8') as f:
+        with open(info_file, 'w', encoding='utf-8') as f:
             json.dump(asdict(version), f, indent=2, ensure_ascii=False, cls=DateTimeEncoder)
 
     def _record_changes(self, new_version_id: str, parent_version_id: str, new_features: pd.DataFrame):

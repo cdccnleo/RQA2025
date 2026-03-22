@@ -177,10 +177,19 @@ class DataSourceAlertManager:
         self._notification_handlers: List[callable] = []
     
     async def _get_db_pool(self) -> asyncpg.Pool:
-        """获取数据库连接池"""
+        """获取数据库连接池
+        
+        密码从环境变量 DB_PASSWORD 读取，禁止硬编码。
+        """
         if self._db_pool is None:
             import os
-            db_password = os.environ.get('DB_PASSWORD', 'SecurePass123!')
+            db_password = os.environ.get('DB_PASSWORD')
+            if not db_password:
+                raise ValueError(
+                    "数据库密码未设置！请设置环境变量 DB_PASSWORD。\n"
+                    "示例：set DB_PASSWORD=YourSecurePassword\n"
+                    "或：export DB_PASSWORD=YourSecurePassword"
+                )
             self._db_pool = await asyncpg.create_pool(
                 host="rqa2025-postgres",
                 port=5432,

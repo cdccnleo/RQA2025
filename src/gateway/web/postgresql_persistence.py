@@ -562,6 +562,19 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
         
         cursor = conn.cursor()
         
+        # 先检查表是否存在
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables
+                WHERE table_schema = 'public' AND table_name = 'akshare_stock_data'
+            );
+        """)
+        
+        if not cursor.fetchone()[0]:
+            logger.info(f"akshare_stock_data 表不存在，返回空数据")
+            cursor.close()
+            return []
+        
         # 构造查询语句
         query = """
             SELECT 

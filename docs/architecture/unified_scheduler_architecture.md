@@ -609,6 +609,126 @@ task_id = await scheduler.submit_task(
 | 1.0.0 | 2026-03-05 | 初始版本，基础调度功能 |
 | 2.0.0 | 2026-03-06 | 重大更新：添加持久化、告警、事件总线、性能优化、安全模块 |
 | 2.1.0 | 2026-03-08 | 添加自动采集功能：支持按活跃数据源配置自动执行数据采集任务 |
+| 2.2.0 | 2026-03-22 | 架构优化：统一调度器集成到特征引擎，完善Prometheus指标监控 |
+
+### 9.1 版本 2.2.0 详细变更
+
+#### 9.1.1 P0-1: 统一调度器实现 ✅ 已完成
+
+**变更内容：**
+- 将 `FeatureEngine` 中的 `FeatureTaskScheduler` 替换为 `UnifiedScheduler`
+- 新增异步任务管理方法：`create_task()`, `stop_task()`, `delete_task()`
+- 新增调度器控制方法：`start_scheduler()`, `stop_scheduler()`, `get_scheduler_status()`
+- 新增任务状态同步方法：`sync_task_status_from_scheduler()`, `get_task_status()`
+
+**技术方案：**
+- 使用 `src.core.orchestration.scheduler.get_unified_scheduler()` 获取统一调度器实例
+- 保持向后兼容：降级时自动切换到本地任务管理
+- 任务提交时自动使用统一调度器的 `submit_task()` 方法
+
+**验证状态：** ✅ 已实现并测试
+
+#### 9.1.2 P1-1: Prometheus指标监控完善 ✅ 已完成
+
+**变更内容：**
+- 在 `FeatureEngine` 中集成 `PrometheusMetrics`
+- 新增特征引擎专属指标：
+  - `feature_engine_features_total` - 特征总数
+  - `feature_engine_indicators_total` - 技术指标总数
+  - `feature_engine_tasks_total` - 任务总数
+  - `feature_engine_processed_features_total` - 已处理特征数
+  - `feature_engine_errors_total` - 错误计数
+- 新增指标操作方法：`record_metric()`, `get_metrics()`, `get_metrics_summary()`
+
+**技术方案：**
+- 使用 `src.core.orchestration.scheduler.metrics.get_prometheus_metrics()` 获取指标收集器
+- 支持计数器(Counter)、仪表盘(Gauge)、直方图(Histogram)三种指标类型
+- 指标命名规范：`feature_engine_<component>_<metric>_<unit>`
+
+**验证状态：** ✅ 已实现并测试
+
+#### 9.1.3 P0-2: 完善事件总线集成，实现事件持久化 ✅ 已完成
+
+**变更内容：**
+- 创建 `DatabaseEventPersistence` 类，支持PostgreSQL数据库持久化
+- 新增 `EventPersistenceManager` 支持多种持久化模式（"auto", "memory", "database"）
+- 更新 `EventBusConfig` 添加 `persistence_mode` 配置参数
+- 实现事件状态跟踪：`update_event_status()`
+- 实现事件重放功能：`replay_events()`
+- 实现事件统计：`get_persistence_stats()`
+
+**技术方案：**
+- 使用 `src.infrastructure.persistence.database_config.DatabaseConfigManager` 获取数据库配置
+- 自动降级：数据库不可用时自动降级到内存模式
+- 事件表结构：`event_id`, `event_type`, `data`, `source`, `timestamp`, `status`, `retry_count`
+- 索引优化：按 `event_type`, `status`, `timestamp`, `correlation_id` 建立索引
+
+**验证状态：** ✅ 已实现
+
+#### 9.1.4 P0-3: 实现数据备份机制 ✅ 已完成
+
+**变更内容：**
+- 创建 `BackupManager` 类，实现PostgreSQL数据库备份管理
+- 支持多种备份类型：`full`（完整备份）、`schema`（结构备份）、`data`（数据备份）
+- 实现定时自动备份功能：`start_scheduled_backup()`, `stop_scheduled_backup()`
+- 实现备份恢复功能：`restore_backup()`
+- 实现备份管理功能：`list_backups()`, `cleanup_old_backups()`, `verify_backup()`
+- 实现备份统计：`get_backup_stats()`
+
+**技术方案：**
+- 使用 `pg_dump` 执行备份，`psql` 执行恢复
+- 支持gzip压缩，减少存储空间
+- 备份元数据存储：JSON格式记录备份信息
+- 备份保留策略：默认30天，自动清理过期备份
+- 定时备份间隔：默认24小时
+
+**验证状态：** ✅ 已实现
+
+#### 9.1.5 P1-2: 实现批量处理器 ✅ 已完成
+
+**变更内容：**
+- 将 `BatchProcessor` 集成到 `UnifiedScheduler`
+- 新增批量处理配置参数：`enable_batch_processing`, `batch_config`
+- 实现批量任务提交：`submit_batch_task()`
+- 实现批量处理统计：`get_batch_processor_stats()`
+- 实现强制刷新：`flush_batch_processor()`
+- 支持三种批量策略：`SIZE_BASED`, `TIME_BASED`, `HYBRID`
+
+**技术方案：**
+- 批量大小配置：默认50个任务
+- 等待时间配置：默认5秒
+- 按任务类型分组批量处理
+- 自动降级：批量处理器不可用时降级为普通任务提交
+
+**验证状态：** ✅ 已实现
+
+#### 9.1.6 P1-3: 实现任务缓存机制 ✅ 已完成
+
+**变更内容：**
+- 将 `TaskCache` 集成到 `UnifiedScheduler`
+- 新增缓存配置参数：`enable_task_cache`, `cache_config`
+- 实现缓存操作：`get_cached_task_result()`, `set_cached_task_result()`
+- 实现带缓存的任务执行：`execute_task_with_cache()`
+- 实现缓存统计：`get_task_cache_stats()`
+- 实现缓存清理：`clear_task_cache()`
+
+**技术方案：**
+- 使用 `OrderedDict` 实现LRU淘汰策略
+- 默认缓存大小：1000条
+- 默认TTL：300秒
+- 支持智能预取（基于访问模式）
+- 缓存键生成：使用MD5哈希任务类型和payload
+
+**验证状态：** ✅ 已实现
+
+#### 9.1.7 待实施改进项
+
+| 优先级 | 改进项 | 状态 | 计划完成时间 |
+|--------|--------|------|--------------|
+| P1-4 | 完善访问控制模块 | ⏳ 待开始 | 2026-04-10 |
+| P2-1 | 实现任务数据加密 | ⏳ 待开始 | 2026-04-15 |
+| P2-2 | 优化优先级队列实现 | ⏳ 待开始 | 2026-04-20 |
+| P2-3 | 完善告警系统多通道支持 | ⏳ 待开始 | 2026-04-25 |
 
 ---
 

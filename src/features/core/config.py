@@ -145,19 +145,45 @@ class OrderBookConfig:
         return cls(**config_dict)
 
     def validate(self) -> bool:
-        """验证配置有效性"""
+        """验证配置有效性（使用解耦的验证模块）"""
         try:
-            if self.depth <= 0:
-                raise ValueError("订单簿深度必须大于0")
-            if self.update_frequency <= 0:
-                raise ValueError("更新频率必须大于0")
-            if self.max_workers <= 0:
-                raise ValueError("最大工作线程数必须大于0")
-            if self.batch_size <= 0:
-                raise ValueError("批处理大小必须大于0")
+            from .validators import FeatureParamsValidator, ValidationResult
+
+            # 定义验证规格
+            param_specs = {
+                "depth": {"required": True, "type": int, "min": 1},
+                "update_frequency": {"required": True, "type": (int, float), "min": 0.001},
+                "max_workers": {"required": True, "type": int, "min": 1},
+                "batch_size": {"required": True, "type": int, "min": 1},
+                "window_size": {"required": False, "type": int, "min": 1},
+                "imbalance_threshold": {"required": False, "type": (int, float), "min": 0, "max": 1},
+                "skew_threshold": {"required": False, "type": (int, float), "min": 0, "max": 1},
+                "spread_threshold": {"required": False, "type": (int, float), "min": 0, "max": 1},
+            }
+
+            # 转换为字典进行验证
+            config_dict = {
+                "depth": self.depth,
+                "update_frequency": self.update_frequency,
+                "max_workers": self.max_workers,
+                "batch_size": self.batch_size,
+                "window_size": self.window_size,
+                "imbalance_threshold": self.imbalance_threshold,
+                "skew_threshold": self.skew_threshold,
+                "spread_threshold": self.spread_threshold,
+            }
+
+            validator = FeatureParamsValidator(param_specs)
+            result = validator.validate(config_dict)
+
+            if not result.is_valid:
+                logger.error(f"OrderBookConfig验证失败: {result.message}")
+                return False
+
             return True
+
         except Exception as e:
-            print(f"OrderBookConfig验证失败: {e}")
+            logger.error(f"OrderBookConfig验证失败: {e}")
             return False
 
 
@@ -386,37 +412,91 @@ class FeatureConfig:
         return cls.from_dict(data)
 
     def validate(self) -> bool:
-        """验证配置有效性"""
+        """验证配置有效性（使用解耦的验证模块）"""
         try:
+            from .validators import FeatureParamsValidator
+
             # 验证特征类型
             if not self.feature_types:
-                raise ValueError("至少需要指定一种特征类型")
+                logger.error("配置验证失败: 至少需要指定一种特征类型")
+                return False
+
+            # 定义验证规格
+            param_specs = {
+                "max_features": {"required": True, "type": int, "min": 1},
+                "min_features": {"required": True, "type": int, "min": 1},
+                "max_workers": {"required": True, "type": int, "min": 1},
+                "chunk_size": {"required": True, "type": int, "min": 1},
+                "cache_ttl": {"required": False, "type": int, "min": 0},
+            }
+
+            # 转换为字典进行验证
+            config_dict = {
+                "max_features": self.max_features,
+                "min_features": self.min_features,
+                "max_workers": self.max_workers,
+                "chunk_size": self.chunk_size,
+                "cache_ttl": self.cache_ttl,
+            }
+
+            validator = FeatureParamsValidator(param_specs)
+            result = validator.validate(config_dict)
+
+            if not result.is_valid:
+                logger.error(f"配置验证失败: {result.message}")
+                return False
+
+            # 验证特征选择参数
+            if self.max_features < self.min_features:
+                logger.error("配置验证失败: 最大特征数不能小于最小特征数")
+                return False
 
             # 验证技术指标
             if FeatureType.TECHNICAL in self.feature_types:
                 if not self.technical_indicators:
-                    raise ValueError("技术指标类型需要指定指标列表")
+                    logger.error("配置验证失败: 技术指标类型需要指定指标列表")
+                    return False
 
                 # 验证指标参数
+                tech_param_specs = {
+                    "sma_periods": {"required": False, "type": list},
+                    "ema_periods": {"required": False, "type": list},
+                    "macd_fast": {"required": False, "type": int, "min": 1},
+                    "macd_slow": {"required": False, "type": int, "min": 1},
+                    "macd_signal": {"required": False, "type": int, "min": 1},
+                    "rsi_period": {"required": False, "type": int, "min": 1},
+                    "adx_period": {"required": False, "type": int, "min": 1},
+                }
+
+                tech_params = {
+                    "sma_periods": self.technical_params.sma_periods,
+                    "ema_periods": self.technical_params.ema_periods,
+                    "macd_fast": self.technical_params.macd_fast,
+                    "macd_slow": self.technical_params.macd_slow,
+                    "macd_signal": self.technical_params.macd_signal,
+                    "rsi_period": self.technical_params.rsi_period,
+                    "adx_period": self.technical_params.adx_period,
+                }
+
+                tech_validator = FeatureParamsValidator(tech_param_specs)
+                tech_result = tech_validator.validate(tech_params)
+
+                if not tech_result.is_valid:
+                    logger.error(f"技术指标参数验证失败: {tech_result.message}")
+                    return False
+
+                # 验证周期参数值
                 if self.technical_params.sma_periods and min(self.technical_params.sma_periods) <= 0:
-                    raise ValueError("SMA周期必须大于0")
+                    logger.error("配置验证失败: SMA周期必须大于0")
+                    return False
                 if self.technical_params.ema_periods and min(self.technical_params.ema_periods) <= 0:
-                    raise ValueError("EMA周期必须大于0")
-
-            # 验证特征选择参数
-            if self.max_features < self.min_features:
-                raise ValueError("最大特征数不能小于最小特征数")
-
-            # 验证性能参数
-            if self.max_workers <= 0:
-                raise ValueError("最大工作线程数必须大于0")
-            if self.chunk_size <= 0:
-                raise ValueError("数据块大小必须大于0")
+                    logger.error("配置验证失败: EMA周期必须大于0")
+                    return False
 
             return True
 
         except Exception as e:
-            print(f"配置验证失败: {e}")
+            logger.error(f"配置验证失败: {e}")
             return False
 
     def get_supported_indicators(self) -> List[str]:

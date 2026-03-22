@@ -1,0 +1,417 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "RQA2025 系统概览",
+    "tags": ["rqa2025", "overview"],
+    "timezone": "Asia/Shanghai",
+    "schemaVersion": 36,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "namespace",
+          "type": "constant",
+          "current": {
+            "value": "rqa2025",
+            "text": "rqa2025"
+          }
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "name": "部署事件",
+          "datasource": "Prometheus",
+          "expr": "changes(rqa2025_app_info{job=\"rqa2025-app\"}[1m]) > 0",
+          "tagKeys": "version",
+          "textFormat": "应用版本: {{version}}",
+          "iconColor": "rgba(255, 96, 96, 1)"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "系统状态",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"rqa2025-app\"}",
+            "legendFormat": "应用状态"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "text": "离线",
+                    "color": "red"
+                  },
+                  "1": {
+                    "text": "在线",
+                    "color": "green"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "CPU使用率",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "rqa2025_system_cpu_usage",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 90
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "内存使用",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rqa2025_system_memory_usage_bytes / 1024 / 1024 / 1024",
+            "legendFormat": "已使用 (GB)"
+          },
+          {
+            "expr": "rqa2025_system_memory_total_bytes / 1024 / 1024 / 1024",
+            "legendFormat": "总计 (GB)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "decgbytes"
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 4,
+        "title": "运行时间",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "time() - process_start_time_seconds{job=\"rqa2025-app\"}",
+            "legendFormat": "运行时间"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "dtdurations"
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        }
+      },
+      {
+        "id": 5,
+        "title": "HTTP请求速率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_http_requests_total[5m])",
+            "legendFormat": "{{method}} {{endpoint}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 4
+        }
+      },
+      {
+        "id": 6,
+        "title": "HTTP响应时间",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(rqa2025_http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95 {{method}} {{endpoint}}"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(rqa2025_http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "P99 {{method}} {{endpoint}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 4
+        }
+      },
+      {
+        "id": 7,
+        "title": "策略执行统计",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_strategy_executions_total[5m])",
+            "legendFormat": "{{strategy_id}} - {{status}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 12
+        }
+      },
+      {
+        "id": 8,
+        "title": "策略执行耗时",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(rqa2025_strategy_execution_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95 {{strategy_id}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 12
+        }
+      },
+      {
+        "id": 9,
+        "title": "交易统计",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_trades_total[5m])",
+            "legendFormat": "{{symbol}} {{side}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 20
+        }
+      },
+      {
+        "id": 10,
+        "title": "交易量",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_trade_volume[5m])",
+            "legendFormat": "{{symbol}} {{side}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 20
+        }
+      },
+      {
+        "id": 11,
+        "title": "数据处理速率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_data_processing_records_total[5m])",
+            "legendFormat": "{{source}} - {{operation}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 28
+        }
+      },
+      {
+        "id": 12,
+        "title": "特征计算耗时",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(rqa2025_feature_computation_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95 {{feature_name}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 28
+        }
+      },
+      {
+        "id": 13,
+        "title": "模型推理统计",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_model_inferences_total[5m])",
+            "legendFormat": "{{model_id}} - {{status}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 36
+        }
+      },
+      {
+        "id": 14,
+        "title": "模型推理耗时",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(rqa2025_model_inference_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95 {{model_id}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 36
+        }
+      },
+      {
+        "id": 15,
+        "title": "缓存命中率",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rqa2025_cache_hits_total[5m]) / (rate(rqa2025_cache_hits_total[5m]) + rate(rqa2025_cache_misses_total[5m]))",
+            "legendFormat": "{{cache_name}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 44
+        }
+      },
+      {
+        "id": 16,
+        "title": "数据库连接池",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rqa2025_db_connections_active",
+            "legendFormat": "{{pool_name}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 44
+        }
+      }
+    ]
+  }
+}

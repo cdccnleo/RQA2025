@@ -94,14 +94,37 @@ class FeatureSelector:
                 k=self.n_features  # 使用类属性中的值
             )
         elif self.selector_type == "variance":
-            # 方差选择器
-            self.selector = None
+            # 方差选择器 - 使用VarianceThreshold
+            try:
+                from sklearn.feature_selection import VarianceThreshold
+                self.selector = VarianceThreshold(threshold=self.threshold)
+            except ImportError:
+                logger.warning("VarianceThreshold 导入失败，将使用自定义实现")
+                self.selector = None
         elif self.selector_type == "correlation":
-            # 相关性选择器
-            self.selector = None
+            # 相关性选择器 - 使用SelectKBest配合相关系数
+            try:
+                from sklearn.feature_selection import SelectKBest
+                from sklearn.feature_selection import mutual_info_regression
+                self.selector = SelectKBest(
+                    score_func=mutual_info_regression,
+                    k=min(self.n_features, 10)  # 默认选择前10个
+                )
+            except ImportError:
+                logger.warning("相关性选择器初始化失败，将使用自定义实现")
+                self.selector = None
         elif self.selector_type == "importance":
-            # 重要性选择器
-            self.selector = None
+            # 重要性选择器 - 使用SelectFromModel
+            try:
+                from sklearn.feature_selection import SelectFromModel
+                # 使用从 sklearn_imports 导入的 RandomForestRegressor
+                self.selector = SelectFromModel(
+                    RandomForestRegressor(n_estimators=50, random_state=42),
+                    threshold='mean'  # 选择重要性高于平均值的特征
+                )
+            except ImportError:
+                logger.warning("重要性选择器初始化失败，将使用自定义实现")
+                self.selector = None
         else:
             raise ValueError(f"无效的选择器类型: {self.selector_type}")
 

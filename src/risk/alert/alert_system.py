@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
-智能风险预警系统
+智能风险预警系统 - 增强版（支持PostgreSQL持久化）
 
-提供多级预警、自动干预、预警通知等功能"""
+提供多级预警、自动干预、预警通知等功能。
+支持PostgreSQL优先存储策略，连接失败时自动降级到内存存储。
+"""
 
 import logging
 import time
@@ -21,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 
 class AlertLevel(Enum):
-
     """预警级别"""
     INFO = "info"
     WARNING = "warning"
@@ -30,7 +30,6 @@ class AlertLevel(Enum):
 
 
 class AlertType(Enum):
-
     """预警类型"""
     RISK_THRESHOLD = "risk_threshold"
     POSITION_LIMIT = "position_limit"
@@ -43,7 +42,6 @@ class AlertType(Enum):
 
 
 class AlertStatus(Enum):
-
     """预警状态"""
     ACTIVE = "active"
     ACKNOWLEDGED = "acknowledged"
@@ -53,7 +51,6 @@ class AlertStatus(Enum):
 
 @dataclass
 class AlertRule:
-
     """预警规则"""
     rule_id: str
     rule_name: str
@@ -68,7 +65,6 @@ class AlertRule:
 
 @dataclass
 class Alert:
-
     """预警"""
     alert_id: str
     rule_id: str
@@ -88,7 +84,6 @@ class Alert:
 
 @dataclass
 class NotificationConfig:
-
     """通知配置"""
     email_enabled: bool = True
     sms_enabled: bool = False
@@ -100,17 +95,35 @@ class NotificationConfig:
 
 
 class AlertSystem:
+    """
+    智能风险预警系统 - 增强版
+    
+    支持PostgreSQL优先存储策略，连接失败时自动降级到内存存储。
+    所有告警操作会同步持久化到数据库。
+    """
 
-    """智能风险预警系统"""
-
-    def __init__(self, config: Optional[Dict] = None):
-
+    def __init__(self, config: Optional[Dict] = None, enable_persistence: bool = True):
+        """
+        初始化预警系统
+        
+        Args:
+            config: 配置字典
+            enable_persistence: 是否启用持久化（默认True）
+        """
         self.config = config or {}
         self.alert_rules = {}
         self.active_alerts = {}
         self.alert_history = deque(maxlen=10000)
         self.notification_config = NotificationConfig()
         self.lock = threading.RLock()
+        
+        # 持久化支持
+        self._enable_persistence = enable_persistence
+        self._alert_persistence = None
+        self._rule_persistence = None
+        
+        if enable_persistence:
+            self._init_persistence()
 
         # 通知队列
         self.notification_queue = queue.Queue()
@@ -128,7 +141,22 @@ class AlertSystem:
         # 启动通知线程
         self._start_notification_thread()
 
-        logger.info("智能风险预警系统初始化完成")
+        logger.info(f"智能风险预警系统初始化完成，持久化: {enable_persistence}")
+    
+    def _init_persistence(self):
+        """
+        初始化持久化层
+        
+        尝试初始化PostgreSQL持久化，失败则禁用持久化功能
+        """
+        try:
+            from ..persistence.risk_persistence import AlertPersistence, RiskRulePersistence
+            self._alert_persistence = AlertPersistence()
+            self._rule_persistence = RiskRulePersistence()
+            logger.info("告警持久化层初始化成功")
+        except Exception as e:
+            logger.warning(f"告警持久化层初始化失败: {e}，将使用纯内存模式")
+            self._enable_persistence = False
 
     def _init_default_rules(self):
         """初始化默认预警规则"""
@@ -203,16 +231,60 @@ class AlertSystem:
             self.add_alert_rule(rule)
 
     def add_alert_rule(self, rule: AlertRule):
-        """添加预警规则"""
+        """
+        添加预警规则
+        
+        Args:
+            rule: 预警规则
+        """
         with self.lock:
             self.alert_rules[rule.rule_id] = rule
+            
+            # 持久化规则
+            self._persist_rule(rule)
+            
             logger.info(f"添加预警规则: {rule.rule_name}")
+    
+    def _persist_rule(self, rule: AlertRule):
+        """
+        持久化预警规则
+        
+        Args:
+            rule: 预警规则
+        """
+        if not self._enable_persistence or not self._rule_persistence:
+            return
+        
+        try:
+            from ..persistence.risk_persistence import RiskRuleData
+            rule_data = RiskRuleData(
+                rule_id=rule.rule_id,
+                rule_name=rule.rule_name,
+                rule_type="alert",
+                risk_type=rule.alert_type.value,
+                conditions=rule.conditions,
+                actions=rule.actions,
+                alert_level=rule.alert_level.value,
+                enabled=rule.enabled,
+                cooldown_minutes=rule.cooldown_minutes
+            )
+            self._rule_persistence.save_rule(rule_data)
+        except Exception as e:
+            logger.error(f"持久化预警规则失败: {e}")
 
     def remove_alert_rule(self, rule_id: str):
         """移除预警规则"""
         with self.lock:
             if rule_id in self.alert_rules:
                 del self.alert_rules[rule_id]
+                
+                # 删除持久化规则
+                if self._enable_persistence and self._rule_persistence:
+                    try:
+                        self._rule_persistence.delete_rule(rule_id)
+                    except Exception as e:
+                        logger.error(f"删除持久化规则失败: {e}")
+                
                 logger.info(f"移除预警规则: {rule_id}")
 
     def update_alert_rule(self, rule_id: str, updates: Dict[str, Any]):
@@ -223,6 +295,10 @@ class AlertSystem:
                 for key, value in updates.items():
                     if hasattr(rule, key):
                         setattr(rule, key, value)
+                
+                # 更新持久化规则
+                self._persist_rule(rule)
+                
                 logger.info(f"更新预警规则: {rule_id}")
 
     def check_alerts(self, data: Dict[str, Any]) -> List[Alert]:
@@ -247,6 +323,9 @@ class AlertSystem:
                         self.active_alerts[alert.alert_id] = alert
                         self.alert_history.append(alert)
 
+                        # 持久化告警
+                        self._persist_alert(alert)
+
                         # 触发预警处理器
                         self._trigger_alert_handlers(alert)
 
@@ -254,10 +333,39 @@ class AlertSystem:
                         self._queue_notification(alert)
 
         return alerts
+    
+    def _persist_alert(self, alert: Alert):
+        """
+        持久化告警
+        
+        Args:
+            alert: 告警对象
+        """
+        if not self._enable_persistence or not self._alert_persistence:
+            return
+        
+        try:
+            from ..persistence.risk_persistence import AlertData
+            alert_data = AlertData(
+                alert_id=alert.alert_id,
+                alert_type=alert.alert_type.value,
+                alert_level=alert.alert_level.value,
+                title=alert.title,
+                message=alert.message,
+                status=alert.status.value,
+                rule_id=alert.rule_id,
+                acknowledged_by=alert.acknowledged_by,
+                acknowledged_at=alert.acknowledged_time,
+                resolved_by=alert.resolved_by,
+                resolved_at=alert.resolved_time,
+                details=alert.details
+            )
+            self._alert_persistence.save_alert(alert_data)
+        except Exception as e:
+            logger.error(f"持久化告警失败: {e}")
 
     def _is_in_cooldown(self, rule_id: str, current_time: datetime) -> bool:
         """检查是否在冷却时间内"""
-        # 查找最近的相同规则预警
         for alert in reversed(self.alert_history):
             if alert.rule_id == rule_id and alert.status == AlertStatus.ACTIVE:
                 rule = self.alert_rules.get(rule_id)
@@ -274,15 +382,12 @@ class AlertSystem:
             if value is None:
                 continue
 
-            # 数值比较
             if isinstance(threshold, (int, float)):
                 if value > threshold:
                     return True
-            # 字符串比较
             elif isinstance(threshold, str):
                 if value == threshold:
                     return True
-            # 列表比较
             elif isinstance(threshold, list):
                 if value in threshold:
                     return True
@@ -293,7 +398,6 @@ class AlertSystem:
         """创建预警"""
         alert_id = f"{rule.rule_id}_{int(time.time() * 1000)}"
 
-        # 生成预警标题和消息
         title = f"{rule.alert_level.value.upper()}: {rule.rule_name}"
         message = self._generate_alert_message(rule, data)
 
@@ -370,9 +474,8 @@ class AlertSystem:
         """通知工作线程"""
         while not self._stop_event.is_set():
             try:
-                # 使用stop_event.wait来支持中断
                 if self._stop_event.wait(timeout=1):
-                    break  # 收到停止信号，退出循环
+                    break
                 alert = self.notification_queue.get(timeout=0.1)
                 self._send_notifications(alert)
                 self.notification_queue.task_done()
@@ -381,7 +484,7 @@ class AlertSystem:
             except Exception as e:
                 logger.error(f"通知工作线程异常: {e}")
             if self._stop_event.is_set():
-                break  # 如果收到停止信号，退出循环
+                break
 
     def _send_notifications(self, alert: Alert):
         """发送通知"""
@@ -389,15 +492,12 @@ class AlertSystem:
             return
 
         try:
-            # 发送邮件通知
             if self.notification_config.email_enabled and self.notification_config.email_recipients:
                 self._send_email_notification(alert)
 
-            # 发送短信通知
             if self.notification_config.sms_enabled and self.notification_config.sms_recipients:
                 self._send_sms_notification(alert)
 
-            # 发送Webhook通知
             if self.notification_config.webhook_enabled and self.notification_config.webhook_urls:
                 self._send_webhook_notification(alert)
 
@@ -411,16 +511,13 @@ class AlertSystem:
         """停止预警系统"""
         logger.info("正在停止智能风险预警系统...")
 
-        # 设置停止标志
         self._stop_event.set()
 
-        # 等待通知线程结束
         if self.notification_thread and self.notification_thread.is_alive():
             self.notification_thread.join(timeout=5)
         if self.notification_thread.is_alive():
             logger.warning("通知线程未能5秒内停止")
 
-        # 清空通知队列
         while not self.notification_queue.empty():
             try:
                 self.notification_queue.get_nowait()
@@ -428,25 +525,19 @@ class AlertSystem:
             except queue.Empty:
                 break
 
-    logger.info("智能风险预警系统已停止")
+        logger.info("智能风险预警系统已停止")
 
     def _send_email_notification(self, alert: Alert):
         """发送邮件通知"""
         try:
-            # 这里应该实现实际的邮件发送逻辑
-            # 示例实现
             subject = f"[{alert.alert_level.value.upper()}] {alert.title}"
-
-            # 实际实现中应该使用SMTP发送邮件
             logger.info(f"邮件通知: {subject}")
-
         except Exception as e:
             logger.error(f"发送邮件通知失败: {e}")
 
     def _send_sms_notification(self, alert: Alert):
         """发送短信通知"""
         try:
-            # 这里应该实现实际的短信发送逻辑
             message = f"[{alert.alert_level.value.upper()}] {alert.title}: {alert.message}"
             logger.info(f"短信通知: {message}")
         except Exception as e:
@@ -483,7 +574,31 @@ class AlertSystem:
                 alert.status = AlertStatus.ACKNOWLEDGED
                 alert.acknowledged_by = acknowledged_by
                 alert.acknowledged_time = datetime.now()
+                
+                # 更新持久化告警
+                self._update_persisted_alert(alert_id, {
+                    'status': 'acknowledged',
+                    'acknowledged_by': acknowledged_by,
+                    'acknowledged_at': alert.acknowledged_time
+                })
+                
                 logger.info(f"预警已确认 {alert_id} by {acknowledged_by}")
+    
+    def _update_persisted_alert(self, alert_id: str, updates: Dict[str, Any]):
+        """
+        更新持久化告警
+        
+        Args:
+            alert_id: 告警ID
+            updates: 更新字段
+        """
+        if not self._enable_persistence or not self._alert_persistence:
+            return
+        
+        try:
+            self._alert_persistence.update_alert(alert_id, updates)
+        except Exception as e:
+            logger.error(f"更新持久化告警失败: {e}")
 
     def resolve_alert(self, alert_id: str, resolved_by: str):
         """解决预警"""
@@ -493,10 +608,17 @@ class AlertSystem:
                 alert.status = AlertStatus.RESOLVED
                 alert.resolved_by = resolved_by
                 alert.resolved_time = datetime.now()
+                
+                # 更新持久化告警
+                self._update_persisted_alert(alert_id, {
+                    'status': 'resolved',
+                    'resolved_by': resolved_by,
+                    'resolved_at': alert.resolved_time
+                })
+                
                 logger.info(f"预警已解决 {alert_id} by {resolved_by}")
 
     def get_active_alerts(self, alert_type: Optional[AlertType] = None,
-
                           alert_level: Optional[AlertLevel] = None) -> List[Alert]:
         """获取活跃预警"""
         with self.lock:
@@ -540,12 +662,10 @@ class AlertSystem:
             "recent_alerts": []
         }
 
-        # 按级别统计
         for alert in active_alerts:
             summary["alerts_by_level"][alert.alert_level.value] += 1
             summary["alerts_by_type"][alert.alert_type.value] += 1
 
-        # 最近预警
         summary["recent_alerts"] = [
             {
                 "alert_id": alert.alert_id,
@@ -564,13 +684,78 @@ class AlertSystem:
             current_time = datetime.now()
             expired_alerts = []
 
-        for alert_id, alert in self.active_alerts.items():
-            if current_time - alert.timestamp > timedelta(hours=max_age_hours):
-                expired_alerts.append(alert_id)
+            for alert_id, alert in self.active_alerts.items():
+                if current_time - alert.timestamp > timedelta(hours=max_age_hours):
+                    expired_alerts.append(alert_id)
 
-        for alert_id in expired_alerts:
-            alert = self.active_alerts[alert_id]
-            alert.status = AlertStatus.EXPIRED
-            logger.info(f"预警已过期 {alert_id}")
+            for alert_id in expired_alerts:
+                alert = self.active_alerts[alert_id]
+                alert.status = AlertStatus.EXPIRED
+                
+                # 更新持久化告警
+                self._update_persisted_alert(alert_id, {'status': 'expired'})
+                
+                logger.info(f"预警已过期 {alert_id}")
 
-        logger.info(f"清理了{len(expired_alerts)} 个过期预警")
+            logger.info(f"清理了{len(expired_alerts)} 个过期预警")
+    
+    def restore_from_persistence(self) -> Dict[str, int]:
+        """
+        从持久化层恢复数据
+        
+        Returns:
+            恢复的数据统计
+        """
+        stats = {
+            'alerts_restored': 0,
+            'rules_restored': 0
+        }
+        
+        if not self._enable_persistence:
+            return stats
+        
+        # 恢复活跃告警
+        if self._alert_persistence:
+            try:
+                alerts = self._alert_persistence.get_active_alerts(limit=1000)
+                for alert_data in alerts:
+                    if alert_data.alert_id not in self.active_alerts:
+                        alert = Alert(
+                            alert_id=alert_data.alert_id,
+                            rule_id=alert_data.rule_id or '',
+                            alert_type=AlertType(alert_data.alert_type),
+                            alert_level=AlertLevel(alert_data.alert_level),
+                            title=alert_data.title,
+                            message=alert_data.message,
+                            details=alert_data.details,
+                            timestamp=alert_data.created_at,
+                            status=AlertStatus(alert_data.status)
+                        )
+                        self.active_alerts[alert_data.alert_id] = alert
+                        stats['alerts_restored'] += 1
+            except Exception as e:
+                logger.error(f"恢复告警失败: {e}")
+        
+        # 恢复规则
+        if self._rule_persistence:
+            try:
+                rules = self._rule_persistence.get_enabled_rules()
+                for rule_data in rules:
+                    if rule_data.rule_id not in self.alert_rules:
+                        rule = AlertRule(
+                            rule_id=rule_data.rule_id,
+                            rule_name=rule_data.rule_name,
+                            alert_type=AlertType(rule_data.risk_type),
+                            alert_level=AlertLevel(rule_data.alert_level),
+                            conditions=rule_data.conditions,
+                            actions=rule_data.actions,
+                            enabled=rule_data.enabled,
+                            cooldown_minutes=rule_data.cooldown_minutes
+                        )
+                        self.alert_rules[rule_data.rule_id] = rule
+                        stats['rules_restored'] += 1
+            except Exception as e:
+                logger.error(f"恢复规则失败: {e}")
+        
+        logger.info(f"从持久化层恢复数据: {stats}")
+        return stats

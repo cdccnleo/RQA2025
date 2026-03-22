@@ -1,0 +1,233 @@
+# Prometheus告警规则
+# RQA2025项目告警配置
+# 创建日期: 2026-03-28
+# 版本: 1.0.0
+
+groups:
+  - name: rqa2025_system_alerts
+    interval: 15s
+    rules:
+      # 系统离线告警
+      - alert: SystemDown
+        expr: up{job="rqa2025-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: ops
+        annotations:
+          summary: "RQA2025应用离线"
+          description: "RQA2025应用已离线超过1分钟"
+          runbook_url: "https://wiki.example.com/runbooks/system-down"
+
+      # CPU使用率告警
+      - alert: HighCPUUsage
+        expr: rqa2025_system_cpu_usage > 80
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "CPU使用率过高"
+          description: "CPU使用率超过80%持续5分钟，当前值: {{ $value }}%"
+
+      # CPU使用率严重告警
+      - alert: CriticalCPUUsage
+        expr: rqa2025_system_cpu_usage > 95
+        for: 2m
+        labels:
+          severity: critical
+          team: ops
+        annotations:
+          summary: "CPU使用率严重过高"
+          description: "CPU使用率超过95%持续2分钟，当前值: {{ $value }}%"
+
+      # 内存使用率告警
+      - alert: HighMemoryUsage
+        expr: (rqa2025_system_memory_usage_bytes / rqa2025_system_memory_total_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "内存使用率过高"
+          description: "内存使用率超过85%持续5分钟"
+
+      # 内存使用率严重告警
+      - alert: CriticalMemoryUsage
+        expr: (rqa2025_system_memory_usage_bytes / rqa2025_system_memory_total_bytes) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          team: ops
+        annotations:
+          summary: "内存使用率严重过高"
+          description: "内存使用率超过95%持续2分钟"
+
+  - name: rqa2025_application_alerts
+    interval: 15s
+    rules:
+      # HTTP错误率告警
+      - alert: HighHTTPErrorRate
+        expr: rate(rqa2025_http_requests_total{status=~"5.."}[5m]) / rate(rqa2025_http_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+          team: dev
+        annotations:
+          summary: "HTTP错误率过高"
+          description: "HTTP 5xx错误率超过5%持续2分钟"
+
+      # HTTP响应时间告警
+      - alert: SlowHTTPResponse
+        expr: histogram_quantile(0.95, rate(rqa2025_http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: dev
+        annotations:
+          summary: "HTTP响应时间过长"
+          description: "HTTP P95响应时间超过1秒持续5分钟"
+
+      # 策略执行失败告警
+      - alert: StrategyExecutionFailure
+        expr: rate(rqa2025_strategy_executions_total{status="error"}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          team: strategy
+        annotations:
+          summary: "策略执行失败率过高"
+          description: "策略执行失败率超过10%持续2分钟"
+
+      # 策略执行耗时告警
+      - alert: SlowStrategyExecution
+        expr: histogram_quantile(0.95, rate(rqa2025_strategy_execution_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          team: strategy
+        annotations:
+          summary: "策略执行耗时过长"
+          description: "策略执行P95耗时超过500ms持续5分钟"
+
+  - name: rqa2025_business_alerts
+    interval: 15s
+    rules:
+      # 交易失败告警
+      - alert: TradeFailure
+        expr: rate(rqa2025_trades_total{status="error"}[5m]) > 0.05
+        for: 1m
+        labels:
+          severity: critical
+          team: trading
+        annotations:
+          summary: "交易失败率过高"
+          description: "交易失败率超过5%持续1分钟"
+
+      # 数据处理延迟告警
+      - alert: DataProcessingDelay
+        expr: histogram_quantile(0.95, rate(rqa2025_data_processing_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          team: data
+        annotations:
+          summary: "数据处理延迟过高"
+          description: "数据处理P95耗时超过2秒持续5分钟"
+
+      # 特征计算耗时告警
+      - alert: SlowFeatureComputation
+        expr: histogram_quantile(0.95, rate(rqa2025_feature_computation_duration_seconds_bucket[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          team: feature
+        annotations:
+          summary: "特征计算耗时过长"
+          description: "特征计算P95耗时超过100ms持续5分钟"
+
+      # 模型推理耗时告警
+      - alert: SlowModelInference
+        expr: histogram_quantile(0.95, rate(rqa2025_model_inference_duration_seconds_bucket[5m])) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          team: ml
+        annotations:
+          summary: "模型推理耗时过长"
+          description: "模型推理P95耗时超过200ms持续5分钟"
+
+      # 模型推理失败告警
+      - alert: ModelInferenceFailure
+        expr: rate(rqa2025_model_inferences_total{status="error"}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          team: ml
+        annotations:
+          summary: "模型推理失败率过高"
+          description: "模型推理失败率超过5%持续2分钟"
+
+  - name: rqa2025_database_alerts
+    interval: 15s
+    rules:
+      # 数据库连接池告警
+      - alert: HighDBConnections
+        expr: rqa2025_db_connections_active > 80
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "数据库连接数过高"
+          description: "数据库活跃连接数超过80持续5分钟"
+
+      # 数据库查询耗时告警
+      - alert: SlowDBQuery
+        expr: histogram_quantile(0.95, rate(rqa2025_db_query_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          team: data
+        annotations:
+          summary: "数据库查询耗时过长"
+          description: "数据库查询P95耗时超过500ms持续5分钟"
+
+  - name: rqa2025_cache_alerts
+    interval: 15s
+    rules:
+      # 缓存命中率告警
+      - alert: LowCacheHitRate
+        expr: rate(rqa2025_cache_hits_total[5m]) / (rate(rqa2025_cache_hits_total[5m]) + rate(rqa2025_cache_misses_total[5m])) < 0.5
+        for: 10m
+        labels:
+          severity: warning
+          team: dev
+        annotations:
+          summary: "缓存命中率过低"
+          description: "缓存命中率低于50%持续10分钟"
+
+  - name: rqa2025_infrastructure_alerts
+    interval: 15s
+    rules:
+      # 磁盘空间告警
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          team: ops
+        annotations:
+          summary: "磁盘空间不足"
+          description: "磁盘可用空间低于10%"
+
+      # 网络延迟告警
+      - alert: NetworkLatency
+        expr: node_network_receive_drop_total[5m] > 100
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "网络丢包严重"
+          description: "网络接收丢包超过100个/5分钟"

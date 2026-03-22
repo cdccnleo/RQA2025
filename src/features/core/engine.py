@@ -88,15 +88,20 @@ class FeatureEngine:
         # 任务失败钩子函数列表
         self._task_failed_hooks: List[Callable] = []
 
-        # 新增：集成任务调度器
-        self._task_scheduler = None
+        # 新增：集成统一调度器（替代原有的FeatureTaskScheduler）
+        self._unified_scheduler = None
         try:
-            from src.features.distributed.task_scheduler import get_task_scheduler
-            self._task_scheduler = get_task_scheduler()
-            self.logger.info("✅ 任务调度器集成成功")
+            from src.core.orchestration.scheduler import get_unified_scheduler
+            self._unified_scheduler = get_unified_scheduler(
+                max_workers=4,
+                enable_persistence=True,
+                enable_alerting=True,
+                enable_event_bus=True
+            )
+            self.logger.info("✅ 统一调度器集成成功")
         except Exception as e:
-            self.logger.warning(f"⚠️ 任务调度器集成失败: {e}")
-            self._task_scheduler = None
+            self.logger.warning(f"⚠️ 统一调度器集成失败: {e}")
+            self._unified_scheduler = None
 
         # 新增：初始化 TechnicalProcessor
         self._technical_processor = None
@@ -112,6 +117,16 @@ class FeatureEngine:
         self._features_cache = {}
         self._cache_timestamp = None
         self._cache_ttl = 300  # 5分钟缓存
+
+        # 新增：Prometheus指标监控
+        self._metrics = None
+        try:
+            from src.core.orchestration.scheduler.metrics import get_prometheus_metrics
+            self._metrics = get_prometheus_metrics()
+            self.logger.info("✅ Prometheus指标监控集成成功")
+        except Exception as e:
+            self.logger.warning(f"⚠️ Prometheus指标监控集成失败: {e}")
+            self._metrics = None
 
         # 自动注册默认处理器
         self._register_default_processors()
@@ -645,9 +660,9 @@ class FeatureEngine:
         """
         return self.indicators
 
-    def create_task(self, task_type: str, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def create_task(self, task_type: str, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
-        创建特征提取任务
+        创建特征提取任务（使用统一调度器）
 
         Args:
             task_type: 任务类型
@@ -658,10 +673,53 @@ class FeatureEngine:
         """
         import time
         import uuid
+        import asyncio
         config = config or {}
-        # 使用固定的feature_task前缀，确保任务ID清晰标识为特征提取任务
+        
+        # 使用统一调度器创建任务
+        if self._unified_scheduler:
+            try:
+                # 构建任务payload
+                payload = {
+                    'task_type': task_type,
+                    'config': config,
+                    'stock_code': config.get('stock_code', ''),
+                    'indicators': config.get('indicators', [])
+                }
+                
+                # 提交任务到统一调度器
+                task_id = await self._unified_scheduler.submit_task(
+                    task_type='feature_extraction',
+                    payload=payload,
+                    priority=5,
+                    timeout_seconds=3600,
+                    max_retries=3,
+                    retry_delay_seconds=60
+                )
+                
+                self.logger.info(f"✅ 任务已提交到统一调度器: {task_id}")
+                
+                # 返回统一格式的任务信息
+                task = {
+                    "task_id": task_id,
+                    "task_type": task_type,
+                    "status": "pending",
+                    "progress": 0,
+                    "feature_count": 0,
+                    "start_time": int(time.time()),
+                    "created_at": int(time.time()),
+                    "config": config,
+                    "scheduler": "unified"  # 标识使用统一调度器
+                }
+                self.tasks.append(task)
+                return task
+                
+            except Exception as e:
+                self.logger.error(f"❌ 提交任务到统一调度器失败: {e}")
+                # 降级到本地任务管理
+        
+        # 降级方案：使用本地任务管理
         task_id_prefix = 'feature_task'
-        # 使用股票代码和时间戳生成唯一ID，确保每只股票的任务ID唯一
         stock_code = config.get('stock_code', '')
         if stock_code:
             task_id = f"{task_id_prefix}_{stock_code}_{int(time.time())}_{uuid.uuid4().hex[:8]}"
@@ -675,14 +733,16 @@ class FeatureEngine:
             "feature_count": 0,
             "start_time": int(time.time()),
             "created_at": int(time.time()),
-            "config": config
+            "config": config,
+            "scheduler": "local"  # 标识使用本地调度
         }
         self.tasks.append(task)
+        self.logger.warning(f"⚠️ 使用本地任务管理（降级模式）: {task_id}")
         return task
 
-    def stop_task(self, task_id: str) -> bool:
+    async def stop_task(self, task_id: str) -> bool:
         """
-        停止特征提取任务
+        停止特征提取任务（使用统一调度器）
 
         Args:
             task_id: 任务ID
@@ -691,16 +751,34 @@ class FeatureEngine:
             是否成功停止
         """
         import time
+        
+        # 使用统一调度器取消任务
+        if self._unified_scheduler:
+            try:
+                success = await self._unified_scheduler.cancel_task(task_id)
+                if success:
+                    self.logger.info(f"✅ 任务已通过统一调度器取消: {task_id}")
+                    # 同步更新本地任务状态
+                    for task in self.tasks:
+                        if task.get('task_id') == task_id:
+                            task['status'] = 'cancelled'
+                            task['end_time'] = int(time.time())
+                    return True
+            except Exception as e:
+                self.logger.error(f"❌ 通过统一调度器取消任务失败: {e}")
+        
+        # 降级方案：仅更新本地任务状态
         for task in self.tasks:
             if task.get('task_id') == task_id:
                 task['status'] = 'stopped'
                 task['end_time'] = int(time.time())
+                self.logger.warning(f"⚠️ 任务仅在本地标记为停止（降级模式）: {task_id}")
                 return True
         return False
 
-    def delete_task(self, task_id: str) -> bool:
+    async def delete_task(self, task_id: str) -> bool:
         """
-        删除特征提取任务
+        删除特征提取任务（使用统一调度器）
 
         Args:
             task_id: 任务ID
@@ -708,9 +786,18 @@ class FeatureEngine:
         Returns:
             是否成功删除
         """
+        # 使用统一调度器取消任务（如果还在运行）
+        if self._unified_scheduler:
+            try:
+                await self._unified_scheduler.cancel_task(task_id)
+            except Exception:
+                pass  # 任务可能不存在或已完成
+        
+        # 从本地任务列表删除
         for i, task in enumerate(self.tasks):
             if task.get('task_id') == task_id:
                 self.tasks.pop(i)
+                self.logger.info(f"✅ 任务已删除: {task_id}")
                 return True
         return False
 
@@ -748,6 +835,60 @@ class FeatureEngine:
                 return True
         return False
 
+    async def sync_task_status_from_scheduler(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """
+        从统一调度器同步任务状态
+        
+        Args:
+            task_id: 任务ID
+            
+        Returns:
+            任务详情，如果未找到返回None
+        """
+        if not self._unified_scheduler:
+            return None
+            
+        try:
+            task_detail = self._unified_scheduler.get_task_detail(task_id)
+            if task_detail:
+                # 更新本地任务状态
+                for task in self.tasks:
+                    if task.get('task_id') == task_id:
+                        task['status'] = task_detail.get('status', task.get('status'))
+                        task['progress'] = task_detail.get('progress', task.get('progress', 0))
+                        if task_detail.get('completed_at'):
+                            task['end_time'] = int(task_detail.get('completed_at').timestamp())
+                        return task
+            return None
+        except Exception as e:
+            self.logger.error(f"同步任务状态失败: {e}")
+            return None
+    
+    async def get_task_status(self, task_id: str) -> Optional[str]:
+        """
+        获取任务状态（优先从统一调度器获取）
+        
+        Args:
+            task_id: 任务ID
+            
+        Returns:
+            任务状态字符串
+        """
+        # 首先尝试从统一调度器获取
+        if self._unified_scheduler:
+            try:
+                task_detail = self._unified_scheduler.get_task_detail(task_id)
+                if task_detail:
+                    return task_detail.get('status')
+            except Exception as e:
+                self.logger.debug(f"从统一调度器获取任务状态失败: {e}")
+        
+        # 降级到本地查询
+        for task in self.tasks:
+            if task.get('task_id') == task_id:
+                return task.get('status')
+        return None
+    
     def _register_default_hooks(self) -> None:
         """
         注册默认的任务状态变更钩子
@@ -1340,6 +1481,194 @@ class FeatureEngine:
         ]
         
         self.tasks.extend(sample_tasks)
+
+    async def start_scheduler(self) -> bool:
+        """
+        启动统一调度器
+        
+        Returns:
+            是否启动成功
+        """
+        if not self._unified_scheduler:
+            self.logger.warning("⚠️ 统一调度器未初始化，无法启动")
+            return False
+        
+        try:
+            success = await self._unified_scheduler.start()
+            if success:
+                self.logger.info("✅ 统一调度器已启动")
+            else:
+                self.logger.error("❌ 统一调度器启动失败")
+            return success
+        except Exception as e:
+            self.logger.error(f"❌ 启动统一调度器时发生错误: {e}")
+            return False
+    
+    async def stop_scheduler(self) -> bool:
+        """
+        停止统一调度器
+        
+        Returns:
+            是否停止成功
+        """
+        if not self._unified_scheduler:
+            return True
+        
+        try:
+            success = await self._unified_scheduler.stop()
+            if success:
+                self.logger.info("✅ 统一调度器已停止")
+            return success
+        except Exception as e:
+            self.logger.error(f"❌ 停止统一调度器时发生错误: {e}")
+            return False
+    
+    def get_scheduler_status(self) -> Dict[str, Any]:
+        """
+        获取统一调度器状态
+        
+        Returns:
+            调度器状态信息
+        """
+        if not self._unified_scheduler:
+            return {
+                "initialized": False,
+                "running": False,
+                "message": "统一调度器未初始化"
+            }
+        
+        try:
+            status = self._unified_scheduler.get_status()
+            task_stats = self._unified_scheduler.get_task_stats()
+            worker_stats = self._unified_scheduler.get_worker_stats()
+            
+            return {
+                "initialized": True,
+                "running": status.get('is_running', False),
+                "started_at": status.get('started_at'),
+                "uptime_seconds": status.get('uptime_seconds', 0),
+                "config": status.get('config', {}),
+                "task_stats": task_stats,
+                "worker_stats": worker_stats
+            }
+        except Exception as e:
+            self.logger.error(f"获取调度器状态失败: {e}")
+            return {
+                "initialized": True,
+                "running": False,
+                "error": str(e)
+            }
+
+    def record_metric(self, metric_name: str, value: float, labels: Optional[Dict[str, str]] = None) -> None:
+        """
+        记录Prometheus指标
+        
+        Args:
+            metric_name: 指标名称
+            value: 指标值
+            labels: 标签字典
+        """
+        if not self._metrics:
+            return
+        
+        try:
+            # 根据指标名称前缀判断类型
+            if metric_name.endswith('_total'):
+                self._metrics.increment_counter(metric_name, value, labels)
+            elif 'duration' in metric_name or 'histogram' in metric_name:
+                self._metrics.observe_histogram(metric_name, value, labels)
+            else:
+                self._metrics.set_gauge(metric_name, value, labels)
+        except Exception as e:
+            self.logger.debug(f"记录指标失败: {e}")
+
+    def get_metrics(self) -> Optional[str]:
+        """
+        获取Prometheus格式的指标
+        
+        Returns:
+            Prometheus格式的指标字符串
+        """
+        if not self._metrics:
+            return None
+        
+        try:
+            # 更新特征引擎相关指标
+            self._update_feature_engine_metrics()
+            return self._metrics.generate_metrics()
+        except Exception as e:
+            self.logger.error(f"生成指标失败: {e}")
+            return None
+
+    def _update_feature_engine_metrics(self) -> None:
+        """更新特征引擎相关指标"""
+        if not self._metrics:
+            return
+        
+        try:
+            # 特征数量仪表盘
+            self._metrics.set_gauge(
+                "feature_engine_features_total",
+                len(self.features),
+                {"engine": "feature_engine"}
+            )
+            
+            # 指标数量仪表盘
+            self._metrics.set_gauge(
+                "feature_engine_indicators_total",
+                len(self.indicators),
+                {"engine": "feature_engine"}
+            )
+            
+            # 任务数量仪表盘
+            self._metrics.set_gauge(
+                "feature_engine_tasks_total",
+                len(self.tasks),
+                {"engine": "feature_engine"}
+            )
+            
+            # 处理统计
+            self._metrics.set_gauge(
+                "feature_engine_processed_features_total",
+                self.stats.get('processed_features', 0),
+                {"engine": "feature_engine"}
+            )
+            
+            # 错误计数
+            self._metrics.set_gauge(
+                "feature_engine_errors_total",
+                self.stats.get('errors', 0),
+                {"engine": "feature_engine"}
+            )
+            
+        except Exception as e:
+            self.logger.debug(f"更新指标失败: {e}")
+
+    def get_metrics_summary(self) -> Dict[str, Any]:
+        """
+        获取指标摘要
+        
+        Returns:
+            指标摘要字典
+        """
+        if not self._metrics:
+            return {"error": "Prometheus指标监控未初始化"}
+        
+        try:
+            return {
+                "feature_engine": {
+                    "features_count": len(self.features),
+                    "indicators_count": len(self.indicators),
+                    "tasks_count": len(self.tasks),
+                    "processed_features": self.stats.get('processed_features', 0),
+                    "errors": self.stats.get('errors', 0),
+                    "processing_time": self.stats.get('processing_time', 0.0)
+                },
+                "scheduler": self.get_scheduler_status() if self._unified_scheduler else None,
+                "prometheus_metrics": self._metrics.get_all_metrics()
+            }
+        except Exception as e:
+            return {"error": str(e)}
 
     @property
     def engineer(self):

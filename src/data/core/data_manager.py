@@ -5,6 +5,7 @@ import configparser
 import asyncio
 import threading
 import logging
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union, Any, Type
@@ -64,6 +65,22 @@ from ..validation.china_stock_validator import ChinaStockValidator
 from ..cache.cache_manager import CacheManager, CacheConfig
 from ..quality.monitor import DataQualityMonitor
 from ..compliance.data_compliance_manager import DataComplianceManager
+
+# 导入持久化模块
+try:
+    from ..persistence import (
+        DataPersistence, CachePersistence, LineagePersistence,
+        QualityPersistence, get_data_persistence, get_cache_persistence
+    )
+    PERSISTENCE_AVAILABLE = True
+except ImportError:
+    PERSISTENCE_AVAILABLE = False
+    DataPersistence = None
+    CachePersistence = None
+    LineagePersistence = None
+    QualityPersistence = None
+    get_data_persistence = None
+    get_cache_persistence = None
 
 
 class DataManagerSingleton:
@@ -261,6 +278,9 @@ class DataManager:
 
         # 初始化合规管理器
         self.compliance_manager = DataComplianceManager()
+
+        # 初始化持久化层（PostgreSQL优先）
+        self._init_persistence_layer()
 
         # 初始化加载器
         self._init_loaders()
@@ -544,6 +564,48 @@ class DataManager:
         self.health_checker = None
         self.health_bridge = None
         self.service_bridge = None
+
+    def _init_persistence_layer(self):
+        """
+        初始化持久化层（PostgreSQL优先策略）
+        
+        遵循已实施层的重构标准：
+        - 主存储: PostgreSQL
+        - 降级存储: 文件系统
+        """
+        self._persistence = None
+        self._cache_persistence = None
+        self._lineage_persistence = None
+        self._quality_persistence = None
+        self._pg_available = False
+        
+        if not PERSISTENCE_AVAILABLE:
+            self.logger.warning("⚠️ 持久化模块不可用，使用内存存储")
+            return
+        
+        try:
+            # 获取持久化管理器实例
+            self._persistence = get_data_persistence()
+            self._cache_persistence = get_cache_persistence()
+            
+            # 检查 PostgreSQL 是否可用
+            if self._persistence and hasattr(self._persistence, '_pg_available'):
+                self._pg_available = self._persistence._pg_available
+                
+                if self._pg_available:
+                    self.logger.info("✅ DataManager: PostgreSQL 持久化已启用")
+                else:
+                    self.logger.warning("⚠️ DataManager: PostgreSQL 不可用，使用文件系统存储")
+            
+            # 注册持久化服务
+            if self._persistence:
+                self.register_data_service("data_persistence", self._persistence, "persistence")
+            if self._cache_persistence:
+                self.register_data_service("cache_persistence", self._cache_persistence, "persistence")
+                
+        except Exception as e:
+            self.logger.error(f"初始化持久化层失败: {e}")
+            self._pg_available = False
 
     def _get_logger(self):
         """
@@ -1269,7 +1331,12 @@ class DataManager:
 
     def store_data(self, data: Any, storage_type: str = "database", metadata: Optional[Dict[str, Any]] = None) -> Any:
         """
-        存储数据
+        存储数据（PostgreSQL优先策略）
+        
+        存储策略：
+        1. PostgreSQL 主存储（如果可用）
+        2. 文件系统降级存储
+        3. 内存缓存（始终维护）
 
         Args:
             data: 要存储的数据
@@ -1305,24 +1372,68 @@ class DataManager:
                     if isinstance(actual_metadata, dict) and 'symbol' in actual_metadata and 'data_type' in actual_metadata:
                         key = f"{actual_metadata['symbol']}_{actual_metadata['data_type']}"
                     else:
-                        key = f"data_{hash(str(actual_data))}"
+                        import hashlib
+                        key = f"data_{hashlib.md5(str(actual_data).encode()).hexdigest()[:16]}"
 
             # 记录存储操作
-            self.logger.info(f"开始存储数据，类型: {actual_storage_type}")
+            self.logger.info(f"开始存储数据，键: {key}, 类型: {actual_storage_type}")
 
+            result = {"key": key, "status": "pending"}
+            
             # 根据存储类型选择不同的存储策略
             if actual_storage_type == "cache":
-                # 存储到缓存
-                cache_key = f"stored_data_{hash(str(actual_data))}"
-                if self.cache_manager:
-                    self.cache_manager.set(cache_key, actual_data, ttl=3600)
-                result = {"cache_key": cache_key, "status": "cached"}
+                # 存储到缓存（使用持久化缓存）
+                if self._cache_persistence:
+                    ttl_seconds = actual_metadata.get('ttl_seconds', 3600)
+                    success = self._cache_persistence.save_cache_entry(
+                        cache_key=key,
+                        data=actual_data,
+                        cache_type=actual_metadata.get('cache_type', 'general'),
+                        ttl_seconds=ttl_seconds,
+                        tags=actual_metadata.get('tags'),
+                        description=actual_metadata.get('description', '')
+                    )
+                    if success:
+                        result = {"key": key, "status": "cached_persistent", "storage": "postgresql" if self._pg_available else "filesystem"}
+                    else:
+                        # 降级到内存缓存
+                        if self.cache_manager:
+                            self.cache_manager.set(key, actual_data, ttl=ttl_seconds)
+                        result = {"key": key, "status": "cached_memory", "storage": "memory"}
+                elif self.cache_manager:
+                    self.cache_manager.set(key, actual_data, ttl=3600)
+                    result = {"key": key, "status": "cached", "storage": "memory"}
+                    
             elif actual_storage_type == "file":
-                # 存储到文件（这里只是示例）
-                result = {"file_path": "placeholder_path", "status": "saved"}
+                # 存储到文件系统
+                if self._persistence:
+                    success = self._persistence.save_cache_entry(
+                        cache_key=key,
+                        data=actual_data,
+                        cache_type='file_storage',
+                        tags=actual_metadata.get('tags'),
+                        description=actual_metadata.get('description', '')
+                    )
+                    result = {"key": key, "status": "saved", "storage": "filesystem"}
             else:
-                # 默认存储到数据库（这里只是示例）
-                result = {"database_id": "placeholder_id", "status": "saved"}
+                # 默认存储到数据库（PostgreSQL优先）
+                if self._persistence:
+                    success = self._persistence.save_cache_entry(
+                        cache_key=key,
+                        data=actual_data,
+                        cache_type=actual_metadata.get('data_type', 'general'),
+                        ttl_seconds=actual_metadata.get('ttl_seconds'),
+                        tags=actual_metadata.get('tags'),
+                        description=actual_metadata.get('description', '')
+                    )
+                    if success:
+                        result = {
+                            "key": key, 
+                            "status": "saved", 
+                            "storage": "postgresql" if self._pg_available else "filesystem"
+                        }
+                    else:
+                        result = {"key": key, "status": "failed", "error": "Persistence save failed"}
 
             # 在降级模式下维护内存数据存储，支持测试场景
             self._data_store[key] = actual_data
@@ -1334,38 +1445,8 @@ class DataManager:
             self._metadata_store[key] = meta_copy
             self._user_metadata_store[key] = dict(actual_metadata)
 
-            # 记录数据血缘
-            if actual_metadata:
-                data_type_value = None
-                if isinstance(actual_metadata, dict):
-                    data_type_value = actual_metadata.get('data_type')
-                elif hasattr(actual_metadata, 'get'):
-                    data_type_value = actual_metadata.get('data_type')
-
-                if data_type_value:
-                    if hasattr(actual_metadata, 'items'):
-                        lineage_metadata = dict(actual_metadata.items())
-                    else:
-                        lineage_metadata = dict(self._user_metadata_store.get(key, {}))
-                    lineage_metadata.pop('data_type', None)
-                    start_date_value = None
-                    end_date_value = None
-                    if hasattr(actual_metadata, 'get'):
-                        start_date_value = actual_metadata.get('start_date')
-                        end_date_value = actual_metadata.get('end_date')
-                    if start_date_value is None:
-                        start_date_value = lineage_metadata.get('start_date', '')
-                    if end_date_value is None:
-                        end_date_value = lineage_metadata.get('end_date', '')
-                    lineage_metadata.pop('start_date', None)
-                    lineage_metadata.pop('end_date', None)
-                    self._record_data_lineage(
-                        data_type=data_type_value,
-                        data_model=None,  # 这里可以创建DataModel
-                        start_date=start_date_value or '',
-                        end_date=end_date_value or '',
-                        **lineage_metadata
-                    )
+            # 记录数据血缘（使用持久化层）
+            self._record_lineage_with_persistence(key, actual_metadata)
 
             self.logger.info(f"数据存储完成，结果: {result}")
             return True if key_provided else result
@@ -1374,11 +1455,92 @@ class DataManager:
             self.logger.error(f"数据存储失败: {e}")
             raise e
 
+    def _record_lineage_with_persistence(self, key: str, metadata: Optional[Dict[str, Any]] = None):
+        """
+        使用持久化层记录数据血缘
+        
+        Args:
+            key: 数据键
+            metadata: 元数据
+        """
+        if not metadata:
+            return
+            
+        try:
+            data_type_value = None
+            if isinstance(metadata, dict):
+                data_type_value = metadata.get('data_type')
+            elif hasattr(metadata, 'get'):
+                data_type_value = metadata.get('data_type')
+
+            if data_type_value and self._persistence:
+                # 使用持久化层记录血缘
+                if hasattr(self._persistence, '_lineage_persistence') or PERSISTENCE_AVAILABLE:
+                    try:
+                        from ..persistence import get_lineage_persistence
+                        lineage_persistence = get_lineage_persistence()
+                        lineage_persistence.save_lineage(
+                            data_type=data_type_value,
+                            source_info={
+                                'key': key,
+                                'source': metadata.get('source', 'unknown'),
+                                'start_date': metadata.get('start_date'),
+                                'end_date': metadata.get('end_date')
+                            },
+                            transform_info={
+                                'transformations': metadata.get('transformations', [])
+                            },
+                            dependencies=metadata.get('dependencies', [])
+                        )
+                    except Exception as e:
+                        self.logger.debug(f"血缘持久化记录失败: {e}")
+        except Exception as e:
+            self.logger.debug(f"记录血缘失败: {e}")
+
     def retrieve_data(self, key: str) -> Any:
         """
-        按键检索数据
+        检索数据（PostgreSQL优先策略）
+        
+        检索顺序：
+        1. 内存缓存
+        2. PostgreSQL 数据库
+        3. 文件系统
+        
+        Args:
+            key: 数据键
+            
+        Returns:
+            存储的数据，不存在则返回 None
         """
-        return self._data_store.get(key)
+        # 1. 首先检查内存缓存
+        if key in self._data_store:
+            self.logger.debug(f"从内存缓存检索数据: {key}")
+            return self._data_store.get(key)
+        
+        # 2. 尝试从持久化层检索
+        if self._cache_persistence:
+            result = self._cache_persistence.load_cache_entry(key)
+            if result:
+                data, metadata = result
+                # 回填内存缓存
+                self._data_store[key] = data
+                self._metadata_store[key] = asdict(metadata) if hasattr(metadata, '__dataclass_fields__') else dict(metadata)
+                self.logger.debug(f"从持久化层检索数据: {key}")
+                return data
+        
+        # 3. 尝试从数据库检索
+        if self._persistence:
+            result = self._persistence.load_cache_entry(key)
+            if result:
+                data, metadata = result
+                # 回填内存缓存
+                self._data_store[key] = data
+                self._metadata_store[key] = asdict(metadata) if hasattr(metadata, '__dataclass_fields__') else dict(metadata)
+                self.logger.debug(f"从数据库检索数据: {key}")
+                return data
+        
+        self.logger.debug(f"数据不存在: {key}")
+        return None
 
     def has_data(self, key: str) -> bool:
         """

@@ -2,6 +2,10 @@
 真实模型训练器
 基于scikit-learn、XGBoost、LightGBM实现真实的模型训练
 支持量化交易特征工程和模型训练
+
+PostgreSQL优先持久化策略：
+- 主存储: PostgreSQL 数据库（通过 ModelManager）
+- 降级存储: 文件系统
 """
 
 import logging
@@ -11,6 +15,7 @@ from typing import Dict, Any, Optional, List, Tuple
 from datetime import datetime
 import pickle
 import json
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -164,11 +169,31 @@ class FeatureEngineer:
 
 
 class RealModelTrainer:
-    """真实模型训练器"""
+    """
+    真实模型训练器
     
-    def __init__(self):
+    支持PostgreSQL优先持久化策略，通过ModelManager实现模型存储。
+    """
+    
+    def __init__(self, use_model_manager: bool = True):
+        """
+        初始化训练器
+        
+        Args:
+            use_model_manager: 是否使用ModelManager进行持久化
+        """
         self.models = {}
         self.feature_engineer = FeatureEngineer()
+        self._use_model_manager = use_model_manager
+        self._model_manager = None
+        
+        if use_model_manager:
+            try:
+                from src.ml.models.model_manager import get_model_manager
+                self._model_manager = get_model_manager()
+                logger.info("✅ RealModelTrainer: 已集成 ModelManager (PostgreSQL优先存储)")
+            except Exception as e:
+                logger.warning(f"⚠️ ModelManager初始化失败: {e}，使用内存存储")
         
     def prepare_data(self, data: pd.DataFrame, feature_columns: Optional[List[str]] = None) -> Tuple[pd.DataFrame, pd.Series, List[str]]:
         """
@@ -312,8 +337,10 @@ class RealModelTrainer:
         if progress_callback:
             progress_callback(90, "指标计算完成")
         
-        # 保存模型
+        # 生成模型ID
         model_id = f"{model_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # 保存模型到内存
         self.models[model_id] = {
             'model': model,
             'model_type': model_type,
@@ -327,6 +354,52 @@ class RealModelTrainer:
                 'roc_auc': roc_auc
             }
         }
+        
+        # 通过ModelManager持久化模型（PostgreSQL优先）
+        if self._model_manager:
+            try:
+                self._model_manager.save_model(
+                    model_id=model_id,
+                    version="1.0.0",
+                    model=model,
+                    metadata={
+                        'description': f'{model_type} model for quantitative trading',
+                        'created_by': 'RealModelTrainer',
+                        'tags': [model_type, 'quantitative', 'trading'],
+                    },
+                    model_type=model_type,
+                    feature_columns=feature_columns,
+                    metrics={
+                        'accuracy': accuracy,
+                        'precision': precision,
+                        'recall': recall,
+                        'f1': f1,
+                        'roc_auc': roc_auc
+                    },
+                    config=config
+                )
+                
+                # 保存训练历史
+                self._model_manager.save_training_history(
+                    model_id=model_id,
+                    version="1.0.0",
+                    training_config=config,
+                    training_metrics={
+                        'accuracy': accuracy,
+                        'precision': precision,
+                        'recall': recall,
+                        'f1': f1,
+                        'roc_auc': roc_auc
+                    },
+                    hyperparameters=config,
+                    training_duration=None,
+                    samples_trained=len(X_train),
+                    status='completed'
+                )
+                
+                logger.info(f"✅ 模型已持久化到数据库: {model_id}")
+            except Exception as e:
+                logger.warning(f"模型持久化失败，仅保存在内存: {e}")
         
         if progress_callback:
             progress_callback(100, "训练完成")
@@ -519,35 +592,106 @@ class RealModelTrainer:
             'config': model_info['config']
         }
     
-    def save_model(self, model_id: str, filepath: str):
-        """保存模型到文件"""
+    def save_model(self, model_id: str, filepath: str = None):
+        """
+        保存模型（PostgreSQL优先，降级到文件系统）
+        
+        Args:
+            model_id: 模型ID
+            filepath: 文件路径（可选，用于文件系统存储）
+        """
         if model_id not in self.models:
             raise ValueError(f"模型不存在: {model_id}")
         
         model_info = self.models[model_id]
-        with open(filepath, 'wb') as f:
-            pickle.dump(model_info, f)
         
-        logger.info(f"模型已保存: {filepath}")
+        # 优先通过ModelManager保存到PostgreSQL
+        if self._model_manager:
+            try:
+                self._model_manager.save_model(
+                    model_id=model_id,
+                    version="1.0.0",
+                    model=model_info['model'],
+                    metadata={
+                        'description': f'{model_info["model_type"]} model',
+                        'created_by': 'RealModelTrainer',
+                    },
+                    model_type=model_info['model_type'],
+                    feature_columns=model_info.get('feature_columns'),
+                    metrics=model_info.get('metrics'),
+                    config=model_info.get('config')
+                )
+                logger.info(f"✅ 模型已保存到数据库: {model_id}")
+                return
+            except Exception as e:
+                logger.warning(f"保存到数据库失败: {e}，尝试文件系统存储")
+        
+        # 降级到文件系统存储
+        if filepath:
+            with open(filepath, 'wb') as f:
+                pickle.dump(model_info, f)
+            logger.info(f"模型已保存到文件: {filepath}")
+        else:
+            logger.warning("未指定文件路径，模型仅保存在内存中")
     
-    def load_model(self, filepath: str) -> str:
-        """从文件加载模型"""
-        with open(filepath, 'rb') as f:
-            model_info = pickle.load(f)
+    def load_model(self, model_id: str = None, filepath: str = None) -> str:
+        """
+        加载模型（优先从PostgreSQL，降级到文件系统）
         
-        model_id = f"loaded_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        self.models[model_id] = model_info
+        Args:
+            model_id: 模型ID（从数据库加载）
+            filepath: 文件路径（从文件加载）
+            
+        Returns:
+            加载的模型ID
+        """
+        # 优先从ModelManager加载（PostgreSQL）
+        if model_id and self._model_manager:
+            try:
+                model = self._model_manager.load_model(model_id)
+                if model is not None:
+                    loaded_model_id = f"loaded_{model_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    entry = self._model_manager.get_model_entry(model_id)
+                    self.models[loaded_model_id] = {
+                        'model': model,
+                        'model_type': entry.model_type if entry else 'unknown',
+                        'feature_columns': [],
+                        'metrics': {},
+                        'config': {}
+                    }
+                    logger.info(f"✅ 模型已从数据库加载: {model_id}")
+                    return loaded_model_id
+            except Exception as e:
+                logger.warning(f"从数据库加载失败: {e}，尝试文件系统加载")
         
-        logger.info(f"模型已加载: {model_id}")
-        return model_id
+        # 从文件系统加载
+        if filepath:
+            with open(filepath, 'rb') as f:
+                model_info = pickle.load(f)
+            
+            loaded_model_id = f"loaded_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            self.models[loaded_model_id] = model_info
+            
+            logger.info(f"模型已从文件加载: {loaded_model_id}")
+            return loaded_model_id
+        
+        raise ValueError("必须提供 model_id 或 filepath 参数")
 
 
 # 全局训练器实例
 _real_model_trainer = None
 
-def get_real_model_trainer() -> RealModelTrainer:
-    """获取全局真实模型训练器实例"""
+def get_real_model_trainer(use_model_manager: bool = True) -> RealModelTrainer:
+    """
+    获取全局真实模型训练器实例
+    
+    Args:
+        use_model_manager: 是否使用ModelManager进行持久化
+        
+    Returns:
+        RealModelTrainer实例
+    """
     global _real_model_trainer
     if _real_model_trainer is None:
-        _real_model_trainer = RealModelTrainer()
+        _real_model_trainer = RealModelTrainer(use_model_manager=use_model_manager)
     return _real_model_trainer

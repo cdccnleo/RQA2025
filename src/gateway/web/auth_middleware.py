@@ -222,9 +222,21 @@ class AuthManager:
     _instance = None
     _lock = threading.Lock()
     
-    JWT_SECRET = "your-secret-key-change-in-production"  # 生产环境需要更改
+    # JWT密钥从环境变量读取，禁止硬编码
+    # 设置环境变量 JWT_SECRET 来配置密钥
+    JWT_SECRET = os.environ.get('JWT_SECRET', '')
     JWT_ALGORITHM = "HS256"
     JWT_EXPIRATION_HOURS = 24
+    
+    @classmethod
+    def _ensure_secret_configured(cls):
+        """确保JWT密钥已配置"""
+        if not cls.JWT_SECRET:
+            raise ValueError(
+                "JWT密钥未设置！请设置环境变量 JWT_SECRET。\n"
+                "示例：set JWT_SECRET=your-secret-key-here\n"
+                "或：export JWT_SECRET=your-secret-key-here"
+            )
     
     def __new__(cls):
         if cls._instance is None:

@@ -74,18 +74,18 @@ def save_selection_task(task: Dict[str, Any]) -> bool:
         return False
 
 
-def _save_to_postgresql(task: Dict[str, Any]) -> bool:
-    """尝试保存任务到PostgreSQL"""
+def _ensure_selection_tasks_table(cursor) -> bool:
+    """
+    确保feature_selection_tasks表存在且结构正确
+    
+    Args:
+        cursor: 数据库游标
+        
+    Returns:
+        是否成功
+    """
     try:
-        from .postgresql_persistence import get_db_connection, return_db_connection
-        
-        conn = get_db_connection()
-        if not conn:
-            return False
-        
-        cursor = conn.cursor()
-        
-        # 确保表存在
+        # 创建表（如果不存在）
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS feature_selection_tasks (
                 task_id VARCHAR(100) PRIMARY KEY,
@@ -104,6 +104,29 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
             );
         """)
         
+        # 检查并添加缺失的列
+        cursor.execute("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'feature_selection_tasks'
+        """)
+        existing_columns = {row[0] for row in cursor.fetchall()}
+        
+        required_columns = {
+            'n_features': 'INTEGER DEFAULT 10',
+            'auto_execute': 'BOOLEAN DEFAULT TRUE',
+            'input_features': 'JSONB',
+            'total_input_features': 'INTEGER DEFAULT 0'
+        }
+        
+        for col_name, col_type in required_columns.items():
+            if col_name not in existing_columns:
+                cursor.execute(f"""
+                    ALTER TABLE feature_selection_tasks 
+                    ADD COLUMN IF NOT EXISTS {col_name} {col_type}
+                """)
+                logger.info(f"✅ 已添加缺失的列 {col_name} 到 feature_selection_tasks 表")
+        
         # 创建索引
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_selection_tasks_status 
@@ -117,6 +140,29 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
             CREATE INDEX IF NOT EXISTS idx_selection_tasks_created 
             ON feature_selection_tasks(created_at DESC);
         """)
+        
+        return True
+    except Exception as e:
+        logger.error(f"❌ 确保表结构失败: {e}")
+        return False
+
+
+def _save_to_postgresql(task: Dict[str, Any]) -> bool:
+    """尝试保存任务到PostgreSQL"""
+    try:
+        from .postgresql_persistence import get_db_connection, return_db_connection
+        
+        conn = get_db_connection()
+        if not conn:
+            return False
+        
+        cursor = conn.cursor()
+        
+        # 确保表存在且结构正确
+        if not _ensure_selection_tasks_table(cursor):
+            cursor.close()
+            return_db_connection(conn)
+            return False
         
         # 插入或更新任务
         cursor.execute("""
@@ -229,7 +275,7 @@ def list_selection_tasks(
 ) -> List[Dict[str, Any]]:
     """
     列出特征选择任务
-    优先从PostgreSQL查询，当数据库连接成功但无数据时降级到文件系统
+    优先从PostgreSQL查询，仅在数据库连接失败或不可用时降级到文件系统
     
     Args:
         limit: 返回数量限制
@@ -240,8 +286,7 @@ def list_selection_tasks(
         任务列表
     """
     tasks = []
-    db_connected = False
-    db_has_data = False
+    db_connection_failed = False
     
     try:
         # 优先从PostgreSQL查询
@@ -249,7 +294,6 @@ def list_selection_tasks(
         
         conn = get_db_connection()
         if conn:
-            db_connected = True
             cursor = conn.cursor()
             
             if status:
@@ -290,20 +334,18 @@ def list_selection_tasks(
             cursor.close()
             return_db_connection(conn)
             
-            if tasks:
-                db_has_data = True
-                logger.info(f"✅ 从PostgreSQL查询到 {len(tasks)} 个特征选择任务")
-                return tasks
-            else:
-                logger.info(f"📭 PostgreSQL连接成功但无数据，准备降级到文件系统")
+            logger.info(f"✅ 从PostgreSQL查询到 {len(tasks)} 个特征选择任务")
+            return tasks
         else:
-            logger.warning(f"⚠️ 无法获取数据库连接，直接降级到文件系统")
+            db_connection_failed = True
+            logger.warning(f"⚠️ 无法获取数据库连接，降级到文件系统")
             
     except Exception as e:
+        db_connection_failed = True
         logger.warning(f"⚠️ PostgreSQL查询异常: {e}，降级到文件系统")
     
-    # 当数据库连接成功但无数据，或连接失败时，从文件系统查询
-    if os.path.exists(FEATURE_SELECTION_TASKS_DIR):
+    # 仅在数据库连接失败时，从文件系统查询
+    if db_connection_failed and os.path.exists(FEATURE_SELECTION_TASKS_DIR):
         try:
             task_files = sorted(
                 [f for f in os.listdir(FEATURE_SELECTION_TASKS_DIR) if f.endswith('.json')],
@@ -325,16 +367,13 @@ def list_selection_tasks(
                     logger.warning(f"⚠️ 读取任务文件失败 {filename}: {e}")
             
             if file_tasks:
-                if db_connected and not db_has_data:
-                    logger.info(f"✅ 数据库无数据，已从文件系统加载 {len(file_tasks)} 个任务（降级成功）")
-                else:
-                    logger.info(f"✅ 从文件系统查询到 {len(file_tasks)} 个特征选择任务")
+                logger.info(f"✅ 从文件系统查询到 {len(file_tasks)} 个特征选择任务（降级模式）")
             
             return file_tasks
             
         except Exception as e:
             logger.error(f"❌ 从文件系统查询任务失败: {e}")
-    else:
+    elif db_connection_failed:
         logger.warning(f"⚠️ 文件系统任务目录不存在: {FEATURE_SELECTION_TASKS_DIR}")
     
     return tasks
@@ -343,7 +382,7 @@ def list_selection_tasks(
 def get_selection_tasks_stats() -> Dict[str, Any]:
     """
     获取特征选择任务统计
-    优先从PostgreSQL查询，当数据库连接成功但无数据时降级到文件系统
+    优先从PostgreSQL查询，仅在数据库连接失败或不可用时降级到文件系统
     
     Returns:
         统计信息
@@ -354,8 +393,7 @@ def get_selection_tasks_stats() -> Dict[str, Any]:
         "by_method": {}
     }
     
-    db_connected = False
-    db_has_data = False
+    db_connection_failed = False
     
     try:
         # 优先从PostgreSQL查询
@@ -363,52 +401,46 @@ def get_selection_tasks_stats() -> Dict[str, Any]:
         
         conn = get_db_connection()
         if conn:
-            db_connected = True
             cursor = conn.cursor()
             
             # 总数
             cursor.execute("SELECT COUNT(*) FROM feature_selection_tasks")
             db_total = cursor.fetchone()[0]
+            stats["total"] = db_total
             
-            if db_total > 0:
-                db_has_data = True
-                stats["total"] = db_total
-                
-                # 按状态统计
-                cursor.execute("""
-                    SELECT status, COUNT(*) 
-                    FROM feature_selection_tasks 
-                    GROUP BY status
-                """)
-                for row in cursor.fetchall():
-                    stats["by_status"][row[0]] = row[1]
-                
-                # 按方法统计
-                cursor.execute("""
-                    SELECT selection_method, COUNT(*) 
-                    FROM feature_selection_tasks 
-                    GROUP BY selection_method
-                """)
-                for row in cursor.fetchall():
-                    stats["by_method"][row[0]] = row[1]
-                
-                cursor.close()
-                return_db_connection(conn)
-                
-                logger.info(f"✅ 从PostgreSQL获取统计: 总计 {stats['total']} 个任务")
-                return stats
-            else:
-                logger.info(f"📭 PostgreSQL连接成功但无数据，准备从文件系统获取统计")
-                cursor.close()
-                return_db_connection(conn)
+            # 按状态统计
+            cursor.execute("""
+                SELECT status, COUNT(*) 
+                FROM feature_selection_tasks 
+                GROUP BY status
+            """)
+            for row in cursor.fetchall():
+                stats["by_status"][row[0]] = row[1]
+            
+            # 按方法统计
+            cursor.execute("""
+                SELECT selection_method, COUNT(*) 
+                FROM feature_selection_tasks 
+                GROUP BY selection_method
+            """)
+            for row in cursor.fetchall():
+                stats["by_method"][row[0]] = row[1]
+            
+            cursor.close()
+            return_db_connection(conn)
+            
+            logger.info(f"✅ 从PostgreSQL获取统计: 总计 {stats['total']} 个任务")
+            return stats
         else:
-            logger.warning(f"⚠️ 无法获取数据库连接，直接从文件系统获取统计")
+            db_connection_failed = True
+            logger.warning(f"⚠️ 无法获取数据库连接，降级到文件系统")
             
     except Exception as e:
+        db_connection_failed = True
         logger.warning(f"⚠️ PostgreSQL统计查询异常: {e}，降级到文件系统")
     
-    # 当数据库连接成功但无数据，或连接失败时，从文件系统统计
-    if os.path.exists(FEATURE_SELECTION_TASKS_DIR):
+    # 仅在数据库连接失败时，从文件系统统计
+    if db_connection_failed and os.path.exists(FEATURE_SELECTION_TASKS_DIR):
         try:
             file_count = 0
             for filename in os.listdir(FEATURE_SELECTION_TASKS_DIR):
@@ -433,14 +465,11 @@ def get_selection_tasks_stats() -> Dict[str, Any]:
                     logger.warning(f"⚠️ 读取任务文件失败 {filename}: {e}")
             
             if file_count > 0:
-                if db_connected and not db_has_data:
-                    logger.info(f"✅ 数据库无数据，已从文件系统获取统计: 总计 {stats['total']} 个任务（降级成功）")
-                else:
-                    logger.info(f"✅ 从文件系统获取统计: 总计 {stats['total']} 个任务")
+                logger.info(f"✅ 从文件系统获取统计: 总计 {stats['total']} 个任务（降级模式）")
                     
         except Exception as e:
             logger.error(f"❌ 从文件系统获取统计失败: {e}")
-    else:
+    elif db_connection_failed:
         logger.warning(f"⚠️ 文件系统任务目录不存在: {FEATURE_SELECTION_TASKS_DIR}")
     
     return stats
@@ -449,7 +478,7 @@ def get_selection_tasks_stats() -> Dict[str, Any]:
 def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
     """
     获取特征选择任务详情
-    优先从PostgreSQL查询，降级到文件系统
+    优先从PostgreSQL查询，仅在数据库连接失败或不可用时降级到文件系统
     
     Args:
         task_id: 任务ID
@@ -458,6 +487,8 @@ def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
         任务详情，不存在返回None
     """
     try:
+        db_connection_failed = False
+        
         # 优先从PostgreSQL查询
         try:
             from .postgresql_persistence import get_db_connection, return_db_connection
@@ -495,18 +526,30 @@ def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
                     
                     cursor.close()
                     return_db_connection(conn)
+                    logger.debug(f"✅ 从PostgreSQL获取任务详情: {task_id}")
                     return task
                 
                 cursor.close()
                 return_db_connection(conn)
+                logger.debug(f"📭 PostgreSQL中未找到任务: {task_id}")
+                return None
+            else:
+                db_connection_failed = True
+                logger.warning(f"⚠️ 无法获取数据库连接，降级到文件系统")
         except Exception as e:
-            logger.debug(f"从PostgreSQL查询失败: {e}")
+            db_connection_failed = True
+            logger.warning(f"⚠️ PostgreSQL查询异常: {e}，降级到文件系统")
         
-        # 如果PostgreSQL查询失败，从文件系统查询
-        filepath = os.path.join(FEATURE_SELECTION_TASKS_DIR, f"{task_id}.json")
-        if os.path.exists(filepath):
-            with open(filepath, 'r', encoding='utf-8') as f:
-                return json.load(f)
+        # 仅在数据库连接失败时，从文件系统查询
+        if db_connection_failed:
+            filepath = os.path.join(FEATURE_SELECTION_TASKS_DIR, f"{task_id}.json")
+            if os.path.exists(filepath):
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    task = json.load(f)
+                    logger.debug(f"✅ 从文件系统获取任务详情（降级模式）: {task_id}")
+                    return task
+            else:
+                logger.warning(f"⚠️ 文件系统中未找到任务: {task_id}")
         
         return None
         

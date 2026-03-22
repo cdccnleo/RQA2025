@@ -78,6 +78,17 @@ def get_data_logger(name: str):
 
 logger = get_data_logger('data_cache_manager')
 
+# 导入持久化模块
+try:
+    from ..persistence import (
+        CachePersistence, get_cache_persistence
+    )
+    PERSISTENCE_AVAILABLE = True
+except ImportError:
+    PERSISTENCE_AVAILABLE = False
+    CachePersistence = None
+    get_cache_persistence = None
+
 
 @dataclass
 class CacheConfig:
@@ -257,7 +268,7 @@ class approach:
 
 class CacheManager:
 
-    """缓存管理器"""
+    """缓存管理器（PostgreSQL优先策略）"""
 
     def __init__(self, config: CacheConfig = None, strategy: Optional[ICacheStrategy] = None):
 
@@ -270,6 +281,9 @@ class CacheManager:
 
         # 统计
         self._stats = CacheStats()
+        
+        # 初始化持久化层（PostgreSQL优先）
+        self._init_persistence_layer()
 
         # 磁盘缓存
         self.disk_cache = None
@@ -310,6 +324,36 @@ class CacheManager:
         # 添加logger属性
         self.logger = logger
         self._last_clear_time = 0.0
+
+    def _init_persistence_layer(self):
+        """
+        初始化持久化层（PostgreSQL优先策略）
+        
+        存储策略：
+        1. PostgreSQL 主存储（如果可用）
+        2. 磁盘缓存降级存储
+        3. 内存缓存（最快访问）
+        """
+        self._cache_persistence = None
+        self._pg_available = False
+        
+        if not PERSISTENCE_AVAILABLE:
+            self.logger.debug("持久化模块不可用，使用内存/磁盘缓存")
+            return
+        
+        try:
+            self._cache_persistence = get_cache_persistence()
+            
+            if self._cache_persistence and hasattr(self._cache_persistence, '_pg_available'):
+                self._pg_available = self._cache_persistence._pg_available
+                
+                if self._pg_available:
+                    self.logger.info("✅ CacheManager: PostgreSQL 持久化已启用")
+                else:
+                    self.logger.debug("CacheManager: PostgreSQL 不可用，使用文件系统存储")
+        except Exception as e:
+            self.logger.debug(f"初始化持久化层失败: {e}")
+            self._pg_available = False
 
     def stop(self):
         """停止缓存管理器，清理所有资源"""
@@ -467,7 +511,14 @@ class CacheManager:
                 return
 
     def get(self, key: str) -> Optional[Any]:
-        """获取缓存值"""
+        """
+        获取缓存值（PostgreSQL优先策略）
+        
+        检索顺序：
+        1. 内存缓存（最快）
+        2. PostgreSQL 持久化
+        3. 磁盘缓存
+        """
         with self._lock:
             # 先检查内存缓存
             entry = self._cache.get(key)
@@ -482,6 +533,27 @@ class CacheManager:
                 entry.access()
                 self._stats.hit()
                 return entry.value
+
+            # 检查 PostgreSQL 持久化层
+            if self._cache_persistence:
+                result = self._cache_persistence.load_cache_entry(key)
+                if result:
+                    data, metadata = result
+                    # 回填内存缓存
+                    ttl = None
+                    if metadata.expires_at:
+                        from datetime import datetime
+                        ttl = int((metadata.expires_at - datetime.now()).total_seconds())
+                        if ttl <= 0:
+                            # 已过期，删除并返回 None
+                            self._cache_persistence.delete_cache_entry(key)
+                            self._stats.miss()
+                            return None
+                    
+                    entry = CacheEntry(key=key, value=data, ttl=ttl or self.config.ttl)
+                    self._cache[key] = entry
+                    self._stats.hit()
+                    return data
 
             # 检查磁盘缓存
             if self.disk_cache:
@@ -503,7 +575,14 @@ class CacheManager:
             return None
 
     def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
-        """设置缓存值"""
+        """
+        设置缓存值（PostgreSQL优先策略）
+        
+        存储策略：
+        1. 内存缓存（始终存储）
+        2. PostgreSQL 持久化（如果可用）
+        3. 磁盘缓存（降级）
+        """
         try:
             with self._lock:
                 ttl = ttl or self.config.ttl
@@ -512,7 +591,16 @@ class CacheManager:
                 self._cache[key] = entry
                 self._stats.set()
 
-                # 保存到磁盘
+                # 保存到 PostgreSQL 持久化层
+                if self._cache_persistence:
+                    self._cache_persistence.save_cache_entry(
+                        cache_key=key,
+                        data=value,
+                        cache_type='general',
+                        ttl_seconds=ttl
+                    )
+
+                # 保存到磁盘（作为降级或备份）
                 if self.disk_cache:
                     self.disk_cache.set(key, value, ttl)
 

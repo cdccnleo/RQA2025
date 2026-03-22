@@ -1,31 +1,86 @@
+# Prometheus配置文件
+# RQA2025项目监控配置
+# 创建日期: 2026-03-28
+# 版本: 1.0.0
+
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  scrape_interval: 15s      # 默认抓取间隔
+  evaluation_interval: 15s  # 规则评估间隔
+  external_labels:
+    cluster: 'rqa2025'
+    replica: '{{.ExternalURL}}'
 
+# 告警规则文件
 rule_files:
-  - "alert_rules.yml"
+  - "rules/*.yml"
 
+# 告警管理器配置
 alerting:
   alertmanagers:
     - static_configs:
         - targets:
           - alertmanager:9093
 
+# 抓取配置
 scrape_configs:
-  - job_name: 'rqa2025-app'
-    static_configs:
-      - targets: ['rqa2025-app:8000']
-    metrics_path: '/metrics'
-    scrape_interval: 10s
-
+  # Prometheus自身监控
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+    metrics_path: /metrics
+    scrape_interval: 15s
 
-  - job_name: 'postgres'
+  # RQA2025应用监控
+  - job_name: 'rqa2025-app'
     static_configs:
-      - targets: ['db:5432']
+      - targets: ['localhost:8000']
+    metrics_path: /metrics
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    
+  # 系统节点监控
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+    scrape_interval: 15s
 
+  # 数据库监控
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['localhost:9187']
+    scrape_interval: 15s
+
+  # Redis监控
   - job_name: 'redis'
     static_configs:
-      - targets: ['redis:6379'] 
+      - targets: ['localhost:9121']
+    scrape_interval: 15s
+
+  # 策略服务监控
+  - job_name: 'strategy-service'
+    static_configs:
+      - targets: ['localhost:8001']
+    metrics_path: /metrics
+    scrape_interval: 10s
+
+  # 特征服务监控
+  - job_name: 'feature-service'
+    static_configs:
+      - targets: ['localhost:8002']
+    metrics_path: /metrics
+    scrape_interval: 10s
+
+  # 模型服务监控
+  - job_name: 'model-service'
+    static_configs:
+      - targets: ['localhost:8003']
+    metrics_path: /metrics
+    scrape_interval: 10s
+
+# 远程写入配置（可选，用于长期存储）
+# remote_write:
+#   - url: "http://remote-storage:9201/write"
+
+# 远程读取配置（可选）
+# remote_read:
+#   - url: "http://remote-storage:9201/read"

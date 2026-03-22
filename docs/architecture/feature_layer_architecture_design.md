@@ -2,13 +2,13 @@
 
 ## 📊 文档信息
 
-- **文档版本**: v3.2 (特征质量趋势分析及自定义评估设计更新)
+- **文档版本**: v3.3 (PostgreSQL优先持久化策略更新)
 - **创建日期**: 2024年12月
-- **更新日期**: 2026年2月23日
+- **更新日期**: 2026年3月22日
 - **架构层级**: 特征层 (Feature Layer)
 - **文件数量**: 128个Python文件 (治理后优化，迁移1个文件到分布式协调器层)
 - **主要功能**: 量化分析基础，特征工程，技术指标
-- **实现状态**: ✅ Phase 10.1特征层治理完成 + ✅ 统一工作节点注册表迁移完成
+- **实现状态**: ✅ Phase 10.1特征层治理完成 + ✅ 统一工作节点注册表迁移完成 + ✅ PostgreSQL优先持久化重构完成
 
 ---
 
@@ -132,6 +132,79 @@ CREATE TABLE user_feature_quality_config (
 - `DELETE /api/v1/features/engineering/quality/config/{config_id}` - 删除配置
 - `POST /api/v1/features/engineering/quality/config/{config_id}/reset` - 重置为默认
 - `POST /api/v1/features/engineering/quality/config/batch` - 批量创建配置
+
+#### v3.3 重要更新 (2026-03-22)
+
+**PostgreSQL优先持久化策略**:
+- 重构 `FeatureSaver` 支持PostgreSQL优先存储，数据库连接失败时自动降级到文件系统
+- 重构 `FeatureStore` 支持PostgreSQL后端存储，实现双写双读机制
+- 重构 `MetricsPersistenceManager` 使用PostgreSQL替代SQLite作为主存储
+- 所有持久化组件统一使用 `src.infrastructure.persistence.database_config` 配置模块
+
+**存储优先级策略**:
+```
+写入流程: PostgreSQL (主存储) → 文件系统 (降级存储)
+读取流程: PostgreSQL → 文件系统 (降级回退)
+同步机制: 文件系统 → PostgreSQL (数据同步)
+```
+
+**新增数据库表**:
+```sql
+-- 特征存储表 (feature_store)
+CREATE TABLE IF NOT EXISTS feature_store (
+    feature_id VARCHAR(64) PRIMARY KEY,
+    feature_name VARCHAR(255) NOT NULL,
+    shape JSONB NOT NULL,
+    columns JSONB NOT NULL,
+    dtypes JSONB NOT NULL,
+    format VARCHAR(20) NOT NULL DEFAULT 'parquet',
+    data BYTEA,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    checksum VARCHAR(64),
+    size_bytes BIGINT DEFAULT 0
+);
+
+-- 特征缓存表 (feature_cache)
+CREATE TABLE IF NOT EXISTS feature_cache (
+    feature_id VARCHAR(64) PRIMARY KEY,
+    feature_name VARCHAR(255) NOT NULL,
+    feature_type VARCHAR(50) NOT NULL,
+    params JSONB DEFAULT '{}',
+    dependencies JSONB DEFAULT '[]',
+    data BYTEA,
+    data_shape JSONB,
+    data_size_mb FLOAT DEFAULT 0,
+    checksum VARCHAR(64),
+    version VARCHAR(20) DEFAULT '1.0',
+    description TEXT,
+    tags JSONB DEFAULT '[]',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 监控指标表 (monitoring_metrics)
+CREATE TABLE IF NOT EXISTS monitoring_metrics (
+    id SERIAL PRIMARY KEY,
+    component_name VARCHAR(255) NOT NULL,
+    metric_name VARCHAR(255) NOT NULL,
+    metric_value DOUBLE PRECISION NOT NULL,
+    metric_type VARCHAR(50) NOT NULL,
+    timestamp DOUBLE PRECISION NOT NULL,
+    labels JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ttl DOUBLE PRECISION,
+    priority INTEGER DEFAULT 1,
+    data_tier VARCHAR(10) DEFAULT 'hot'
+);
+```
+
+**降级机制**:
+1. 初始化时测试PostgreSQL连接，失败则标记为不可用
+2. 写入操作优先尝试PostgreSQL，失败后降级到文件系统/SQLite
+3. 读取操作优先从PostgreSQL读取，失败后从降级存储读取
+4. 提供 `sync_to_postgresql()` 方法将降级存储数据同步到PostgreSQL
 
 ---
 

@@ -20,6 +20,10 @@ class FeatureErrorType(Enum):
     SELECTION = "selection"
     SENTIMENT = "sentiment"
     TECHNICAL = "technical"
+    STORAGE = "storage"           # 特征存储错误
+    LINEAGE = "lineage"           # 特征血缘错误
+    VERSION = "version"           # 特征版本错误
+    QUOTA = "quota"               # 存储配额错误
     GENERAL = "general"
 
 
@@ -265,6 +269,128 @@ class FeatureGeneralError(Exception):
         return self.message
 
 
+class FeatureStorageError(RuntimeError):
+
+    """特征存储错误"""
+
+    def __init__(self, message: str, storage_type: Optional[str] = None,
+                 feature_name: Optional[str] = None, operation: Optional[str] = None,
+                 original_error: Optional[Exception] = None):
+        self.message = message
+        self.storage_type = storage_type  # 'postgresql', 'filesystem'
+        self.feature_name = feature_name
+        self.operation = operation  # 'store', 'load', 'delete'
+        self.original_error = original_error
+        self.error_type = FeatureErrorType.STORAGE
+        super().__init__(self.message)
+
+    def __str__(self):
+        details = []
+        if self.storage_type:
+            details.append(f"存储类型: {self.storage_type}")
+        if self.feature_name:
+            details.append(f"特征名称: {self.feature_name}")
+        if self.operation:
+            details.append(f"操作: {self.operation}")
+        if self.original_error:
+            details.append(f"原始错误: {str(self.original_error)}")
+
+        if details:
+            return f"{self.message} - {'; '.join(details)}"
+        return self.message
+
+
+class FeatureLineageError(RuntimeError):
+
+    """特征血缘错误"""
+
+    def __init__(self, message: str, feature_name: Optional[str] = None,
+                 source_features: Optional[List[str]] = None,
+                 operation: Optional[str] = None, original_error: Optional[Exception] = None):
+        self.message = message
+        self.feature_name = feature_name
+        self.source_features = source_features or []
+        self.operation = operation  # 'register', 'query', 'analyze'
+        self.original_error = original_error
+        self.error_type = FeatureErrorType.LINEAGE
+        super().__init__(self.message)
+
+    def __str__(self):
+        details = []
+        if self.feature_name:
+            details.append(f"特征名称: {self.feature_name}")
+        if self.source_features:
+            details.append(f"源特征: {self.source_features}")
+        if self.operation:
+            details.append(f"操作: {self.operation}")
+        if self.original_error:
+            details.append(f"原始错误: {str(self.original_error)}")
+
+        if details:
+            return f"{self.message} - {'; '.join(details)}"
+        return self.message
+
+
+class FeatureVersionError(RuntimeError):
+
+    """特征版本错误"""
+
+    def __init__(self, message: str, feature_name: Optional[str] = None,
+                 version_id: Optional[str] = None, operation: Optional[str] = None,
+                 original_error: Optional[Exception] = None):
+        self.message = message
+        self.feature_name = feature_name
+        self.version_id = version_id
+        self.operation = operation  # 'create', 'rollback', 'compare'
+        self.original_error = original_error
+        self.error_type = FeatureErrorType.VERSION
+        super().__init__(self.message)
+
+    def __str__(self):
+        details = []
+        if self.feature_name:
+            details.append(f"特征名称: {self.feature_name}")
+        if self.version_id:
+            details.append(f"版本ID: {self.version_id}")
+        if self.operation:
+            details.append(f"操作: {self.operation}")
+        if self.original_error:
+            details.append(f"原始错误: {str(self.original_error)}")
+
+        if details:
+            return f"{self.message} - {'; '.join(details)}"
+        return self.message
+
+
+class FeatureQuotaError(RuntimeError):
+
+    """特征存储配额错误"""
+
+    def __init__(self, message: str, current_usage: Optional[float] = None,
+                 quota_limit: Optional[float] = None, unit: str = "MB",
+                 original_error: Optional[Exception] = None):
+        self.message = message
+        self.current_usage = current_usage
+        self.quota_limit = quota_limit
+        self.unit = unit
+        self.original_error = original_error
+        self.error_type = FeatureErrorType.QUOTA
+        super().__init__(self.message)
+
+    def __str__(self):
+        details = []
+        if self.current_usage is not None:
+            details.append(f"当前使用: {self.current_usage} {self.unit}")
+        if self.quota_limit is not None:
+            details.append(f"配额限制: {self.quota_limit} {self.unit}")
+        if self.original_error:
+            details.append(f"原始错误: {str(self.original_error)}")
+
+        if details:
+            return f"{self.message} - {'; '.join(details)}"
+        return self.message
+
+
 # 异常工厂类
 
 class FeatureExceptionFactory:
@@ -307,6 +433,26 @@ class FeatureExceptionFactory:
         return FeatureTechnicalError(message, **kwargs)
 
     @staticmethod
+    def create_storage_error(message: str, **kwargs) -> FeatureStorageError:
+        """创建存储错误"""
+        return FeatureStorageError(message, **kwargs)
+
+    @staticmethod
+    def create_lineage_error(message: str, **kwargs) -> FeatureLineageError:
+        """创建血缘错误"""
+        return FeatureLineageError(message, **kwargs)
+
+    @staticmethod
+    def create_version_error(message: str, **kwargs) -> FeatureVersionError:
+        """创建版本错误"""
+        return FeatureVersionError(message, **kwargs)
+
+    @staticmethod
+    def create_quota_error(message: str, **kwargs) -> FeatureQuotaError:
+        """创建配额错误"""
+        return FeatureQuotaError(message, **kwargs)
+
+    @staticmethod
     def create_general_error(message: str, **kwargs) -> FeatureGeneralError:
         """创建通用错误"""
         return FeatureGeneralError(message, **kwargs)
@@ -345,6 +491,14 @@ class FeatureExceptionHandler:
             return self._enhance_config_validation_error(exception, context)
         elif isinstance(exception, FeatureProcessingError):
             return self._enhance_processing_error(exception, context)
+        elif isinstance(exception, FeatureStorageError):
+            return self._enhance_storage_error(exception, context)
+        elif isinstance(exception, FeatureLineageError):
+            return self._enhance_lineage_error(exception, context)
+        elif isinstance(exception, FeatureVersionError):
+            return self._enhance_version_error(exception, context)
+        elif isinstance(exception, FeatureQuotaError):
+            return self._enhance_quota_error(exception, context)
         else:
             return exception
 
@@ -377,6 +531,50 @@ class FeatureExceptionHandler:
             error.step = context["step"]
         return error
 
+    def _enhance_storage_error(self, error: FeatureStorageError,
+                               context: Optional[dict]) -> FeatureStorageError:
+        """增强存储错误"""
+        if context and "storage_type" in context:
+            error.storage_type = context["storage_type"]
+        if context and "feature_name" in context:
+            error.feature_name = context["feature_name"]
+        if context and "operation" in context:
+            error.operation = context["operation"]
+        return error
+
+    def _enhance_lineage_error(self, error: FeatureLineageError,
+                               context: Optional[dict]) -> FeatureLineageError:
+        """增强血缘错误"""
+        if context and "feature_name" in context:
+            error.feature_name = context["feature_name"]
+        if context and "source_features" in context:
+            error.source_features = context["source_features"]
+        if context and "operation" in context:
+            error.operation = context["operation"]
+        return error
+
+    def _enhance_version_error(self, error: FeatureVersionError,
+                               context: Optional[dict]) -> FeatureVersionError:
+        """增强版本错误"""
+        if context and "feature_name" in context:
+            error.feature_name = context["feature_name"]
+        if context and "version_id" in context:
+            error.version_id = context["version_id"]
+        if context and "operation" in context:
+            error.operation = context["operation"]
+        return error
+
+    def _enhance_quota_error(self, error: FeatureQuotaError,
+                             context: Optional[dict]) -> FeatureQuotaError:
+        """增强配额错误"""
+        if context and "current_usage" in context:
+            error.current_usage = context["current_usage"]
+        if context and "quota_limit" in context:
+            error.quota_limit = context["quota_limit"]
+        if context and "unit" in context:
+            error.unit = context["unit"]
+        return error
+
     def _get_timestamp(self) -> str:
         """获取时间戳"""
         from datetime import datetime
@@ -385,13 +583,58 @@ class FeatureExceptionHandler:
     def get_error_summary(self) -> dict:
         """获取错误摘要"""
         error_types = {}
+        error_categories = {
+            "data_validation": 0,
+            "config_validation": 0,
+            "processing": 0,
+            "standardization": 0,
+            "selection": 0,
+            "sentiment": 0,
+            "technical": 0,
+            "storage": 0,
+            "lineage": 0,
+            "version": 0,
+            "quota": 0,
+            "general": 0,
+            "other": 0
+        }
+
         for error_info in self.error_history:
             error_type = error_info["error_type"]
             error_types[error_type] = error_types.get(error_type, 0) + 1
 
+            # 分类统计
+            if "DataValidation" in error_type:
+                error_categories["data_validation"] += 1
+            elif "ConfigValidation" in error_type:
+                error_categories["config_validation"] += 1
+            elif "Processing" in error_type:
+                error_categories["processing"] += 1
+            elif "Standardization" in error_type:
+                error_categories["standardization"] += 1
+            elif "Selection" in error_type:
+                error_categories["selection"] += 1
+            elif "Sentiment" in error_type:
+                error_categories["sentiment"] += 1
+            elif "Technical" in error_type:
+                error_categories["technical"] += 1
+            elif "Storage" in error_type:
+                error_categories["storage"] += 1
+            elif "Lineage" in error_type:
+                error_categories["lineage"] += 1
+            elif "Version" in error_type:
+                error_categories["version"] += 1
+            elif "Quota" in error_type:
+                error_categories["quota"] += 1
+            elif "General" in error_type:
+                error_categories["general"] += 1
+            else:
+                error_categories["other"] += 1
+
         return {
             "total_errors": self.error_count,
             "error_types": error_types,
+            "error_categories": error_categories,
             "recent_errors": self.error_history[-10:] if self.error_history else []
         }
 

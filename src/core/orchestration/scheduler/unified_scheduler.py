@@ -50,6 +50,28 @@ except ImportError:
     EventDrivenTaskTrigger = None
     SchedulerEventType = None
 
+# 导入批量处理器模块
+try:
+    from .performance.batch_processor import (
+        BatchProcessor, BatchConfig, BatchStrategy, BatchTask
+    )
+    BATCH_PROCESSOR_AVAILABLE = True
+except ImportError:
+    BATCH_PROCESSOR_AVAILABLE = False
+    BatchProcessor = None
+    BatchConfig = None
+    BatchStrategy = None
+    BatchTask = None
+
+# 导入任务缓存模块
+try:
+    from .performance.task_cache import TaskCache, CacheConfig
+    TASK_CACHE_AVAILABLE = True
+except ImportError:
+    TASK_CACHE_AVAILABLE = False
+    TaskCache = None
+    CacheConfig = None
+
 
 class UnifiedScheduler(BaseScheduler):
     """
@@ -83,7 +105,11 @@ class UnifiedScheduler(BaseScheduler):
         enable_alerting: bool = False,
         alert_config: Optional[Dict[str, Any]] = None,
         enable_event_bus: bool = False,
-        event_bus_config: Optional[Dict[str, Any]] = None
+        event_bus_config: Optional[Dict[str, Any]] = None,
+        enable_batch_processing: bool = True,
+        batch_config: Optional[Dict[str, Any]] = None,
+        enable_task_cache: bool = True,
+        cache_config: Optional[Dict[str, Any]] = None
     ):
         """
         初始化统一调度器
@@ -97,6 +123,10 @@ class UnifiedScheduler(BaseScheduler):
             alert_config: 告警配置
             enable_event_bus: 是否启用事件总线
             event_bus_config: 事件总线配置
+            enable_batch_processing: 是否启用批量处理
+            batch_config: 批量处理配置
+            enable_task_cache: 是否启用任务缓存
+            cache_config: 缓存配置
         """
         # 避免重复初始化
         if hasattr(self, '_initialized'):
@@ -125,8 +155,51 @@ class UnifiedScheduler(BaseScheduler):
             "check_interval": 1,  # 调度检查间隔（秒）
             "enable_persistence": enable_persistence,
             "enable_alerting": enable_alerting,
-            "enable_event_bus": enable_event_bus
+            "enable_event_bus": enable_event_bus,
+            "enable_batch_processing": enable_batch_processing,
+            "enable_task_cache": enable_task_cache
         }
+
+        # 初始化批量处理器
+        self._batch_processor = None
+        if enable_batch_processing and BATCH_PROCESSOR_AVAILABLE:
+            try:
+                config = None
+                if batch_config:
+                    config = BatchConfig(**batch_config)
+                else:
+                    config = BatchConfig(
+                        strategy=BatchStrategy.HYBRID,
+                        max_batch_size=50,
+                        max_wait_time_ms=5000,
+                        min_batch_size=10
+                    )
+                self._batch_processor = BatchProcessor(
+                    config=config,
+                    batch_handler=self._handle_batch_tasks
+                )
+                logger.info("✅ 批量处理器已启用")
+            except Exception as e:
+                logger.warning(f"⚠️ 批量处理器初始化失败: {e}")
+
+        # 初始化任务缓存
+        self._task_cache = None
+        if enable_task_cache and TASK_CACHE_AVAILABLE:
+            try:
+                config = None
+                if cache_config:
+                    config = CacheConfig(**cache_config)
+                else:
+                    config = CacheConfig(
+                        max_size=1000,
+                        default_ttl_seconds=300,
+                        enable_prefetch=True,
+                        prefetch_threshold=3
+                    )
+                self._task_cache = TaskCache(config=config)
+                logger.info("✅ 任务缓存已启用")
+            except Exception as e:
+                logger.warning(f"⚠️ 任务缓存初始化失败: {e}")
 
         # 初始化持久化
         self._persistence = None
@@ -366,6 +439,14 @@ class UnifiedScheduler(BaseScheduler):
             # 启动工作进程管理器
             await self._worker_manager.start()
             
+            # 启动批量处理器
+            if self._batch_processor:
+                await self._batch_processor.start()
+            
+            # 启动任务缓存
+            if self._task_cache:
+                await self._task_cache.start()
+            
             # 启动调度循环
             self._running = True
             self._started_at = datetime.now()
@@ -399,6 +480,14 @@ class UnifiedScheduler(BaseScheduler):
                     await self._scheduler_task
                 except asyncio.CancelledError:
                     pass
+            
+            # 停止批量处理器
+            if self._batch_processor:
+                await self._batch_processor.stop()
+            
+            # 停止任务缓存
+            if self._task_cache:
+                await self._task_cache.stop()
             
             # 停止工作进程管理器
             await self._worker_manager.stop()
@@ -1638,6 +1727,360 @@ class UnifiedScheduler(BaseScheduler):
             logger.error(f"订阅外部事件失败: {e}")
             return False
 
+    # ============ 批量处理相关方法 ============
+
+    async def _handle_batch_tasks(self, batch_tasks: List[Any]) -> None:
+        """
+        处理批量任务
+
+        Args:
+            batch_tasks: 批量任务列表
+        """
+        if not batch_tasks:
+            return
+
+        task_type = batch_tasks[0].task_type if hasattr(batch_tasks[0], 'task_type') else 'unknown'
+        logger.info(f"🔄 批量处理 {len(batch_tasks)} 个任务 (类型: {task_type})")
+
+        try:
+            # 按任务类型分组处理
+            tasks_by_type: Dict[str, List[Any]] = {}
+            for task in batch_tasks:
+                ttype = task.task_type if hasattr(task, 'task_type') else 'unknown'
+                if ttype not in tasks_by_type:
+                    tasks_by_type[ttype] = []
+                tasks_by_type[ttype].append(task)
+
+            # 并行处理不同类型的任务
+            processing_tasks = []
+            for ttype, tasks in tasks_by_type.items():
+                processing_tasks.append(self._process_batch_by_type(ttype, tasks))
+
+            await asyncio.gather(*processing_tasks, return_exceptions=True)
+
+            logger.info(f"✅ 批量处理完成: {len(batch_tasks)} 个任务")
+
+        except Exception as e:
+            logger.error(f"❌ 批量处理失败: {e}")
+
+    async def _process_batch_by_type(self, task_type: str, tasks: List[Any]) -> None:
+        """
+        按类型处理批量任务
+
+        Args:
+            task_type: 任务类型
+            tasks: 任务列表
+        """
+        try:
+            # 获取任务处理器
+            handler = self._task_manager._handlers.get(task_type)
+
+            if handler and asyncio.iscoroutinefunction(handler):
+                # 批量执行异步处理器
+                # 构建批量payload
+                batch_payload = {
+                    'batch_mode': True,
+                    'tasks': [
+                        {
+                            'task_id': task.task_id if hasattr(task, 'task_id') else str(task),
+                            'payload': task.payload if hasattr(task, 'payload') else {}
+                        }
+                        for task in tasks
+                    ],
+                    'task_count': len(tasks)
+                }
+
+                # 执行批量处理
+                await handler(batch_payload)
+            else:
+                # 逐个处理（降级方案）
+                for task in tasks:
+                    task_id = task.task_id if hasattr(task, 'task_id') else str(task)
+                    payload = task.payload if hasattr(task, 'payload') else {}
+
+                    # 提交单个任务
+                    await self.submit_task(
+                        task_type=task_type,
+                        payload=payload,
+                        task_id=task_id
+                    )
+
+        except Exception as e:
+            logger.error(f"❌ 批量处理类型 {task_type} 失败: {e}")
+
+    async def submit_batch_task(
+        self,
+        task_type: str,
+        payload: Dict[str, Any],
+        priority: int = 5,
+        timeout_seconds: Optional[int] = None,
+        max_retries: int = 3,
+        retry_delay_seconds: int = 60
+    ) -> Optional[str]:
+        """
+        提交批量任务
+
+        将任务提交到批量处理器，等待批量执行
+
+        Args:
+            task_type: 任务类型
+            payload: 任务数据
+            priority: 优先级
+            timeout_seconds: 超时时间
+            max_retries: 最大重试次数
+            retry_delay_seconds: 重试间隔
+
+        Returns:
+            str: 任务ID，如果批量处理器不可用则返回None
+        """
+        if not self._batch_processor:
+            # 批量处理器不可用，降级为普通任务提交
+            logger.debug("批量处理器不可用，降级为普通任务提交")
+            return await self.submit_task(
+                task_type=task_type,
+                payload=payload,
+                priority=priority,
+                timeout_seconds=timeout_seconds,
+                max_retries=max_retries,
+                retry_delay_seconds=retry_delay_seconds
+            )
+
+        try:
+            # 生成任务ID
+            task_id = generate_task_id()
+
+            # 提交到批量处理器
+            success = await self._batch_processor.submit(
+                task_id=task_id,
+                task_type=task_type,
+                payload=payload,
+                priority=priority,
+                timeout_seconds=timeout_seconds
+            )
+
+            if success:
+                logger.debug(f"✅ 任务已提交到批量处理器: {task_id}")
+                return task_id
+            else:
+                # 提交失败，降级为普通任务
+                logger.warning(f"批量提交失败，降级为普通任务: {task_id}")
+                return await self.submit_task(
+                    task_type=task_type,
+                    payload=payload,
+                    priority=priority,
+                    timeout_seconds=timeout_seconds,
+                    max_retries=max_retries,
+                    retry_delay_seconds=retry_delay_seconds
+                )
+
+        except Exception as e:
+            logger.error(f"❌ 批量任务提交失败: {e}")
+            # 降级为普通任务
+            return await self.submit_task(
+                task_type=task_type,
+                payload=payload,
+                priority=priority,
+                timeout_seconds=timeout_seconds,
+                max_retries=max_retries,
+                retry_delay_seconds=retry_delay_seconds
+            )
+
+    def get_batch_processor_stats(self) -> Dict[str, Any]:
+        """
+        获取批量处理器统计信息
+
+        Returns:
+            Dict: 批量处理器统计信息
+        """
+        if not self._batch_processor:
+            return {
+                "enabled": False,
+                "message": "批量处理器未启用"
+            }
+
+        try:
+            stats = self._batch_processor.get_statistics()
+            batch_status = self._batch_processor.get_batch_status()
+
+            return {
+                "enabled": True,
+                "statistics": stats,
+                "batch_status": batch_status
+            }
+        except Exception as e:
+            return {
+                "enabled": True,
+                "error": str(e)
+            }
+
+    async def flush_batch_processor(self) -> int:
+        """
+        强制刷新批量处理器
+
+        立即处理所有待处理的批量任务
+
+        Returns:
+            int: 处理的任务数量
+        """
+        if not self._batch_processor:
+            return 0
+
+        try:
+            pending_count = self._batch_processor.get_pending_count()
+            await self._batch_processor._flush_all_batches()
+            logger.info(f"✅ 批量处理器已刷新，处理 {pending_count} 个任务")
+            return pending_count
+        except Exception as e:
+            logger.error(f"❌ 刷新批量处理器失败: {e}")
+            return 0
+
+    # ============ 任务缓存相关方法 ============
+
+    async def get_cached_task_result(
+        self,
+        task_type: str,
+        payload: Dict[str, Any]
+    ) -> Optional[Any]:
+        """
+        获取缓存的任务结果
+
+        Args:
+            task_type: 任务类型
+            payload: 任务数据
+
+        Returns:
+            Optional[Any]: 缓存的结果，不存在则返回None
+        """
+        if not self._task_cache:
+            return None
+
+        try:
+            return await self._task_cache.get(task_type, payload)
+        except Exception as e:
+            logger.error(f"❌ 获取缓存失败: {e}")
+            return None
+
+    async def set_cached_task_result(
+        self,
+        task_type: str,
+        payload: Dict[str, Any],
+        result: Any,
+        ttl_seconds: Optional[int] = None
+    ) -> bool:
+        """
+        设置任务结果缓存
+
+        Args:
+            task_type: 任务类型
+            payload: 任务数据
+            result: 任务结果
+            ttl_seconds: 缓存有效期（秒）
+
+        Returns:
+            bool: 是否成功
+        """
+        if not self._task_cache:
+            return False
+
+        try:
+            return await self._task_cache.set(task_type, payload, result, ttl_seconds)
+        except Exception as e:
+            logger.error(f"❌ 设置缓存失败: {e}")
+            return False
+
+    async def clear_task_cache(self) -> int:
+        """
+        清空任务缓存
+
+        Returns:
+            int: 清空的条目数
+        """
+        if not self._task_cache:
+            return 0
+
+        try:
+            return await self._task_cache.clear()
+        except Exception as e:
+            logger.error(f"❌ 清空缓存失败: {e}")
+            return 0
+
+    def get_task_cache_stats(self) -> Dict[str, Any]:
+        """
+        获取任务缓存统计信息
+
+        Returns:
+            Dict: 缓存统计信息
+        """
+        if not self._task_cache:
+            return {
+                "enabled": False,
+                "message": "任务缓存未启用"
+            }
+
+        try:
+            stats = self._task_cache.get_statistics()
+            return {
+                "enabled": True,
+                "statistics": stats
+            }
+        except Exception as e:
+            return {
+                "enabled": True,
+                "error": str(e)
+            }
+
+    async def execute_task_with_cache(
+        self,
+        task_type: str,
+        payload: Dict[str, Any],
+        handler: Callable,
+        priority: int = 5,
+        timeout_seconds: Optional[int] = None,
+        ttl_seconds: Optional[int] = None,
+        use_cache: bool = True
+    ) -> Any:
+        """
+        执行带缓存的任务
+
+        先检查缓存，如果命中则直接返回缓存结果；
+        如果未命中则执行任务，并将结果存入缓存。
+
+        Args:
+            task_type: 任务类型
+            payload: 任务数据
+            handler: 任务处理函数
+            priority: 优先级
+            timeout_seconds: 超时时间
+            ttl_seconds: 缓存有效期
+            use_cache: 是否使用缓存
+
+        Returns:
+            Any: 任务结果
+        """
+        # 检查缓存
+        if use_cache and self._task_cache:
+            cached_result = await self._task_cache.get(task_type, payload)
+            if cached_result is not None:
+                logger.debug(f"✅ 缓存命中: {task_type}")
+                return cached_result
+
+        # 执行任务
+        try:
+            if asyncio.iscoroutinefunction(handler):
+                result = await handler(payload)
+            else:
+                result = handler(payload)
+
+            # 存入缓存
+            if use_cache and self._task_cache:
+                await self._task_cache.set(task_type, payload, result, ttl_seconds)
+
+            return result
+
+        except Exception as e:
+            logger.error(f"❌ 任务执行失败: {e}")
+            raise
+
 
 # 全局调度器实例
 _scheduler_instance: Optional[UnifiedScheduler] = None
@@ -1651,7 +2094,11 @@ def get_unified_scheduler(
     enable_alerting: bool = False,
     alert_config: Optional[Dict[str, Any]] = None,
     enable_event_bus: bool = False,
-    event_bus_config: Optional[Dict[str, Any]] = None
+    event_bus_config: Optional[Dict[str, Any]] = None,
+    enable_batch_processing: bool = True,
+    batch_config: Optional[Dict[str, Any]] = None,
+    enable_task_cache: bool = True,
+    cache_config: Optional[Dict[str, Any]] = None
 ) -> UnifiedScheduler:
     """
     获取统一调度器实例（单例）
@@ -1665,6 +2112,10 @@ def get_unified_scheduler(
         alert_config: 告警配置
         enable_event_bus: 是否启用事件总线
         event_bus_config: 事件总线配置
+        enable_batch_processing: 是否启用批量处理
+        batch_config: 批量处理配置
+        enable_task_cache: 是否启用任务缓存
+        cache_config: 缓存配置
 
     Returns:
         UnifiedScheduler: 统一调度器实例
@@ -1680,7 +2131,11 @@ def get_unified_scheduler(
             enable_alerting=enable_alerting,
             alert_config=alert_config,
             enable_event_bus=enable_event_bus,
-            event_bus_config=event_bus_config
+            event_bus_config=event_bus_config,
+            enable_batch_processing=enable_batch_processing,
+            batch_config=batch_config,
+            enable_task_cache=enable_task_cache,
+            cache_config=cache_config
         )
         
         # 注册特征提取任务处理器
