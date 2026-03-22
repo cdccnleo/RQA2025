@@ -276,9 +276,13 @@ class FeatureTaskExecutor:
                     logger.error(f"❌ 发布 FEATURES_EXTRACTED 事件失败: {e}")
             
             # 自动创建特征选择任务
+            logger.info(f"🔍 检查特征选择任务创建条件: FEATURE_SELECTION_AVAILABLE={FEATURE_SELECTION_AVAILABLE}, technical_features存在={'technical_features' in locals()}, 特征数量={len(technical_features) if 'technical_features' in locals() else 0}")
+            
             if FEATURE_SELECTION_AVAILABLE and 'technical_features' in locals() and technical_features:
                 try:
                     symbol = result.get("symbols", [None])[0] if result.get("symbols") else None
+                    logger.info(f"🔍 准备创建特征选择任务，股票: {symbol}, 特征数量: {len(technical_features)}")
+                    
                     if symbol:
                         selection_task = create_selection_task(
                             symbol=symbol,
@@ -298,6 +302,13 @@ class FeatureTaskExecutor:
                         logger.warning(f"⚠️ 无法创建特征选择任务：缺少股票代码")
                 except Exception as e:
                     logger.error(f"❌ 自动创建特征选择任务失败: {e}", exc_info=True)
+            else:
+                if not FEATURE_SELECTION_AVAILABLE:
+                    logger.warning(f"⚠️ 特征选择功能不可用，FEATURE_SELECTION_AVAILABLE={FEATURE_SELECTION_AVAILABLE}")
+                elif 'technical_features' not in locals():
+                    logger.warning(f"⚠️ technical_features变量不存在")
+                elif not technical_features:
+                    logger.warning(f"⚠️ technical_features为空列表")
             
             # 通知调度器任务完成（使用调度器的task_id）
             if self.scheduler:

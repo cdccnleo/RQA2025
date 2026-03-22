@@ -93,7 +93,7 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
                 status VARCHAR(20) NOT NULL DEFAULT 'pending',
                 progress INTEGER DEFAULT 0,
                 symbol VARCHAR(20),
-                source_task_id VARCHAR(100),
+                parent_task_id VARCHAR(100),
                 selection_method VARCHAR(50),
                 n_features INTEGER DEFAULT 10,
                 auto_execute BOOLEAN DEFAULT TRUE,
@@ -122,7 +122,7 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
         cursor.execute("""
             INSERT INTO feature_selection_tasks (
                 task_id, task_type, status, progress, symbol,
-                source_task_id, selection_method, n_features, auto_execute,
+                parent_task_id, selection_method, n_features, auto_execute,
                 input_features, total_input_features, updated_at
             ) VALUES (
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP
@@ -138,7 +138,7 @@ def _save_to_postgresql(task: Dict[str, Any]) -> bool:
             task.get("status", "pending"),
             task.get("progress", 0),
             task.get("symbol"),
-            task.get("source_task_id"),
+            task.get("parent_task_id") or task.get("source_task_id"),
             task.get("selection_method"),
             task.get("n_features", 10),
             task.get("auto_execute", True),
@@ -255,7 +255,7 @@ def list_selection_tasks(
             if status:
                 cursor.execute("""
                     SELECT task_id, task_type, status, progress, symbol,
-                           source_task_id, selection_method, n_features,
+                           parent_task_id, selection_method, n_features,
                            created_at, updated_at
                     FROM feature_selection_tasks
                     WHERE status = %s
@@ -265,7 +265,7 @@ def list_selection_tasks(
             else:
                 cursor.execute("""
                     SELECT task_id, task_type, status, progress, symbol,
-                           source_task_id, selection_method, n_features,
+                           parent_task_id, selection_method, n_features,
                            created_at, updated_at
                     FROM feature_selection_tasks
                     ORDER BY created_at DESC
@@ -280,7 +280,7 @@ def list_selection_tasks(
                     "status": row[2],
                     "progress": row[3],
                     "symbol": row[4],
-                    "source_task_id": row[5],
+                    "parent_task_id": row[5],
                     "selection_method": row[6],
                     "n_features": row[7],
                     "created_at": row[8].isoformat() if row[8] else None,
@@ -468,7 +468,7 @@ def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
                 
                 cursor.execute("""
                     SELECT task_id, task_type, status, progress, symbol,
-                           source_task_id, selection_method, n_features,
+                           parent_task_id, selection_method, n_features,
                            auto_execute, input_features, total_input_features,
                            created_at, updated_at
                     FROM feature_selection_tasks
@@ -483,7 +483,7 @@ def get_selection_task(task_id: str) -> Optional[Dict[str, Any]]:
                         "status": row[2],
                         "progress": row[3],
                         "symbol": row[4],
-                        "source_task_id": row[5],
+                        "parent_task_id": row[5],
                         "selection_method": row[6],
                         "n_features": row[7],
                         "auto_execute": row[8],
@@ -549,6 +549,7 @@ def create_selection_task(
             "status": "pending",
             "progress": 0,
             "symbol": symbol,
+            "parent_task_id": source_task_id,
             "source_task_id": source_task_id,
             "selection_method": selection_method,
             "n_features": n_features,

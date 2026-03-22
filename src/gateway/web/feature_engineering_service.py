@@ -206,7 +206,7 @@ def create_feature_task(
         
         # 检查是否有自定义任务ID前缀
         config = config or {}
-        task_id_prefix = config.get('task_id_prefix', 'task')
+        task_id_prefix = config.get('task_id_prefix', 'feature_task')
         
         engine = get_feature_engine()
         if engine and hasattr(engine, 'create_task'):

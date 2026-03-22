@@ -1147,6 +1147,9 @@ async def get_features_endpoint(
                     {
                         "timestamp": record.get("timestamp", 0),
                         "selected_count": len(record.get("selected_features", [])),
+                        "selected_feature_count": record.get("selected_feature_count", 0),
+                        "input_feature_count": record.get("input_feature_count", 0),
+                        "input_features": record.get("input_features", []),
                         "method": record.get("selection_method", "unknown"),
                         "task_id": record.get("task_id", ""),
                         "symbol": record.get("symbol", "")

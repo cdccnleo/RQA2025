@@ -2114,11 +2114,12 @@
             document.getElementById('selectionCount').textContent = totalCount;
 
             if (totalCount > 0) {
-                // 计算平均选择比例（API返回的是selected_count，需要计算比例）
+                // 计算平均选择比例（使用实际的input_feature_count或input_features长度）
                 const avgRatio = selectionHistory.reduce((sum, h) => {
-                    // 假设平均输入特征数为30，计算选择比例
-                    const inputCount = h.input_count || 30;
-                    const ratio = h.selected_count / inputCount;
+                    // 优先使用input_feature_count字段，其次使用input_features数组长度，最后使用selected_count作为保底
+                    const inputCount = h.input_feature_count || (h.input_features ? h.input_features.length : 0) || h.selected_count || 1;
+                    const selectedCount = h.selected_count || h.selected_feature_count || 0;
+                    const ratio = selectedCount / inputCount;
                     return sum + ratio;
                 }, 0) / totalCount;
                 document.getElementById('selectionRatio').textContent = (avgRatio * 100).toFixed(1) + '%';
@@ -2213,18 +2214,20 @@
                         const method = h.method || h.selection_method || '--';
                         // 获取股票代码
                         const symbol = h.symbol || '--';
-                        // 使用selected_count作为输入和输出（API中没有input_count）
-                        const selectedCount = h.selected_count || '--';
-                        // 计算选择比例（假设输入特征数为10作为默认值）
-                        const ratio = selectedCount !== '--' ? ((selectedCount / 10) * 100).toFixed(1) + '%' : '--';
+                        // 获取输入特征数（优先使用input_feature_count，其次使用input_features数组长度）
+                        const inputCount = h.input_feature_count || (h.input_features ? h.input_features.length : 0) || h.selected_count || 0;
+                        // 获取选中特征数
+                        const selectedCount = h.selected_count || h.selected_feature_count || 0;
+                        // 计算选择比例
+                        const ratio = (inputCount > 0 && selectedCount !== '--') ? ((selectedCount / inputCount) * 100).toFixed(1) + '%' : '--';
                         
                         return `
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-2 text-sm text-gray-900">${date}</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">${symbol}</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">${method}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900">10</td>
-                                <td class="px-4 py-2 text-sm text-gray-900">${selectedCount}</td>
+                                <td class="px-4 py-2 text-sm text-gray-900">${inputCount || '--'}</td>
+                                <td class="px-4 py-2 text-sm text-gray-900">${selectedCount || '--'}</td>
                                 <td class="px-4 py-2 text-sm text-gray-900">${ratio}</td>
                                 <td class="px-4 py-2 text-sm">
                                     <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">完成</span>

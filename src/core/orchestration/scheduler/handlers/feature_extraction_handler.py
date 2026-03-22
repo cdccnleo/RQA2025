@@ -72,7 +72,7 @@ async def feature_extraction_handler(task: Dict[str, Any]) -> Dict[str, Any]:
         _update_task_status(task_id, 'running', progress=50)
         
         # 执行特征提取
-        result = await executor._execute_task_async(feature_task)
+        result = await executor._execute_task(feature_task)
         
         # 4. 更新任务状态为completed
         processing_time = time.time() - start_time
