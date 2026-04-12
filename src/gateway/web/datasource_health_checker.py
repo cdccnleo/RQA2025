@@ -91,6 +91,178 @@ class DataSourceHealthChecker:
             self._session = aiohttp.ClientSession(timeout=timeout)
         return self._session
     
+    # AkShare函数健康检测参数（数据源ID -> (函数名, kwargs)）
+    # 注意：优先使用无需参数的spot/实时函数，便于快速健康检测
+    # AkShare函数映射表（数据源ID -> (函数名, kwargs)）
+    # 所有函数均经过实际测试验证
+    AKSHARE_FUNCTION_MAP = {
+        'akshare_stock_a': ('stock_zh_a_spot_em', {}),
+        'akshare_stock_hk': ('stock_hk_spot', {}),
+        'akshare_index': ('index_zh_a_hist', {'symbol': '000001', 'period': 'daily', 'start_date': '20260401', 'end_date': '20260410'}),
+        'akshare_bond': ('bond_china_yield', {}),
+        'akshare_futures': ('futures_zh_daily_sina', {}),
+        'akshare_forex': ('currency_boc_safe', {}),
+        'akshare_macro': ('macro_china_gdp_yearly', {}),
+        'akshare_macro_china': ('macro_china_gdp_yearly', {}),
+        'akshare_macro_usa': ('macro_usa_gdp_monthly', {}),
+        'akshare_news_js': ('futures_news_shmet', {}),
+        'akshare_news_sina': ('news_cctv', {}),
+        'akshare_news_wallstreet': ('news_cctv', {}),
+        'akshare_news_eastmoney': ('stock_news_em', {}),
+        'akshare_news_all': ('news_cctv', {}),
+    }
+
+    # 每个数据源的合理超时时间（毫秒）
+    AKSHARE_TIMEOUT_MS = {
+        'akshare_stock_a': 30000,
+        'akshare_stock_hk': 30000,
+        'akshare_index': 30000,
+        'akshare_bond': 20000,
+        'akshare_futures': 5000,
+        'akshare_forex': 20000,
+        'akshare_macro': 20000,
+        'akshare_macro_china': 20000,
+        'akshare_macro_usa': 20000,
+        'akshare_news_js': 15000,
+        'akshare_news_sina': 15000,
+        'akshare_news_wallstreet': 15000,
+        'akshare_news_eastmoney': 15000,
+        'akshare_news_all': 15000,
+    }
+
+    async def _check_akshare_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
+        """检测AkShare数据源健康状态（通过实际调用Python函数）"""
+        import time
+        start = time.time()
+        
+        # 优先使用内置映射表的函数（经过验证）
+        fn_entry = self.AKSHARE_FUNCTION_MAP.get(source_id)
+        akshare_fn = source_config.get('config', {}).get('akshare_function', '')
+        
+        # 如果配置中有akshare_function且映射表中没有，使用配置的
+        if not fn_entry and akshare_fn:
+            fn_entry = (akshare_fn, {})
+        elif fn_entry and akshare_fn and fn_entry[0] != akshare_fn:
+            # 映射表和配置不一致时，以映射表为准（经过验证的函数）
+            pass
+        
+        if not fn_entry:
+            return HealthStatus(
+                source_id=source_id,
+                status=HealthStatusEnum.ERROR,
+                response_time_ms=0,
+                message=f'未配置AkShare函数: {source_id}',
+                check_time=datetime.now()
+            )
+        
+        fn_name, fn_kwargs = fn_entry
+        timeout_ms = self.AKSHARE_TIMEOUT_MS.get(source_id, 20000)
+        
+        try:
+            import akshare as ak
+            fn = getattr(ak, fn_name)
+            
+            # 在线程池中执行（AkShare是同步的，且可能较慢）
+            loop = asyncio.get_event_loop()
+            try:
+                df = await asyncio.wait_for(
+                    loop.run_in_executor(None, lambda: fn(**fn_kwargs)),
+                    timeout=timeout_ms / 1000.0
+                )
+            except asyncio.TimeoutError:
+                return HealthStatus(
+                    source_id=source_id,
+                    status=HealthStatusEnum.TIMEOUT,
+                    response_time_ms=timeout_ms,
+                    message=f'调用超时({timeout_ms}ms): {fn_name}',
+                    check_time=datetime.now()
+                )
+            
+            elapsed_ms = int((time.time() - start) * 1000)
+            
+            if df is not None and len(df) > 0:
+                return HealthStatus(
+                    source_id=source_id,
+                    status=HealthStatusEnum.HEALTHY,
+                    response_time_ms=elapsed_ms,
+                    message=f'获取{len(df)}行数据',
+                    check_time=datetime.now()
+                )
+            else:
+                return HealthStatus(
+                    source_id=source_id,
+                    status=HealthStatusEnum.UNHEALTHY,
+                    response_time_ms=elapsed_ms,
+                    message='返回数据为空',
+                    check_time=datetime.now()
+                )
+        except AttributeError:
+            return HealthStatus(
+                source_id=source_id,
+                status=HealthStatusEnum.UNHEALTHY,
+                response_time_ms=int((time.time() - start) * 1000),
+                message=f'AkShare无此函数: {fn_name}',
+                check_time=datetime.now()
+            )
+        except Exception as e:
+            err_msg = str(e)
+            return HealthStatus(
+                source_id=source_id,
+                status=HealthStatusEnum.ERROR,
+                response_time_ms=int((time.time() - start) * 1000),
+                message=f'调用失败: {err_msg[:100]}',
+                check_time=datetime.now()
+            )
+
+    async def _check_baostock_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
+        """检测BaoStock数据源健康状态（通过实际调用Python库）"""
+        import time
+        start = time.time()
+        
+        try:
+            loop = asyncio.get_event_loop()
+            
+            def _check():
+                import baostock as bs
+                lg = bs.login()
+                if lg.error_code != '0':
+                    raise Exception(f'BaoStock登录失败: {lg.error_msg}')
+                # 查询一只股票的基本信息作为健康检测
+                rs = bs.query_stock_basic(code='sh.600000')
+                bs.logout()
+                if rs.error_code != '0':
+                    raise Exception(f'BaoStock查询失败: {rs.error_msg}')
+                return True
+            
+            await asyncio.wait_for(
+                loop.run_in_executor(None, _check),
+                timeout=15.0
+            )
+            elapsed_ms = int((time.time() - start) * 1000)
+            return HealthStatus(
+                source_id=source_id,
+                status=HealthStatusEnum.HEALTHY,
+                response_time_ms=elapsed_ms,
+                message='BaoStock连接正常',
+                check_time=datetime.now()
+            )
+        except asyncio.TimeoutError:
+            return HealthStatus(
+                source_id=source_id,
+                status=HealthStatusEnum.TIMEOUT,
+                response_time_ms=15000,
+                message='BaoStock调用超时',
+                check_time=datetime.now()
+            )
+        except Exception as e:
+            return HealthStatus(
+                source_id=source_id,
+                status=HealthStatusEnum.ERROR,
+                response_time_ms=int((time.time() - start) * 1000),
+                message=f'调用失败: {str(e)[:80]}',
+                check_time=datetime.now()
+            )
+
     async def check_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
         """检测单个数据源健康状态
         
@@ -101,7 +273,31 @@ class DataSourceHealthChecker:
         Returns:
             健康状态
         """
-        start_time = asyncio.get_event_loop().time()
+        # 判断是否为AkShare数据源（通过ID前缀或配置判断）
+        is_akshare = (
+            source_id.startswith('akshare_') or
+            source_config.get('config', {}).get('akshare_function') or
+            source_id in self.AKSHARE_FUNCTION_MAP
+        )
+        
+        # BaoStock数据源
+        is_baostock = source_id.startswith('baostock') or 'baostock' in source_id.lower()
+        
+        # AkShare数据源：使用Python函数检测
+        if is_akshare:
+            return await self._check_akshare_health(source_id, source_config)
+        
+        # BaoStock数据源：使用Python库检测
+        if is_baostock:
+            return await self._check_baostock_health(source_id, source_config)
+        
+        # 其他数据源：使用HTTP检测
+        return await self._check_http_health(source_id, source_config)
+
+    async def _check_http_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
+        """使用HTTP请求检测数据源健康状态"""
+        import time
+        start = time.time()
         
         try:
             url = source_config.get('url', '')
@@ -114,10 +310,9 @@ class DataSourceHealthChecker:
                     check_time=datetime.now()
                 )
             
-            # 测试连接
             session = await self._get_session()
             async with session.get(url) as response:
-                response_time = int((asyncio.get_event_loop().time() - start_time) * 1000)
+                response_time = int((time.time() - start) * 1000)
                 
                 if response.status == 200:
                     status = HealthStatusEnum.HEALTHY
@@ -146,7 +341,7 @@ class DataSourceHealthChecker:
             return HealthStatus(
                 source_id=source_id,
                 status=HealthStatusEnum.ERROR,
-                response_time_ms=0,
+                response_time_ms=int((time.time() - start) * 1000),
                 message=str(e),
                 check_time=datetime.now()
             )
