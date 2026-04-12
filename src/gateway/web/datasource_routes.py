@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import List, Dict, Optional, Any
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
 # AkShare数据源的实时样本获取参数
 AKSHARE_SAMPLE_PARAMS = {
@@ -30,55 +31,11 @@ AKSHARE_SAMPLE_PARAMS = {
     'akshare_news_wallstreet': ('news_cctv', {}, 10),
     'akshare_news_eastmoney': ('stock_news_em', {}, 10),
     'akshare_news_all': ('news_cctv', {}, 10),
-    'baostock_ashare': ('baostock_list', {}, 5),
-    'baostock_a股数据': ('baostock_list', {}, 5),
-}
-
-# BaoStock实时样本
-BAO_LIVE_PARAMS = {
-    'baostock_ashare': (['sh.600000', 'sz.000001'], 5),
-    'baostock_a股数据': (['sh.600000', 'sz.000001'], 5),
 }
 
 async def _fetch_live_sample(source_id: str, source_config: Dict[str, Any]) -> Dict[str, Any]:
-    """从AkShare或BaoStock实时获取数据源样本（当PostgreSQL无数据时）"""
+    """从AkShare实时获取数据源样本（当PostgreSQL无数据时）"""
     try:
-        # BaoStock
-        if source_id in BAO_LIVE_PARAMS or source_id.startswith('baostock'):
-            try:
-                import baostock as bs
-                codes, limit = BAO_LIVE_PARAMS.get(source_id, (['sh.600000'], 5))
-                lg = bs.login()
-                if lg.error_code != '0':
-                    return {"source_id": source_id, "source_name": source_config.get('name', source_id),
-                            "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
-                            "data": [], "message": f"BaoStock登录失败: {lg.error_msg}"}
-                
-                all_data = []
-                fields = None
-                for code in codes[:limit]:
-                    rs = bs.query_history_k_data_plus(code, 'date,code,open,high,low,close,volume,pctChg',
-                        start_date='2026-04-01', end_date='2026-04-12', frequency='d')
-                    if fields is None:
-                        fields = rs.fields  # ['date', 'code', 'open', ...]
-                    rows = []
-                    while (rs.error_code == '0') & rs.next():
-                        row_data = rs.get_row_data()
-                        # 转换为dict
-                        rows.append(dict(zip(fields, row_data)))
-                    all_data.extend(rows[:5])
-                bs.logout()
-                
-                if all_data:
-                    return {"source_id": source_id, "source_name": source_config.get('name', source_id),
-                            "sample_count": len(all_data), "total_count": len(all_data),
-                            "generated_at": int(time.time()), "data": all_data,
-                            "message": f"实时获取BaoStock样本数据{len(all_data)}条（数据库暂无）"}
-            except Exception as e:
-                return {"source_id": source_id, "source_name": source_config.get('name', source_id),
-                        "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
-                        "data": [], "message": f"实时获取失败: {str(e)[:60]}"}
-        
         # AkShare
         entry = AKSHARE_SAMPLE_PARAMS.get(source_id)
         if not entry:
@@ -1077,20 +1034,32 @@ async def get_data_source_api(source_id: str):
     """获取指定的数据源配置"""
     logger.info(f"get_data_source_api 被调用，参数: {source_id}")
     try:
-        # 使用绝对导入避免相对导入问题
-        from src.gateway.web.config_manager import load_data_sources
-        sources = load_data_sources()
-        logger.info(f"加载了 {len(sources)} 个数据源")
+        # 使用 data_source_config_manager 获取数据源（与列表API一致）
+        from src.gateway.web.data_source_config_manager import get_data_source_config_manager
+        config_manager = get_data_source_config_manager()
+        sources = config_manager.get_data_sources()
+        
+        # 同时获取健康检测实时状态
+        try:
+            from src.gateway.web.datasource_health_checker import get_health_checker
+            hc = get_health_checker()
+            health_list = await hc.get_latest_health()
+            health_map = {h['source_id']: h for h in health_list}
+        except Exception:
+            health_map = {}
 
         for source in sources:
             current_id = source.get("id")
-            print(f"DEBUG: 检查数据源: {current_id}")
             if current_id == source_id:
-                print(f"DEBUG: 找到匹配的数据源: {current_id}")
-                # 添加缓存控制头，防止浏览器缓存
-                return JSONResponse(content=source, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+                # 合并实时健康状态
+                if source_id in health_map:
+                    h = health_map[source_id]
+                    source["status"] = h.get("status", "unknown")
+                    source["last_test"] = h.get("check_time", "")
+                    source["response_time_ms"] = h.get("response_time_ms", 0)
+                    source["health_message"] = h.get("error_message", "") or "healthy"
+                return JSONResponse(content=jsonable_encoder(source), headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
-        print(f"DEBUG: 未找到数据源: {source_id}")
         raise HTTPException(status_code=404, detail=f"数据源 {source_id} 不存在")
     except HTTPException:
         raise
@@ -3693,8 +3662,8 @@ _scheduler_config = {
     "auto_retry_enabled": True,
     "max_retry_count": 3,
     "scheduling_strategy": "fifo",  # fifo, priority, time_window
-    "time_window_start": "09:00",
-    "time_window_end": "18:00",
+    "time_window_start": "00:00",
+    "time_window_end": "23:59",
     "batch_size": 10,
     "concurrent_tasks": 5,
     "enable_load_balancing": True,

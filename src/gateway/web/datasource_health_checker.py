@@ -62,16 +62,17 @@ class DataSourceHealthChecker:
     async def _get_db_pool(self) -> asyncpg.Pool:
         """获取数据库连接池
         
-        密码从环境变量 DB_PASSWORD 读取，禁止硬编码。
+        密码从环境变量 DB_PASSWORD 或 POSTGRES_PASSWORD 读取，禁止硬编码。
         """
         if self._db_pool is None:
             import os
-            db_password = os.environ.get('DB_PASSWORD')
+            # 优先使用 DB_PASSWORD，如果不存在则使用 POSTGRES_PASSWORD
+            db_password = os.environ.get('DB_PASSWORD') or os.environ.get('POSTGRES_PASSWORD')
             if not db_password:
                 raise ValueError(
-                    "数据库密码未设置！请设置环境变量 DB_PASSWORD。\n"
+                    "数据库密码未设置！请设置环境变量 DB_PASSWORD 或 POSTGRES_PASSWORD。\n"
                     "示例：set DB_PASSWORD=YourSecurePassword\n"
-                    "或：export DB_PASSWORD=YourSecurePassword"
+                    "或：export POSTGRES_PASSWORD=YourSecurePassword"
                 )
             self._db_pool = await asyncpg.create_pool(
                 host="rqa2025-postgres",
@@ -110,12 +111,20 @@ class DataSourceHealthChecker:
         'akshare_news_wallstreet': ('news_cctv', {}),
         'akshare_news_eastmoney': ('stock_news_em', {}),
         'akshare_news_all': ('news_cctv', {}),
+        # 大宗商品数据源（2026-04-12 补充）
+        'akshare_commodity_gold': ('spot_golden_benchmark_sge', {}),          # 上海黄金交易所黄金现货
+        'akshare_commodity_energy': ('energy_oil_hist', {}),                   # 国内油价历史
+        'akshare_commodity_crude': ('macro_usa_eia_crude_rate', {}),          # EIA美国原油库存
+        'akshare_commodity_natural_gas': ('macro_usa_api_crude_stock', {}),    # 天然气替代(美国API原油库存，供参考)
+        'akshare_commodity': ('energy_oil_detail', {}),                       # 能源油品明细
+        # BaoStock（2026-04-12 补充）
+        'baostock_ashare': ('baostock_list', {}),                              # BaoStock A股列表
     }
 
     # 每个数据源的合理超时时间（毫秒）
     AKSHARE_TIMEOUT_MS = {
         'akshare_stock_a': 60000,
-        'akshare_stock_hk': 30000,
+        'akshare_stock_hk': 90000,
         'akshare_index': 15000,
         'akshare_bond': 20000,
         'akshare_futures': 5000,
@@ -128,6 +137,14 @@ class DataSourceHealthChecker:
         'akshare_news_wallstreet': 15000,
         'akshare_news_eastmoney': 15000,
         'akshare_news_all': 15000,
+        # 大宗商品数据源（2026-04-12 补充）
+        'akshare_commodity_gold': 20000,
+        'akshare_commodity_energy': 20000,
+        'akshare_commodity_crude': 15000,
+        'akshare_commodity_natural_gas': 15000,
+        'akshare_commodity': 15000,
+        # BaoStock
+        'baostock_ashare': 15000,
     }
 
     async def _check_akshare_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
