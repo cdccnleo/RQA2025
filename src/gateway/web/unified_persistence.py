@@ -500,6 +500,16 @@ class UnifiedPersistence:
                     if isinstance(field_data, dict) and field_data.get('compressed'):
                         data[field] = decompress_if_needed(field_data)
             
+            # 2026-04-13 修复：补充缺失字段（确保nodes/connections/stats始终存在）
+            if 'nodes' not in data:
+                data['nodes'] = []
+            if 'connections' not in data:
+                data['connections'] = []
+            if 'stats' not in data:
+                data['stats'] = {'backtest_count': 0, 'optimization_count': 0}
+            if 'strategy_type' not in data and 'type' in data:
+                data['strategy_type'] = data['type']
+            
             return data
         except Exception as e:
             logger.error(f"文件系统加载失败: {e}")
@@ -681,6 +691,16 @@ class UnifiedPersistence:
                     try:
                         with open(filepath, 'r', encoding='utf-8') as f:
                             data = json.load(f)
+                        
+                        # 2026-04-13 修复：补充缺失字段
+                        if 'nodes' not in data:
+                            data['nodes'] = []
+                        if 'connections' not in data:
+                            data['connections'] = []
+                        if 'stats' not in data:
+                            data['stats'] = {'backtest_count': 0, 'optimization_count': 0}
+                        if 'strategy_type' not in data and 'type' in data:
+                            data['strategy_type'] = data['type']
                         
                         # 应用过滤条件
                         if filters:

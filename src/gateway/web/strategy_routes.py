@@ -325,6 +325,21 @@ def _load_from_filesystem_only() -> List[Dict]:
                         with open(filepath, 'r', encoding='utf-8') as f:
                             data = json.load(f)
                             if data and isinstance(data, dict):
+                                # 2026-04-13 修复：补充缺失字段
+                                if 'nodes' not in data:
+                                    data['nodes'] = []
+                                if 'connections' not in data:
+                                    data['connections'] = []
+                                if 'stats' not in data:
+                                    data['stats'] = {
+                                        'backtest_count': 0,
+                                        'optimization_count': 0,
+                                        'paper_trade_count': 0,
+                                        'live_trade_count': 0
+                                    }
+                                # 2026-04-13 修复：确保strategy_type字段
+                                if 'strategy_type' not in data and 'type' in data:
+                                    data['strategy_type'] = data['type']
                                 conceptions.append(data)
                     except Exception as e:
                         logger.debug(f"读取文件失败 {filepath}: {e}")
@@ -343,6 +358,20 @@ async def get_strategy_conception(strategy_id: str):
     try:
         conception = persistence.load(strategy_id)
         if conception:
+            # 2026-04-13 修复：补充缺失字段
+            if 'nodes' not in conception:
+                conception['nodes'] = []
+            if 'connections' not in conception:
+                conception['connections'] = []
+            if 'stats' not in conception:
+                conception['stats'] = {
+                    'backtest_count': 0,
+                    'optimization_count': 0,
+                    'paper_trade_count': 0,
+                    'live_trade_count': 0
+                }
+            if 'strategy_type' not in conception and 'type' in conception:
+                conception['strategy_type'] = conception['type']
             return conception
         raise HTTPException(status_code=404, detail=f"策略构思 {strategy_id} 不存在")
     except HTTPException:
