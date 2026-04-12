@@ -10,9 +10,167 @@ import asyncio
 import logging
 import aiohttp
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
+
+# AkShare数据源的实时样本获取参数
+AKSHARE_SAMPLE_PARAMS = {
+    'akshare_stock_a': ('stock_zh_a_spot', {}, 5),
+    'akshare_stock_hk': ('stock_hk_spot', {}, 5),
+    'akshare_index': ('stock_zh_index_spot_sina', {}, 10),
+    'akshare_bond': ('bond_china_yield', {}, 5),
+    'akshare_futures': ('futures_zh_daily_sina', {}, 5),
+    'akshare_forex': ('currency_boc_safe', {}, 5),
+    'akshare_macro': ('macro_china_gdp_yearly', {}, 5),
+    'akshare_macro_china': ('macro_china_gdp_yearly', {}, 5),
+    'akshare_macro_usa': ('macro_usa_gdp_monthly', {}, 5),
+    'akshare_news_js': ('futures_news_shmet', {}, 10),
+    'akshare_news_sina': ('news_cctv', {}, 10),
+    'akshare_news_wallstreet': ('news_cctv', {}, 10),
+    'akshare_news_eastmoney': ('stock_news_em', {}, 10),
+    'akshare_news_all': ('news_cctv', {}, 10),
+    'baostock_ashare': ('baostock_list', {}, 5),
+    'baostock_a股数据': ('baostock_list', {}, 5),
+}
+
+# BaoStock实时样本
+BAO_LIVE_PARAMS = {
+    'baostock_ashare': (['sh.600000', 'sz.000001'], 5),
+    'baostock_a股数据': (['sh.600000', 'sz.000001'], 5),
+}
+
+async def _fetch_live_sample(source_id: str, source_config: Dict[str, Any]) -> Dict[str, Any]:
+    """从AkShare或BaoStock实时获取数据源样本（当PostgreSQL无数据时）"""
+    try:
+        # BaoStock
+        if source_id in BAO_LIVE_PARAMS or source_id.startswith('baostock'):
+            try:
+                import baostock as bs
+                codes, limit = BAO_LIVE_PARAMS.get(source_id, (['sh.600000'], 5))
+                lg = bs.login()
+                if lg.error_code != '0':
+                    return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                            "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                            "data": [], "message": f"BaoStock登录失败: {lg.error_msg}"}
+                
+                all_data = []
+                fields = None
+                for code in codes[:limit]:
+                    rs = bs.query_history_k_data_plus(code, 'date,code,open,high,low,close,volume,pctChg',
+                        start_date='2026-04-01', end_date='2026-04-12', frequency='d')
+                    if fields is None:
+                        fields = rs.fields  # ['date', 'code', 'open', ...]
+                    rows = []
+                    while (rs.error_code == '0') & rs.next():
+                        row_data = rs.get_row_data()
+                        # 转换为dict
+                        rows.append(dict(zip(fields, row_data)))
+                    all_data.extend(rows[:5])
+                bs.logout()
+                
+                if all_data:
+                    return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                            "sample_count": len(all_data), "total_count": len(all_data),
+                            "generated_at": int(time.time()), "data": all_data,
+                            "message": f"实时获取BaoStock样本数据{len(all_data)}条（数据库暂无）"}
+            except Exception as e:
+                return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                        "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                        "data": [], "message": f"实时获取失败: {str(e)[:60]}"}
+        
+        # AkShare
+        entry = AKSHARE_SAMPLE_PARAMS.get(source_id)
+        if not entry:
+            # 尝试从配置中获取akshare_function
+            akshare_fn = source_config.get('config', {}).get('akshare_function', '')
+            if not akshare_fn:
+                return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                        "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                        "data": [], "message": f"未配置AkShare函数，无法获取实时样本"}
+            fn_name, fn_kwargs, limit = akshare_fn, {}, 5
+        else:
+            fn_name, fn_kwargs, limit = entry
+        
+        loop = asyncio.get_event_loop()
+        def _call_akshare():
+            import akshare as ak
+            fn = getattr(ak, fn_name)
+            df = fn(**fn_kwargs)
+            return df
+        
+        try:
+            df = await asyncio.wait_for(
+                loop.run_in_executor(None, _call_akshare),
+                timeout=30.0
+            )
+        except asyncio.TimeoutError:
+            return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                    "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                    "data": [], "message": f"AkShare调用超时（30s）"}
+        
+        if df is None or len(df) == 0:
+            return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                    "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                    "data": [], "message": f"AkShare返回空数据"}
+        
+        # 转换DataFrame为记录列表
+        records = df.head(limit).to_dict('records')
+        # 处理numpy类型
+        import numpy as np
+        import pandas as pd
+        import datetime as dt_module
+        import math
+        processed = []
+        for rec in records:
+            pr = {}
+            for k, v in rec.items():
+                if isinstance(v, (np.integer, np.int64, np.int32)):
+                    pr[str(k)] = int(v)
+                elif isinstance(v, (np.floating, np.float64, np.float32)):
+                    # 处理NaN和Infinity
+                    if v != v or v in (float('inf'), float('-inf')):  # NaN or inf
+                        pr[str(k)] = None
+                    else:
+                        pr[str(k)] = float(v)
+                elif isinstance(v, (np.bool_,)):
+                    pr[str(k)] = bool(v)
+                elif isinstance(v, (pd.Timestamp,)):
+                    pr[str(k)] = v.isoformat()
+                elif isinstance(v, (pd.Timedelta,)):
+                    pr[str(k)] = str(v)
+                elif isinstance(v, dt_module.datetime):
+                    pr[str(k)] = v.isoformat()
+                elif isinstance(v, dt_module.date):
+                    pr[str(k)] = v.isoformat()
+                elif isinstance(v, bytes):
+                    pr[str(k)] = v.decode('utf-8', errors='replace')
+                elif v is None or (isinstance(v, float) and (v != v or v in (float('inf'), float('-inf')))):
+                    # None, NaN, inf
+                    pr[str(k)] = None
+                else:
+                    pr[str(k)] = v
+            processed.append(pr)
+        
+        return {
+            "source_id": source_id,
+            "source_name": source_config.get('name', source_id),
+            "source_type": source_config.get('type', 'unknown'),
+            "sample_count": len(processed),
+            "total_count": len(df),
+            "generated_at": int(time.time()),
+            "data": processed,
+            "message": f"实时获取AkShare样本{len(processed)}条（总{len(df)}条，数据库暂无）"
+        }
+        
+    except AttributeError as e:
+        return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                "data": [], "message": f"AkShare函数不存在: {str(e)[:60]}"}
+    except Exception as e:
+        return {"source_id": source_id, "source_name": source_config.get('name', source_id),
+                "sample_count": 0, "total_count": 0, "generated_at": int(time.time()),
+                "data": [], "message": f"实时获取失败: {str(e)[:80]}"}
 
 # 移除循环导入，改为函数内部导入
 # from .api import load_data_sources, save_data_sources
@@ -681,19 +839,63 @@ async def get_config_audit_log(
 
 @router.get("/api/v1/data/sources")
 async def get_data_sources():
-    """获取所有数据源配置"""
+    """获取所有数据源配置，并合并实时健康检测状态"""
     try:
         # 使用 data_source_config_manager 获取数据源（利用缓存机制）
         from src.gateway.web.data_source_config_manager import get_data_source_config_manager
         config_manager = get_data_source_config_manager()
         sources = config_manager.get_data_sources()
+        
+        # 获取实时健康检测状态（最新一次）
+        try:
+            from src.gateway.web.datasource_health_checker import get_health_checker
+            hc = get_health_checker()
+            health_list = await hc.get_latest_health()  # 返回 List[Dict]
+            # 建立 source_id -> health_dict 映射
+            health_map = {h["source_id"]: h for h in health_list}
+        except Exception:
+            health_map = {}
+        
+        # 合并实时状态到数据源配置
+        for source in sources:
+            source_id = source.get("id", "")
+            if source_id in health_map:
+                h = health_map[source_id]
+                source["status"] = h.get("status", "unknown")
+                source["last_test"] = h.get("check_time", "")
+                source["response_time_ms"] = h.get("response_time_ms", 0)
+                source["consecutive_failures"] = h.get("consecutive_failures", 0)
+                source["health_message"] = h.get("error_message", "") or "healthy"
+        
+        # 添加健康检测中有但配置中没有的数据源（如 baostock）
+        existing_ids = {s.get("id") for s in sources}
+        for source_id, h in health_map.items():
+            if source_id not in existing_ids:
+                sources.append({
+                    "id": source_id,
+                    "name": source_id.replace("_", " ").title(),
+                    "type": "数据源",
+                    "enabled": True,
+                    "status": h.get("status", "unknown"),
+                    "last_test": h.get("check_time", ""),
+                    "response_time_ms": h.get("response_time_ms", 0),
+                    "consecutive_failures": h.get("consecutive_failures", 0),
+                    "health_message": h.get("error_message", "") or "healthy",
+                    "is_healthy_source": True
+                })
+        
         active_count = len([s for s in sources if s.get("enabled", True)])
         return {
             "data": sources,
-            "data_sources": sources,  # 兼容前端期望的字段名
+            "data_sources": sources,
             "total": len(sources),
-            "active": active_count,  # 添加活跃数据源数量
-            "message": "数据源加载成功"
+            "active": active_count,
+            "health_summary": {
+                "total": len(health_map),
+                "healthy": sum(1 for h in health_map.values() if str(h.get("status", "")) == "healthy"),
+                "unhealthy": sum(1 for h in health_map.values() if str(h.get("status", "")) != "healthy")
+            },
+            "message": "数据源加载成功（含实时健康状态）"
         }
     except Exception as e:
         logger.error(f"获取数据源失败: {e}")
@@ -719,13 +921,50 @@ async def create_or_get_data_sources(request: Request):
         # 检查是否是获取请求（前端的临时方案）
         print(f"🎯 检查条件: body={body}, isinstance(body, dict)={isinstance(body, dict) if body else False}, action={body.get('action') if body else None}")
         if body and isinstance(body, dict) and body.get('action') == 'get_all':
-            # 这是一个获取请求，返回所有数据源
+            # 这是一个获取请求，返回所有数据源（合并实时健康状态）
             print("🎯 检测到获取请求，开始加载数据源...")
             sources = load_data_sources()
             print(f"🎯 成功加载 {len(sources)} 个数据源")
+            
+            # 合并实时健康状态
+            try:
+                from src.gateway.web.datasource_health_checker import get_health_checker
+                hc = get_health_checker()
+                health_list = await hc.get_latest_health()
+                health_map = {h["source_id"]: h for h in health_list}
+            except Exception:
+                health_map = {}
+            
+            for source in sources:
+                sid = source.get("id", "")
+                if sid in health_map:
+                    h = health_map[sid]
+                    source["status"] = h.get("status", "unknown")
+                    source["last_test"] = h.get("check_time", "")
+                    source["response_time_ms"] = h.get("response_time_ms", 0)
+                    source["consecutive_failures"] = h.get("consecutive_failures", 0)
+                    source["health_message"] = h.get("error_message", "") or "healthy"
+            
+            # 添加健康检测中有但配置中没有的数据源
+            existing_ids = {s.get("id") for s in sources}
+            for sid, h in health_map.items():
+                if sid not in existing_ids:
+                    sources.append({
+                        "id": sid,
+                        "name": sid.replace("_", " ").title(),
+                        "type": "数据源",
+                        "enabled": True,
+                        "status": h.get("status", "unknown"),
+                        "last_test": h.get("check_time", ""),
+                        "response_time_ms": h.get("response_time_ms", 0),
+                        "consecutive_failures": h.get("consecutive_failures", 0),
+                        "health_message": h.get("error_message", "") or "healthy",
+                        "is_healthy_source": True
+                    })
+            
             if sources:
                 print(f"🎯 示例数据源: {sources[0]}")
-            return {"data": sources, "total": len(sources), "message": "数据源加载成功"}
+            return {"data": sources, "total": len(sources), "message": "数据源加载成功（含实时健康状态）"}
 
         # 正常的创建请求
         print(f"🎯 进入创建请求分支, body={body}")
@@ -917,17 +1156,9 @@ async def get_data_source_sample_api(source_id: str, data_type: str = None):
                 }
                 logger.info(f"成功从PostgreSQL获取数据源 {source_id} 的样本数据: {len(sample_data_list)} 条记录")
             else:
-                # 没有找到数据
-                sample_data = {
-                    "source_id": source_id,
-                    "source_name": source_config.get('name', source_id),
-                    "sample_count": 0,
-                    "total_count": 0,
-                    "generated_at": int(time.time()),
-                    "data": [],
-                    "message": "数据库中暂无该数据源的样本数据"
-                }
-                logger.info(f"数据源 {source_id} 在PostgreSQL中没有找到样本数据")
+                # PostgreSQL中没有数据，尝试直接从AkShare获取实时样本
+                sample_data = await _fetch_live_sample(source_id, source_config)
+                logger.info(f"数据源 {source_id} 在PostgreSQL中没有找到样本数据，尝试实时获取: {sample_data['message']}")
 
         except ImportError as e:
             logger.error(f"无法导入PostgreSQL查询函数: {e}")

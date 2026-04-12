@@ -5,17 +5,17 @@
     "type": "股票数据",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "1次/小时",
-    "enabled": true,
+    "enabled": false,
     "config": {
       "akshare_category": "A股",
       "default_days": 30,
       "adjust_type": "qfq",
       "enable_incremental": true,
       "description": "AKShare A股数据采集接口，支持日线行情、股票基础信息等。配置已通过编辑功能更新。",
-      "akshare_function": "stock_zh_a_spot_em"
+      "akshare_function": "stock_zh_a_spot"
     },
-    "last_test": "2026-02-09 15:58:05",
-    "status": "连接失败"
+    "last_test": null,
+    "status": "待测试"
   },
   {
     "id": "akshare_stock_hk",
@@ -23,13 +23,13 @@
     "type": "股票数据",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
-    "last_test": "2026-01-01 11:25:30",
-    "status": "连接超时",
+    "enabled": false,
+    "last_test": null,
+    "status": "待测试",
     "config": {
       "akshare_category": "港股",
       "description": "AKShare港股数据采集接口",
-      "akshare_function": "stock_hk_spot_em"
+      "akshare_function": "stock_hk_spot"
     }
   },
   {
@@ -38,18 +38,18 @@
     "type": "指数数据",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
+    "enabled": false,
     "config": {
       "index_types": [
         "上证指数",
         "深证指数",
         "创业板指数"
       ],
-      "akshare_function": "stock_zh_index_spot_em",
+      "akshare_function": "stock_zh_index_spot_sina",
       "description": "AKShare指数实时数据采集接口，支持主要市场指数"
     },
-    "last_test": "2026-02-09 15:58:06",
-    "status": "连接失败"
+    "last_test": null,
+    "status": "待测试"
   },
   {
     "id": "akshare_bond",
@@ -57,9 +57,9 @@
     "type": "债券数据",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
-    "last_test": "2026-02-09 15:58:07",
-    "status": "连接失败",
+    "enabled": false,
+    "last_test": null,
+    "status": "待测试",
     "config": {
       "bond_types": [
         "国债",
@@ -67,7 +67,7 @@
         "可转债"
       ],
       "description": "AKShare债券数据采集接口",
-      "akshare_function": "bond_zh_us_rate"
+      "akshare_function": "bond_china_yield"
     }
   },
   {
@@ -94,7 +94,7 @@
     "type": "外汇数据",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
+    "enabled": false,
     "last_test": "2026-02-09 15:58:09",
     "status": "连接失败",
     "config": {
@@ -142,7 +142,7 @@
     "type": "宏观经济",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
+    "enabled": false,
     "last_test": "2026-02-09 15:58:12",
     "status": "连接失败",
     "config": {
@@ -186,7 +186,7 @@
     "type": "财经新闻",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
+    "enabled": false,
     "config": {
       "news_source": "futures_news_shmet",
       "update_frequency": "实时",
@@ -203,15 +203,15 @@
     "type": "财经新闻",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
-    "last_test": "2026-02-09 15:58:22",
-    "status": "连接失败",
+    "enabled": false,
+    "last_test": null,
+    "status": "待测试",
     "config": {
       "news_source": "news_economic_baidu",
       "update_frequency": "近实时",
       "delay": "2-5分钟",
       "description": "AKShare百度财经新闻数据采集接口，包含宏观经济新闻",
-      "akshare_function": "news_economic_baidu"
+      "akshare_function": "news_cctv"
     }
   },
   {
@@ -220,15 +220,15 @@
     "type": "财经新闻",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
-    "last_test": "2026-01-01 12:48:35",
-    "status": "HTTP 200 - 连接正常",
+    "enabled": false,
+    "last_test": null,
+    "status": "待测试",
     "config": {
       "news_source": "news_economic_baidu",
       "update_frequency": "日频",
       "delay": "1天",
       "description": "AKShare百度财经新闻数据采集接口，包含宏观经济资讯",
-      "akshare_function": "news_economic_baidu"
+      "akshare_function": "news_cctv"
     }
   },
   {
@@ -237,15 +237,15 @@
     "type": "财经新闻",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
+    "enabled": false,
     "last_test": null,
-    "status": "未测试",
+    "status": "待测试",
     "config": {
       "news_source": "futures_news_shmet",
       "update_frequency": "实时",
       "delay": "1-3分钟",
       "description": "AKShare期货财经新闻数据采集接口，包含实时财经资讯",
-      "akshare_function": "futures_news_shmet"
+      "akshare_function": "stock_news_em"
     }
   },
   {
@@ -254,13 +254,13 @@
     "type": "财经新闻",
     "url": "https://akshare.akfamily.xyz",
     "rate_limit": "100次/分钟",
-    "enabled": true,
-    "last_test": "2026-02-09 15:58:22",
-    "status": "连接失败",
+    "enabled": false,
+    "last_test": null,
+    "status": "待测试",
     "config": {
       "news_source": "multiple_sources",
       "description": "AKShare多源财经新闻数据采集接口，支持百度经济新闻等多个新闻源",
-      "akshare_function": "news_economic_baidu"
+      "akshare_function": "news_cctv"
     }
   },
   {
@@ -269,7 +269,7 @@
     "type": "财务报告",
     "url": "https://financial-reports-api.com",
     "rate_limit": "50次/分钟",
-    "enabled": true,
+    "enabled": false,
     "last_test": "2026-02-09 15:58:10",
     "status": "连接失败",
     "config": {
@@ -290,5 +290,26 @@
       "update_mode": "增量更新",
       "description": "A股公司财务报表数据，包含三大财务报表，支持历史数据回溯。量化交易核心数据源，用于价值投资和多因子模型。"
     }
+  },
+  {
+    "id": "baostock_ashare",
+    "name": "BaoStock A股数据",
+    "type": "股票数据",
+    "url": "http://www.baostock.com",
+    "rate_limit": "1次/秒",
+    "enabled": false,
+    "config": {
+      "description": "BaoStock A股数据接口，支持日线、分钟线等历史数据",
+      "data_types": [
+        "daily",
+        "1min",
+        "5min",
+        "15min",
+        "30min",
+        "60min"
+      ]
+    },
+    "status": "待测试",
+    "last_test": null
   }
 ]
