@@ -562,14 +562,18 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
         'akshare_stock_hk': ('akshare_hk_stock_data', 'akshare_hk_historical'),
         # 指数
         'akshare_index': ('akshare_index_data', 'akshare_index_historical'),
-        # 债券
-        'akshare_bond': ('akshare_bond_data', 'akshare_bond'),
-        # 外汇
-        'akshare_forex': ('akshare_forex_data', 'akshare_forex'),
+        # 债券 (国债收益率曲线)
+        'akshare_bond': ('akshare_bond_yield', 'akshare_bond_yield'),
+        # 外汇 (BOC历史牌价)
+        'akshare_forex': ('akshare_forex_history', 'akshare_forex_history'),
         # 宏观经济
         'akshare_macro': ('akshare_macro_data', 'akshare_macro_china'),
         'akshare_macro_china': ('akshare_macro_data', 'akshare_macro_china'),
         'akshare_macro_usa': ('akshare_macro_data', 'akshare_macro_usa'),
+        # 新闻
+        'akshare_news_js': ('akshare_news_data', 'akshare_news_js'),
+        'akshare_news_eastmoney': ('akshare_news_data', 'akshare_news_eastmoney'),
+        'akshare_news_all': ('akshare_news_data', None),  # None = all news
     }
 
     conn = None
@@ -697,6 +701,27 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
                 })
             return result
 
+        elif table_name == 'akshare_forex_history':
+            query = """
+                SELECT
+                    currency_pair, base_currency, quote_currency, date, price, change_ratio
+                FROM akshare_forex_history
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'currency_pair': row[0], 'base_currency': row[1], 'quote_currency': row[2],
+                    'date': row[3].isoformat() if row[3] else None,
+                    'price': float(row[4]) if row[4] is not None else None,
+                    'change_ratio': float(row[5]) if row[5] is not None else None,
+                })
+            return result
+
         elif table_name == 'akshare_forex_data':
             query = """
                 SELECT
@@ -721,6 +746,35 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
                 })
             return result
 
+        elif table_name == 'akshare_bond_yield':
+            query = """
+                SELECT
+                    curve_name, curve_type, date,
+                    yield_3m, yield_6m, yield_1y,
+                    yield_3y, yield_5y, yield_7y, yield_10y, yield_30y
+                FROM akshare_bond_yield
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'curve_name': row[0], 'curve_type': row[1],
+                    'date': row[2].isoformat() if row[2] else None,
+                    'yield_3m': float(row[3]) if row[3] is not None else None,
+                    'yield_6m': float(row[4]) if row[4] is not None else None,
+                    'yield_1y': float(row[5]) if row[5] is not None else None,
+                    'yield_3y': float(row[6]) if row[6] is not None else None,
+                    'yield_5y': float(row[7]) if row[7] is not None else None,
+                    'yield_7y': float(row[8]) if row[8] is not None else None,
+                    'yield_10y': float(row[9]) if row[9] is not None else None,
+                    'yield_30y': float(row[10]) if row[10] is not None else None,
+                })
+            return result
+
         elif table_name == 'akshare_macro_data':
             query = """
                 SELECT
@@ -742,6 +796,35 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
                     'forecast_value': float(row[5]) if row[5] is not None else None,
                     'previous_value': float(row[6]) if row[6] is not None else None,
                     'country': row[7]
+                })
+            return result
+
+        elif table_name == 'akshare_news_data':
+            if stored_source_id:
+                query = """
+                    SELECT title, content, publish_date, url, keywords, news_source, category
+                    FROM akshare_news_data
+                    WHERE source_id = %s
+                    ORDER BY publish_date DESC LIMIT %s
+                """
+                cursor.execute(query, (stored_source_id, limit))
+            else:
+                # akshare_news_all: 返回所有新闻
+                query = """
+                    SELECT title, content, publish_date, url, keywords, news_source, category
+                    FROM akshare_news_data
+                    ORDER BY publish_date DESC LIMIT %s
+                """
+                cursor.execute(query, (limit,))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'title': row[0], 'content': row[1],
+                    'publish_date': row[2].isoformat() if row[2] else None,
+                    'url': row[3], 'keywords': row[4],
+                    'news_source': row[5], 'category': row[6]
                 })
             return result
 
