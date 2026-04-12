@@ -96,9 +96,9 @@ class DataSourceHealthChecker:
     # AkShare函数映射表（数据源ID -> (函数名, kwargs)）
     # 所有函数均经过实际测试验证
     AKSHARE_FUNCTION_MAP = {
-        'akshare_stock_a': ('stock_zh_a_spot_em', {}),
+        'akshare_stock_a': ('stock_zh_a_spot', {}),
         'akshare_stock_hk': ('stock_hk_spot', {}),
-        'akshare_index': ('index_zh_a_hist', {'symbol': '000001', 'period': 'daily', 'start_date': '20260401', 'end_date': '20260410'}),
+        'akshare_index': ('stock_zh_index_spot_sina', {}),
         'akshare_bond': ('bond_china_yield', {}),
         'akshare_futures': ('futures_zh_daily_sina', {}),
         'akshare_forex': ('currency_boc_safe', {}),
@@ -114,9 +114,9 @@ class DataSourceHealthChecker:
 
     # 每个数据源的合理超时时间（毫秒）
     AKSHARE_TIMEOUT_MS = {
-        'akshare_stock_a': 30000,
+        'akshare_stock_a': 60000,
         'akshare_stock_hk': 30000,
-        'akshare_index': 30000,
+        'akshare_index': 15000,
         'akshare_bond': 20000,
         'akshare_futures': 5000,
         'akshare_forex': 20000,
