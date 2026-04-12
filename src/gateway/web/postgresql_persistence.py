@@ -12,7 +12,7 @@ from decimal import Decimal
 import os
 import traceback
 
-# 延迟导入pandas，避免在模块级别导入失败
+# 延迟导入pandas,避免在模块级别导入失败
 try:
     import pandas as pd
 except ImportError:
@@ -20,7 +20,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# 全局数据库连接池（延迟初始化）
+# 全局数据库连接池(延迟初始化)
 _db_pool = None
 _db_config = None
 _db_initialized = False
@@ -29,7 +29,7 @@ _db_initialized = False
 def is_containerized_env():
     """
     检测是否在容器化环境中运行
-    
+
     Returns:
         bool: 是否在容器化环境中
     """
@@ -44,44 +44,44 @@ def is_containerized_env():
 def get_db_connection():
     """
     获取数据库连接
-    
+
     Returns:
         数据库连接对象
     """
     global _db_pool, _db_config, _db_initialized
-    
+
     # 尝试从环境变量获取数据库配置
     # 容器化环境中使用标准环境变量名称
-    db_host = os.getenv('RQA_DB_HOST', 
-                      os.getenv('DB_HOST', 
-                                os.getenv('POSTGRES_HOST', 
+    db_host = os.getenv('RQA_DB_HOST',
+                      os.getenv('DB_HOST',
+                                os.getenv('POSTGRES_HOST',
                                           'postgres' if is_containerized_env() else 'localhost')))
-    db_port = os.getenv('RQA_DB_PORT', 
-                      os.getenv('DB_PORT', 
+    db_port = os.getenv('RQA_DB_PORT',
+                      os.getenv('DB_PORT',
                                 os.getenv('POSTGRES_PORT', '5432')))
-    db_name = os.getenv('RQA_DB_NAME', 
-                      os.getenv('DB_NAME', 
+    db_name = os.getenv('RQA_DB_NAME',
+                      os.getenv('DB_NAME',
                                 os.getenv('POSTGRES_DB', 'rqa2025_prod')))
-    db_user = os.getenv('RQA_DB_USER', 
-                      os.getenv('DB_USER', 
+    db_user = os.getenv('RQA_DB_USER',
+                      os.getenv('DB_USER',
                                 os.getenv('POSTGRES_USER', 'rqa2025_admin')))
-    db_password = os.getenv('RQA_DB_PASSWORD', 
-                          os.getenv('DB_PASSWORD', 
+    db_password = os.getenv('RQA_DB_PASSWORD',
+                          os.getenv('DB_PASSWORD',
                                     os.getenv('POSTGRES_PASSWORD', 'SecurePass123!')))
-    
+
     # 连接池配置
     # 增加连接池大小以支持高并发数据采集
-    # 默认最小连接数：5，最大连接数：50
+    # 默认最小连接数:5,最大连接数:50
     pool_min_size = int(os.getenv('DB_POOL_MIN_SIZE', '5'))
     pool_max_size = int(os.getenv('DB_POOL_MAX_SIZE', '50'))
     pool_timeout = int(os.getenv('DB_POOL_TIMEOUT', '30'))
-    
+
     # 尝试导入psycopg2
     try:
         import psycopg2
         from psycopg2 import pool
         from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-        
+
         # 初始化数据库连接池
         if _db_pool is None:
             try:
@@ -94,11 +94,11 @@ def get_db_connection():
                     'connect_timeout': pool_timeout,
                     'application_name': 'RQA2025_Quant_Strategy'
                 }
-                
+
                 # 容器化环境中增加重试机制
                 max_retries = 5
                 retry_interval = 3
-                
+
                 for attempt in range(max_retries):
                     try:
                         _db_pool = psycopg2.pool.SimpleConnectionPool(
@@ -121,7 +121,7 @@ def get_db_connection():
                 logger.error(f"数据库连接池初始化失败: {e}")
                 logger.debug(traceback.format_exc())
                 return None
-        
+
         # 从连接池获取连接
         if _db_pool:
             try:
@@ -132,7 +132,7 @@ def get_db_connection():
                 return conn
             except Exception as e:
                 logger.warning(f"从连接池获取连接失败: {e}")
-                # 如果从连接池获取连接失败，尝试重新初始化连接池
+                # 如果从连接池获取连接失败,尝试重新初始化连接池
                 try:
                     _db_pool = None
                     _db_pool = psycopg2.pool.SimpleConnectionPool(
@@ -146,24 +146,24 @@ def get_db_connection():
                     logger.error(f"重新初始化连接池失败: {reinit_e}")
                     logger.debug(traceback.format_exc())
                     return None
-        
+
     except ImportError:
-        logger.debug("psycopg2未安装，无法连接PostgreSQL")
+        logger.debug("psycopg2未安装,无法连接PostgreSQL")
     except Exception as e:
         logger.error(f"获取数据库连接失败: {e}")
         logger.debug(traceback.format_exc())
-    
+
     return None
 
 def return_db_connection(conn):
     """
     归还数据库连接
-    
+
     Args:
         conn: 数据库连接对象
     """
     global _db_pool
-    
+
     # 尝试将连接归还到连接池
     if conn and _db_pool:
         try:
@@ -172,7 +172,7 @@ def return_db_connection(conn):
                 _db_pool.putconn(conn)
                 logger.debug("数据库连接已归还到连接池")
             else:
-                logger.warning("连接已关闭，无法归还到连接池")
+                logger.warning("连接已关闭,无法归还到连接池")
         except Exception as e:
             logger.warning(f"归还数据库连接失败: {e}")
     elif conn:
@@ -188,7 +188,7 @@ def close_db_pool():
     关闭数据库连接池
     """
     global _db_pool
-    
+
     if _db_pool:
         try:
             _db_pool.closeall()
@@ -200,7 +200,7 @@ def close_db_pool():
 def ensure_backtest_table_indexes() -> bool:
     """
     确保backtest_results表存在适当的索引
-    
+
     Returns:
         bool: 是否成功创建索引
     """
@@ -209,9 +209,9 @@ def ensure_backtest_table_indexes() -> bool:
         conn = get_db_connection()
         if not conn:
             return False
-        
+
         cursor = conn.cursor()
-        
+
         # 检查backtest_results表是否存在
         cursor.execute("""
             SELECT EXISTS (
@@ -219,36 +219,36 @@ def ensure_backtest_table_indexes() -> bool:
                 WHERE table_schema = 'public' AND table_name = 'backtest_results'
             );
         """)
-        
+
         if not cursor.fetchone()[0]:
-            logger.warning("backtest_results表不存在，跳过索引创建")
+            logger.warning("backtest_results表不存在,跳过索引创建")
             cursor.close()
             return False
-        
+
         # 创建索引
         indexes = [
-            # 为strategy_id创建索引，用于按策略ID分组和查询
+            # 为strategy_id创建索引,用于按策略ID分组和查询
             "CREATE INDEX IF NOT EXISTS idx_backtest_strategy_id ON backtest_results(strategy_id);",
-            # 为created_at创建索引，用于按时间排序
+            # 为created_at创建索引,用于按时间排序
             "CREATE INDEX IF NOT EXISTS idx_backtest_created_at ON backtest_results(created_at);",
-            # 为status创建索引，用于过滤状态
+            # 为status创建索引,用于过滤状态
             "CREATE INDEX IF NOT EXISTS idx_backtest_status ON backtest_results(status);",
-            # 为strategy_id和created_at创建复合索引，用于按策略ID分组并按时间排序
+            # 为strategy_id和created_at创建复合索引,用于按策略ID分组并按时间排序
             "CREATE INDEX IF NOT EXISTS idx_backtest_strategy_created ON backtest_results(strategy_id, created_at);"
         ]
-        
+
         for index_sql in indexes:
             try:
                 cursor.execute(index_sql)
                 logger.debug(f"执行索引创建语句: {index_sql}")
             except Exception as e:
                 logger.warning(f"创建索引失败: {e}")
-        
+
         conn.commit()
         cursor.close()
         logger.info("backtest_results表索引创建/验证完成")
         return True
-        
+
     except Exception as e:
         logger.error(f"确保backtest_results表索引失败: {e}")
         if conn:
@@ -282,10 +282,10 @@ except Exception as e:
 def get_stocks_by_industry(industry: str) -> List[Dict[str, Any]]:
     """
     根据行业获取股票列表
-    
+
     Args:
         industry: 行业名称
-        
+
     Returns:
         股票列表
     """
@@ -294,9 +294,9 @@ def get_stocks_by_industry(industry: str) -> List[Dict[str, Any]]:
         conn = get_db_connection()
         if not conn:
             return []
-        
+
         cursor = conn.cursor()
-        
+
         cursor.execute("""
             SELECT symbol, name, ipo_date, industry, market,
                    total_share, float_share, pe, pb, roe
@@ -304,10 +304,10 @@ def get_stocks_by_industry(industry: str) -> List[Dict[str, Any]]:
             WHERE industry = %s
             ORDER BY symbol
         """, (industry,))
-        
+
         rows = cursor.fetchall()
         cursor.close()
-        
+
         stocks = []
         for row in rows:
             stocks.append({
@@ -322,9 +322,9 @@ def get_stocks_by_industry(industry: str) -> List[Dict[str, Any]]:
                 "pb": row[8],
                 "roe": row[9]
             })
-        
+
         return stocks
-        
+
     except Exception as e:
         logger.error(f"根据行业获取股票列表失败: {e}")
         return []
@@ -333,7 +333,7 @@ def get_stocks_by_industry(industry: str) -> List[Dict[str, Any]]:
             return_db_connection(conn)
 
 def ensure_table_exists() -> bool:
-    """确保 akshare_stock_data 表存在，不存在则创建"""
+    """确保 akshare_stock_data 表存在,不存在则创建"""
     conn = None
     try:
         conn = get_db_connection()
@@ -394,7 +394,7 @@ def ensure_table_exists() -> bool:
 
 
 def _norm_record(record: Dict[str, Any]) -> Dict[str, Any]:
-    """标准化单条记录字段名（支持 AKShare 中英文列名）"""
+    """标准化单条记录字段名(支持 AKShare 中英文列名)"""
     out = dict(record)
     cn_to_en = {
         "开盘价": "open", "收盘价": "close", "最高价": "high", "最低价": "low",
@@ -423,7 +423,7 @@ def persist_akshare_data_to_postgresql(
         source_config: 数据源配置
 
     Returns:
-        持久化结果字典，包含 success, inserted_count, error 等
+        持久化结果字典,包含 success, inserted_count, error 等
     """
     start_time = time.time()
     conn = None
@@ -544,79 +544,242 @@ def persist_akshare_data_to_postgresql(
 def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, data_type: str = None) -> List[Dict[str, Any]]:
     """
     从PostgreSQL查询最新的股票数据样本
-    
+
     Args:
-        source_id: 数据源ID
+        source_id: 数据源ID (API使用的source_id)
         limit: 返回记录数限制
         data_type: 数据类型过滤
-        
+
     Returns:
         股票数据列表
     """
+    # API source_id -> (table_name, stored_source_id)
+    SOURCE_ID_MAP = {
+        # A股
+        'akshare_stock_a': ('akshare_stock_data', 'akshare_stock_a'),
+        'baostock_stock_a': ('akshare_stock_data', 'baostock_stock_a'),
+        # 港股
+        'akshare_stock_hk': ('akshare_hk_stock_data', 'akshare_hk_historical'),
+        # 指数
+        'akshare_index': ('akshare_index_data', 'akshare_index_historical'),
+        # 债券
+        'akshare_bond': ('akshare_bond_data', 'akshare_bond'),
+        # 外汇
+        'akshare_forex': ('akshare_forex_data', 'akshare_forex'),
+        # 宏观经济
+        'akshare_macro': ('akshare_macro_data', 'akshare_macro_china'),
+        'akshare_macro_china': ('akshare_macro_data', 'akshare_macro_china'),
+        'akshare_macro_usa': ('akshare_macro_data', 'akshare_macro_usa'),
+    }
+
     conn = None
     try:
         conn = get_db_connection()
         if not conn:
-            logger.warning("无法获取数据库连接，无法查询股票数据")
+            logger.warning("无法获取数据库连接,无法查询股票数据")
             return []
-        
+
         cursor = conn.cursor()
-        
-        # 先检查表是否存在
+
+        # 获取表名和存储的source_id
+        table_info = SOURCE_ID_MAP.get(source_id)
+        if not table_info:
+            logger.info(f"数据源 {source_id} 未映射到任何表,返回空数据")
+            cursor.close()
+            return []
+
+        table_name, stored_source_id = table_info
+
+        # 检查表是否存在
         cursor.execute("""
             SELECT EXISTS (
                 SELECT FROM information_schema.tables
-                WHERE table_schema = 'public' AND table_name = 'akshare_stock_data'
+                WHERE table_schema = 'public' AND table_name = %s
             );
-        """)
-        
+        """, (table_name,))
+
         if not cursor.fetchone()[0]:
-            logger.info(f"akshare_stock_data 表不存在，返回空数据")
+            logger.info(f"表 {table_name} 不存在,返回空数据")
             cursor.close()
             return []
+
+        # 根据不同的表使用不同的查询
+        if table_name == 'akshare_stock_data':
+            query = """
+                SELECT 
+                    symbol, date, open_price, high_price, low_price, close_price,
+                    volume, amount, pct_change, change, turnover_rate, amplitude
+                FROM akshare_stock_data 
+                WHERE source_id = %s
+            """
+            cols = ['symbol', 'date', 'open_price', 'high_price', 'low_price', 'close_price',
+                    'volume', 'amount', 'pct_change', 'change', 'turnover_rate', 'amplitude']
+            # 添加数据类型过滤
+            if data_type:
+                query += f" AND data_type = '{data_type}'"
+            query += " ORDER BY date DESC LIMIT %s"
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                record = {}
+                for i, col in enumerate(cols):
+                    val = row[i]
+                    if hasattr(val, 'isoformat'):
+                        val = val.isoformat()
+                    record[col] = val
+                result.append(record)
+            return result
         
-        # 构造查询语句
-        query = """
-            SELECT 
-                symbol, date, open_price, high_price, low_price, close_price,
-                volume, amount, pct_change, change, turnover_rate, amplitude
-            FROM akshare_stock_data 
-            WHERE source_id = %s
-        """
-        
-        # 添加数据类型过滤
+        elif table_name == 'akshare_hk_stock_data':
+            query = """
+                SELECT
+                    symbol, name, date, open_price, high_price, low_price, close_price,
+                    change_ratio, volume, amount, turnover_rate, pe_ratio, pb_ratio, market_cap
+                FROM akshare_hk_stock_data
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'symbol': row[0], 'name': row[1], 'date': row[2].isoformat() if row[2] else None,
+                    'open_price': row[3], 'high_price': row[4], 'low_price': row[5], 'close_price': row[6],
+                    'change_ratio': row[7], 'volume': row[8], 'amount': row[9],
+                    'turnover_rate': row[10], 'pe_ratio': row[11], 'pb_ratio': row[12], 'market_cap': row[13]
+                })
+            return result
+
+        elif table_name == 'akshare_index_data':
+            query = """
+                SELECT
+                    index_code, index_name, date, open_price, high_price, low_price, close_price,
+                    change_ratio, volume, amount
+                FROM akshare_index_data
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'index_code': row[0], 'index_name': row[1], 'date': row[2].isoformat() if row[2] else None,
+                    'open_price': row[3], 'high_price': row[4], 'low_price': row[5], 'close_price': row[6],
+                    'change_ratio': row[7], 'volume': row[8], 'amount': row[9]
+                })
+            return result
+
+        elif table_name == 'akshare_bond_data':
+            query = """
+                SELECT
+                    bond_code, bond_name, date, open_price, high_price, low_price,
+                    close_price, change_ratio, yield_to_maturity, duration
+                FROM akshare_bond_data
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'bond_code': row[0], 'bond_name': row[1], 'date': row[2].isoformat() if row[2] else None,
+                    'open_price': row[3], 'high_price': row[4], 'low_price': row[5],
+                    'close_price': row[6], 'change_ratio': row[7],
+                    'yield_to_maturity': row[8], 'duration': row[9]
+                })
+            return result
+
+        elif table_name == 'akshare_forex_data':
+            query = """
+                SELECT
+                    currency_pair, base_currency, quote_currency, date, time,
+                    open_price, high_price, low_price, close_price,
+                    change_ratio, bid_price, ask_price
+                FROM akshare_forex_data
+                WHERE source_id = %s
+                ORDER BY date DESC, time DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'currency_pair': row[0], 'base_currency': row[1], 'quote_currency': row[2],
+                    'date': row[3].isoformat() if row[3] else None, 'time': str(row[4]) if row[4] else None,
+                    'open_price': row[5], 'high_price': row[6], 'low_price': row[7],
+                    'close_price': row[8], 'change_ratio': row[9],
+                    'bid_price': row[10], 'ask_price': row[11]
+                })
+            return result
+
+        elif table_name == 'akshare_macro_data':
+            query = """
+                SELECT
+                    indicator_type, indicator_name, period, date,
+                    value, forecast_value, previous_value, country
+                FROM akshare_macro_data
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'indicator_type': row[0], 'indicator_name': row[1], 'period': row[2],
+                    'date': row[3].isoformat() if row[3] else None,
+                    'value': float(row[4]) if row[4] is not None else None,
+                    'forecast_value': float(row[5]) if row[5] is not None else None,
+                    'previous_value': float(row[6]) if row[6] is not None else None,
+                    'country': row[7]
+                })
+            return result
+
+        else:
+            # 默认查询 (akshare_stock_data)
+            query = """
+                SELECT
+                    symbol, date, open_price, high_price, low_price, close_price,
+                    volume, amount, pct_change, change, turnover_rate, amplitude
+                FROM akshare_stock_data
+                WHERE source_id = %s
+            """
+            cols = ['symbol', 'date', 'open_price', 'high_price', 'low_price', 'close_price',
+                    'volume', 'amount', 'pct_change', 'change', 'turnover_rate', 'amplitude']
+
+        # 添加数据类型过滤和排序限制
         if data_type:
             query += f" AND data_type = '{data_type}'"
-        
-        # 添加排序和限制
         query += " ORDER BY date DESC LIMIT %s"
-        
+
         # 执行查询
-        cursor.execute(query, (source_id, limit))
-        
+        cursor.execute(query, (stored_source_id, limit))
         rows = cursor.fetchall()
         cursor.close()
-        
+
         # 处理查询结果
         result = []
         for row in rows:
-            result.append({
-                "symbol": row[0],
-                "date": row[1].isoformat() if row[1] else None,
-                "open_price": row[2],
-                "high_price": row[3],
-                "low_price": row[4],
-                "close_price": row[5],
-                "volume": row[6],
-                "amount": row[7],
-                "pct_change": row[8],
-                "change": row[9],
-                "turnover_rate": row[10],
-                "amplitude": row[11]
-            })
-        
+            record = {}
+            for i, col in enumerate(cols):
+                val = row[i]
+                if hasattr(val, 'isoformat'):
+                    val = val.isoformat()
+                record[col] = val
+            result.append(record)
+
         return result
-        
+
     except Exception as e:
         logger.error(f"查询最新股票数据失败: {e}")
         return []
@@ -633,36 +796,36 @@ def query_stock_data_from_postgresql(
 ) -> Dict[str, Any]:
     """
     从PostgreSQL查询股票数据
-    
+
     Args:
         source_id: 数据源ID
         symbols: 股票代码列表
         start_date: 开始日期
         end_date: 结束日期
-        
+
     Returns:
-        字典，key为股票代码，value为该股票的DataFrame
+        字典,key为股票代码,value为该股票的DataFrame
     """
     if pd is None:
-        logger.error("pandas未安装，无法查询股票数据")
+        logger.error("pandas未安装,无法查询股票数据")
         return {}
-    
+
     conn = None
     result = {}
-    
+
     try:
         conn = get_db_connection()
         if not conn:
-            logger.warning("无法获取数据库连接，无法查询股票数据")
+            logger.warning("无法获取数据库连接,无法查询股票数据")
             return {}
-        
+
         cursor = conn.cursor()
-        
+
         for symbol in symbols:
             try:
                 # 查询该股票在指定日期范围内的数据
                 cursor.execute("""
-                    SELECT 
+                    SELECT
                         date,
                         open_price,
                         high_price,
@@ -674,16 +837,16 @@ def query_stock_data_from_postgresql(
                         change,
                         turnover_rate,
                         amplitude
-                    FROM akshare_stock_data 
-                    WHERE source_id = %s 
+                    FROM akshare_stock_data
+                    WHERE source_id = %s
                       AND symbol = %s
-                      AND date >= %s 
+                      AND date >= %s
                       AND date <= %s
                     ORDER BY date ASC
                 """, (source_id, symbol, start_date.date(), end_date.date()))
-                
+
                 rows = cursor.fetchall()
-                
+
                 if rows:
                     # 转换为DataFrame
                     df = pd.DataFrame(rows, columns=[
@@ -691,11 +854,11 @@ def query_stock_data_from_postgresql(
                         'close_price', 'volume', 'amount', 'pct_change',
                         'change', 'turnover_rate', 'amplitude'
                     ])
-                    
+
                     # 设置日期为索引
                     df['date'] = pd.to_datetime(df['date'])
                     df.set_index('date', inplace=True)
-                    
+
                     # 重命名列为标准OHLCV格式
                     df.rename(columns={
                         'open_price': 'open',
@@ -704,23 +867,23 @@ def query_stock_data_from_postgresql(
                         'close_price': 'close',
                         'volume': 'volume'
                     }, inplace=True)
-                    
-                    # 添加timestamp列（用于兼容性）
+
+                    # 添加timestamp列(用于兼容性)
                     df['timestamp'] = df.index
-                    
+
                     result[symbol] = df
                     logger.debug(f"从数据库加载股票 {symbol} 数据: {len(df)} 条记录")
                 else:
                     logger.debug(f"股票 {symbol} 在指定日期范围内无数据")
                     result[symbol] = pd.DataFrame()
-                    
+
             except Exception as e:
                 logger.warning(f"查询股票 {symbol} 数据失败: {e}")
                 result[symbol] = pd.DataFrame()
-        
+
         cursor.close()
         return result
-        
+
     except Exception as e:
         logger.error(f"查询股票数据失败: {e}")
         return {}
