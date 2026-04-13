@@ -127,6 +127,28 @@ class DataSourceHealthChecker:
         # miniqmt: 127.0.0.1:8888 本地交易接口，容器内不可达，暂不检测
     }
 
+    # AKShare源的正确频率限制（2026-04-13修复：补充逻辑需要包含rate_limit避免覆盖）
+    AKSHARE_RATE_LIMITS = {
+        'akshare_stock_a': '60次/小时',
+        'akshare_stock_hk': '45秒/次',
+        'akshare_index': '60次/小时',
+        'akshare_bond': '1次/天',
+        'akshare_futures': '1次/天',
+        'akshare_forex': '1次/天',
+        'akshare_macro': '1次/天',
+        'akshare_macro_china': '1次/天',
+        'akshare_macro_usa': '1次/天',
+        'akshare_news_js': '30分/次',
+        'akshare_news_eastmoney': '30分/次',
+        'akshare_news_all': '30分/次',
+        'akshare_news_wallstreet': '30分/次',
+        'akshare_commodity_gold': '30分/次',
+        'akshare_commodity_energy': '30分/次',
+        'akshare_commodity_crude': '30分/次',
+        'akshare_commodity_natural_gas': '30分/次',
+        'akshare_commodity': '30分/次',
+    }
+
     # 每个数据源的合理超时时间（毫秒）
     AKSHARE_TIMEOUT_MS = {
         'akshare_stock_a': 60000,
@@ -328,13 +350,14 @@ class DataSourceHealthChecker:
         all_source_ids = {s['id'] for s in sources}
         for akshare_id in self.AKSHARE_FUNCTION_MAP.keys():
             if akshare_id not in all_source_ids:
-                # 获取akshare函数的默认配置
                 func_name, func_kwargs = self.AKSHARE_FUNCTION_MAP[akshare_id]
+                # 2026-04-13 修复: 包含正确的rate_limit（避免覆盖数据库中的配置）
                 sources.append({
                     'id': akshare_id,
                     'name': akshare_id.replace('akshare_', 'AKShare ').replace('_', ' ').title(),
                     'type': '数据源',
                     'enabled': True,
+                    'rate_limit': self.AKSHARE_RATE_LIMITS.get(akshare_id, '1次/天'),
                     'config': {
                         'akshare_function': func_name,
                         **func_kwargs

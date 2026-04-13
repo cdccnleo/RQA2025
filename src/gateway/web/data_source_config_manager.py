@@ -383,7 +383,8 @@ class DataSourceConfigManager:
         # 允许的数据源类型（包含实际使用的所有类型）
         valid_types = [
             '财经新闻', '交易接口', '宏观经济', '市场指数', '加密货币',
-            '股票数据', '指数数据', '债券数据', '期货数据', '外汇数据', '财务报告'
+            '股票数据', '指数数据', '债券数据', '期货数据', '外汇数据', '财务报告',
+            '大宗商品', '新闻数据'
         ]
         if source['type'] not in valid_types:
             logger.error(f"数据源 {index} 类型无效: {source['type']}")
@@ -573,15 +574,16 @@ class DataSourceConfigManager:
                     except:
                         pass
                 
-                # 如果文件是列表格式，直接保存data_sources列表；否则保存完整配置
-                if file_format_is_list:
-                    with open(config_file, 'w', encoding='utf-8') as f:
-                        json.dump(data_sources, f, ensure_ascii=False, indent=2)
-                else:
-                    with open(config_file, 'w', encoding='utf-8') as f:
-                        json.dump(config_data, f, ensure_ascii=False, indent=2)
-                
-                logger.info(f"📝 配置已保存到文件系统: {config_file}, 数据源数量: {len(data_sources)}")
+                # 原子性写入：先写临时文件，成功后 rename，避免损坏
+                import tempfile as _tf, os as _os
+                data_to_save = data_sources if file_format_is_list else config_data
+                with _tf.NamedTemporaryFile(mode='w', encoding='utf-8', dir=_os.path.dirname(config_file), suffix='.tmp', delete=False) as _f:
+                    json.dump(data_to_save, _f, ensure_ascii=False, indent=2, default=str)
+                    _f.flush()
+                    _os.fsync(_f.fileno())
+                    _tmp = _f.name
+                _os.replace(_tmp, config_file)
+                logger.info(f"📝 配置已原子性保存到文件系统: {config_file}, 数据源数量: {len(data_sources)}")
             
             # 记录前3个数据源的enabled状态
             for i, source in enumerate(data_sources[:3]):
@@ -631,7 +633,7 @@ class DataSourceConfigManager:
                         updated_at = CURRENT_TIMESTAMP
                 """, (
                     config_key,
-                    json.dumps(config_data, ensure_ascii=False),
+                    json.dumps(config_data, ensure_ascii=False, default=lambda obj: obj.isoformat() if hasattr(obj, "isoformat") else str(obj)),
                     self.env,
                     config_data.get('metadata', {}).get('version', '1.0.0')
                 ))
@@ -833,6 +835,19 @@ class DataSourceConfigManager:
             logger.warning("未找到Baostock数据源，检查配置文件")
         else:
             logger.info(f"找到 {len(baostock_sources)} 个Baostock数据源")
+
+        # Inject rate_limit for each source
+        for source in sources:
+            if "rate_limit" not in source or not source["rate_limit"]:
+                freq = source.get("collection", {}).get("frequency", "1d")
+                freq_map = {
+                    "1d": "1次/天", "2d": "2次/天", "7d": "1次/周",
+                    "1h": "1次/小时", "4h": "4次/小时", "12h": "12次/小时",
+                    "1m": "1次/分钟",
+                }
+                source["rate_limit"] = freq_map.get(freq, "1次/天")
+            if "last_test" not in source:
+                source["last_test"] = None
 
         return sources
 
