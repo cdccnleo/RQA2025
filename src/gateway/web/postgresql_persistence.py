@@ -70,10 +70,10 @@ def get_db_connection():
                                     os.getenv('POSTGRES_PASSWORD', 'SecurePass123!')))
 
     # 连接池配置
-    # 增加连接池大小以支持高并发数据采集
-    # 默认最小连接数:5,最大连接数:50
-    pool_min_size = int(os.getenv('DB_POOL_MIN_SIZE', '5'))
-    pool_max_size = int(os.getenv('DB_POOL_MAX_SIZE', '50'))
+    # 修复: 减小连接池大小以避免耗尽PostgreSQL max_connections(100)
+    # 默认最小连接数:2,最大连接数:20
+    pool_min_size = int(os.getenv('DB_POOL_MIN_SIZE', '2'))
+    pool_max_size = int(os.getenv('DB_POOL_MAX_SIZE', '20'))
     pool_timeout = int(os.getenv('DB_POOL_TIMEOUT', '30'))
 
     # 尝试导入psycopg2
@@ -101,7 +101,9 @@ def get_db_connection():
 
                 for attempt in range(max_retries):
                     try:
-                        _db_pool = psycopg2.pool.SimpleConnectionPool(
+                        # 修复: 使用ThreadedConnectionPool替代SimpleConnectionPool
+                        # 原因: SimpleConnectionPool不支持多线程安全共享，会导致连接泄漏
+                        _db_pool = psycopg2.pool.ThreadedConnectionPool(
                             pool_min_size, pool_max_size, **_db_config
                         )
                         logger.info(f"数据库连接池初始化成功: {db_host}:{db_port}/{db_name}")
@@ -135,7 +137,8 @@ def get_db_connection():
                 # 如果从连接池获取连接失败,尝试重新初始化连接池
                 try:
                     _db_pool = None
-                    _db_pool = psycopg2.pool.SimpleConnectionPool(
+                    # 修复: 重启时也用ThreadedConnectionPool
+                    _db_pool = psycopg2.pool.ThreadedConnectionPool(
                         pool_min_size, pool_max_size, **_db_config
                     )
                     conn = _db_pool.getconn()
@@ -573,7 +576,19 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
         # 新闻
         'akshare_news_js': ('akshare_news_data', 'akshare_news_js'),
         'akshare_news_eastmoney': ('akshare_news_data', 'akshare_news_eastmoney'),
-        'akshare_news_all': ('akshare_news_data', None),  # None = all news
+        'akshare_news_all': ('akshare_news_data', None),
+        # 大宗商品
+        'akshare_commodity_gold': ('akshare_commodity_gold', 'akshare_gold'),
+        'akshare_commodity_energy': ('akshare_commodity_energy', 'akshare_energy'),
+        'akshare_commodity_crude': ('akshare_commodity_crude', 'akshare_crude'),
+        'akshare_commodity_natural_gas': ('akshare_commodity_natural_gas', 'akshare_natural_gas'),
+        'akshare_commodity': ('akshare_commodity_gold', 'akshare_gold'),  # 默认黄金  # None = all news
+        # 新增数据源
+        'akshare_vix': ('akshare_vix_index', 'akshare_vix'),
+        'akshare_margin': ('akshare_margin_summary', 'akshare_margin'),
+        'akshare_commodity_futures': ('akshare_commodity_futures', 'akshare_futures'),
+        'akshare_hsgt': ('akshare_hsgt_hist', 'akshare_hsgt'),
+        'akshare_bond_futures': ('akshare_bond_futures', 'akshare_bond_futures'),
     }
 
     conn = None
@@ -679,28 +694,6 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
                 })
             return result
 
-        elif table_name == 'akshare_bond_data':
-            query = """
-                SELECT
-                    bond_code, bond_name, date, open_price, high_price, low_price,
-                    close_price, change_ratio, yield_to_maturity, duration
-                FROM akshare_bond_data
-                WHERE source_id = %s
-                ORDER BY date DESC LIMIT %s
-            """
-            cursor.execute(query, (stored_source_id, limit))
-            rows = cursor.fetchall()
-            cursor.close()
-            result = []
-            for row in rows:
-                result.append({
-                    'bond_code': row[0], 'bond_name': row[1], 'date': row[2].isoformat() if row[2] else None,
-                    'open_price': row[3], 'high_price': row[4], 'low_price': row[5],
-                    'close_price': row[6], 'change_ratio': row[7],
-                    'yield_to_maturity': row[8], 'duration': row[9]
-                })
-            return result
-
         elif table_name == 'akshare_forex_history':
             query = """
                 SELECT
@@ -719,30 +712,6 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
                     'date': row[3].isoformat() if row[3] else None,
                     'price': float(row[4]) if row[4] is not None else None,
                     'change_ratio': float(row[5]) if row[5] is not None else None,
-                })
-            return result
-
-        elif table_name == 'akshare_forex_data':
-            query = """
-                SELECT
-                    currency_pair, base_currency, quote_currency, date, time,
-                    open_price, high_price, low_price, close_price,
-                    change_ratio, bid_price, ask_price
-                FROM akshare_forex_data
-                WHERE source_id = %s
-                ORDER BY date DESC, time DESC LIMIT %s
-            """
-            cursor.execute(query, (stored_source_id, limit))
-            rows = cursor.fetchall()
-            cursor.close()
-            result = []
-            for row in rows:
-                result.append({
-                    'currency_pair': row[0], 'base_currency': row[1], 'quote_currency': row[2],
-                    'date': row[3].isoformat() if row[3] else None, 'time': str(row[4]) if row[4] else None,
-                    'open_price': row[5], 'high_price': row[6], 'low_price': row[7],
-                    'close_price': row[8], 'change_ratio': row[9],
-                    'bid_price': row[10], 'ask_price': row[11]
                 })
             return result
 
@@ -825,6 +794,239 @@ def query_latest_stock_data_from_postgresql(source_id: str, limit: int = 10, dat
                     'publish_date': row[2].isoformat() if row[2] else None,
                     'url': row[3], 'keywords': row[4],
                     'news_source': row[5], 'category': row[6]
+                })
+            return result
+
+        elif table_name == 'akshare_commodity_gold':
+            query = """
+                SELECT date, morning_price, evening_price, price_diff, commodity_type
+                FROM akshare_commodity_gold
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'morning_price': float(row[1]) if row[1] is not None else None,
+                    'evening_price': float(row[2]) if row[2] is not None else None,
+                    'price_diff': float(row[3]) if row[3] is not None else None,
+                    'commodity_type': row[4],
+                })
+            return result
+
+        elif table_name == 'akshare_commodity_energy':
+            query = """
+                SELECT date, commodity_type, price, change_amount
+                FROM akshare_commodity_energy
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'commodity_type': row[1],
+                    'price': float(row[2]) if row[2] is not None else None,
+                    'change_amount': float(row[3]) if row[3] is not None else None,
+                })
+            return result
+
+        elif table_name == 'akshare_commodity_crude':
+            query = """
+                SELECT date, indicator_type, value, change_value, forecast_value, previous_value, unit, region
+                FROM akshare_commodity_crude
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'indicator_type': row[1],
+                    'value': float(row[2]) if row[2] is not None else None,
+                    'change_value': float(row[3]) if row[3] is not None else None,
+                    'forecast_value': float(row[4]) if row[4] is not None else None,
+                    'previous_value': float(row[5]) if row[5] is not None else None,
+                    'unit': row[6],
+                    'region': row[7],
+                })
+            return result
+
+        elif table_name == 'akshare_commodity_natural_gas':
+            query = """
+                SELECT date, indicator_type, value, change_value, unit, region
+                FROM akshare_commodity_natural_gas
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'indicator_type': row[1],
+                    'value': float(row[2]) if row[2] is not None else None,
+                    'change_value': float(row[3]) if row[3] is not None else None,
+                    'unit': row[4],
+                    'region': row[5],
+                })
+            return result
+
+        elif table_name == 'akshare_vix_index':
+            query = """
+                SELECT date, open, high, low, close
+                FROM akshare_vix_index
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'open': float(row[1]) if row[1] is not None else None,
+                    'high': float(row[2]) if row[2] is not None else None,
+                    'low': float(row[3]) if row[3] is not None else None,
+                    'close': float(row[4]) if row[4] is not None else None,
+                })
+            return result
+
+        elif table_name == 'akshare_margin_summary':
+            query = """
+                SELECT date, exchange, rz_balance, rz_buy_amt, rq_shares, rq_balance, total_margin
+                FROM akshare_margin_summary
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'exchange': row[1],
+                    'rz_balance': float(row[2]) if row[2] is not None else None,
+                    'rz_buy_amt': float(row[3]) if row[3] is not None else None,
+                    'rq_shares': float(row[4]) if row[4] is not None else None,
+                    'rq_balance': float(row[5]) if row[5] is not None else None,
+                    'total_margin': float(row[6]) if row[6] is not None else None,
+                })
+            return result
+
+        elif table_name == 'akshare_margin_detail':
+            query = """
+                SELECT date, exchange, stock_code, stock_name, rz_buy_amt, rz_balance, rq_shares
+                FROM akshare_margin_detail
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'exchange': row[1],
+                    'stock_code': row[2],
+                    'stock_name': row[3],
+                    'rz_buy_amt': float(row[4]) if row[4] is not None else None,
+                    'rz_balance': float(row[5]) if row[5] is not None else None,
+                    'rq_shares': float(row[6]) if row[6] is not None else None,
+                })
+            return result
+
+        elif table_name == 'akshare_commodity_futures':
+            query = """
+                SELECT date, commodity_type, symbol, open_price, high_price, low_price, close_price, settle_price, volume, hold
+                FROM akshare_commodity_futures
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'commodity_type': row[1],
+                    'symbol': row[2],
+                    'open': float(row[3]) if row[3] is not None else None,
+                    'high': float(row[4]) if row[4] is not None else None,
+                    'low': float(row[5]) if row[5] is not None else None,
+                    'close': float(row[6]) if row[6] is not None else None,
+                    'settle': float(row[7]) if row[7] is not None else None,
+                    'volume': float(row[8]) if row[8] is not None else None,
+                    'hold': float(row[9]) if row[9] is not None else None,
+                })
+            return result
+
+        elif table_name == 'akshare_hsgt_hist':
+            query = """
+                SELECT date, net_buy_amt, buy_amt, sell_amt, cum_net_buy, inflow_amt, balance, hs300, hs300_pct, top_stock_name, top_stock_pct
+                FROM akshare_hsgt_hist
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'net_buy_amt': float(row[1]) if row[1] is not None else None,
+                    'buy_amt': float(row[2]) if row[2] is not None else None,
+                    'sell_amt': float(row[3]) if row[3] is not None else None,
+                    'cum_net_buy': float(row[4]) if row[4] is not None else None,
+                    'inflow_amt': float(row[5]) if row[5] is not None else None,
+                    'balance': float(row[6]) if row[6] is not None else None,
+                    'hs300': float(row[7]) if row[7] is not None else None,
+                    'hs300_pct': float(row[8]) if row[8] is not None else None,
+                    'top_stock_name': row[9],
+                    'top_stock_pct': float(row[10]) if row[10] is not None else None,
+                })
+            return result
+
+        elif table_name == 'akshare_bond_futures':
+            query = """
+                SELECT date, bond_type, symbol, open_price, high_price, low_price, close_price, settle_price, volume, hold
+                FROM akshare_bond_futures
+                WHERE source_id = %s
+                ORDER BY date DESC LIMIT %s
+            """
+            cursor.execute(query, (stored_source_id, limit))
+            rows = cursor.fetchall()
+            cursor.close()
+            result = []
+            for row in rows:
+                result.append({
+                    'date': row[0].isoformat() if row[0] else None,
+                    'bond_type': row[1],
+                    'symbol': row[2],
+                    'open': float(row[3]) if row[3] is not None else None,
+                    'high': float(row[4]) if row[4] is not None else None,
+                    'low': float(row[5]) if row[5] is not None else None,
+                    'close': float(row[6]) if row[6] is not None else None,
+                    'settle': float(row[7]) if row[7] is not None else None,
+                    'volume': float(row[8]) if row[8] is not None else None,
+                    'hold': float(row[9]) if row[9] is not None else None,
                 })
             return result
 
