@@ -316,6 +316,24 @@ class DataSourceHealthChecker:
         config_manager = get_data_source_config_manager()
         sources = config_manager.get_data_sources()
         
+        # 2026-04-13 修复: 补充AKSHARE_FUNCTION_MAP中的所有源
+        # 原因: config_manager可能只返回部分源，导致其他数据源被忽略
+        all_source_ids = {s['id'] for s in sources}
+        for akshare_id in self.AKSHARE_FUNCTION_MAP.keys():
+            if akshare_id not in all_source_ids:
+                # 获取akshare函数的默认配置
+                func_name, func_kwargs = self.AKSHARE_FUNCTION_MAP[akshare_id]
+                sources.append({
+                    'id': akshare_id,
+                    'name': akshare_id.replace('akshare_', 'AKShare ').replace('_', ' ').title(),
+                    'type': '数据源',
+                    'enabled': True,
+                    'config': {
+                        'akshare_function': func_name,
+                        **func_kwargs
+                    }
+                })
+        
         results = []
         semaphore = asyncio.Semaphore(self.config.max_concurrent_checks)
         
