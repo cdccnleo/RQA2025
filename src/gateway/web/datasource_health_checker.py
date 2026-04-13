@@ -117,8 +117,7 @@ class DataSourceHealthChecker:
         'akshare_commodity_crude': ('macro_usa_eia_crude_rate', {}),          # EIA美国原油库存
         'akshare_commodity_natural_gas': ('macro_usa_api_crude_stock', {}),    # 天然气替代(美国API原油库存，供参考)
         'akshare_commodity': ('energy_oil_detail', {}),                       # 能源油品明细
-        # BaoStock（2026-04-12 补充）
-        'baostock_ashare': ('baostock_list', {}),                              # BaoStock A股列表
+        # BaoStock已移除：baostock_list函数已从akshare移除，无需备用源
     }
 
     # 每个数据源的合理超时时间（毫秒）
@@ -143,8 +142,7 @@ class DataSourceHealthChecker:
         'akshare_commodity_crude': 15000,
         'akshare_commodity_natural_gas': 15000,
         'akshare_commodity': 15000,
-        # BaoStock
-        'baostock_ashare': 15000,
+        # BaoStock已移除
     }
 
     async def _check_akshare_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
@@ -229,56 +227,6 @@ class DataSourceHealthChecker:
                 response_time_ms=int((time.time() - start) * 1000),
                 message=f'调用失败: {err_msg[:100]}',
                 check_time=datetime.now()
-            )
-
-    async def _check_baostock_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
-        """检测BaoStock数据源健康状态（通过实际调用Python库）"""
-        import time
-        start = time.time()
-        
-        try:
-            loop = asyncio.get_event_loop()
-            
-            def _check():
-                import baostock as bs
-                lg = bs.login()
-                if lg.error_code != '0':
-                    raise Exception(f'BaoStock登录失败: {lg.error_msg}')
-                # 查询一只股票的基本信息作为健康检测
-                rs = bs.query_stock_basic(code='sh.600000')
-                bs.logout()
-                if rs.error_code != '0':
-                    raise Exception(f'BaoStock查询失败: {rs.error_msg}')
-                return True
-            
-            await asyncio.wait_for(
-                loop.run_in_executor(None, _check),
-                timeout=15.0
-            )
-            elapsed_ms = int((time.time() - start) * 1000)
-            return HealthStatus(
-                source_id=source_id,
-                status=HealthStatusEnum.HEALTHY,
-                response_time_ms=elapsed_ms,
-                message='BaoStock连接正常',
-                check_time=datetime.now()
-            )
-        except asyncio.TimeoutError:
-            return HealthStatus(
-                source_id=source_id,
-                status=HealthStatusEnum.TIMEOUT,
-                response_time_ms=15000,
-                message='BaoStock调用超时',
-                check_time=datetime.now()
-            )
-        except Exception as e:
-            return HealthStatus(
-                source_id=source_id,
-                status=HealthStatusEnum.ERROR,
-                response_time_ms=int((time.time() - start) * 1000),
-                message=f'调用失败: {str(e)[:80]}',
-                check_time=datetime.now()
-            )
 
     async def check_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
         """检测单个数据源健康状态
@@ -297,16 +245,9 @@ class DataSourceHealthChecker:
             source_id in self.AKSHARE_FUNCTION_MAP
         )
         
-        # BaoStock数据源
-        is_baostock = source_id.startswith('baostock') or 'baostock' in source_id.lower()
-        
         # AkShare数据源：使用Python函数检测
         if is_akshare:
             return await self._check_akshare_health(source_id, source_config)
-        
-        # BaoStock数据源：使用Python库检测
-        if is_baostock:
-            return await self._check_baostock_health(source_id, source_config)
         
         # 其他数据源：使用HTTP检测
         return await self._check_http_health(source_id, source_config)
