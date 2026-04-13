@@ -123,7 +123,7 @@ class DataSourceHealthChecker:
     # 每个数据源的合理超时时间（毫秒）
     AKSHARE_TIMEOUT_MS = {
         'akshare_stock_a': 60000,
-        'akshare_stock_hk': 90000,
+        'akshare_stock_hk': 45000,  # 港股API较慢，45秒足够
         'akshare_index': 15000,
         'akshare_bond': 20000,
         'akshare_futures': 5000,
@@ -597,8 +597,11 @@ class DataSourceHealthChecker:
                         ORDER BY source_id, check_time DESC
                         """
                     )
-                    return [dict(row) for row in rows]
-                    
+                    # 2026-04-13 修复: 过滤掉不在AKSHARE_FUNCTION_MAP中的无效源
+                    known_ids = set(self.AKSHARE_FUNCTION_MAP.keys())
+                    results = [dict(row) for row in rows if row['source_id'] in known_ids]
+                    return results
+
         except Exception as e:
             logger.error(f"获取最新健康状态失败: {e}")
             return []
