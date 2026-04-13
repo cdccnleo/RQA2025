@@ -426,119 +426,74 @@ class DataSourceConfigManager:
         self._last_modified = datetime.now()
 
     def _get_default_config(self) -> Dict[str, Any]:
-        """获取默认配置"""
-        return {
-            "metadata": {
-                "version": "1.0.0",
-                "created_at": datetime.now().isoformat(),
-                "environment": self.env
-            },
-            "data_sources": [
-                {
-                    "id": "sinafinance",
-                    "name": "新浪财经",
-                    "type": "财经新闻",
-                    "url": "https://finance.sina.com.cn",
-                    "rate_limit": "10次/分钟",
-                    "enabled": True,
-                    "last_test": None,
-                    "status": "未测试",
-                    "last_collection": None,
-                    "collection_status": "未采集",
-                    "collection_count": 0,
-                    "collection_errors": 0,
-                    "total_collections": 0,
-                    "total_records": 0
-                },
-                {
-                    "id": "miniqmt",
-                    "name": "MiniQMT交易接口",
-                    "type": "交易接口",
-                    "url": "127.0.0.1:8888",
-                    "rate_limit": "按协议",
-                    "enabled": True,
-                    "last_test": None,
-                    "status": "未测试",
-                    "last_collection": None,
-                    "collection_status": "未采集",
-                    "collection_count": 0,
-                    "collection_errors": 0,
-                    "total_collections": 0,
-                    "total_records": 0
-                },
-                {
-                    "id": "macrodata",
-                    "name": "宏观经济数据",
-                    "type": "宏观经济",
-                    "url": "https://api.macrodata.com",
-                    "rate_limit": "100次/分钟",
-                    "enabled": True,
-                    "last_test": None,
-                    "status": "未测试",
-                    "last_collection": None,
-                    "collection_status": "未采集",
-                    "collection_count": 0,
-                    "collection_errors": 0,
-                    "total_collections": 0,
-                    "total_records": 0
-                },
-                {
-                    "id": "cryptodata",
-                    "name": "加密货币数据",
-                    "type": "加密货币",
-                    "url": "https://api.coingecko.com",
-                    "rate_limit": "50次/分钟",
-                    "enabled": True,
-                    "last_test": None,
-                    "status": "未测试",
-                    "last_collection": None,
-                    "collection_status": "未采集",
-                    "collection_count": 0,
-                    "collection_errors": 0,
-                    "total_collections": 0,
-                    "total_records": 0
-                },
-                {
-                    "id": "akshare_stock_a",
-                    "name": "AKShare A股数据",
-                    "type": "股票数据",
-                    "url": "https://www.akshare.xyz",
-                    "rate_limit": "60次/分钟",
-                    "enabled": True,
-                    "last_test": None,
-                    "status": "未测试",
-                    "symbols": ["000001", "600519", "000858"],
-                    "last_collection": None,
-                    "collection_status": "未采集",
-                    "collection_count": 0,
-                    "collection_errors": 0,
-                    "total_collections": 0,
-                    "total_records": 0
-                },
-                {
-                    "id": "baostock_stock_a",
-                    "name": "BaoStock A股数据",
-                    "type": "股票数据",
-                    "url": "http://www.baostock.com",
-                    "rate_limit": "30次/分钟",
-                    "enabled": True,
-                    "last_test": None,
-                    "status": "未测试",
-                    "symbols": ["000001", "600519", "000858"],
-                    "last_collection": None,
-                    "collection_status": "未采集",
-                    "collection_count": 0,
-                    "collection_errors": 0,
-                    "total_collections": 0,
-                    "total_records": 0
-                }
-            ],
-            self.env: {
-                "auto_backup": False,
-                "validation_strict": False
-            }
+        """获取默认配置（2026-04-13修复：禁用cryptodata/macrodata/miniqt，添加所有AKShare源+正确rate_limit）"""
+        bf = {
+            "last_test": None, "status": "未测试",
+            "last_collection": None, "collection_status": "未采集",
+            "collection_count": 0, "collection_errors": 0,
+            "total_collections": 0, "total_records": 0
         }
-
+        akshare = [
+            ("akshare_stock_a",         "AKShare A股数据",   "60次/小时", True),
+            ("akshare_stock_hk",        "AKShare 港股数据",   "45秒/次",   True),
+            ("akshare_index",           "AKShare 指数数据",   "60次/小时", True),
+            ("akshare_bond",            "AKShare 债券数据",   "1次/天",   True),
+            ("akshare_futures",         "AKShare 期货数据",   "1次/天",   True),
+            ("akshare_forex",           "AKShare 外汇数据",   "1次/天",   True),
+            ("akshare_macro_china",     "AKShare 中国宏观",   "1次/天",   True),
+            ("akshare_macro_usa",       "AKShare 美国宏观",   "1次/天",   True),
+            ("akshare_macro",            "AKShare 宏观通用",   "1次/天",   True),  # 兼容旧名
+            ("akshare_news_js",         "AKShare 期货新闻",   "30分/次",  True),
+            ("akshare_news_eastmoney",  "AKShare 东财新闻",   "30分/次",  True),
+            ("akshare_news_all",         "AKShare 综合新闻",   "30分/次",  True),
+            ("akshare_news_sina",        "AKShare 新浪新闻",   "30分/次",  True),  # 兼容旧名
+            ("akshare_news_wallstreet", "AKShare 华尔街新闻", "30分/次",  False),
+            ("akshare_commodity_gold",  "AKShare 黄金数据",   "30分/次",  True),
+            ("akshare_commodity_energy","AKShare 能源数据",   "30分/次",  True),
+            ("akshare_commodity_crude", "AKShare 原油数据",   "30分/次",  True),
+            ("akshare_commodity_natural_gas","AKShare 天然气",  "30分/次",  False),
+            ("akshare_commodity",       "AKShare 能源综合",   "30分/次",  True),
+        ]
+        extra = [
+            ("baostock_stock_a", "BaoStock A股数据", "http://www.baostock.com", "30次/分钟", True),
+            ("sinafinance",       "新浪财经",         "https://finance.sina.com.cn","10次/分钟",True),
+            ("miniqt",           "MiniQMT交易接口",  "http://127.0.0.1:8888",    "按协议",   False),
+            ("cryptodata",        "加密货币数据",      "https://api.coingecko.com",  "50次/分钟", False),
+            ("macrodata",         "宏观经济数据",       "https://api.macrodata.com",  "100次/分钟",False),
+        ]
+        sources = []
+        # type映射：使用valid_types中的合法值
+        type_map = {
+            'akshare_stock_a': '股票数据', 'akshare_stock_hk': '股票数据',
+            'akshare_index': '市场指数', 'akshare_bond': '债券数据',
+            'akshare_futures': '期货数据', 'akshare_forex': '外汇数据',
+            'akshare_macro_china': '宏观经济', 'akshare_macro_usa': '宏观经济',
+            'akshare_macro': '宏观经济',
+            'akshare_news_js': '新闻数据', 'akshare_news_eastmoney': '新闻数据',
+            'akshare_news_all': '新闻数据', 'akshare_news_sina': '新闻数据',
+            'akshare_news_wallstreet': '新闻数据',
+            'akshare_commodity_gold': '大宗商品', 'akshare_commodity_energy': '大宗商品',
+            'akshare_commodity_crude': '大宗商品', 'akshare_commodity_natural_gas': '大宗商品',
+            'akshare_commodity': '大宗商品',
+            'baostock_stock_a': '股票数据', 'sinafinance': '财经新闻',
+            'miniqt': '交易接口', 'cryptodata': '加密货币', 'macrodata': '宏观经济',
+        }
+        for sid, name, rl, enabled in akshare:
+            d = {"id": sid, "name": name, "type": type_map.get(sid, '股票数据'),
+                 "url": "https://www.akshare.xyz", "rate_limit": rl, "enabled": enabled,
+                 "status": "未测试", "symbols": ["000001", "600519", "000858"]}
+            d.update(bf)
+            sources.append(d)
+        for sid, name, url, rl, enabled in extra:
+            d = {"id": sid, "name": name, "type": type_map.get(sid, '股票数据'),
+                 "url": url, "rate_limit": rl, "enabled": enabled, "status": "未测试"}
+            d.update(bf)
+            sources.append(d)
+        return {
+            "metadata": {"version": "5.0", "created_at": datetime.now().isoformat(), "environment": self.env},
+            "data_sources": sources,
+            self.env: {"auto_backup": False, "validation_strict": False}
+        }
     def save_config(self, format_type: str = 'json') -> bool:
         """保存配置（优先PostgreSQL，降级到文件系统）"""
         try:
