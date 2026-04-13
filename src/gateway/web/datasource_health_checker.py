@@ -227,6 +227,7 @@ class DataSourceHealthChecker:
                 response_time_ms=int((time.time() - start) * 1000),
                 message=f'调用失败: {err_msg[:100]}',
                 check_time=datetime.now()
+            )
 
     async def check_health(self, source_id: str, source_config: Dict[str, Any]) -> HealthStatus:
         """检测单个数据源健康状态
