@@ -6,10 +6,29 @@ Main entry point for RQA2025 Quantitative Trading System
 
 # 导入必要的模块
 import asyncio
+import json
+import math
 import sys
 import os
 import time
 from pathlib import Path
+
+# 2026-04-13: NaN/Inf JSON序列化修复函数（必须在monkeypatch前定义）
+def _sanitize_nan_inf(obj):
+    """递归替换NaN/Inf为None，datetime为ISO字符串，避免JSON序列化失败"""
+    if isinstance(obj, dict):
+        return {k: _sanitize_nan_inf(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [_sanitize_nan_inf(x) for x in obj]
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+    elif hasattr(obj, 'isoformat'):  # datetime/date/time objects
+        try:
+            return obj.isoformat()
+        except Exception:
+            pass
+    return obj
 
 # 添加src目录到Python路径
 sys.path.insert(0, str(Path(__file__).parent / "src"))
@@ -232,6 +251,14 @@ try:
 
                 except Exception as e:
                     print(f"系统关闭时发生错误: {e}")
+
+    # 2026-04-13: 全局修复NaN/Inf/datetime JSON序列化问题
+    # Patch starlette.responses.JSONResponse.render 以拦截所有FastAPI JSON响应
+    import starlette.responses as _sr
+    _orig_render = _sr.JSONResponse.render
+    def _safe_render(self, content):
+        return _orig_render(self, _sanitize_nan_inf(content))
+    _sr.JSONResponse.render = _safe_render
 
     # 创建FastAPI应用
     app = FastAPI(
