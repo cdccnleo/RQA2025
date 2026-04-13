@@ -434,8 +434,8 @@ class DataSourceConfigManager:
             "total_collections": 0, "total_records": 0
         }
         akshare = [
-            ("akshare_stock_a",         "AKShare A股数据",   "60次/小时", True),
-            ("akshare_stock_hk",        "AKShare 港股数据",   "45秒/次",   True),
+            ("akshare_stock_a",         "AKShare A股数据",   "1次/天", True),
+            ("akshare_stock_hk",        "AKShare 港股数据",   "1次/天",   True),
             ("akshare_index",           "AKShare 指数数据",   "60次/小时", True),
             ("akshare_bond",            "AKShare 债券数据",   "1次/天",   True),
             ("akshare_futures",         "AKShare 期货数据",   "1次/天",   True),
@@ -443,7 +443,7 @@ class DataSourceConfigManager:
             ("akshare_macro_china",     "AKShare 中国宏观",   "1次/天",   True),
             ("akshare_macro_usa",       "AKShare 美国宏观",   "1次/天",   True),
             ("akshare_macro",            "AKShare 宏观通用",   "1次/天",   True),  # 兼容旧名
-            ("akshare_news_js",         "AKShare 期货新闻",   "30分/次",  True),
+            ("akshare_news_js",         "AKShare 期货新闻",   "1次/天",  True),
             ("akshare_news_eastmoney",  "AKShare 东财新闻",   "30分/次",  True),
             ("akshare_news_all",         "AKShare 综合新闻",   "30分/次",  True),
             ("akshare_news_sina",        "AKShare 新浪新闻",   "30分/次",  True),  # 兼容旧名
@@ -455,11 +455,11 @@ class DataSourceConfigManager:
             ("akshare_commodity",       "AKShare 能源综合",   "30分/次",  True),
         ]
         extra = [
-            ("baostock_stock_a", "BaoStock A股数据", "http://www.baostock.com", "30次/分钟", True),
-            ("sinafinance",       "新浪财经",         "https://finance.sina.com.cn","10次/分钟",True),
+            ("baostock_stock_a", "BaoStock A股数据", "http://www.baostock.com", "1次/天", True),
+            ("sinafinance",       "新浪财经",         "https://finance.sina.com.cn","1次/天",True),
             ("miniqt",           "MiniQMT交易接口",  "http://127.0.0.1:8888",    "按协议",   False),
-            ("cryptodata",        "加密货币数据",      "https://api.coingecko.com",  "50次/分钟", False),
-            ("macrodata",         "宏观经济数据",       "https://api.macrodata.com",  "100次/分钟",False),
+            ("cryptodata",        "加密货币数据",      "https://api.coingecko.com",  "1次/天", False),
+            ("macrodata",         "宏观经济数据",       "https://api.macrodata.com",  "1次/天",False),
         ]
         sources = []
         # type映射：使用valid_types中的合法值
