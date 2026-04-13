@@ -120,6 +120,13 @@ class DataSourceHealthChecker:
         # BaoStock已移除：baostock_list函数已从akshare移除，无需备用源
     }
 
+    # 非AKShare数据源列表（通过HTTP connectivity检测）
+    EXTRA_CONNECTIVITY_SOURCES = {
+        'baostock_stock_a',  # BaoStock官网 http://www.baostock.com
+        'sinafinance',        # 新浪财经 https://finance.sina.com.cn
+        # miniqmt: 127.0.0.1:8888 本地交易接口，容器内不可达，暂不检测
+    }
+
     # 每个数据源的合理超时时间（毫秒）
     AKSHARE_TIMEOUT_MS = {
         'akshare_stock_a': 60000,
@@ -334,13 +341,15 @@ class DataSourceHealthChecker:
                     }
                 })
         
-        # 2026-04-13 修复: 过滤掉不在AKSHARE_FUNCTION_MAP中的源（避免无效源如baostock_ashare/cryptodata/macrodata/miniqt干扰）
-        known_source_ids = set(self.AKSHARE_FUNCTION_MAP.keys())
+        # 2026-04-13 修复: 包含所有有效源（AKShare函数 OR EXTRA_CONNECTIVITY_SOURCES）
+        # 排除无效配置源（如baostock_ashare/cryptodata/macrodata——它们不在任何有效列表中）
+        valid_source_ids = set(self.AKSHARE_FUNCTION_MAP.keys()) | self.EXTRA_CONNECTIVITY_SOURCES
         original_count = len(sources)
-        sources = [s for s in sources if s['id'] in known_source_ids]
+        sources = [s for s in sources if s['id'] in valid_source_ids]
         if original_count > len(sources):
-            logger.info(f"过滤掉 {original_count - len(sources)} 个不在AKSHARE_FUNCTION_MAP中的无效源")
-        
+            removed = original_count - len(sources)
+            logger.info(f"过滤掉 {removed} 个无效源（无AKShare函数且非EXTRA_CONNECTIVITY_SOURCES）")
+
         results = []
         semaphore = asyncio.Semaphore(self.config.max_concurrent_checks)
         
@@ -597,9 +606,9 @@ class DataSourceHealthChecker:
                         ORDER BY source_id, check_time DESC
                         """
                     )
-                    # 2026-04-13 修复: 过滤掉不在AKSHARE_FUNCTION_MAP中的无效源
-                    known_ids = set(self.AKSHARE_FUNCTION_MAP.keys())
-                    results = [dict(row) for row in rows if row['source_id'] in known_ids]
+                    # 2026-04-13 修复: 包含AKShare源(通过AKSHARE_FUNCTION_MAP)和非AKShare源(通过EXTRA_CONNECTIVITY_SOURCES)
+                    valid_ids = set(self.AKSHARE_FUNCTION_MAP.keys()) | self.EXTRA_CONNECTIVITY_SOURCES
+                    results = [dict(row) for row in rows if row['source_id'] in valid_ids]
                     return results
 
         except Exception as e:
