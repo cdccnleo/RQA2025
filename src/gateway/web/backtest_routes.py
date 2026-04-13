@@ -9,6 +9,8 @@ from typing import Optional, Dict, Any, Set
 from datetime import datetime
 import logging
 import time
+import math
+import json as _json
 
 # 使用统一日志系统（符合架构设计：基础设施层统一日志接口）
 try:
@@ -18,6 +20,23 @@ except ImportError:
     logger = logging.getLogger(__name__)
 
 from .backtest_service import run_backtest, get_backtest_result, list_backtests
+
+# 2026-04-13: NaN/Inf/datetime JSON序列化修复
+def _safe_json(obj):
+    """递归清理NaN/Inf/datetime用于JSON序列化"""
+    if isinstance(obj, dict):
+        return {k: _safe_json(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [_safe_json(x) for x in obj]
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+    elif hasattr(obj, 'isoformat'):
+        try:
+            return obj.isoformat()
+        except Exception:
+            pass
+    return obj
 
 router = APIRouter()
 
@@ -394,7 +413,7 @@ async def get_backtest_result_endpoint(backtest_id: str):
         result = await get_backtest_result(backtest_id)
         if not result:
             raise HTTPException(status_code=404, detail=f"回测结果不存在: {backtest_id}")
-        return result
+        return _safe_json(result)
     except HTTPException:
         raise
     except Exception as e:
@@ -415,9 +434,11 @@ async def list_backtests_endpoint(strategy_id: Optional[str] = Query(None, descr
     """
     try:
         results = await list_backtests(strategy_id)
+        # 2026-04-13: 清理NaN/Inf/datetime避免JSON序列化失败
+        safe_results = _safe_json(results)
         return {
-            "backtests": results,
-            "total": len(results)
+            "backtests": safe_results,
+            "total": len(safe_results)
         }
     except Exception as e:
         logger.error(f"获取回测列表失败: {e}")
