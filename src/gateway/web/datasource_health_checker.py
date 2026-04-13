@@ -334,6 +334,13 @@ class DataSourceHealthChecker:
                     }
                 })
         
+        # 2026-04-13 修复: 过滤掉不在AKSHARE_FUNCTION_MAP中的源（避免无效源如baostock_ashare/cryptodata/macrodata/miniqt干扰）
+        known_source_ids = set(self.AKSHARE_FUNCTION_MAP.keys())
+        original_count = len(sources)
+        sources = [s for s in sources if s['id'] in known_source_ids]
+        if original_count > len(sources):
+            logger.info(f"过滤掉 {original_count - len(sources)} 个不在AKSHARE_FUNCTION_MAP中的无效源")
+        
         results = []
         semaphore = asyncio.Semaphore(self.config.max_concurrent_checks)
         
