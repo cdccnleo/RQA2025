@@ -170,25 +170,36 @@ class DataCollectionSchedulerManager:
         if not rate_limit:
             logger.debug(f"数据源 {source_id} 没有配置采集频率，跳过")
             return
-        
-        # 优先从数据库获取最新的 last_test（避免容器重启后使用过期的缓存数据）
+
+        # 2026-04-13 修复: 使用 last_collection_time 而非 last_test
+        # 原因: last_test 由健康检测更新（频繁），导致 should_collect 错误地认为今天已采集
+        # 而 last_collection_time 才真正反映数据采集时间
         try:
             from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             config_manager = get_data_source_config_manager()
             fresh_source = config_manager.get_data_source(source_id)
             if fresh_source:
-                last_test = fresh_source.get("last_test")
-                logger.debug(f"数据源 {source_id} 从数据库获取最新 last_test: {last_test}")
+                # 优先使用 last_collection_time（真正反映采集时间）
+                last_collection = (
+                    fresh_source.get("last_collection") or
+                    fresh_source.get("last_collection_time") or
+                    fresh_source.get("last_test")  # 降级到 last_test
+                )
+                logger.debug(f"数据源 {source_id} 从数据库获取 last_collection: {last_collection}")
             else:
-                last_test = source.get("last_test")
-                logger.warning(f"数据源 {source_id} 无法从数据库获取，使用传入的 last_test: {last_test}")
+                last_collection = (
+                    source.get("last_collection") or
+                    source.get("last_collection_time") or
+                    source.get("last_test")
+                )
+                logger.warning(f"数据源 {source_id} 无法从数据库获取，使用传入的 last_collection: {last_collection}")
         except Exception as e:
-            last_test = source.get("last_test")
-            logger.error(f"从数据库获取 last_test 失败: {e}，使用传入的 last_test: {last_test}")
-        
+            last_collection = source.get("last_collection") or source.get("last_test")
+            logger.error(f"从数据库获取 last_collection 失败: {e}，使用: {last_collection}")
+
         # 检查是否应该采集
-        if should_collect(last_test, rate_limit):
-            logger.info(f"🎯 数据源 {source_id} 到达采集时间，准备提交任务")
+        if should_collect(last_collection, rate_limit):
+            logger.info(f"🎯 数据源 {source_id} 到达采集时间（last_collection={last_collection}），准备提交任务")
             
             # 再次检查是否已有待处理的任务（双重检查）
             if self._has_pending_task(source_id):
@@ -219,18 +230,30 @@ class DataCollectionSchedulerManager:
             source_config = config_manager.get_data_source(source_id)
             
             if source_config:
-                last_test = source_config.get("last_test")
-                if last_test:
+                # 2026-04-13 修复: 使用 last_collection 而非 last_test
+                last_collected = (
+                    source_config.get("last_collection") or
+                    source_config.get("last_collection_time") or
+                    source_config.get("last_test")  # 降级
+                )
+                if last_collected:
                     try:
-                        # 解析最后测试时间
-                        last_test_date = datetime.strptime(last_test, "%Y-%m-%d %H:%M:%S").date()
-                        today = datetime.now().date()
-                        
-                        if last_test_date == today:
-                            logger.info(f"📅 数据源 {source_id} 今天已采集（last_test: {last_test}），跳过")
-                            return True
-                    except ValueError as e:
-                        logger.warning(f"解析 last_test 失败: {last_test}, 错误: {e}")
+                        if isinstance(last_collected, str):
+                            last_collected_date = datetime.strptime(last_collected, "%Y-%m-%d %H:%M:%S").date()
+                        elif isinstance(last_collected, datetime):
+                            last_collected_date = last_collected.date()
+                        else:
+                            logger.warning(f"未知的last_collected类型: {type(last_collected)}, 值: {last_collected}")
+                            last_collected_date = None
+
+                        if last_collected_date:
+                            today = datetime.now().date()
+
+                            if last_collected_date == today:
+                                logger.info(f"📅 数据源 {source_id} 今天已采集（last_collected: {last_collected}），跳过")
+                                return True
+                    except (ValueError, TypeError) as e:
+                        logger.warning(f"解析 last_test 失败: {last_test}, 类型: {type(last_test)}, 错误: {e}")
             
             # 数据库检查失败或未找到配置，降级到内存检查
             logger.debug(f"数据库检查失败，降级到内存检查: {source_id}")
