@@ -280,6 +280,136 @@ class AKShareCollector:
             self._record_metrics(symbol, collection_time_ms, 0, 1.0, False)
             return False
     
+    def collect_commodity_gold(self) -> Optional[List[Dict[str, Any]]]:
+        """
+        采集黄金现货数据（上海黄金交易所基准价）
+        
+        Returns:
+            黄金数据列表
+        """
+        if not self._akshare_available:
+            logger.error("AKShare 库不可用，无法采集黄金数据")
+            return None
+        
+        try:
+            import akshare as ak
+            
+            logger.info("开始采集黄金现货数据...")
+            df = ak.spot_golden_benchmark_sge()
+            
+            if df.empty:
+                logger.warning("未获取到黄金数据")
+                return None
+            
+            logger.info(f"成功获取黄金数据: {len(df)} 条")
+            
+            # 转换数据格式
+            data = []
+            for _, row in df.iterrows():
+                trading_time = row.get('交易时间')
+                if trading_time is None:
+                    continue
+                    
+                # 解析日期
+                if isinstance(trading_time, str):
+                    date_str = trading_time.split()[0] if ' ' in trading_time else trading_time
+                elif hasattr(trading_time, 'strftime'):
+                    date_str = trading_time.strftime('%Y-%m-%d')
+                else:
+                    date_str = str(trading_time)
+                
+                evening_price = row.get('晚盘价')
+                morning_price = row.get('早盘价')
+                
+                # 计算价差
+                price_diff = None
+                if evening_price is not None and morning_price is not None:
+                    try:
+                        price_diff = float(evening_price) - float(morning_price)
+                    except (ValueError, TypeError):
+                        pass
+                
+                data.append({
+                    'date': date_str,
+                    'evening_price': float(evening_price) if evening_price is not None else None,
+                    'morning_price': float(morning_price) if morning_price is not None else None,
+                    'price_diff': price_diff,
+                    'commodity_type': 'gold_spot',
+                    'source_id': 'akshare_gold'
+                })
+            
+            logger.info(f"黄金数据转换完成: {len(data)} 条")
+            return data
+            
+        except Exception as e:
+            logger.error(f"采集黄金数据失败: {e}")
+            return None
+
+    def save_commodity_gold_to_database(self, data: List[Dict[str, Any]]) -> bool:
+        """
+        保存黄金数据到数据库
+        
+        Args:
+            data: 黄金数据列表
+            
+        Returns:
+            是否成功
+        """
+        if not data:
+            logger.warning("没有黄金数据需要保存")
+            return False
+        
+        conn = None
+        cursor = None
+        
+        try:
+            from src.gateway.web.postgresql_persistence import get_db_connection
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            insert_query = """
+                INSERT INTO akshare_commodity_gold 
+                    (source_id, commodity_type, date, morning_price, evening_price, price_diff, collected_at)
+                VALUES 
+                    (%s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (date, commodity_type) DO UPDATE SET
+                    morning_price = EXCLUDED.morning_price,
+                    evening_price = EXCLUDED.evening_price,
+                    price_diff = EXCLUDED.price_diff,
+                    collected_at = EXCLUDED.collected_at
+            """
+            
+            records_to_insert = []
+            for record in data:
+                values = (
+                    record.get('source_id', 'akshare_gold'),
+                    record.get('commodity_type', 'gold_spot'),
+                    record.get('date'),
+                    record.get('morning_price'),
+                    record.get('evening_price'),
+                    record.get('price_diff'),
+                    datetime.now()
+                )
+                records_to_insert.append(values)
+            
+            cursor.executemany(insert_query, records_to_insert)
+            conn.commit()
+            
+            logger.info(f"成功保存 {len(data)} 条黄金数据到数据库")
+            return True
+            
+        except Exception as e:
+            logger.error(f"保存黄金数据到数据库失败: {e}")
+            if conn:
+                conn.rollback()
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                from src.gateway.web.postgresql_persistence import return_db_connection
+                return_db_connection(conn)
+
     def _record_metrics(self, symbol: str, latency_ms: float, record_count: int, error_rate: float, success: bool):
         """
         记录性能指标到 PerformanceMonitor

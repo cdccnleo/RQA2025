@@ -715,7 +715,86 @@ async def lifespan(app: FastAPI):
                 
                 try:
                     # 根据数据源类型选择采集器
-                    if "akshare" in source_id.lower():
+                    if "akshare_commodity_gold" in source_id.lower():
+                        # Gold spot specialized collector
+                        from src.data.collectors.akshare_collector import AKShareCollector
+                        collector = AKShareCollector()
+
+                        gold_data = collector.collect_commodity_gold()
+
+                        if gold_data:
+                            success = collector.save_commodity_gold_to_database(gold_data)
+                            if success:
+                                logger.info("Gold data saved: {} records".format(len(gold_data)))
+                                result = {
+                                    "source_id": source_id,
+                                    "status": "success",
+                                    "records_collected": len(gold_data),
+                                    "symbols_processed": 1,
+                                    "timestamp": time.time()
+                                }
+                                return result
+                            else:
+                                logger.error("Gold data save failed")
+                                result = {
+                                    "source_id": source_id,
+                                    "status": "failed",
+                                    "records_collected": 0,
+                                    "symbols_processed": 0,
+                                    "timestamp": time.time()
+                                }
+                                return result
+                        else:
+                            logger.warning("No gold data fetched")
+                            result = {
+                                "source_id": source_id,
+                                "status": "failed",
+                                "records_collected": 0,
+                                "symbols_processed": 0,
+                                "timestamp": time.time()
+                            }
+                            return result
+
+                    elif "akshare_index" in source_id.lower():
+                        # A股指数专用采集器
+                        from src.data.collectors.akshare_index_collector import collect_index_data, save_index_data_to_database
+
+                        index_data = collect_index_data()
+
+                        if index_data:
+                            success = save_index_data_to_database(index_data)
+                            if success:
+                                logger.info("Index data saved: {} records".format(len(index_data)))
+                                result = {
+                                    "source_id": source_id,
+                                    "status": "success",
+                                    "records_collected": len(index_data),
+                                    "symbols_processed": 1,
+                                    "timestamp": time.time()
+                                }
+                                return result
+                            else:
+                                logger.error("Index data save failed")
+                                result = {
+                                    "source_id": source_id,
+                                    "status": "failed",
+                                    "records_collected": 0,
+                                    "symbols_processed": 0,
+                                    "timestamp": time.time()
+                                }
+                                return result
+                        else:
+                            logger.warning("No index data fetched")
+                            result = {
+                                "source_id": source_id,
+                                "status": "failed",
+                                "records_collected": 0,
+                                "symbols_processed": 0,
+                                "timestamp": time.time()
+                            }
+                            return result
+
+                    elif "akshare" in source_id.lower():
                         # 使用 AKShare 采集器
                         from src.data.collectors.akshare_collector import AKShareCollector
                         
