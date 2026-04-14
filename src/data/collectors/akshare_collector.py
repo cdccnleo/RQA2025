@@ -318,6 +318,15 @@ class AKShareCollector:
                 else:
                     date_str = str(trading_time)
                 
+                # 日期合法性过滤：过滤未来日期和超老日期（akshare返回2016-2026数据，超出此范围为脏数据）
+                try:
+                    date_obj = datetime.strptime(date_str[:10], '%Y-%m-%d')
+                    year = date_obj.year
+                    if not (2000 <= year <= 2027):
+                        continue
+                except (ValueError, TypeError):
+                    continue
+                
                 evening_price = row.get('晚盘价')
                 morning_price = row.get('早盘价')
                 
