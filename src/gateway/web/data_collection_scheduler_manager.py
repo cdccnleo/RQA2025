@@ -195,7 +195,8 @@ class DataCollectionSchedulerManager:
                 logger.warning(f"数据源 {source_id} 无法从数据库获取，使用传入的 last_collection: {last_collection}")
         except Exception as e:
             last_collection = source.get("last_collection") or source.get("last_test")
-            logger.error(f"从数据库获取 last_collection 失败: {e}，使用: {last_collection}")
+            logger.error(f"从数据库获取 last_collection 失败: {e}")
+            last_collection = None  # Safety fallback
 
         # 检查是否应该采集
         if should_collect(last_collection, rate_limit):
@@ -209,7 +210,7 @@ class DataCollectionSchedulerManager:
             # 提交采集任务
             self._submit_collection_task(source_id, source)
         else:
-            logger.debug(f"数据源 {source_id} 未到达采集时间 (last_test: {last_test})")
+            logger.debug(f"数据源 {source_id} 未到达采集时间 (last_collection: {last_collection})")
     
     def _has_pending_task(self, source_id: str) -> bool:
         """
@@ -239,7 +240,16 @@ class DataCollectionSchedulerManager:
                 if last_collected:
                     try:
                         if isinstance(last_collected, str):
-                            last_collected_date = datetime.strptime(last_collected, "%Y-%m-%d %H:%M:%S").date()
+                            # 尝试多种 datetime 格式
+                            _parsed_date = None
+                            for _fmt in ("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S",
+                                         "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+                                try:
+                                    _parsed_date = datetime.strptime(last_collected, _fmt).date()
+                                    break
+                                except ValueError:
+                                    continue
+                            last_collected_date = _parsed_date
                         elif isinstance(last_collected, datetime):
                             last_collected_date = last_collected.date()
                         else:
@@ -253,7 +263,7 @@ class DataCollectionSchedulerManager:
                                 logger.info(f"📅 数据源 {source_id} 今天已采集（last_collected: {last_collected}），跳过")
                                 return True
                     except (ValueError, TypeError) as e:
-                        logger.warning(f"解析 last_test 失败: {last_test}, 类型: {type(last_test)}, 错误: {e}")
+                        logger.warning(f"解析 last_collected 失败: {last_collected}, 类型: {type(last_collected)}, 错误: {e}")
             
             # 数据库检查失败或未找到配置，降级到内存检查
             logger.debug(f"数据库检查失败，降级到内存检查: {source_id}")
@@ -286,6 +296,14 @@ class DataCollectionSchedulerManager:
                 logger.info(f"📅 数据源 {source_id} 今天已提交过任务（竞态条件检查），跳过")
                 return
             
+            # Setup event loop in this thread before accessing asyncio-based scheduler
+            import asyncio
+            try:
+                asyncio.get_running_loop()
+            except RuntimeError:
+                _loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(_loop)
+
             scheduler = get_unified_scheduler()
             
             # 准备任务数据
@@ -515,14 +533,12 @@ _scheduler_manager: Optional[DataCollectionSchedulerManager] = None
 
 def get_scheduler_manager() -> DataCollectionSchedulerManager:
     """
-    获取全局调度管理器实例（单例模式）
-    
-    Returns:
-        DataCollectionSchedulerManager: 调度管理器实例
+    获取全局调度管理器实例（单例模式，自动启动调度器）
     """
     global _scheduler_manager
     if _scheduler_manager is None:
         _scheduler_manager = DataCollectionSchedulerManager()
+        _scheduler_manager.start()  # 自动启动调度线程
     return _scheduler_manager
 
 
