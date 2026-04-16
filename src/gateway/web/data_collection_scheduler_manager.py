@@ -40,6 +40,7 @@ class DataCollectionSchedulerManager:
         
         # 跟踪已提交的任务，避免重复
         self._submitted_tasks: Set[str] = set()
+        self._completion_timestamps: Dict[str, str] = {}  # 修复Bug: 保存提交时的时间戳，避免回调时时间戳不一致
         
         # 统计信息
         self._stats = {
@@ -290,11 +291,7 @@ class DataCollectionSchedulerManager:
         import asyncio
         
         try:
-            # 再次检查是否已提交（防止竞态条件）
-            task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
-            if task_key in self._submitted_tasks:
-                logger.info(f"📅 数据源 {source_id} 今天已提交过任务（竞态条件检查），跳过")
-                return
+            # 竞态条件检查已移到上面的 should_collect 逻辑中
             
             # Setup event loop in this thread before accessing asyncio-based scheduler
             import asyncio
@@ -318,6 +315,21 @@ class DataCollectionSchedulerManager:
             def on_task_completed(task_id: str, status: str, result: Any, error: str):
                 """任务完成回调"""
                 logger.info(f"🎯 任务完成回调被调用: task_id={task_id}, source_id={source_id}, 状态={status}")
+                
+                # 【关键修复】更新TaskManager中的任务状态
+                try:
+                    from src.core.orchestration.scheduler import get_unified_scheduler
+                    from src.core.orchestration.scheduler.base import TaskStatus
+                    tm = get_unified_scheduler()._task_manager
+                    tm_status = TaskStatus.COMPLETED if status == "completed" else TaskStatus.FAILED
+                    # 直接设置属性（绕过异步锁）
+                    if task_id in tm._tasks:
+                        tm._tasks[task_id].status = tm_status
+                        tm._tasks[task_id].result = result
+                        tm._tasks[task_id].completed_at = datetime.now()
+                        logger.info(f"✅ TaskManager任务状态已更新: {task_id} -> {tm_status.name}")
+                except Exception as tm_err:
+                    logger.error(f"❌ 更新TaskManager状态失败: {task_id}, error={tm_err}")
                 
                 if status == "completed":
                     logger.info(f"✅ 数据采集任务完成: {source_id}, 结果={result}")
@@ -379,10 +391,13 @@ class DataCollectionSchedulerManager:
                     except Exception as event_err:
                         logger.warning(f"⚠️ 发布数据采集失败事件失败（非关键）: {source_id}, 错误={event_err}")
                 
-                # 从已提交任务集合中移除
-                task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
+                # 修复Bug3: 使用保存的提交时间戳，确保与提交时一致
+                saved_time_key = self._completion_timestamps.get(f"{source_id}:{datetime.now().strftime('%Y%m%d')}", datetime.now().strftime('%Y%m%d'))
+                task_key = f"{source_id}:{saved_time_key}"
                 if task_key in self._submitted_tasks:
                     self._submitted_tasks.discard(task_key)
+                    # 清理时间戳记录
+                    self._completion_timestamps.pop(task_key, None)
                     logger.info(f"🗑️ 已从提交任务集合移除: {task_key}")
             
             # 提交任务（异步方法）
@@ -462,8 +477,9 @@ class DataCollectionSchedulerManager:
                 old_collection_time = source_config.get("last_collection_time")
                 old_test_time = source_config.get("last_test")
                 
-                # 同时更新 last_collection_time 和 last_test
+                # 同时更新 last_collection_time, last_collection 和 last_test
                 source_config["last_collection_time"] = now_iso
+                source_config["last_collection"] = now_iso  # 【关键】should_collect 优先读取此字段
                 source_config["last_test"] = now_str
                 
                 logger.info(f"📝 准备保存配置 - 数据源: {source_id}")

@@ -1441,25 +1441,71 @@ class UnifiedScheduler(BaseScheduler):
             result: 执行结果
             error: 错误信息
         """
-        # 使用 asyncio.create_task 在事件循环中执行异步操作
+        print(f"[CALLBACK ENTER] _on_task_completed_or_failed ENTERED: task_id={task_id}, status={status}")
+        import traceback as tb
+        tb.print_exc(file=open('/tmp/cb_exc.log','a'))
+        # 直接在当前事件循环中运行异步处理（不创建新task）
+        # Bug修复: 使用 run_until_complete 而不是 create_task，
+        # 确保任务完成处理同步执行，避免任务永远停留在 PENDING
         try:
             loop = asyncio.get_event_loop()
+            print(f"[CALLBACK LOOP] loop.is_running={loop.is_running()}, loop={loop}")
             if loop.is_running():
-                asyncio.create_task(
-                    self._handle_task_completion(task_id, status, result, error)
-                )
+                # 事件循环正在运行，在新线程中执行协程
+                import concurrent.futures
+                print(f"[DEBUG CALLBACK] Creating ThreadPoolExecutor for task_id={task_id}")
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                    future = executor.submit(
+                        loop.run_until_complete,
+                        self._handle_task_completion(task_id, status, result, error)
+                    )
+                    future.result(timeout=30)
+                print(f"[DEBUG] _handle_task_completion 完成: task_id={task_id}, status={status}")
             else:
                 loop.run_until_complete(
                     self._handle_task_completion(task_id, status, result, error)
                 )
-        except RuntimeError:
-            # 没有事件循环，创建新的事件循环
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(
-                self._handle_task_completion(task_id, status, result, error)
-            )
-            loop.close()
+                print(f"[DEBUG] _handle_task_completion 完成(无循环): task_id={task_id}, status={status}")
+        except Exception as ex:
+            import traceback
+            print(f"[ERROR CALLBACK] _on_task_completed_or_failed 失败: task_id={task_id}, error={ex}")
+            traceback.print_exc()
+        except RuntimeError as re:
+            print(f"[RUNTIME ERROR CALLBACK] _on_task_completed_or_failed RuntimeError: task_id={task_id}, error={re}")
+            try:
+                # 没有事件循环，创建新的事件循环
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                loop.run_until_complete(
+                    self._handle_task_completion(task_id, status, result, error)
+                )
+                loop.close()
+            except Exception as ex2:
+                print(f"[ERROR CALLBACK 2] _on_task_completed_or_failed 失败: task_id={task_id}, error={ex2}")
+
+    def _on_task_completed_or_failed_sync(self, task_id: str, status: str, result: Any, error: Optional[str]):
+        """
+        Synchronous fallback for task completion. Called directly from worker threads
+        when the async callback chain fails.
+        """
+        print(f"[SYNC FALLBACK] task_id={task_id}, status={status}")
+        try:
+            from .base import TaskStatus
+            task = self._task_manager.get_task(task_id)
+            if not task:
+                print(f"[SYNC FALLBACK] Task {task_id} not found in TM")
+                return
+            # Update task status synchronously
+            # The TM's update_task_status is async but we can get the coro and run it
+            coro = self._task_manager.update_task_status(task_id, TaskStatus.COMPLETED if status == "completed" else TaskStatus.FAILED, result, error)
+            if asyncio.iscoroutine(coro):
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                loop.run_until_complete(coro)
+                loop.close()
+            print(f"[SYNC FALLBACK] Task {task_id} status updated to {status}")
+        except Exception as ex:
+            print(f"[SYNC FALLBACK] Error updating task {task_id}: {ex}")
 
     async def _handle_task_completion(
         self,

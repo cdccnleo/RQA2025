@@ -178,14 +178,29 @@ class WorkerManager:
                         task["status"] = "completed"
 
                         # 调用回调
+                        print(f"[DEBUG CALLBACK] Checking callback for task_id={task_id}, registered={task_id in self._task_callbacks}")
                         if task_id in self._task_callbacks:
                             try:
                                 callback = self._task_callbacks[task_id]
+                                print(f"[DEBUG CALLBACK] Calling callback for task_id={task_id}")
                                 callback(task_id, "completed", result, None)
+                                print(f"[DEBUG CALLBACK] Callback returned for task_id={task_id}")
                             except Exception as cb_error:
                                 print(f"Task completion callback error: {cb_error}")
+                                import traceback
+                                traceback.print_exc()
                             finally:
                                 del self._task_callbacks[task_id]
+                        else:
+                            # 直接调用统一调度器的同步完成方法
+                            print(f"[DEBUG CALLBACK] No callback registered, using direct sync completion for task_id={task_id}")
+                            try:
+                                from src.core.orchestration.scheduler import get_unified_scheduler
+                                sched = get_unified_scheduler()
+                                sched._on_task_completed_or_failed_sync(task_id, "completed", result, None)
+                                print(f"[DEBUG CALLBACK] Direct sync completion done for task_id={task_id}")
+                            except Exception as sync_err:
+                                print(f"[DEBUG CALLBACK] Direct sync completion failed for task_id={task_id}: {sync_err}")
                     else:
                         error_msg = f"No handler for task type: {task_type}"
                         print(f"[Worker {worker_id}] 错误: {error_msg}, 可用handlers: {list(self._task_handlers.keys())}")
