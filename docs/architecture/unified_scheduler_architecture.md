@@ -610,6 +610,7 @@ task_id = await scheduler.submit_task(
 | 2.0.0 | 2026-03-06 | 重大更新：添加持久化、告警、事件总线、性能优化、安全模块 |
 | 2.1.0 | 2026-03-08 | 添加自动采集功能：支持按活跃数据源配置自动执行数据采集任务 |
 | 2.2.0 | 2026-03-22 | 架构优化：统一调度器集成到特征引擎，完善Prometheus指标监控 |
+| 2.3.0 | 2026-04-18 | Bug修复：完成data_collection handler注册、修复completed/failed计数器永远为零的两个根因（async callback同步调用问题 + 直接修改task属性绕过TaskManager） |
 
 ### 9.1 版本 2.2.0 详细变更
 
@@ -721,14 +722,61 @@ task_id = await scheduler.submit_task(
 
 **验证状态：** ✅ 已实现
 
-#### 9.1.7 待实施改进项
+#### 9.1.7 版本 2.3.0 详细变更 ✅ 已完成
+
+##### P0-Fix1: data_collection Handler 缺失
+
+**问题**：`UnifiedScheduler` 初始化时只注册了 `feature_extraction` 和 `feature_selection` 两个 handler，漏掉了 `data_collection` 类型。
+
+**修复**：
+- 新增 `src/core/orchestration/scheduler/handlers/data_collection_handler.py`
+- 在 `get_unified_scheduler()` 中注册该 handler
+
+**文件**：`handlers/data_collection_handler.py`（新增）
+
+**验证状态：** ✅ handler 注册成功，任务正常执行
+
+##### P0-Fix2: completed/failed 计数器永远为零（根因1）
+
+**问题**：`worker_manager.py:186` 同步调用 callback，但 `_on_task_completed_or_failed` 是 `async def`。直接调用 async 函数返回 coroutine 对象，函数体永不执行。
+
+**修复**：
+- 新增 `_on_task_completed_or_failed_sync` 同步版本方法
+- 注册时使用同步版本 callback
+
+**文件**：`unified_scheduler.py`（新增方法 + callback 注册变更）
+
+**验证状态：** ✅ completed=100, history=100
+
+##### P0-Fix3: completed/failed 计数器永远为零（根因2）
+
+**问题**：`data_collection_scheduler_manager.py` 中 `on_task_completed` 直接修改 `tm._tasks[task_id].status`，绕过了 `update_task_status()`，任务永远不会移入 `_task_history`。
+
+**修复**：
+- 改用 `update_task_status()` 方法
+- 通过 `asyncio.new_event_loop() + run_until_complete()` 同步调用 async 方法
+
+**文件**：`data_collection_scheduler_manager.py`（重构回调）
+
+**验证状态：** ✅ success_rate=1.0
+
+##### P1-Fix4: result_has_data 检测不完整
+
+**问题**：`collect_data_via_data_layer` 返回的 dict 中数据计数字段是 `records_collected`，但检测逻辑只查找 `records` 和 `data`。
+
+**修复**：在 `data_collection_scheduler_manager.py` 中增加 `result.get("records_collected")` 检测。
+
+**验证状态：** ✅ 数据采集回调正确触发
+
+#### 9.1.8 待实施改进项
 
 | 优先级 | 改进项 | 状态 | 计划完成时间 |
 |--------|--------|------|--------------|
-| P1-4 | 完善访问控制模块 | ⏳ 待开始 | 2026-04-10 |
-| P2-1 | 实现任务数据加密 | ⏳ 待开始 | 2026-04-15 |
-| P2-2 | 优化优先级队列实现 | ⏳ 待开始 | 2026-04-20 |
-| P2-3 | 完善告警系统多通道支持 | ⏳ 待开始 | 2026-04-25 |
+| P1-4 | 完善访问控制模块 | ⏳ 待开始 | 待定 |
+| P2-1 | 实现任务数据加密 | ⏳ 待开始 | 待定 |
+| P2-2 | 优化优先级队列实现 | ⏳ 待开始 | 待定 |
+| P2-3 | 完善告警系统多通道支持 | ⏳ 待开始 | 待定 |
+| P2-4 | 清理调试日志（`[CALLBACK ENTER]`、`[SYNC FALLBACK]`等） | ⏳ 待开始 | 待定 |
 
 ---
 
