@@ -989,10 +989,12 @@ class UnifiedScheduler(BaseScheduler):
             "payload": payload
         }
 
-        # 注册任务完成/失败回调
+        # 注册任务完成/失败回调（使用同步版本，避免 worker 线程无法 await async def）
+        # Bug修复: worker_manager.callback() 是同步调用，async def 不带 await 函数体永不执行
+        # _on_task_completed_or_failed_sync 内部创建独立事件循环来正确 await TaskManager
         self._worker_manager.register_task_callback(
             task_id,
-            self._on_task_completed_or_failed
+            self._on_task_completed_or_failed_sync
         )
 
         self._worker_manager.submit_task(task_data)
@@ -2199,5 +2201,13 @@ def get_unified_scheduler(
             logger.info("✅ 特征选择任务处理器已注册")
         except Exception as e:
             logger.warning(f"⚠️ 特征选择处理器注册失败: {e}")
+
+        # 注册数据采集任务处理器
+        try:
+            from .handlers.data_collection_handler import data_collection_handler
+            _scheduler_instance.register_task_handler("data_collection", data_collection_handler)
+            logger.info("✅ 数据采集任务处理器已注册")
+        except Exception as e:
+            logger.warning(f"⚠️ 数据采集处理器注册失败: {e}")
 
     return _scheduler_instance

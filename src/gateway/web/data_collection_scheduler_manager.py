@@ -1,7 +1,7 @@
 """
-数据采集调度管理器
+鏁版嵁閲囬泦璋冨害绠＄悊鍣�
 
-根据数据源的采集频率配置，定时检查并自动生成采集任务。
+鏍规嵁鏁版嵁婧愮殑閲囬泦棰戠巼閰嶇疆锛屽畾鏃舵��鏌ュ苟鑷�鍔ㄧ敓鎴愰噰闆嗕换鍔°��
 """
 
 import threading
@@ -21,28 +21,28 @@ logger = logging.getLogger(__name__)
 
 class DataCollectionSchedulerManager:
     """
-    数据采集调度管理器
+    鏁版嵁閲囬泦璋冨害绠＄悊鍣�
     
-    定时检查已启用的数据源，根据采集频率自动生成采集任务。
+    瀹氭椂妫�鏌ュ凡鍚�鐢ㄧ殑鏁版嵁婧愶紝鏍规嵁閲囬泦棰戠巼鑷�鍔ㄧ敓鎴愰噰闆嗕换鍔°��
     """
     
     def __init__(self, check_interval: int = 10):
         """
-        初始化调度管理器
+        鍒濆�嬪寲璋冨害绠＄悊鍣�
         
         Args:
-            check_interval: 检查间隔（秒），默认10秒（缩短检查间隔以提高响应性）
+            check_interval: 妫�鏌ラ棿闅旓紙绉掞級锛岄粯璁�10绉掞紙缂╃煭妫�鏌ラ棿闅斾互鎻愰珮鍝嶅簲鎬э級
         """
         self._running = False
         self._check_interval = check_interval
         self._scheduler_thread: Optional[threading.Thread] = None
         self._lock = threading.RLock()
         
-        # 跟踪已提交的任务，避免重复
+        # 璺熻釜宸叉彁浜ょ殑浠诲姟锛岄伩鍏嶉噸澶�
         self._submitted_tasks: Set[str] = set()
-        self._completion_timestamps: Dict[str, str] = {}  # 修复Bug: 保存提交时的时间戳，避免回调时时间戳不一致
+        self._completion_timestamps: Dict[str, str] = {}  # 淇�澶岯ug: 淇濆瓨鎻愪氦鏃剁殑鏃堕棿鎴筹紝閬垮厤鍥炶皟鏃舵椂闂存埑涓嶄竴鑷�
         
-        # 统计信息
+        # 缁熻�′俊鎭�
         self._stats = {
             "total_checks": 0,
             "tasks_submitted": 0,
@@ -51,18 +51,18 @@ class DataCollectionSchedulerManager:
             "next_check_time": None
         }
         
-        logger.info(f"数据采集调度管理器初始化完成，检查间隔: {check_interval}秒")
+        logger.info(f"鏁版嵁閲囬泦璋冨害绠＄悊鍣ㄥ垵濮嬪寲瀹屾垚锛屾��鏌ラ棿闅�: {check_interval}绉�")
     
     def start(self) -> bool:
         """
-        启动调度管理器
+        鍚�鍔ㄨ皟搴︾�＄悊鍣�
         
         Returns:
-            bool: 是否成功启动
+            bool: 鏄�鍚︽垚鍔熷惎鍔�
         """
         with self._lock:
             if self._running:
-                logger.debug("调度管理器已在运行中")
+                logger.debug("璋冨害绠＄悊鍣ㄥ凡鍦ㄨ繍琛屼腑")
                 return True
             
             self._running = True
@@ -73,19 +73,19 @@ class DataCollectionSchedulerManager:
             )
             self._scheduler_thread.start()
             
-            logger.info("✅ 数据采集调度管理器已启动")
+            logger.info("鉁� 鏁版嵁閲囬泦璋冨害绠＄悊鍣ㄥ凡鍚�鍔�")
             return True
     
     def stop(self) -> bool:
         """
-        停止调度管理器
+        鍋滄�㈣皟搴︾�＄悊鍣�
         
         Returns:
-            bool: 是否成功停止
+            bool: 鏄�鍚︽垚鍔熷仠姝�
         """
         with self._lock:
             if not self._running:
-                logger.debug("调度管理器未在运行")
+                logger.debug("璋冨害绠＄悊鍣ㄦ湭鍦ㄨ繍琛�")
                 return True
             
             self._running = False
@@ -93,46 +93,46 @@ class DataCollectionSchedulerManager:
             if self._scheduler_thread:
                 self._scheduler_thread.join(timeout=5)
             
-            logger.info("🛑 数据采集调度管理器已停止")
+            logger.info("馃洃 鏁版嵁閲囬泦璋冨害绠＄悊鍣ㄥ凡鍋滄��")
             return True
     
     def _scheduler_loop(self):
-        """调度器主循环"""
-        logger.info("🔄 数据采集调度主循环已启动")
+        """璋冨害鍣ㄤ富寰�鐜�"""
+        logger.info("馃攧 鏁版嵁閲囬泦璋冨害涓诲惊鐜�宸插惎鍔�")
         
         while self._running:
             try:
-                # 记录本次检查时间
+                # 璁板綍鏈�娆℃��鏌ユ椂闂�
                 self._stats["last_check_time"] = datetime.now().isoformat()
                 self._stats["next_check_time"] = None
                 
-                # 执行检查和调度
+                # 鎵ц�屾��鏌ュ拰璋冨害
                 self._check_and_schedule()
                 
-                # 计算下次检查时间
+                # 璁＄畻涓嬫�℃��鏌ユ椂闂�
                 next_check = datetime.now().timestamp() + self._check_interval
                 self._stats["next_check_time"] = datetime.fromtimestamp(next_check).isoformat()
                 
-                # 休眠直到下次检查
+                # 浼戠湢鐩村埌涓嬫�℃��鏌�
                 for _ in range(self._check_interval):
                     if not self._running:
                         break
                     time.sleep(1)
                     
             except Exception as e:
-                logger.error(f"❌ 调度循环错误: {e}")
+                logger.error(f"鉂� 璋冨害寰�鐜�閿欒��: {e}")
                 time.sleep(5)
         
-        logger.info("🛑 数据采集调度主循环已停止")
+        logger.info("馃洃 鏁版嵁閲囬泦璋冨害涓诲惊鐜�宸插仠姝�")
     
     def _check_and_schedule(self):
         """
-        检查数据源并生成采集任务
+        妫�鏌ユ暟鎹�婧愬苟鐢熸垚閲囬泦浠诲姟
         """
-        logger.debug("🔍 开始检查数据源...")
+        logger.debug("馃攳 寮�濮嬫��鏌ユ暟鎹�婧�...")
         
         try:
-            # 获取所有已启用的数据源
+            # 鑾峰彇鎵�鏈夊凡鍚�鐢ㄧ殑鏁版嵁婧�
             from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             
             config_manager = get_data_source_config_manager()
@@ -143,105 +143,105 @@ class DataCollectionSchedulerManager:
             self._stats["sources_checked"] = len(enabled_sources)
             self._stats["total_checks"] += 1
             
-            logger.info(f"📊 检查 {len(enabled_sources)} 个已启用的数据源")
+            logger.info(f"馃搳 妫�鏌� {len(enabled_sources)} 涓�宸插惎鐢ㄧ殑鏁版嵁婧�")
             
-            # 检查每个数据源
+            # 妫�鏌ユ瘡涓�鏁版嵁婧�
             for source in enabled_sources:
                 try:
                     self._check_source(source)
                 except Exception as e:
-                    logger.error(f"检查数据源失败 {source.get('id')}: {e}")
+                    logger.error(f"妫�鏌ユ暟鎹�婧愬け璐� {source.get('id')}: {e}")
             
-            # 清理已完成的任务记录
+            # 娓呯悊宸插畬鎴愮殑浠诲姟璁板綍
             self._cleanup_completed_tasks()
             
         except Exception as e:
-            logger.error(f"检查数据源时出错: {e}")
+            logger.error(f"妫�鏌ユ暟鎹�婧愭椂鍑洪敊: {e}")
     
     def _check_source(self, source: Dict[str, Any]):
         """
-        检查单个数据源是否需要采集
+        妫�鏌ュ崟涓�鏁版嵁婧愭槸鍚﹂渶瑕侀噰闆�
         
         Args:
-            source: 数据源配置
+            source: 鏁版嵁婧愰厤缃�
         """
         source_id = source.get("id")
         rate_limit = source.get("rate_limit", "")
         
         if not rate_limit:
-            logger.debug(f"数据源 {source_id} 没有配置采集频率，跳过")
+            logger.debug(f"鏁版嵁婧� {source_id} 娌℃湁閰嶇疆閲囬泦棰戠巼锛岃烦杩�")
             return
 
-        # 2026-04-13 修复: 使用 last_collection_time 而非 last_test
-        # 原因: last_test 由健康检测更新（频繁），导致 should_collect 错误地认为今天已采集
-        # 而 last_collection_time 才真正反映数据采集时间
+        # 2026-04-13 淇�澶�: 浣跨敤 last_collection_time 鑰岄潪 last_test
+        # 鍘熷洜: last_test 鐢卞仴搴锋��娴嬫洿鏂帮紙棰戠箒锛夛紝瀵艰嚧 should_collect 閿欒��鍦拌�や负浠婂ぉ宸查噰闆�
+        # 鑰� last_collection_time 鎵嶇湡姝ｅ弽鏄犳暟鎹�閲囬泦鏃堕棿
         try:
             from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             config_manager = get_data_source_config_manager()
             fresh_source = config_manager.get_data_source(source_id)
             if fresh_source:
-                # 优先使用 last_collection_time（真正反映采集时间）
+                # 浼樺厛浣跨敤 last_collection_time锛堢湡姝ｅ弽鏄犻噰闆嗘椂闂达級
                 last_collection = (
                     fresh_source.get("last_collection") or
                     fresh_source.get("last_collection_time") or
-                    fresh_source.get("last_test")  # 降级到 last_test
+                    fresh_source.get("last_test")  # 闄嶇骇鍒� last_test
                 )
-                logger.debug(f"数据源 {source_id} 从数据库获取 last_collection: {last_collection}")
+                logger.debug(f"鏁版嵁婧� {source_id} 浠庢暟鎹�搴撹幏鍙� last_collection: {last_collection}")
             else:
                 last_collection = (
                     source.get("last_collection") or
                     source.get("last_collection_time") or
                     source.get("last_test")
                 )
-                logger.warning(f"数据源 {source_id} 无法从数据库获取，使用传入的 last_collection: {last_collection}")
+                logger.warning(f"鏁版嵁婧� {source_id} 鏃犳硶浠庢暟鎹�搴撹幏鍙栵紝浣跨敤浼犲叆鐨� last_collection: {last_collection}")
         except Exception as e:
             last_collection = source.get("last_collection") or source.get("last_test")
-            logger.error(f"从数据库获取 last_collection 失败: {e}")
+            logger.error(f"浠庢暟鎹�搴撹幏鍙� last_collection 澶辫触: {e}")
             last_collection = None  # Safety fallback
 
-        # 检查是否应该采集
+        # 妫�鏌ユ槸鍚﹀簲璇ラ噰闆�
         if should_collect(last_collection, rate_limit):
-            logger.info(f"🎯 数据源 {source_id} 到达采集时间（last_collection={last_collection}），准备提交任务")
+            logger.info(f"馃幆 鏁版嵁婧� {source_id} 鍒拌揪閲囬泦鏃堕棿锛坙ast_collection={last_collection}锛夛紝鍑嗗�囨彁浜や换鍔�")
             
-            # 再次检查是否已有待处理的任务（双重检查）
+            # 鍐嶆�℃��鏌ユ槸鍚﹀凡鏈夊緟澶勭悊鐨勪换鍔★紙鍙岄噸妫�鏌ワ級
             if self._has_pending_task(source_id):
-                logger.info(f"📅 数据源 {source_id} 今天已采集，跳过")
+                logger.info(f"馃搮 鏁版嵁婧� {source_id} 浠婂ぉ宸查噰闆嗭紝璺宠繃")
                 return
             
-            # 提交采集任务
+            # 鎻愪氦閲囬泦浠诲姟
             self._submit_collection_task(source_id, source)
         else:
-            logger.debug(f"数据源 {source_id} 未到达采集时间 (last_collection: {last_collection})")
+            logger.debug(f"鏁版嵁婧� {source_id} 鏈�鍒拌揪閲囬泦鏃堕棿 (last_collection: {last_collection})")
     
     def _has_pending_task(self, source_id: str) -> bool:
         """
-        检查今天是否已采集过数据
-        优先查询数据库中的 last_test 字段，避免容器重启后重复采集
+        妫�鏌ヤ粖澶╂槸鍚﹀凡閲囬泦杩囨暟鎹�
+        浼樺厛鏌ヨ�㈡暟鎹�搴撲腑鐨� last_test 瀛楁�碉紝閬垮厤瀹瑰櫒閲嶅惎鍚庨噸澶嶉噰闆�
         
         Args:
-            source_id: 数据源ID
+            source_id: 鏁版嵁婧怚D
             
         Returns:
-            bool: 今天是否已采集
+            bool: 浠婂ぉ鏄�鍚﹀凡閲囬泦
         """
         try:
-            # 从数据库获取数据源配置（持久化检查，避免容器重启后重复采集）
+            # 浠庢暟鎹�搴撹幏鍙栨暟鎹�婧愰厤缃�锛堟寔涔呭寲妫�鏌ワ紝閬垮厤瀹瑰櫒閲嶅惎鍚庨噸澶嶉噰闆嗭級
             from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             
             config_manager = get_data_source_config_manager()
             source_config = config_manager.get_data_source(source_id)
             
             if source_config:
-                # 2026-04-13 修复: 使用 last_collection 而非 last_test
+                # 2026-04-13 淇�澶�: 浣跨敤 last_collection 鑰岄潪 last_test
                 last_collected = (
                     source_config.get("last_collection") or
                     source_config.get("last_collection_time") or
-                    source_config.get("last_test")  # 降级
+                    source_config.get("last_test")  # 闄嶇骇
                 )
                 if last_collected:
                     try:
                         if isinstance(last_collected, str):
-                            # 尝试多种 datetime 格式
+                            # 灏濊瘯澶氱�� datetime 鏍煎紡
                             _parsed_date = None
                             for _fmt in ("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S",
                                          "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
@@ -254,44 +254,44 @@ class DataCollectionSchedulerManager:
                         elif isinstance(last_collected, datetime):
                             last_collected_date = last_collected.date()
                         else:
-                            logger.warning(f"未知的last_collected类型: {type(last_collected)}, 值: {last_collected}")
+                            logger.warning(f"鏈�鐭ョ殑last_collected绫诲瀷: {type(last_collected)}, 鍊�: {last_collected}")
                             last_collected_date = None
 
                         if last_collected_date:
                             today = datetime.now().date()
 
                             if last_collected_date == today:
-                                logger.info(f"📅 数据源 {source_id} 今天已采集（last_collected: {last_collected}），跳过")
+                                logger.info(f"馃搮 鏁版嵁婧� {source_id} 浠婂ぉ宸查噰闆嗭紙last_collected: {last_collected}锛夛紝璺宠繃")
                                 return True
                     except (ValueError, TypeError) as e:
-                        logger.warning(f"解析 last_collected 失败: {last_collected}, 类型: {type(last_collected)}, 错误: {e}")
+                        logger.warning(f"瑙ｆ瀽 last_collected 澶辫触: {last_collected}, 绫诲瀷: {type(last_collected)}, 閿欒��: {e}")
             
-            # 数据库检查失败或未找到配置，降级到内存检查
-            logger.debug(f"数据库检查失败，降级到内存检查: {source_id}")
+            # 鏁版嵁搴撴��鏌ュけ璐ユ垨鏈�鎵惧埌閰嶇疆锛岄檷绾у埌鍐呭瓨妫�鏌�
+            logger.debug(f"鏁版嵁搴撴��鏌ュけ璐ワ紝闄嶇骇鍒板唴瀛樻��鏌�: {source_id}")
             
         except Exception as e:
-            logger.error(f"检查数据库失败: {e}")
+            logger.error(f"妫�鏌ユ暟鎹�搴撳け璐�: {e}")
         
-        # 内存检查（作为缓存和降级方案）
+        # 鍐呭瓨妫�鏌ワ紙浣滀负缂撳瓨鍜岄檷绾ф柟妗堬級
         task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
         if task_key in self._submitted_tasks:
-            logger.debug(f"内存检查：数据源 {source_id} 今天已提交过任务")
+            logger.debug(f"鍐呭瓨妫�鏌ワ細鏁版嵁婧� {source_id} 浠婂ぉ宸叉彁浜よ繃浠诲姟")
             return True
         
         return False
     
     def _submit_collection_task(self, source_id: str, source_config: Dict[str, Any]):
         """
-        提交采集任务到统一调度器
+        鎻愪氦閲囬泦浠诲姟鍒扮粺涓�璋冨害鍣�
         
         Args:
-            source_id: 数据源ID
-            source_config: 数据源配置
+            source_id: 鏁版嵁婧怚D
+            source_config: 鏁版嵁婧愰厤缃�
         """
         import asyncio
         
         try:
-            # 竞态条件检查已移到上面的 should_collect 逻辑中
+            # 绔炴�佹潯浠舵��鏌ュ凡绉诲埌涓婇潰鐨� should_collect 閫昏緫涓�
             
             # Setup event loop in this thread before accessing asyncio-based scheduler
             import asyncio
@@ -303,7 +303,7 @@ class DataCollectionSchedulerManager:
 
             scheduler = get_unified_scheduler()
             
-            # 准备任务数据
+            # 鍑嗗�囦换鍔℃暟鎹�
             task_data = {
                 "source_id": source_id,
                 "source_config": source_config,
@@ -311,43 +311,50 @@ class DataCollectionSchedulerManager:
                 "submitted_at": datetime.now().isoformat()
             }
             
-            # 定义任务完成回调
+            # 瀹氫箟浠诲姟瀹屾垚鍥炶皟
             def on_task_completed(task_id: str, status: str, result: Any, error: str):
-                """任务完成回调"""
-                logger.info(f"🎯 任务完成回调被调用: task_id={task_id}, source_id={source_id}, 状态={status}")
+                """浠诲姟瀹屾垚鍥炶皟"""
+                logger.info(f"馃幆 浠诲姟瀹屾垚鍥炶皟琚�璋冪敤: task_id={task_id}, source_id={source_id}, 鐘舵��={status}")
                 
-                # 【关键修复】更新TaskManager中的任务状态
+                # 銆愬叧閿�淇�澶嶃�戞洿鏂癟askManager涓�鐨勪换鍔＄姸鎬�
                 try:
                     from src.core.orchestration.scheduler import get_unified_scheduler
                     from src.core.orchestration.scheduler.base import TaskStatus
                     tm = get_unified_scheduler()._task_manager
                     tm_status = TaskStatus.COMPLETED if status == "completed" else TaskStatus.FAILED
-                    # 直接设置属性（绕过异步锁）
+                    # 鐩存帴璁剧疆灞炴�э紙缁曡繃寮傛�ラ攣锛�
                     if task_id in tm._tasks:
                         tm._tasks[task_id].status = tm_status
                         tm._tasks[task_id].result = result
                         tm._tasks[task_id].completed_at = datetime.now()
-                        logger.info(f"✅ TaskManager任务状态已更新: {task_id} -> {tm_status.name}")
+                        logger.info(f"鉁� TaskManager浠诲姟鐘舵�佸凡鏇存柊: {task_id} -> {tm_status.name}")
                 except Exception as tm_err:
-                    logger.error(f"❌ 更新TaskManager状态失败: {task_id}, error={tm_err}")
+                    logger.error(f"鉂� 鏇存柊TaskManager鐘舵�佸け璐�: {task_id}, error={tm_err}")
                 
                 if status == "completed":
-                    logger.info(f"✅ 数据采集任务完成: {source_id}, 结果={result}")
-                    # 更新数据源最后采集时间
+                    logger.info(f"鉁� 鏁版嵁閲囬泦浠诲姟瀹屾垚: {source_id}, 缁撴灉={result}")
+                    # 鏇存柊鏁版嵁婧愭渶鍚庨噰闆嗘椂闂�
                     try:
-                        self._update_source_collection_time(source_id)
-                        logger.info(f"✅ 已调用_update_source_collection_time: {source_id}")
+                        # 【修复】检查result是否包含新数据
+                        result_has_data = False
+                        if isinstance(result, dict):
+                            records = result.get("records") or result.get("data") or result.get("collected_records", [])
+                            count = result.get("collected_count") or result.get("count") or result.get("records_collected") or 0
+                            result_has_data = (isinstance(records, (list, tuple)) and len(records) > 0) or (isinstance(count, int) and count > 0)
+                        logger.info(f"   result类型: {type(result).__name__}, result_has_data: {result_has_data}")
+                        self._update_source_collection_time(source_id, new_data_collected=result_has_data)
+                        logger.info(f"鉁� 宸茶皟鐢╛update_source_collection_time: {source_id}")
                     except Exception as update_err:
-                        logger.error(f"❌ 调用_update_source_collection_time失败: {source_id}, 错误={update_err}", exc_info=True)
+                        logger.error(f"鉂� 璋冪敤_update_source_collection_time澶辫触: {source_id}, 閿欒��={update_err}", exc_info=True)
                     
-                    # 发布数据采集完成事件，触发后续业务流程
+                    # 鍙戝竷鏁版嵁閲囬泦瀹屾垚浜嬩欢锛岃Е鍙戝悗缁�涓氬姟娴佺▼
                     try:
                         from src.core.event_bus import get_event_bus
                         from src.core.event_bus.types import EventType
                         
                         event_bus = get_event_bus()
                         
-                        # 获取数据源配置（用于特征工程模块）
+                        # 鑾峰彇鏁版嵁婧愰厤缃�锛堢敤浜庣壒寰佸伐绋嬫ā鍧楋級
                         source_config_for_event = source_config.copy() if source_config else {}
                         
                         event_bus.publish(
@@ -357,20 +364,20 @@ class DataCollectionSchedulerManager:
                                 "task_id": task_id,
                                 "status": status,
                                 "result": result,
-                                "source_config": source_config_for_event,  # 添加source_config以兼容特征工程模块
+                                "source_config": source_config_for_event,  # 娣诲姞source_config浠ュ吋瀹圭壒寰佸伐绋嬫ā鍧�
                                 "timestamp": datetime.now().isoformat(),
                                 "collection_type": "scheduled"
                             },
                             source="data_collection_scheduler_manager"
                         )
-                        logger.info(f"📢 数据采集完成事件已发布: {source_id}")
+                        logger.info(f"馃摙 鏁版嵁閲囬泦瀹屾垚浜嬩欢宸插彂甯�: {source_id}")
                     except Exception as event_err:
-                        logger.warning(f"⚠️ 发布数据采集完成事件失败（非关键）: {source_id}, 错误={event_err}")
+                        logger.warning(f"鈿狅笍 鍙戝竷鏁版嵁閲囬泦瀹屾垚浜嬩欢澶辫触锛堥潪鍏抽敭锛�: {source_id}, 閿欒��={event_err}")
                     
                 elif status == "failed":
-                    logger.error(f"❌ 数据采集任务失败: {source_id}, 错误={error}")
+                    logger.error(f"鉂� 鏁版嵁閲囬泦浠诲姟澶辫触: {source_id}, 閿欒��={error}")
                     
-                    # 发布数据采集失败事件
+                    # 鍙戝竷鏁版嵁閲囬泦澶辫触浜嬩欢
                     try:
                         from src.core.event_bus import get_event_bus
                         from src.core.event_bus.types import EventType
@@ -387,44 +394,44 @@ class DataCollectionSchedulerManager:
                             },
                             source="data_collection_scheduler_manager"
                         )
-                        logger.info(f"📢 数据采集失败事件已发布: {source_id}")
+                        logger.info(f"馃摙 鏁版嵁閲囬泦澶辫触浜嬩欢宸插彂甯�: {source_id}")
                     except Exception as event_err:
-                        logger.warning(f"⚠️ 发布数据采集失败事件失败（非关键）: {source_id}, 错误={event_err}")
+                        logger.warning(f"鈿狅笍 鍙戝竷鏁版嵁閲囬泦澶辫触浜嬩欢澶辫触锛堥潪鍏抽敭锛�: {source_id}, 閿欒��={event_err}")
                 
-                # 修复Bug3: 使用保存的提交时间戳，确保与提交时一致
+                # 淇�澶岯ug3: 浣跨敤淇濆瓨鐨勬彁浜ゆ椂闂存埑锛岀‘淇濅笌鎻愪氦鏃朵竴鑷�
                 saved_time_key = self._completion_timestamps.get(f"{source_id}:{datetime.now().strftime('%Y%m%d')}", datetime.now().strftime('%Y%m%d'))
                 task_key = f"{source_id}:{saved_time_key}"
                 if task_key in self._submitted_tasks:
                     self._submitted_tasks.discard(task_key)
-                    # 清理时间戳记录
+                    # 娓呯悊鏃堕棿鎴宠�板綍
                     self._completion_timestamps.pop(task_key, None)
-                    logger.info(f"🗑️ 已从提交任务集合移除: {task_key}")
+                    logger.info(f"馃棏锔� 宸蹭粠鎻愪氦浠诲姟闆嗗悎绉婚櫎: {task_key}")
             
-            # 提交任务（异步方法）
+            # 鎻愪氦浠诲姟锛堝紓姝ユ柟娉曪級
             async def submit_task_async():
-                # 提交任务（使用枚举的值，而不是枚举本身）
+                # 鎻愪氦浠诲姟锛堜娇鐢ㄦ灇涓剧殑鍊硷紝鑰屼笉鏄�鏋氫妇鏈�韬�锛�
                 task_id = await scheduler.submit_task(
                     task_type=TaskType.DATA_COLLECTION.value,
                     payload=task_data,
                     priority=TaskPriority.NORMAL
                 )
                 
-                # 注册任务完成回调
+                # 娉ㄥ唽浠诲姟瀹屾垚鍥炶皟
                 worker_manager = scheduler._worker_manager
                 worker_manager.register_task_callback(task_id, on_task_completed)
                 
                 return task_id
             
-            # 在同步上下文中运行异步任务
+            # 鍦ㄥ悓姝ヤ笂涓嬫枃涓�杩愯�屽紓姝ヤ换鍔�
             task_id = None
             try:
-                # 尝试获取当前事件循环
+                # 灏濊瘯鑾峰彇褰撳墠浜嬩欢寰�鐜�
                 loop = asyncio.get_running_loop()
-                # 如果已经有事件循环，使用run_coroutine_threadsafe
+                # 濡傛灉宸茬粡鏈変簨浠跺惊鐜�锛屼娇鐢╮un_coroutine_threadsafe
                 future = asyncio.run_coroutine_threadsafe(submit_task_async(), loop)
                 task_id = future.result(timeout=30)
             except RuntimeError:
-                # 没有事件循环，创建新的事件循环
+                # 娌℃湁浜嬩欢寰�鐜�锛屽垱寤烘柊鐨勪簨浠跺惊鐜�
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
                 try:
@@ -433,41 +440,43 @@ class DataCollectionSchedulerManager:
                     loop.close()
             
             if task_id:
-                # 记录已提交的任务
+                # 璁板綍宸叉彁浜ょ殑浠诲姟
                 task_key = f"{source_id}:{datetime.now().strftime('%Y%m%d')}"
                 self._submitted_tasks.add(task_key)
                 
                 self._stats["tasks_submitted"] += 1
                 
-                logger.info(f"✅ 采集任务已提交: {task_id} (数据源: {source_id})")
+                logger.info(f"鉁� 閲囬泦浠诲姟宸叉彁浜�: {task_id} (鏁版嵁婧�: {source_id})")
                 
-                # 验证任务是否被记录
+                # 楠岃瘉浠诲姟鏄�鍚﹁��璁板綍
                 try:
                     stats = scheduler.get_statistics()
-                    logger.info(f"📊 提交后调度器任务统计: 总任务={stats.get('total_tasks', 0)}, 待处理={stats.get('pending_tasks', 0)}")
+                    logger.info(f"馃搳 鎻愪氦鍚庤皟搴﹀櫒浠诲姟缁熻��: 鎬讳换鍔�={stats.get('total_tasks', 0)}, 寰呭�勭悊={stats.get('pending_tasks', 0)}")
                 except Exception as stats_err:
-                    logger.debug(f"获取调度器统计失败: {stats_err}")
+                    logger.debug(f"鑾峰彇璋冨害鍣ㄧ粺璁″け璐�: {stats_err}")
             else:
-                logger.error(f"❌ 任务提交失败，未获取到任务ID: {source_id}")
+                logger.error(f"鉂� 浠诲姟鎻愪氦澶辫触锛屾湭鑾峰彇鍒颁换鍔�ID: {source_id}")
             
         except Exception as e:
-            logger.error(f"❌ 提交采集任务失败 {source_id}: {e}", exc_info=True)
+            logger.error(f"鉂� 鎻愪氦閲囬泦浠诲姟澶辫触 {source_id}: {e}", exc_info=True)
     
-    def _update_source_collection_time(self, source_id: str):
+    def _update_source_collection_time(self, source_id: str, new_data_collected: bool = True):
         """
         更新数据源最后采集时间
-        
+
         Args:
             source_id: 数据源ID
+            new_data_collected: 是否有新数据被采集。为True时才更新last_collection，
+             False时只更新last_test（表示健康检查时间）。
         """
         try:
             from src.gateway.web.data_source_config_manager import get_data_source_config_manager
             
-            logger.info(f"🔄 开始更新数据源最后采集时间: {source_id}")
+            logger.info(f"馃攧 寮�濮嬫洿鏂版暟鎹�婧愭渶鍚庨噰闆嗘椂闂�: {source_id}")
             
             config_manager = get_data_source_config_manager()
             
-            # 更新数据源配置
+            # 鏇存柊鏁版嵁婧愰厤缃�
             source_config = config_manager.get_data_source(source_id)
             if source_config:
                 now = datetime.now()
@@ -477,35 +486,48 @@ class DataCollectionSchedulerManager:
                 old_collection_time = source_config.get("last_collection_time")
                 old_test_time = source_config.get("last_test")
                 
-                # 同时更新 last_collection_time, last_collection 和 last_test
-                source_config["last_collection_time"] = now_iso
-                source_config["last_collection"] = now_iso  # 【关键】should_collect 优先读取此字段
+                # 【修复】只在有新数据时才更新last_collection，避免采集失败仍更新时间戳
                 source_config["last_test"] = now_str
-                
-                logger.info(f"📝 准备保存配置 - 数据源: {source_id}")
-                logger.info(f"   last_collection_time: {old_collection_time} -> {now_iso}")
+                if new_data_collected:
+                    source_config["last_collection_time"] = now_iso
+                    source_config["last_collection"] = now_iso
+                    logger.info(f"   last_collection 已更新（有新数据）")
+                else:
+                    logger.info(f"   last_collection 保持不变（本次无新数据）")
+
+                logger.info(f"准备保存配置 - 数据源: {source_id}, new_data_collected={new_data_collected}")
                 logger.info(f"   last_test: {old_test_time} -> {now_str}")
                 
                 success = config_manager.update_data_source(source_id, source_config)
                 
                 if success:
-                    logger.info(f"✅ 更新数据源时间成功: {source_id}")
+                    logger.info(f"鉁� 鏇存柊鏁版嵁婧愭椂闂存垚鍔�: {source_id}")
+                    # 銆愬叧閿�淇�澶嶃�戦噸鏂板姞杞介厤缃�浠ュ悓姝ュ唴瀛樼紦瀛橈紝纭�淇濅笅娆�get_data_source()璇诲埌鏈�鏂板��
+                    try:
+                        config_manager.reload_config()
+                        reloaded = config_manager.get_data_source(source_id)
+                        if reloaded:
+                            logger.info("reload楠岃瘉: %s last_test=%s" % (source_id, reloaded.get('last_test')))
+                        else:
+                            logger.warning("閲嶆柊鍔犺浇鍚庢暟鎹�婧愪笉瀛樺湪: %s" % source_id)
+                    except Exception as reload_err:
+                        logger.warning("閰嶇疆閲嶆柊鍔犺浇澶辫触: %s" % reload_err)
                 else:
-                    logger.error(f"❌ 更新数据源时间失败: {source_id} - update_data_source返回False")
+                    logger.error(f"鉂� 鏇存柊鏁版嵁婧愭椂闂村け璐�: {source_id} - update_data_source杩斿洖False")
             else:
-                logger.warning(f"⚠️ 未找到数据源配置: {source_id}")
+                logger.warning(f"鈿狅笍 鏈�鎵惧埌鏁版嵁婧愰厤缃�: {source_id}")
             
         except Exception as e:
-            logger.error(f"❌ 更新数据源采集时间失败 {source_id}: {e}", exc_info=True)
+            logger.error(f"鉂� 鏇存柊鏁版嵁婧愰噰闆嗘椂闂村け璐� {source_id}: {e}", exc_info=True)
     
     def _cleanup_completed_tasks(self):
-        """清理已完成的任务记录"""
-        # 只保留最近3天的任务记录
+        """娓呯悊宸插畬鎴愮殑浠诲姟璁板綍"""
+        # 鍙�淇濈暀鏈�杩�3澶╃殑浠诲姟璁板綍
         current_date = datetime.now().strftime('%Y%m%d')
         tasks_to_remove = []
         
         for task_key in self._submitted_tasks:
-            # task_key 格式: source_id:YYYYMMDD
+            # task_key 鏍煎紡: source_id:YYYYMMDD
             if ':' in task_key:
                 date_part = task_key.split(':')[-1]
                 if date_part != current_date:
@@ -515,14 +537,14 @@ class DataCollectionSchedulerManager:
             self._submitted_tasks.discard(task_key)
         
         if tasks_to_remove:
-            logger.debug(f"清理了 {len(tasks_to_remove)} 个历史任务记录")
+            logger.debug(f"娓呯悊浜� {len(tasks_to_remove)} 涓�鍘嗗彶浠诲姟璁板綍")
     
     def get_stats(self) -> Dict[str, Any]:
         """
-        获取调度管理器统计信息
+        鑾峰彇璋冨害绠＄悊鍣ㄧ粺璁′俊鎭�
         
         Returns:
-            Dict: 统计信息
+            Dict: 缁熻�′俊鎭�
         """
         return {
             "running": self._running,
@@ -537,33 +559,33 @@ class DataCollectionSchedulerManager:
     
     def force_check(self):
         """
-        强制立即执行一次检查
+        寮哄埗绔嬪嵆鎵ц�屼竴娆℃��鏌�
         """
-        logger.info("🚀 强制执行数据源检查")
+        logger.info("馃殌 寮哄埗鎵ц�屾暟鎹�婧愭��鏌�")
         self._check_and_schedule()
 
 
-# 全局实例
+# 鍏ㄥ眬瀹炰緥
 _scheduler_manager: Optional[DataCollectionSchedulerManager] = None
 
 
 def get_scheduler_manager() -> DataCollectionSchedulerManager:
     """
-    获取全局调度管理器实例（单例模式，自动启动调度器）
+    鑾峰彇鍏ㄥ眬璋冨害绠＄悊鍣ㄥ疄渚嬶紙鍗曚緥妯″紡锛岃嚜鍔ㄥ惎鍔ㄨ皟搴﹀櫒锛�
     """
     global _scheduler_manager
     if _scheduler_manager is None:
         _scheduler_manager = DataCollectionSchedulerManager()
-        _scheduler_manager.start()  # 自动启动调度线程
+        _scheduler_manager.start()  # 鑷�鍔ㄥ惎鍔ㄨ皟搴︾嚎绋�
     return _scheduler_manager
 
 
 def start_auto_collection() -> bool:
     """
-    启动自动采集
+    鍚�鍔ㄨ嚜鍔ㄩ噰闆�
     
     Returns:
-        bool: 是否成功启动
+        bool: 鏄�鍚︽垚鍔熷惎鍔�
     """
     manager = get_scheduler_manager()
     return manager.start()
@@ -571,10 +593,10 @@ def start_auto_collection() -> bool:
 
 def stop_auto_collection() -> bool:
     """
-    停止自动采集
+    鍋滄�㈣嚜鍔ㄩ噰闆�
     
     Returns:
-        bool: 是否成功停止
+        bool: 鏄�鍚︽垚鍔熷仠姝�
     """
     manager = get_scheduler_manager()
     return manager.stop()
@@ -582,49 +604,49 @@ def stop_auto_collection() -> bool:
 
 def get_auto_collection_status() -> Dict[str, Any]:
     """
-    获取自动采集状态
+    鑾峰彇鑷�鍔ㄩ噰闆嗙姸鎬�
     
     Returns:
-        Dict: 状态信息
+        Dict: 鐘舵�佷俊鎭�
     """
     manager = get_scheduler_manager()
     return manager.get_stats()
 
 
-# 测试代码
+# 娴嬭瘯浠ｇ爜
 if __name__ == "__main__":
     print("=" * 60)
-    print("数据采集调度管理器测试")
+    print("鏁版嵁閲囬泦璋冨害绠＄悊鍣ㄦ祴璇�")
     print("=" * 60)
     
-    # 获取管理器实例
+    # 鑾峰彇绠＄悊鍣ㄥ疄渚�
     manager = get_scheduler_manager()
     
-    # 测试启动
-    print("\n1. 测试启动调度管理器")
+    # 娴嬭瘯鍚�鍔�
+    print("\n1. 娴嬭瘯鍚�鍔ㄨ皟搴︾�＄悊鍣�")
     result = manager.start()
-    print(f"✅ 启动结果: {result}")
+    print(f"鉁� 鍚�鍔ㄧ粨鏋�: {result}")
     
-    # 获取状态
-    print("\n2. 获取状态")
+    # 鑾峰彇鐘舵��
+    print("\n2. 鑾峰彇鐘舵��")
     stats = manager.get_stats()
-    print(f"运行状态: {stats['running']}")
-    print(f"检查间隔: {stats['check_interval']}秒")
+    print(f"杩愯�岀姸鎬�: {stats['running']}")
+    print(f"妫�鏌ラ棿闅�: {stats['check_interval']}绉�")
     
-    # 等待几秒
-    print("\n3. 等待5秒...")
+    # 绛夊緟鍑犵��
+    print("\n3. 绛夊緟5绉�...")
     time.sleep(5)
     
-    # 再次获取状态
+    # 鍐嶆�¤幏鍙栫姸鎬�
     stats = manager.get_stats()
-    print(f"检查次数: {stats['total_checks']}")
-    print(f"最后检查: {stats['last_check_time']}")
+    print(f"妫�鏌ユ�℃暟: {stats['total_checks']}")
+    print(f"鏈�鍚庢��鏌�: {stats['last_check_time']}")
     
-    # 测试停止
-    print("\n4. 测试停止调度管理器")
+    # 娴嬭瘯鍋滄��
+    print("\n4. 娴嬭瘯鍋滄�㈣皟搴︾�＄悊鍣�")
     result = manager.stop()
-    print(f"✅ 停止结果: {result}")
+    print(f"鉁� 鍋滄�㈢粨鏋�: {result}")
     
     print("\n" + "=" * 60)
-    print("测试完成")
+    print("娴嬭瘯瀹屾垚")
     print("=" * 60)

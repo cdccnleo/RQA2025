@@ -60,6 +60,7 @@ class WorkerManager:
             task_id: 任务ID
             callback: 回调函数，接收参数 (task_id, status, result, error)
         """
+        print(f"[REG CB] Registered callback for task_id={task_id}: {callback.__name__ if hasattr(callback, '__name__') else callback}")
         self._task_callbacks[task_id] = callback
 
     def unregister_task_callback(self, task_id: str):
@@ -182,7 +183,7 @@ class WorkerManager:
                         if task_id in self._task_callbacks:
                             try:
                                 callback = self._task_callbacks[task_id]
-                                print(f"[DEBUG CALLBACK] Calling callback for task_id={task_id}")
+                                print(f"[DEBUG CALLBACK] Calling callback for task_id={task_id}, cb={callback.__name__ if hasattr(callback, '__name__') else str(callback)[:50]}")
                                 callback(task_id, "completed", result, None)
                                 print(f"[DEBUG CALLBACK] Callback returned for task_id={task_id}")
                             except Exception as cb_error:
