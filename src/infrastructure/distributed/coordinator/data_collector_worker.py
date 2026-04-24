@@ -180,12 +180,20 @@ class DataCollectorWorker:
                     return symbols
 
             # 港股相关函数
-            elif akshare_function in ["stock_hk_spot_em", "stock_hk_hist"]:
-                df = ak.stock_hk_spot_em()
-                if df is not None and not df.empty:
-                    symbols = df["代码"].tolist()[:50]
-                    logger.info(f"获取到港股列表: {len(symbols)} 只")
-                    return symbols
+            elif akshare_function in ["stock_hk_spot_em", "stock_hk_hist", "stock_hk_spot"]:
+                # stock_hk_spot_em/hist (东方财富) 在某些网络环境下被封，改用 stock_hk_spot (新浪)
+                # stock_hk_spot 需要约44秒获取2745只港股列表
+                try:
+                    df = ak.stock_hk_spot()
+                    if df is not None and not df.empty:
+                        symbols = df["代码"].tolist()[:50]
+                        logger.info(f"获取到港股列表: {len(symbols)} 只 (via stock_hk_spot)")
+                        return symbols
+                except Exception as e:
+                    logger.warning(f"stock_hk_spot 获取失败: {e}")
+                # 如果 stock_hk_spot 也失败，使用备用方法获取单只港股历史数据
+                logger.info("使用港股默认股票代码")
+                return ["00001"]
 
             # 指数相关函数
             elif akshare_function in ["stock_zh_index_spot_em", "stock_zh_index_hist"]:

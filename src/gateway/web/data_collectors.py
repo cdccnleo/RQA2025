@@ -1016,7 +1016,11 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
             data = await collect_from_miniqmt_adapter(source_config, request_data)
         elif source_type.lower() in ["股票数据", "stock", "akshare", "a股", "astock"]:
             # AKShare股票数据：根据分类进一步细分
-            if ak_category in ["港股", "hk", "h股", "hongkong"]:
+            # 从source_id或config中检测是否为港股
+            source_id = source_config.get('id', '')
+            ak_category = source_config.get("config", {}).get("akshare_category", "").lower()
+            is_hk = ak_category in ["港股", "hk", "h股", "hongkong"] or 'hk' in source_id.lower()
+            if is_hk:
                 data = await collect_from_akshare_hk_stock_adapter(source_config, request_data)
             elif ak_category in ["美股", "us", "nasdaq", "nyse", "america"]:
                 data = await collect_from_akshare_us_stock_adapter(source_config, request_data)
@@ -2527,11 +2531,70 @@ async def collect_from_akshare_adapter(source_config: Dict[str, Any], request_da
 
 
 async def collect_from_akshare_hk_stock_adapter(source_config: Dict[str, Any], request_data: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-    """从AKShare适配器采集港股数据"""
+    """从AKShare适配器采集港股数据
+    
+    使用 stock_hk_spot + stock_hk_daily 组合:
+    1. stock_hk_spot 获取港股列表 (约44秒, 2745只)
+    2. 遍历获取每只股票历史K线
+    
+    注意: stock_hk_spot_em/hist (东方财富) 在某些网络环境下被封,
+    改用 stock_hk_spot (新浪财经)
+    
+    返回: DataFrame (符合 market_data_persistence.persist_hk_stock_data 的预期输入格式)
+    """
     try:
         import akshare as ak
-        logger.warning("港股数据采集适配器尚未完全实现")
-        return []
+        import pandas as pd
+        from datetime import datetime, timedelta
+        
+        logger.info("开始采集港股数据...")
+        
+        # 1. 获取港股列表 (stock_hk_spot 需要约44秒)
+        try:
+            df_spot = ak.stock_hk_spot()
+        except Exception as e:
+            logger.error(f"stock_hk_spot 获取失败: {e}")
+            return []
+        
+        if df_spot is None or df_spot.empty:
+            logger.warning("未获取到港股列表")
+            return []
+        
+        symbols = df_spot["代码"].tolist()
+        logger.info(f"获取到 {len(symbols)} 只港股")
+        
+        # 2. 遍历获取每只股票历史数据
+        all_data = []
+        for i, symbol in enumerate(symbols):
+            try:
+                # 使用 stock_hk_daily 获取历史K线 (约0.2-0.3秒/只)
+                df_hist = ak.stock_hk_daily(symbol=symbol)
+                
+                if df_hist is not None and not df_hist.empty:
+                    # 添加 symbol 列
+                    df_hist["symbol"] = symbol
+                    all_data.append(df_hist)
+                
+                # 每采集50只打印进度
+                if (i + 1) % 50 == 0:
+                    logger.info(f"港股采集进度: {i+1}/{len(symbols)}")
+                    
+            except Exception as e:
+                logger.debug(f"获取港股 {symbol} 历史数据失败: {e}")
+                continue
+        
+        if not all_data:
+            logger.warning("未获取到任何港股历史数据")
+            return []
+        
+        # 合并所有数据 - 返回DataFrame以匹配 persist_hk_stock_data 的预期输入
+        df_all = pd.concat(all_data, ignore_index=True)
+        logger.info(f"港股数据采集完成: {len(df_all)} 条记录, 涵盖 {len(symbols)} 只股票")
+        
+        # 直接返回 DataFrame (collect_from_akshare_hk_stock_adapter 会被赋值给 data 变量，
+        # 然后传给数据持久化层)
+        return df_all
+        
     except Exception as e:
         logger.error(f"AKShare港股数据采集失败: {e}")
         return []
@@ -2631,10 +2694,11 @@ async def collect_from_akshare_news_adapter(source_config: Dict[str, Any], reque
         print(f"🎯 配置: {config}")
         print(f"🎯 AKShare函数: {akshare_function}")
 
+        # 默认使用 stock_news_em（东方财富股票新闻）
         if not akshare_function:
-            logger.error(f"数据源 {source_id} 缺少 akshare_function 配置")
-            print("❌ 缺少 akshare_function 配置")
-            return []
+            logger.warning(f"数据源 {source_id} 缺少 akshare_function 配置，默认使用 stock_news_em")
+            print(f"⚠️ 缺少 akshare_function 配置，默认使用 stock_news_em")
+            akshare_function = "stock_news_em"
 
         logger.info(f"开始采集AKShare新闻数据: {source_id} 使用函数 {akshare_function}")
         print(f"✅ 开始采集: {source_id} -> {akshare_function}")
@@ -2710,18 +2774,10 @@ async def collect_from_akshare_news_adapter(source_config: Dict[str, Any], reque
                             pass  # 如果转换失败，保持原值
 
             logger.info(f"成功采集 {len(records)} 条新闻数据")
-            print(f"🎯🎯🎯 财经新闻采集器完成，返回数据 🎯🎯🎯")
+            print(f"🎯🎯🎯 财经新闻采集器完成，返回 {len(records)} 条数据 🎯🎯🎯")
 
-            return {
-                "success": True,
-                "data": records,
-                "completed_all_batches": True,  # 单次采集完成所有数据
-                "batches_info": {
-                    "completed": 1,
-                    "total": 1,
-                    "symbols_collected": len(set(r.get('symbol', '') for r in records if r.get('symbol')))
-                }
-            }
+            # 直接返回 records 列表（适配器接口约定），而不是包装成 dict
+            return records
 
         except Exception as func_error:
             logger.error(f"AKShare函数 {akshare_function} 调用失败: {func_error}")
@@ -2812,55 +2868,85 @@ async def validate_data_quality(data: List[Dict[str, Any]], source_type: str) ->
 def parse_rate_limit(rate_limit_str: str) -> float:
     """
     解析频率限制字符串，返回采集间隔秒数（统一函数，符合架构设计）
-    
+
+
     根据数据管理层架构设计，数据采集应按照数据源配置的rate_limit进行调度。
     此函数提供统一的频率解析逻辑，确保所有调度器使用相同的解析规则。
-    
+
+
     Args:
         rate_limit_str: 频率限制字符串，支持多种格式：
             - "10次/分钟" -> 返回 6.0 (60/10)
             - "1次/小时" -> 返回 3600.0 (3600/1)
+            - "1次/60分钟" -> 返回 3600.0 (60*60/1)  ← 新增支持
+            - "1次/季度" -> 返回 7776000.0 (90*86400/1)  ← 新增支持
             - "按协议" -> 返回 30.0 (保守设置，约2次/分钟)
             - "无限制" -> 返回 60.0 (默认每分钟1次)
             - "100次/分钟" -> 返回 5.0 (计算 60/100=0.6，应用最小5秒下限)
-    
+
     Returns:
         float: 采集间隔秒数（最小5秒，降低外部 API 限流/封禁风险）
-    
+
+
     Examples:
         >>> parse_rate_limit("10次/分钟")
         6.0
         >>> parse_rate_limit("1次/小时")
         3600.0
-        >>> parse_rate_limit("按协议")
-        30.0
-        >>> parse_rate_limit("无限制")
-        60.0
+        >>> parse_rate_limit("1次/60分钟")
+        3600.0
+        >>> parse_rate_limit("1次/季度")
+        7776000.0
     """
     import re
-    
+
     if not rate_limit_str or not isinstance(rate_limit_str, str):
         return 60.0  # 默认60秒（每分钟1次）
-    
+
     rate_limit_str = rate_limit_str.strip()
-    
+
     # 处理特殊值
     if rate_limit_str == "无限制" or rate_limit_str.lower() == "unlimited":
         return 60.0  # 默认每分钟1次
-    
+
     if "按协议" in rate_limit_str or "protocol" in rate_limit_str.lower():
         return 30.0  # 保守设置：约2次/分钟，降低未知协议源的限流/封禁风险
-    
-    # 解析格式：支持 "10次/分钟", "1次/小时", "1次/天" 等
-    # 匹配模式：数字 + "次" + "/" + 时间单位
+
+    # ── 新增：匹配 "X次/Y分钟"、"X次/Y小时"、"X次/Y季度" ──
+    # 例如 "1次/60分钟" → count=1, amount=60, unit=分钟 → 3600秒
+    match2 = re.search(r'(\d+)\s*次\s*/\s*(\d+)\s*(分钟|小时|天|日|秒|季度|quarter)', rate_limit_str)
+    if match2:
+        count = int(match2.group(1))
+        amount = int(match2.group(2))
+        unit = match2.group(3)
+
+        if count <= 0 or amount <= 0:
+            return 60.0
+
+        if unit in ['分钟', '分']:
+            interval = (amount * 60.0) / count
+        elif unit in ['小时', '时']:
+            interval = (amount * 3600.0) / count
+        elif unit in ['天', '日']:
+            interval = (amount * 86400.0) / count
+        elif unit in ['秒']:
+            interval = float(amount) / count
+        elif unit in ['季度', 'quarter']:
+            interval = (amount * 90 * 86400.0) / count  # 1季度≈90天
+        else:
+            interval = 60.0 / count
+
+        return max(5.0, interval)
+
+    # ── 原有的 "X次/分钟" 格式（无数字前缀）──
     match = re.search(r'(\d+)\s*次\s*/?\s*(\w+)', rate_limit_str)
     if match:
         count = int(match.group(1))
         unit = match.group(2).strip()
-        
+
         if count <= 0:
             return 60.0  # 无效值，使用默认值
-        
+
         # 根据时间单位计算间隔秒数
         if unit in ['分钟', 'minute', 'min', 'm']:
             interval = 60.0 / count
@@ -2870,18 +2956,19 @@ def parse_rate_limit(rate_limit_str: str) -> float:
             interval = 86400.0 / count
         elif unit in ['秒', 'second', 'sec', 's']:
             interval = 1.0 / count if count > 0 else 1.0
+        elif unit in ['季度', 'quarter']:
+            interval = (90 * 86400.0) / count
         else:
             # 未知单位，假设是分钟
             interval = 60.0 / count
-        
+
         # 确保最小间隔为5秒，降低外部 API 限流/封禁风险
         return max(5.0, interval)
-    
+
     # 如果无法解析，尝试直接解析为数字（假设是秒数）
     try:
         interval = float(rate_limit_str)
         return max(5.0, interval)
     except (ValueError, TypeError):
         # 完全无法解析，使用默认值
-        logger.warning(f"无法解析频率限制字符串: {rate_limit_str}，使用默认值60秒")
         return 60.0
