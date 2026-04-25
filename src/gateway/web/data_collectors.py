@@ -1021,7 +1021,19 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
             ak_category = source_config.get("config", {}).get("akshare_category", "").lower()
             is_hk = ak_category in ["港股", "hk", "h股", "hongkong"] or 'hk' in source_id.lower()
             if is_hk:
-                data = await collect_from_akshare_hk_stock_adapter(source_config, request_data)
+                result = await collect_from_akshare_hk_stock_adapter(source_config, request_data)
+                # HK适配器返回字典格式: {"data": DataFrame, "total_records": int, ...}
+                if isinstance(result, dict) and "data" in result:
+                    data = result["data"]  # 提取DataFrame用于后续处理
+                    # 保存元信息用于后续处理
+                    collection_result = {
+                        "completed_all_batches": True,
+                        "total_records": result.get("total_records", 0),
+                        "symbols_collected": result.get("symbols_collected", 0),
+                        "source_id": result.get("source_id", source_id)
+                    }
+                else:
+                    data = result
             elif ak_category in ["美股", "us", "nasdaq", "nyse", "america"]:
                 data = await collect_from_akshare_us_stock_adapter(source_config, request_data)
             else:
@@ -1223,6 +1235,16 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
             else:
                 return str(value)  # 其他类型转换为字符串
 
+        # 处理HK股票DataFrame格式
+        import pandas as pd
+        if isinstance(data, pd.DataFrame):
+            # HK股票返回的是DataFrame，需要转换为list用于清理
+            logger.info(f"转换港股DataFrame ({len(data)} 行) 为列表格式")
+            data = data.to_dict('records')
+        elif not isinstance(data, list):
+            # 其他情况转为list
+            data = list(data) if hasattr(data, '__iter__') else []
+        
         # 清理所有数据
         logger.info("开始数据清理和类型转换...")
         for i, item in enumerate(data):
@@ -2591,9 +2613,13 @@ async def collect_from_akshare_hk_stock_adapter(source_config: Dict[str, Any], r
         df_all = pd.concat(all_data, ignore_index=True)
         logger.info(f"港股数据采集完成: {len(df_all)} 条记录, 涵盖 {len(symbols)} 只股票")
         
-        # 直接返回 DataFrame (collect_from_akshare_hk_stock_adapter 会被赋值给 data 变量，
-        # 然后传给数据持久化层)
-        return df_all
+        # 返回字典格式（符合其他采集器的返回格式）
+        return {
+            "data": df_all,  # DataFrame格式，持久化层会处理
+            "total_records": len(df_all),
+            "symbols_collected": len(symbols),
+            "source_id": "akshare_stock_hk"
+        }
         
     except Exception as e:
         logger.error(f"AKShare港股数据采集失败: {e}")
