@@ -2571,7 +2571,7 @@ async def collect_from_akshare_adapter(source_config: Dict[str, Any], request_da
         return []
 
 
-async def collect_from_akshare_hk_stock_adapter(source_config: Dict[str, Any], request_data: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+async def collect_from_akshare_hk_stock_adapter(source_config: Dict[str, Any], request_data: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
     """从AKShare适配器采集港股数据
     
     使用 stock_hk_spot + stock_hk_daily 组合:
@@ -2632,17 +2632,12 @@ async def collect_from_akshare_hk_stock_adapter(source_config: Dict[str, Any], r
         df_all = pd.concat(all_data, ignore_index=True)
         logger.info(f"港股数据采集完成: {len(df_all)} 条记录, 涵盖 {len(symbols)} 只股票")
         
-        # 返回字典格式（符合其他采集器的返回格式）
-        return {
-            "data": df_all,  # DataFrame格式，持久化层会处理
-            "total_records": len(df_all),
-            "symbols_collected": len(symbols),
-            "source_id": "akshare_stock_hk"
-        }
+        # 直接返回DataFrame（符合docstring承诺和持久化层预期）
+        return df_all
         
     except Exception as e:
         logger.error(f"AKShare港股数据采集失败: {e}")
-        return []
+        return pd.DataFrame()  # 返回空DataFrame而不是空列表
 
 
 async def collect_from_akshare_us_stock_adapter(source_config: Dict[str, Any], request_data: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
