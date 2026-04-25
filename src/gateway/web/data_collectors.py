@@ -1237,13 +1237,32 @@ async def collect_data_via_data_layer(source_config: Dict[str, Any], request_dat
 
         # 处理HK股票DataFrame格式
         import pandas as pd
+        hk_dataframe = None  # 用于港股持久化
         if isinstance(data, pd.DataFrame):
             # HK股票返回的是DataFrame，需要转换为list用于清理
             logger.info(f"转换港股DataFrame ({len(data)} 行) 为列表格式")
+            hk_dataframe = data  # 保存用于持久化
             data = data.to_dict('records')
         elif not isinstance(data, list):
             # 其他情况转为list
             data = list(data) if hasattr(data, '__iter__') else []
+        
+        # 【港股数据持久化】如果采集了HK股票DataFrame，直接写入数据库
+        if hk_dataframe is not None and len(hk_dataframe) > 0:
+            logger.info(f"港股数据持久化: {len(hk_dataframe)} 条记录")
+            try:
+                from src.data.market_data_persistence import MarketDataPersistenceManager
+                persistence = MarketDataPersistenceManager()
+                if persistence.connect():
+                    count = persistence.persist_hk_stock_data(hk_dataframe, 'akshare_stock_hk')
+                    logger.info(f"港股数据写入成功: {count} 条")
+                    # 更新采集结果信息
+                    collection_result['hk_records_persisted'] = count
+                    persistence.close()
+                else:
+                    logger.warning("港股数据库连接失败，跳过持久化")
+            except Exception as persist_err:
+                logger.error(f"港股数据持久化失败: {persist_err}")
         
         # 清理所有数据
         logger.info("开始数据清理和类型转换...")
